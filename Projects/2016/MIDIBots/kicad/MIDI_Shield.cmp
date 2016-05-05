@@ -1,0 +1,87 @@
+Cmp-Mod V01 Created by CvPcb (22-Jun-2014 BZR 4027)-stable date = Sun 03 Apr 2016 16:56:22 NZST
+
+BeginCmp
+TimeStamp = /56E35230;
+Reference = D1;
+ValeurCmp = DIODE;
+IdModule  = D4;
+EndCmp
+
+BeginCmp
+TimeStamp = /56E34A6F;
+Reference = IC1;
+ValeurCmp = PC900V;
+IdModule  = DIP-6__300_ELL;
+EndCmp
+
+BeginCmp
+TimeStamp = /56E351B5;
+Reference = P1;
+ValeurCmp = MIDI_IN;
+IdModule  = SIL-5;
+EndCmp
+
+BeginCmp
+TimeStamp = /56E351C4;
+Reference = P2;
+ValeurCmp = MIDI_THRU;
+IdModule  = SIL-5;
+EndCmp
+
+BeginCmp
+TimeStamp = /56E351E3;
+Reference = R1;
+ValeurCmp = 220R;
+IdModule  = R4-LARGE_PADS;
+EndCmp
+
+BeginCmp
+TimeStamp = /56E49407;
+Reference = R2;
+ValeurCmp = 280R;
+IdModule  = R4-LARGE_PADS;
+EndCmp
+
+BeginCmp
+TimeStamp = /5700999C;
+Reference = R3;
+ValeurCmp = 220R;
+IdModule  = R4-LARGE_PADS;
+EndCmp
+
+BeginCmp
+TimeStamp = /57009A3F;
+Reference = R4;
+ValeurCmp = 220R;
+IdModule  = R4-LARGE_PADS;
+EndCmp
+
+BeginCmp
+TimeStamp = /56E490D8;
+Reference = SHIELD1;
+ValeurCmp = ARDUINO_SHIELD;
+IdModule  = ARDUINO_SHIELD;
+EndCmp
+
+BeginCmp
+TimeStamp = /56E4E614;
+Reference = SW1;
+ValeurCmp = SW_PUSHBUTTON;
+IdModule  = SW_PUSH_SMALL;
+EndCmp
+
+BeginCmp
+TimeStamp = /56E34B29;
+Reference = SW2;
+ValeurCmp = DIPS_04;
+IdModule  = SWDIP4;
+EndCmp
+
+BeginCmp
+TimeStamp = /57009FF1;
+Reference = U1;
+ValeurCmp = 74HC14;
+IdModule  = DIP-14__300_ELL;
+EndCmp
+
+EndListe
