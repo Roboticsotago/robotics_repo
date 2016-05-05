@@ -1,0 +1,344 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:MIDI_Shield-cache
+EELAYER 27 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title "Arduino MIDIBot Shield"
+Date "3 apr 2016"
+Rev ""
+Comp "Chris Edwards"
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L PC900V IC1
+U 1 1 56E34A6F
+P 3700 1550
+F 0 "IC1" H 3490 1740 40  0000 C CNN
+F 1 "PC900V" H 3880 1360 40  0000 C CNN
+F 2 "DIP6" H 3490 1370 30  0000 C CIN
+F 3 "~" H 3700 1550 60  0000 C CNN
+	1    3700 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L DIPS_04 SW2
+U 1 1 56E34B29
+P 8200 4100
+F 0 "SW2" V 7950 4100 60  0000 C CNN
+F 1 "DIPS_04" V 8450 4100 60  0000 C CNN
+F 2 "" H 8200 4100 60  0000 C CNN
+F 3 "" H 8200 4100 60  0000 C CNN
+	1    8200 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR01
+U 1 1 56E34C2C
+P 8200 4550
+F 0 "#PWR01" H 8200 4550 30  0001 C CNN
+F 1 "GND" H 8200 4480 30  0001 C CNN
+F 2 "" H 8200 4550 60  0000 C CNN
+F 3 "" H 8200 4550 60  0000 C CNN
+	1    8200 4550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 3850 8050 3900
+Wire Wire Line
+	8150 3850 8150 3900
+Wire Wire Line
+	8250 3850 8250 3900
+Wire Wire Line
+	8350 3850 8350 3900
+Text Label 8350 3850 1    60   ~ 0
+MIDI_CH_1x
+Text Label 8250 3850 1    60   ~ 0
+MIDI_CH_2x
+Text Label 8150 3850 1    60   ~ 0
+MIDI_CH_4x
+Text Label 8050 3850 1    60   ~ 0
+MIDI_CH_8x
+Wire Wire Line
+	8050 4300 8050 4400
+Wire Wire Line
+	8050 4400 8350 4400
+Wire Wire Line
+	8350 4400 8350 4300
+Wire Wire Line
+	8150 4300 8150 4400
+Connection ~ 8150 4400
+Wire Wire Line
+	8250 4300 8250 4400
+Connection ~ 8250 4400
+Wire Wire Line
+	8200 4400 8200 4550
+Connection ~ 8200 4400
+$Comp
+L DIN_5 P1
+U 1 1 56E351B5
+P 1800 1650
+F 0 "P1" H 1800 1650 70  0000 C CNN
+F 1 "MIDI_IN" H 1800 1500 70  0000 C CNN
+F 2 "" H 1800 1650 60  0000 C CNN
+F 3 "" H 1800 1650 60  0000 C CNN
+	1    1800 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L DIN_5 P2
+U 1 1 56E351C4
+P 4600 3000
+F 0 "P2" H 4600 3000 70  0000 C CNN
+F 1 "MIDI_THRU" H 4600 2850 70  0000 C CNN
+F 2 "" H 4600 3000 60  0000 C CNN
+F 3 "" H 4600 3000 60  0000 C CNN
+	1    4600 3000
+	-1   0    0    -1  
+$EndComp
+$Comp
+L R R1
+U 1 1 56E351E3
+P 2800 1450
+F 0 "R1" V 2880 1450 40  0000 C CNN
+F 1 "220R" V 2807 1451 40  0000 C CNN
+F 2 "~" V 2730 1450 30  0000 C CNN
+F 3 "~" H 2800 1450 30  0000 C CNN
+	1    2800 1450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L DIODE D1
+U 1 1 56E35230
+P 3150 1650
+F 0 "D1" H 3150 1750 40  0000 C CNN
+F 1 "DIODE" H 3150 1550 40  0000 C CNN
+F 2 "~" H 3150 1650 60  0000 C CNN
+F 3 "~" H 3150 1650 60  0000 C CNN
+	1    3150 1650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L ARDUINO_SHIELD SHIELD1
+U 1 1 56E490D8
+P 5950 4800
+F 0 "SHIELD1" H 5600 5750 60  0000 C CNN
+F 1 "ARDUINO_SHIELD" H 6000 3850 60  0000 C CNN
+F 2 "" H 5950 4800 60  0000 C CNN
+F 3 "" H 5950 4800 60  0000 C CNN
+	1    5950 4800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6950 4400 6900 4400
+Wire Wire Line
+	6950 4500 6900 4500
+Wire Wire Line
+	6950 4600 6900 4600
+Wire Wire Line
+	6950 4700 6900 4700
+Text Label 6950 4700 0    60   ~ 0
+MIDI_CH_1x
+Text Label 6950 4600 0    60   ~ 0
+MIDI_CH_2x
+Text Label 6950 4500 0    60   ~ 0
+MIDI_CH_4x
+Text Label 6950 4400 0    60   ~ 0
+MIDI_CH_8x
+Text Label 5000 4600 2    60   ~ 0
++5V
+Text Label 5000 4400 2    60   ~ 0
+RESET
+Text Label 5000 4700 2    60   ~ 0
+GND
+Text Label 5000 4800 2    60   ~ 0
+GND
+Text Label 6900 4100 0    60   ~ 0
+GND
+NoConn ~ 6900 5500
+NoConn ~ 5000 4500
+Text Label 5000 4900 2    60   ~ 0
++12V
+NoConn ~ 6900 4000
+NoConn ~ 6900 4200
+Text Label 6900 5300 0    60   ~ 0
+SELF_TEST
+$Comp
+L GND #PWR02
+U 1 1 56E493E9
+P 4600 1850
+F 0 "#PWR02" H 4600 1850 30  0001 C CNN
+F 1 "GND" H 4600 1780 30  0001 C CNN
+F 2 "" H 4600 1850 60  0000 C CNN
+F 3 "" H 4600 1850 60  0000 C CNN
+	1    4600 1850
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R2
+U 1 1 56E49407
+P 4600 1300
+F 0 "R2" V 4680 1300 40  0000 C CNN
+F 1 "280R" V 4607 1301 40  0000 C CNN
+F 2 "~" V 4530 1300 30  0000 C CNN
+F 3 "~" H 4600 1300 30  0000 C CNN
+	1    4600 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L SW_PUSHBUTTON SW1
+U 1 1 56E4E614
+P 3400 4300
+F 0 "SW1" H 3250 4410 50  0000 C CNN
+F 1 "SW_PUSHBUTTON" H 3400 4220 50  0000 C CNN
+F 2 "" H 3400 4300 60  0000 C CNN
+F 3 "" H 3400 4300 60  0000 C CNN
+	1    3400 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR03
+U 1 1 56E4E625
+P 3900 4550
+F 0 "#PWR03" H 3900 4550 30  0001 C CNN
+F 1 "GND" H 3900 4480 30  0001 C CNN
+F 2 "" H 3900 4550 60  0000 C CNN
+F 3 "" H 3900 4550 60  0000 C CNN
+	1    3900 4550
+	1    0    0    -1  
+$EndComp
+Text Label 2850 4300 2    60   ~ 0
+RESET
+Wire Wire Line
+	3700 4300 3900 4300
+Wire Wire Line
+	3900 4300 3900 4550
+Wire Wire Line
+	3100 4300 2850 4300
+NoConn ~ 5000 5100
+NoConn ~ 5000 5200
+NoConn ~ 5000 5300
+NoConn ~ 5000 5400
+NoConn ~ 5000 5500
+NoConn ~ 5000 5600
+NoConn ~ 6900 4300
+NoConn ~ 6900 4900
+NoConn ~ 6900 5000
+NoConn ~ 6900 5100
+NoConn ~ 6900 5200
+NoConn ~ 6900 5400
+Wire Wire Line
+	3050 1450 3350 1450
+Wire Wire Line
+	2400 1450 2550 1450
+Wire Wire Line
+	3350 1650 3350 1850
+Wire Wire Line
+	3350 1850 2400 1850
+Wire Wire Line
+	2400 1850 2400 1650
+Wire Wire Line
+	4050 1650 4600 1650
+Wire Wire Line
+	4600 1650 4600 1850
+Wire Wire Line
+	4600 1050 4050 1050
+Wire Wire Line
+	4050 1050 4050 1450
+Wire Wire Line
+	4050 1550 4600 1550
+Text Label 4600 950  2    60   ~ 0
++5V
+Wire Wire Line
+	4600 1050 4600 950 
+Text Notes 8000 1300 0    60   ~ 0
+TODO:\n[ ] LED + resistor on Pin 13\n[ ] Servo output(s)\n[ ] MOSFET output(s)\n[ ] RX disconnection switch\n[ ] MIDI THRU circuitry (buffer)\n[ ] 12 V connector (incl. GND)? Or just use Arduino barrel jack?\n\n
+Text Label 4600 1550 0    60   ~ 0
+MIDI_IN_TTL
+Text Label 6900 5600 0    60   ~ 0
+MIDI_IN_TTL
+$Comp
+L R R3
+U 1 1 5700999C
+P 3750 2800
+F 0 "R3" V 3830 2800 40  0000 C CNN
+F 1 "220R" V 3757 2801 40  0000 C CNN
+F 2 "~" V 3680 2800 30  0000 C CNN
+F 3 "~" H 3750 2800 30  0000 C CNN
+	1    3750 2800
+	0    -1   -1   0   
+$EndComp
+Text Label 3500 2700 2    60   ~ 0
++5V
+Wire Wire Line
+	3500 2800 3500 2700
+Text Label 1700 3000 2    60   ~ 0
+MIDI_IN_TTL
+$Comp
+L R R4
+U 1 1 57009A3F
+P 3750 3000
+F 0 "R4" V 3830 3000 40  0000 C CNN
+F 1 "220R" V 3757 3001 40  0000 C CNN
+F 2 "~" V 3680 3000 30  0000 C CNN
+F 3 "~" H 3750 3000 30  0000 C CNN
+	1    3750 3000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74HC14 U1
+U 2 1 57009FF1
+P 3050 3000
+F 0 "U1" H 3200 3100 40  0000 C CNN
+F 1 "74HC14" H 3250 2900 40  0000 C CNN
+F 2 "~" H 3050 3000 60  0000 C CNN
+F 3 "~" H 3050 3000 60  0000 C CNN
+	2    3050 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74HC14 U1
+U 1 1 5700A078
+P 2150 3000
+F 0 "U1" H 2300 3100 40  0000 C CNN
+F 1 "74HC14" H 2350 2900 40  0000 C CNN
+F 2 "~" H 2150 3000 60  0000 C CNN
+F 3 "~" H 2150 3000 60  0000 C CNN
+	1    2150 3000
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
