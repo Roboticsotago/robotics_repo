@@ -96,13 +96,7 @@ MIDI_CH_8x
 Wire Wire Line
 	7250 4250 7250 4350
 Wire Wire Line
-	7250 4350 7350 4350
-Wire Wire Line
-	7350 4350 7400 4350
-Wire Wire Line
-	7400 4350 7450 4350
-Wire Wire Line
-	7450 4350 7550 4350
+	7250 4350 7550 4350
 Wire Wire Line
 	7550 4350 7550 4250
 Wire Wire Line
@@ -266,17 +260,13 @@ NoConn ~ 3900 5300
 NoConn ~ 3900 5400
 NoConn ~ 3900 5600
 Wire Wire Line
-	3050 1450 3150 1450
-Wire Wire Line
-	3150 1450 3350 1450
+	3050 1450 3350 1450
 Wire Wire Line
 	2400 1450 2550 1450
 Wire Wire Line
-	3350 1650 3350 1850
+	3350 1850 3350 1650
 Wire Wire Line
-	3350 1850 3150 1850
-Wire Wire Line
-	3150 1850 2400 1850
+	2400 1850 3350 1850
 Wire Wire Line
 	2400 1850 2400 1650
 Wire Wire Line
@@ -288,14 +278,14 @@ Wire Wire Line
 Wire Wire Line
 	4050 1050 4050 1450
 Wire Wire Line
-	4050 1550 4600 1550
+	4050 1550 5100 1550
 Text Label 4600 950  2    60   ~ 0
 +5V
 Wire Wire Line
 	4600 1050 4600 950 
 Text Notes 6800 2050 0    60   ~ 0
 TODO:\n\n[ ] Servo output(s)\n[ ] MOSFET output(s)\n[ ] RX disconnection switch\n[ ] DIN connector grounding (pin 2, one end only? cap? what about chassis ground?)\n[ ] EMI ferrite beads on I/O lines?\n\n[X] 12 V connector (incl. GND)? Just use Arduino barrel jack.\n\n[Y] Reset switch\n[Y] MIDI THRU circuitry (buffer)\n[Y] Self-test button\n[Y] Latency control potentiometer\n[Y] LED + resistor on Pin 13\n
-Text Label 4600 1550 0    60   ~ 0
+Text Label 5100 1550 0    60   ~ 0
 MIDI_IN_TTL
 Text Label 3900 5800 0    60   ~ 0
 MIDI_IN_TTL
@@ -502,4 +492,26 @@ Text Notes 8650 3100 0    60   ~ 0
 TODO: switch debouncing?
 Connection ~ 3150 1450
 Connection ~ 3150 1850
+Text Notes 2400 6200 0    60   ~ 0
+Do we need all these GND labels?\nWon't the parent Arduino board connect these anyway?
+$Comp
+L GND #PWR?
+U 1 1 572B0D3F
+P 5500 3300
+F 0 "#PWR?" H 5500 3300 30  0001 C CNN
+F 1 "GND" H 5500 3230 30  0001 C CNN
+F 2 "" H 5500 3300 60  0000 C CNN
+F 3 "" H 5500 3300 60  0000 C CNN
+	1    5500 3300
+	1    0    0    -1  
+$EndComp
+NoConn ~ 5200 3000
+NoConn ~ 4600 2400
+Wire Wire Line
+	5200 2800 5500 2800
+Wire Wire Line
+	5500 2800 5500 3300
+NoConn ~ 1200 1650
+NoConn ~ 1800 1050
+Connection ~ 4600 1550
 $EndSCHEMATC
