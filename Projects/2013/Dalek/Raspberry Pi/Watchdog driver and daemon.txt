@@ -1,0 +1,14 @@
+Raspberry Pi watchdog timer driver
+
+http://blog.ricardoarturocabral.com/2013/01/auto-reboot-hung-raspberry-pi-using-on.html
+
+sudo modprobe bcm2708_wdog
+
+Add to /etc/modules to make permanent.
+
+
+# Add the watchdog daemon:
+sudo apt-get install watchdog
+
+sudo update-rc.d watchdog defaults
+

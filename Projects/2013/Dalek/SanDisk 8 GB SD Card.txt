@@ -1,0 +1,11 @@
+<<
+Disk /dev/sdd: 7948 MB, 7948206080 bytes
+81 heads, 10 sectors/track, 19165 cylinders
+Units = cylinders of 810 * 512 = 414720 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x00000000
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdd1              11       19166     7757824    b  W95 FAT32
+>>

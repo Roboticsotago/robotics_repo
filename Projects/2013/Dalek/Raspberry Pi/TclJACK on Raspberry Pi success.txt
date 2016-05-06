@@ -1,0 +1,103 @@
+TclJACK on Rasbpian/Raspberry Pi
+2013-06-27
+
+Success!  Had to compile JACK from source and remove references to jack_get_version_string(), which has apparently been removed from the API.
+
+
+
+pi@raspberrypi /usr/local/src/TclJACK $ make
+gcc -fPIC -shared -DUSE_TCL_STUBS -o libtcljack.so -I/usr/include/tcl8.5 tcljack.c -L/usr/lib -ltclstub8.5 -ljack
+echo 'pkg_mkIndex . libtcljack.so' | tclsh8.5
+pi@raspberrypi /usr/local/src/TclJACK $ rlwrap tclsh
+% load ./libtcljack.so
+couldn't load file "./libtcljack.so": ./libtcljack.so: undefined symbol: jack_get_version_string
+% 
+
+        Tcl_AppendStringsToObj(result_pointer, jack_get_version_string(), NULL);
+
+        // Hmm, this just gives 0.0.0.0.  Ah, apparently it's not really implemented; try jack_get_version_string() instead!
+
+        jack_get_version(&major, &minor, &micro, &proto);
+
+
+Ah, OK, it looks like jack_get_version_string has disappeared from the API as well.  At least, I can't find it in the latest source tree.
+	
+	http://comments.gmane.org/gmane.comp.audio.jackit/23369
+
+	I guess this means Tcljack_Version has to go...
+
+
+
+TODO: ensure TclJACK uses jack_free to free any memory returned by:
+	jack_port_get_connections
+	jack_port_get_all_connections
+	jack_get_ports
+
+
+http://jackaudio.org/files/docs/html/group__WeakLinkage.html
+
+
+Still getting "client linked with incompatible libjack version"...
+
+	libjack.so.0 => /usr/lib/arm-linux-gnueabihf/libjack.so.0 (0xb6ef3000)
+
+
+Hmm, OK
+
+/etc/ld.so.conf.d/arm-linux-gnueabihf.conf:
+<<
+# Multiarch support
+/lib/arm-linux-gnueabihf
+/usr/lib/arm-linux-gnueabihf
+>>
+
+Fine...
+
+rm /usr/lib/arm-linux-gnueabihf/libjack.so.0*
+
+pi@raspberrypi /usr/local/src/TclJACK $ ldd libtcljack.so 
+	/usr/lib/arm-linux-gnueabihf/libcofi_rpi.so (0xb6fb4000)
+	libjack.so.0 => /usr/lib/libjack.so.0 (0xb6f86000)
+	libc.so.6 => /lib/arm-linux-gnueabihf/libc.so.6 (0xb6e57000)
+	librt.so.1 => /lib/arm-linux-gnueabihf/librt.so.1 (0xb6e48000)
+	libm.so.6 => /lib/arm-linux-gnueabihf/libm.so.6 (0xb6dd7000)
+	libpthread.so.0 => /lib/arm-linux-gnueabihf/libpthread.so.0 (0xb6db8000)
+	libdl.so.2 => /lib/arm-linux-gnueabihf/libdl.so.2 (0xb6dad000)
+	libgcc_s.so.1 => /lib/arm-linux-gnueabihf/libgcc_s.so.1 (0xb6d85000)
+	/lib/ld-linux-armhf.so.3 (0xb6fce000)
+
+
+Ah, now it's using it!
+
+pi@raspberrypi /usr/local/src/TclJACK $ rlwrap tclsh
+% load ./libtcljack.so
+% jack register
+tcljack: JACK sampling frequency changed to 48000 Hz.
+tcljack: JACK buffer size changed to 1024.
+% jack ports
+system:playback_1 system:playback_2 tcljack:input tcljack:midi_input
+% jack meter
+0.0000000000000000 0.0000000000000000 0.0000000000000000 0.0000000000000000
+
+
+W00t!
+
+
+
+Now can I play audio...?!
+
+% jack ports
+system:playback_1 system:playback_2 tcljack:input tcljack:midi_input {MPlayer [3191]:out_0} {MPlayer [3191]:out_1}
+% jack connect {MPlayer [3191]:out_0} tcljack:input
+% jack meter
+0.0827026367187500 0.0334128551185131 0.0000000000000000 -0.0006291270256042
+
+
+OK, but the sound is choppy...
+
+jackd -R -d alsa				# Choppy. (48 kHz)
+jackd -R -d alsa --rate 44100			# Choppy.
+jackd -R -d alsa --rate 44100 -p 2048		# Choppy.
+jackd -R -d alsa --rate 44100 -p 2048 -n 3	# No choppy! :)
+jackd -R -d alsa -n 3				# No choppy!
+

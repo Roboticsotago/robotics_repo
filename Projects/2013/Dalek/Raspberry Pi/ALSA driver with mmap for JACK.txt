@@ -1,0 +1,22 @@
+# mmap()-capable ALSA driver for the Broadcom chip in the Raspberry Pi
+# http://martinezjavier.wordpress.com/2013/04/27/mmap-support-for-raspberry-pi-bcm2835-alsa-driver/
+
+git clone git://github.com/raspberrypi/tools.git
+git clone git://github.com/raspberrypi/linux.git
+cd linux
+# Uh, not "checkoub"?!
+git checkout -b rpi-3.6.y origin/rpi-3.6.y
+export ARCH=arm
+# Uh, something missing at end here?!
+export CROSS_COMPILE=../tools/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
+make bcmrpi_defconfig
+make prepare modules_prepare
+make M=sound/arm
+sudo cp sound/arm/snd-bcm2835.ko /media/rootfs/lib/modules/3.6.11+/kernel/sound/arm/
+sudo rm /media/rootfs/etc/asound.conf
+
+
+make: ../tools/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-gcc: Command not found
+
+make scripts/kallsyms
+
