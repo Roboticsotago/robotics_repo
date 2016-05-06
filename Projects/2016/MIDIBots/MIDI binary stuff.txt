@@ -1,0 +1,90 @@
+Bitwise manipulation for MIDI data
+
+A MIDI message consists of a status byte followed by one or more data bytes.  For this project, we'll really only be interested in Note On and Note Off commands.
+
+Status bytes are identified by the most significant bit being a 1.  Data bytes have a 0 here.
+
+The general form of a MIDI message is:
+
+1ssscccc     0nnnnnnn   ...
+Status Byte  Data Byte
+
+sss stands for three bits indicating the type of message:
+
+000	Note Off
+001	Note On
+010	Polyphonic Key Pressure (Aftertouch)
+011	Control Change (CC)
+100	Program Change
+101	Channel Pressure (Aftertouch)
+110	Pitch Bend Change
+111	System Common Message (such as System Excluse (SysEx))
+
+
+1001 0110
+^___ ____
+| ^    ^
+| |    |
+|
+
+1 <-- 1 here indicates a status byte, otherwise it's a data byte
+0 \
+0 | <-- the 3 remaining bits in this nybble indicate the type of message (000 = Note Off, 001 = Note On, etc.)
+1 /
+
+0 \
+1 |
+1 |
+0 /
+
+
+MIDI channels are labelled 1..16 in order to be human-friendly, but internally they are represented as 0..15 (decimal), 0000..1111 (binary), or 0..F (hexadecimal).
+
+Oddly, C doesn't have especially flexible ways of dealing with binary data.  It generally has to be stored in bytes, and direct binary representation (0b1010101) is far from universally supported.  You often have to accompany data with a bitmask indicating which bits are actually significant.
+
+
+
+MIDI Terminology:
+	active sensing
+	channel
+	control change (CC)
+	message
+	program change (PC)
+	status byte
+
+
+
+
+Note On
+
+These messages are used to trigger the start of a note.
+
+In binary, the status byte format is 1001nnnn, where nnnn is the channel number.
+
+
+Note Off
+
+
+You can also turn a note off by sending a Note On message with a velocity of 0.
+
+
+--
+
+Scale quantisation:
+
+2212221	standard western diatonic scale (Ionian mode)
+^- sum to 12
+
+12 / 8 = 1.5 (average step size is 1.5 semitones)
+(2+2+1+2+2+2+1) / 8 = 1.5
+
+A function to round a semitone number (0..11) to the nearest diatonic scale note:
+
+
+
+Arepggio/triad:
+0 -> 0 -> 0
+1 -> 3 -> 4
+2 -> 5 -> 7
+
+

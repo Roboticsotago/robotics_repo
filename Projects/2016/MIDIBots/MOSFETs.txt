@@ -1,0 +1,67 @@
+Some notes on using MOSFETs as electronic switches for Roboclass 2016
+
+High-side vs low-side switching:
+https://www.youtube.com/watch?v=g8I_upSEGz0
+
+Important characteristics:
+ - Rds(on): this is the resistance between drain and source when the device is "on". This determines the amount of current it can supply at a given voltage and load, and also how much heat will be dissipated. You might need a heat sink!
+ - Maximum drain-source voltage: this determines the 
+ - Vgs(th): the "on" threshold in terms of gate-to-source voltage
+ - Vhtresh: the "off" threshold. This should be under 1 V for a logic-compatible device.
+ - Maximum drain-source current
+ - Gate capacitance. One characteristic of FETs is that the gate has sometimes significant capacitance, so can draw a brief but significant current when being charged/discharged.  A resistor to limit this gate current might be necessary.  Large FETs may require additional circuitry to drive the gate promptly (in order to supply sufficient current at a high enough voltage).
+
+Many FETs require considerable gate-source voltages to turn on fully, sometimes 10 V or more.
+
+Some recommended MOSFETs that are compatible with logic levels:
+IRL540
+IRLZ44
+F12N10L
+	N-channel logic-level power MOSFET
+	100 V, 12 A, 200 mOhm
+	integrated protection diode
+	I bought a bunch of these for Roboclass a couple of years ago
+FQP30N06L
+	N-channel MOSFET, 60 V, 30 A
+RFP30N06LE
+	Used interchangeably with the FQP30N06L (SparkFun vary between stocking both as the same item)
+FDC855N
+	SMT
+STP55NF06L
+	SMT, used in the RAMPS design
+PSMN7R0-60YS
+	SMT, used in RAMBo design for the heater outputs
+IRLM6346TRPBF
+	SMT, used in RAMBo design for the fan outputs
+
+Might be sensible to just use the MOSFET output design from the RAMPS/RAMBo.  These use low-side MOSFET switching, a 10-ohm gate series resistor, a 100k gate resistor to ground, an LED and series 1k resistor in parallel with the load.
+
+Other considerations:
+ - opto-isolation
+ - test points
+ - plenty of grounds!
+
+Protection and power quality:
+ - fuses
+ - diodes (at power input, across load, across FET?)
+ - capacitors
+
+--
+
+References:
+
+https://arduinodiy.wordpress.com/2012/05/02/using-mosfets-with-ttl-levels/
+http://www.irf.com/technical-info/appnotes/an-1084.pdf
+
+--
+
+Also, I might get sucked in to thinking about building my own electronic CAD tools...starting with a relational database model for circuit networks.  Could we potentially use graphviz or something to produce diagrams?
+
+Things in the model:
+ - component/device types (including things like connectors, antennas, etc.)
+ - physical footprints (e.g. IC pin assignments, connector pin-outs, physical dimensions, silkscreening, maybe 3D model)
+ - 
+ - schematics and sub-schematics/modules
+ - PCB layouts (including various layers)
+ - Projects
+ - Alternatives? Variations? History? Version control?

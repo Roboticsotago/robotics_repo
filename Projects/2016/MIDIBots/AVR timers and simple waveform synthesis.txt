@@ -1,0 +1,113 @@
+Timer/Counter Units in the ATMega/AVR Chip
+CME 2016-03-21
+
+The ATMega processor architecture provides several timer/counter units.  On the chips used on the most common Arduino boards, timer0 is reserved for things like delay().  timer1 is usually free, and has the advantage of being a 16-bit timer (it can count from 0..65535) rather than an 8-bit one like timer0 (counts from 0..255).  Boards like the Mega may have additional timer/counter units.
+
+The timer/counter unit can be used in various ways, such as generating a PWM (pulse-width modulation) waveform, generating interrupts at a certain interval, or ...
+
+Each timer/counter has a register (built-in storage unit) called TCNTn that keeps track of the counter value.  This gets incremented by 1 each clock cycle by default.  Many Arduinos run at 16 MHz (16 million clock ticks per second), which means that a 16-bit timer would overflow (wrap around) every 4.096 ms.
+
+2 ^ 16 = 65536
+16 MHz / 65536 = 244.140625 Hz
+1 / (244.140625 Hz) = 4.096 ms
+
+(the period of a cyclic waveform is the reciprocal of the frequency, i.e. 1/f)
+
+However, it is possible to scale the main CPU clock frequency by a certain amount to extend the range of timing frequencies.  It can only be scaled down (why?).  This is known as clock frequency division, or a frequency divider, and is also known as prescaling.  The available prescale divisors are 1 (full speed), 8, 64, 256, and 1024.
+
+Let's try the same calculation but with a prescaler of 1024:
+
+1 / (16 MHz / 1024 / 65536) -> ms
+524288/125 (exactly 4194.304)
+
+Not surprisingly, this is 1024 x the unscaled period.
+
+To generalise, using a formula:
+
+clock = 16 MHz
+prescale = 1024
+timer_bits = 16
+
+min_frequency = clock / prescale / 2 ^ timer_bits
+max_period = 1 / min_frequency
+
+
+
+What if you want to generate frequencies higher than 244 Hz?  Don't worry - this is also achievable.  The 16-bit timer goes all the way up to a maximum value of 65535 before it wraps around, but you can set a lower wrap-around or "top" limit using one of the Output Compare Registers (OCR).  There are actually two of these, which can be used to control both the frequency and the duty cycle of a PWM output waveform.
+
+For timer1, OCR1A controls the overall wrap limit (and therefore the base frequency), and OCR1B controls the duty (what proportion of the waveform cycle is spent "high").
+
+In Fast PWM mode, the output frequency is calculated by:
+
+f = clock / (prescale * (1 + top))
+
+For example:
+
+clock = 16 MHz
+prescale = 8
+top = 65535
+f = clock / (prescale * (1 + top))
+  = 30.52 Hz
+
+Rearranging this formula, for determining what "top" value to use to achieve a desired frequency:
+
+top = clock / (prescale * f) - 1
+
+For example:
+
+clock = 16 MHz
+prescale = 8
+f = 440 Hz
+
+top = clock / (prescale * f) - 1
+    = 4544.45
+
+Of course, the timer counter is an integer, so you should round the calculated top value to the nearest integer.
+
+
+The output of the timer/counter unit will appear on a pair of pins...will vary depending on the Arduino model you are using.
+
+On the Arduino Uno and its cousins, pin 10 will carry the main output from timer1, with pin 9 carrying an inverted waveform.  On the Mega, it's pins 12 and 11 instead.
+
+--
+
+Musical Tones
+
+While human hearing extends from around 20 Hz to nearly 20 kHz, the fundamental frequencies of useful musical notes is more limited, around 40..4000 Hz.
+
+What prescaler to use?  This will be determined by the lowest note we want to be able to play.
+
+/1 will only let us get down to 244 Hz, which might be OK, although /8 will let us get down to 30 Hz.  No need to go further than that.
+
+MIDI uses a 7-bit number to represent the note pitch.  Each unit represents a semitone (half-step), or 100 cents.  Higher note numbers indicate higher pitches.  A4 (440 Hz) is note 69, and C4 is note 60.
+
+The relationship between pitch and frequency is nonlinear: each doubling of frequency (octave) is perceived as a linear increment in pitch.  Modern Western music typically uses musical scales based on a system of 12 semitones per octave.
+
+The formula to derive frequency from MIDI note numbers is as follows:
+
+f = 440 Hz * 2 ^ ((n-69)/12)
+
+To generate a frequency of the correct frequency, then, we can combine this with the earlier formula
+
+top = clock / (prescale * f) - 1
+
+NOTE: you will need to round the value of "top" as it must be an integer.  This will result in a small error in tuning/intonation.
+
+top = clock / (prescale * f) - 1
+error = round[top] - top
+
+f = clock / (prescale * (1 + top))
+
+
+Pitch class and octave form?  Accidentals?
+
+--
+
+OCR1A is double-buffered, meaning that it can be safely changed while PWM output is running.  Using OCR1A for setting the "top" value is a good idea.
+
+--
+
+Finally, combine MIDI input and PWM output and you have a simple monophonic square-wave sythesiser!
+
+Try mapping the MIDI velocity values to varying the PWM duty cycle.  It won't measure louder in terms of total amplitude, but the change in harmonic content should make a 50/50 duty sound quite mellow, and a 10/90 (or 90/10) duty sound relatively bright.
+

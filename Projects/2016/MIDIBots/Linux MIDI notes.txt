@@ -1,0 +1,9 @@
+arecordmidi -l
+ Port    Client name                      Port name
+ 14:0    Midi Through                     Midi Through Port-0
+ 24:0    MidiSport 1x1                    MidiSport 1x1 MIDI 1
+
+
+aseqdump -p 24:0
+
+yoshimi --alsa-midi=24:0 --alsa-audio=pulse --load-instrument=/usr/share/yoshimi/banks/Will_Godfrey_Collection/0033-Medium\ Saw.xiz 

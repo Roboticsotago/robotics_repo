@@ -1,0 +1,79 @@
+MIDI basics for Mechatronics class 2016
+
+Physical layer:
+
+http://www.personal.kent.edu/~sbirch/Music_Production/MP-II/MIDI/midi_physical_layer.htm
+http://www.lim.di.unimi.it/IEEE/LYON/NETWD.HTM
+http://www.lim.di.unimi.it/IEEE/LYON/NOTEON.HTM
+http://hinton-instruments.co.uk/reference/midi/protocol/index.htm
+http://www.tigoe.net/pcomp/code/communication/midi/
+https://www.srstaging.com/yaymidi/images/easyblog_articles/102/MIDI-1.0-Electrical-Specification-ca33.pdf
+
+Arduino interfacing is pretty straightforward:
+https://www.arduino.cc/en/Tutorial/Midi
+
+Could we use a PICAXE for even simpler operation?
+
+Main points:
+ - Current loop
+ - Opto-isolated (PC900V or 6N138)
+ - Shielded cable (twisted?)
+ - 220 ohm resistors (meaning cable impedance should be 220 ohm? or 110 ohm maybe?)
+ - Typically 5 V logic at each end
+ - 31,250 bits/s
+ - 1 start bit, 8 data bits, 1 stop bit
+ - IN/OUT/THRU arrangement allows daisy-chaining
+
+Opto-coupler:
+ - Prevents ground loops, provides better immunity to interference
+ - Isolates equipment from voltage spikes
+ - Current transfer ration (CTR) needs to be fairly high.
+ - 5 mA should turn on the opto LED fully (MIDI spec)
+ - 5 V TTL compatible
+ - Fast switching also a requirement: 6N138 is capable of 100 kBd.  MIDI spec says switching time should be at most ?? microseconds
+ - MIDI spec suggests PC900V, or 6N138 with appropriate changes.  pichenettes recommends 6N137 (high speed digital optocoupler: 10 MBd)
+
+PC900V
+	Digital output OPIC photocoupler
+	Normally off
+	Open collector output
+	TTL and LSTTL output
+	Vcc: 3..15 V
+
+6N138
+	High speed (100 kBd) photodiode Darlington output optocoupler
+	TTL compatible output (ideal for TTL output; 6N139 is for low-power CMOS applications and low-power TTL)
+	Low input current (0.5 mA)
+
+http://acidotunismo.com/en/tag/4n25/
+
+ - Software serial?
+
+https://learn.sparkfun.com/tutorials/midi-shield-hookup-guide
+
+--
+
+
+Music score database? Time might be right for this..
+
+--
+
+
+Power:
+
+Will need a computer for running the show.  It'll provide MIDI output for the acoustic instrument players as well as analog waveform output for the orchestral backing (to be routed to the house sound system).  Raspberry Pi doesn't have great analog audio output and might not be fantastic for realtime operation (though we can test it).  A netbook running off its own battery pack might work, as long as it's known to hold a decent charge, and has been charged before the show!
+
+
+Power options:
+	Standard Arduino requires either 5 V regulated or 
+	Could use a low-power 
+	PICAXE is CMOS as will run off a range of supply voltages
+	Servo motors will probably need to be 5 V
+	Any stepper motors would likely be OK with 12 V, or preferably 24 V if doing hard work
+	Windchest blower will probably be 12 V
+
+	MIDI phantom power?!  Wot voltage? Special wiring? Can it be used on a long chain?
+
+	12 V SLA battery for the whole thing, with regulators on the spot where required?
+
+
