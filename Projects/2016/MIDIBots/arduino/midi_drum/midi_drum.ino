@@ -1,4 +1,4 @@
-// Simple monophonic MIDI synthesiser for Arduino, CME 2016-03-21
+// An Arduino program for triggering a servo-controlled drum-stick in response to MIDI note messages
 
 
 // General settings:
