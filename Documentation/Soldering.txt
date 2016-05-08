@@ -79,15 +79,19 @@ Steps:
 
 3. TODO: place component in PCB
 
-4. Pick up the iron by the handle, and clean the tip using a wet sponge or fine metal curly ribbon stuff (TODO: proper name?).  If using a wet sponge, wipe only briefly to avoid heat shock/stress on the tip.
+TODO: flux
+
+4. Pick up the iron by the handle, and clean the tip using a wet sponge or fine metal curly ribbon stuff (TODO: proper name?).  If using a wet sponge, wipe only briefly to avoid heat stress/shock on the tip.
 
 5. Apply a small amount of fresh solder to the tip.  Wipe off any excess.
 
-6. Apply the tip to the parts to be joined.  A small amount of fresh solder can help heat transfer.  It might take several seconds to get them hot enough.  Then feed the solder wire into the joint.  If the parts are hot enough, the solder should melt.  Remove the wire, then the iron.
+6. Apply the tip to the parts to be joined.  A small amount of additional fresh solder can help heat transfer.  It might take several seconds to get everything hot enough.  Then feed the solder wire into the joint.  If the parts are hot enough, the solder should melt.  Remove the wire, then the iron.
 
 7. Put the soldering iron back in its cradle.
 
 8. Inspect the joint.
+
+TODO: clip leads here or earlier?
 
 9. Clean off the flux residue using isopropyl alcohol.
 
