@@ -1,0 +1,115 @@
+How To Solder
+
+--
+
+Safety notes:
+
+Soldering is quite safe if done with care.
+
+ - Soldering irons are HOT!  Do not touch the tip, and be careful of the cables.  Keep focused on your work while soldering.
+ 
+ - Disconnect all power from a circuit before working on it.
+ 
+ - Many solders contain lead, which is poisonous.  Do not eat, drink, chew gum, or smoke while soldering (actually, don't smoke at all!).  Wash your hands after soldering with warm, soapy water.
+ 
+ - Flux fumes can be irritating.  One trick is to breathe out while performing a solder joint.
+
+--
+
+About Solder:
+
+Solder is an alloy - a mixture of metals - traditionally tin and lead, but more recently lead-free solders are used in industy.  It has a fairly low melting point for a metal: around 200 degrees Celsius.  Different proportions of tin and lead give the solder different characteristics:
+
+60% tin, 40% lead: 
+63% tin, 37% lead: called "eutectic" solder, this has the lowest melting point, 183 degC, and no "pasty" phase: it goes straight from solid to liquid and back.
+
+Some solder formulations have small amounts of additional ingredients, such as copper, for longer tip and joint life.
+
+Solder wire for electronic use usually has an embedded flux core.  Flux helps to clean the surfaces, removing oxidation from the metals, and helping the solder flow and "wet" the joint.
+
+TODO: state diagram
+
+--
+
+Basic Soldering Technique:
+
+The aim of soldering is to join a component to the circuit board, in a way that is electrically conductive and mechanically sound.
+
+The correct technique is to use the soldering iron to heat the component lead and the solder pad first, then feed a small amount of solder wire into the joint.  The heat in the parts should cause the solder to melt and flow into the joint.  Then withdraw the solder wire and then the soldering iron.  You can help the heat transfer by applying a small amount of fresh solder to the tip as you apply it to the joint.  It might take a couple of seconds for the parts to heat up sufficiently.
+
+The finished solder joint should form concave "fillet" around the joint.  A blobby appearance indicates too much solder: remove it, and try again.  The surface of the joint should have a clean, metallic appearance. If it looks cloudy, you might have a "cold" solder joint, which should be removed and redone.
+
+Steps:
+
+If you have a temperature-controlled soldering iron, set the temperature to around 350 degC.  Even though the melting point of solder is around 200 degC, we need the iron to be hot enough to get the pad and the component hot enough for the solder to melt.  A higher temperature also lets you work faster, minimising heat stress on the components.  In can take a couple of seconds to heat the workpieces enough for the solder to flow.
+
+
+
+--
+
+Recognising Components:
+
+resistor
+capacitor
+	ceramic
+	film
+	electrolytic
+	tantalum?
+diode
+LED (light-emitting diode)
+integrated circuit (IC), e.g. DIP (dual in-line package)
+
+When soldering through-hole components, start with the shortest components so that they don't fall out while the board is upside-down.  You can bend the leads to stop them from falling out, although this can make it harder to remove them later.
+
+Double-check the part before you solder it.  Some components are polarised, meaning that they must be put in the right way round.  Such components include diodes, some types of capacitors, LEDs (light-emitting diodes).
+
+TODO: heat sinking for sensitive components
+
+--
+
+Soldering Tips and Tricks:
+
+Keep your iron tip "tinned" with a thin layer of solder.  If exposed to the air, the hot iron will quickly corrode, and will not hold solder properly any more.
+
+Clean the tip when you are about to use it.  Put it away tinned - don't wipe it clean after use.
+
+Fresh solder works best.  Remove old solder from the iron tip with ... or with a wet sponge.  If using a wet sponge, wipe the tip very briefly to avoid heat stress.
+
+To help with heat transfer, apply a small amount of solder to the tip of the soldering iron as you apply it to the parts.  Liquid solder conducts heat better than air.
+
+A dull appearance can indicate a poor "dry joint".  Remove the old solder, clean, and try again.
+
+Apply flux to the assembly before soldering, especially when soldering fine leads on surface-mount components.
+
+Do not rely on solder alone for mechanical strength.  Think of solder as "filling the gaps" of an already reliable assembly.
+
+Clean the work before, during, and after soldering.  Use a brush and/or compressed air to remove surface debris.  Wipe the area with isopropanol (isopropyl alcohol).  Dry with lint-free wipes.  After soldering, wash off flux with isopropanol, and dry with wipes.
+
+Choose a tip shape, temperature, and solder wire to suit the job.  Fine work will generally need a fine tip and fine solder wire.  Soldering large components or a large ground or power plane on a circuit board will require a lot of heat, and some time.
+
+Conical tips, especially with rounded ends, can be hard to use, because they do not have a big enough surface area in contact with the work.  A single- or double-sided chisel tip is recommended for most hand-soldering work.
+
+TODO: Bend leads?
+
+TODO: clip leads before or after soldering?
+
+
+--
+
+Desoldering and Reworking:
+
+Desoldering braid ...
+
+Solder suckers ...
+
+
+--
+
+References and Further Information:
+
+https://www.youtube.com/watch?v=6PB0u8irn-4&feature=youtu.be&t=126
+
+Also, through-hole:
+
+https://www.youtube.com/watch?v=8TkcsZWbAqA
+
