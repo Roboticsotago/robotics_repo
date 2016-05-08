@@ -6,14 +6,18 @@ Safety notes:
 
 Soldering is quite safe if done with care.
 
- - Soldering irons are HOT!  Do not touch the tip, and be careful of the cables.  Keep focused on your work while soldering.
+ - Soldering irons are HOT!  Do not touch the tip, and be careful of the cables.  Keep focused on your work while soldering.  Treat burns with cold running water for 10 minutes.
  
  - Disconnect all power from a circuit before working on it.
  
- - Many solders contain lead, which is poisonous.  Do not eat, drink, chew gum, or smoke while soldering (actually, don't smoke at all!).  Wash your hands after soldering with warm, soapy water.
+ - Many solders contain lead, which is poisonous.  Do not eat, drink, chew gum, or smoke while soldering (well, don't smoke at all!).  Wash your hands after soldering with warm, soapy water.
  
  - Flux fumes can be irritating.  One trick is to breathe out while performing a solder joint.
 
+ - Wear sensible clothing.  Your legs and feet should be covered, in case you drop something hot.
+ 
+ - Be careful not to trip or catch the cables of the soldering iron.
+ 
 --
 
 About Solder:
@@ -39,9 +43,54 @@ The correct technique is to use the soldering iron to heat the component lead an
 
 The finished solder joint should form concave "fillet" around the joint.  A blobby appearance indicates too much solder: remove it, and try again.  The surface of the joint should have a clean, metallic appearance. If it looks cloudy, you might have a "cold" solder joint, which should be removed and redone.
 
+
+Tools:
+
+ - A soldering iron.  Temperature controlled with a holding cradle is ideal
+ 
+ - Solder, preferably 63/37 "eutectic", flux cored
+ 
+ - Flux paste or pen
+  
+ - Isopropanol/isopropyl alcohol (anhydrous)
+ 
+ - A brush, preferably anti-static
+ 
+ - Dry lint-free wipes
+ 
+ - Cleaning pads
+ 
+ - Tweezers
+ 
+ - Side-cutters
+ 
+ - Pliers
+ 
+ - "Helping hands", double-sided tape, etc. for securing parts
+ 
+ - Magnifying glass or microscope for fine work
+ 
+
 Steps:
 
-If you have a temperature-controlled soldering iron, set the temperature to around 350 degC.  Even though the melting point of solder is around 200 degC, we need the iron to be hot enough to get the pad and the component hot enough for the solder to melt.  A higher temperature also lets you work faster, minimising heat stress on the components.  In can take a couple of seconds to heat the workpieces enough for the solder to flow.
+1. Set up your workspace with all the tools, materials, and components you will require.
+
+2. If you have a temperature-controlled soldering iron, set the temperature to around 350 degC (or around 315 degC for surface-mount work).  Even though the melting point of solder is around 200 degC, we need the iron to be hot enough to get the pad and the component hot enough for the solder to melt.  A higher temperature also lets you work faster, minimising heat stress on the components.  The iron might take a few minutes to heat up to temperature.
+
+3. TODO: place component in PCB
+
+4. Pick up the iron by the handle, and clean the tip using a wet sponge or fine metal curly ribbon stuff (TODO: proper name?).  If using a wet sponge, wipe only briefly to avoid heat shock/stress on the tip.
+
+5. Apply a small amount of fresh solder to the tip.  Wipe off any excess.
+
+6. Apply the tip to the parts to be joined.  A small amount of fresh solder can help heat transfer.  It might take several seconds to get them hot enough.  Then feed the solder wire into the joint.  If the parts are hot enough, the solder should melt.  Remove the wire, then the iron.
+
+7. Put the soldering iron back in its cradle.
+
+8. Inspect the joint.
+
+9. Clean off the flux residue using isopropyl alcohol.
+
 
 
 
@@ -72,6 +121,8 @@ Soldering Tips and Tricks:
 Keep your iron tip "tinned" with a thin layer of solder.  If exposed to the air, the hot iron will quickly corrode, and will not hold solder properly any more.
 
 Clean the tip when you are about to use it.  Put it away tinned - don't wipe it clean after use.
+
+You can get compounds for rejuvenating the tips of soldering irons, and these can work quite well.  Do not use a file or sandpaper to remove corrosion from the tip, as this can remove the thin layers of metal plating on the tip.
 
 Fresh solder works best.  Remove old solder from the iron tip with ... or with a wet sponge.  If using a wet sponge, wipe the tip very briefly to avoid heat stress.
 
