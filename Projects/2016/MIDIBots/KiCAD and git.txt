@@ -1,0 +1,66 @@
+KiCad and git...
+
+https://contextualelectronics.com/learning/getting-started-with-github-and-kicad-hardware/
+
+.pro	I think this is the main project file, containing links to the other files and general settings.
+.sch	Schematic file?
+.kicad_pcb	PCB layout file
+
+
+Possible patterns for .gitignore:
+<<
+*.bak
+*.bck
+*.raw
+*.log
+*.dcm
+*.kicad_pcb-bak
+*autosave*
+*cache*
+>>
+
+File types that definitely need to be in git repo:
+
+.pro
+.sch
+.kicad_pcb
+.net?
+.cmp?
+.lib?
+
+
+How does git handle symbolic links?
+
+--
+
+The following libraries could not be found:
+
+Downloads/dips-s
+
+Documents/Settings/KiCAD/arduino-kicad-nicholasclewis/arduino_shieldsNCL
+
+Documents/Settings/KiCAD/freetronics_kicad_library/freetronics_schematic
+
+Documents/Settings/KiCAD/dips-s
+
+--
+
+So how to properly add libraries? Where to put them if the project is under git control?
+
+Note that we probably need only one of the Arduino shield schematic libraries.  And only one of the dips-s libs.
+arduino-kicad-nicholasclewis
+freetronics_kicad_library
+
+Maybe put them in the lib folder within the repo?
+
+--
+
+Arch packages:
+
+sudo pacman -S kicad
+"warning: downgrading package kicad (20130518-3 => 4.0.2-4)"?!
+
+Plus libs from git:
+yaourt -S kicad-library kicadlibrarian kicad-library-git kicad-pretty-git
+
+
