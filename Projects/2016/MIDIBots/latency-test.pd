@@ -1,23 +1,17 @@
 #N canvas 3 49 1194 1520 10;
-#X text 284 28 Testing how to delay different MIDI channels by different
+#X text 199 11 Testing how to delay different MIDI channels by different
 amounts \, for the MIDIBots 2016 project for Robocup.;
 #X floatatom 248 687 5 0 0 1 ms - -, f 5;
-#X text 272 708 Each pipe is a delaying buffer \, with the delay time
-(in ms) set by the right inlet.;
 #X text 166 111 Generate some MIDI note events:;
-#X text 131 347 Split according to channel. Initially we'll just assume
-that each channel has its own delay.;
 #X obj 771 1394 midiout;
 #X text 693 1317 Do we need separate MIDI outputs for FluidSynth and
 for the MIDIBot MIDI daisy-chain? How are the [midiout]s numbered?
 ;
 #X obj 658 224 notein;
-#X floatatom 637 265 5 0 0 0 Note - -, f 5;
-#X floatatom 683 286 5 0 0 0 Velocity - -, f 5;
-#X floatatom 728 307 5 0 0 0 Channel - -, f 5;
-#X text 687 365 To filter/route by channel \, I think we need to reverse
-the elements (or at least place the channel first):;
-#X obj 581 374 swap;
+#X floatatom 578 281 5 0 0 0 Note - -, f 5;
+#X floatatom 696 279 5 0 0 0 Velocity - -, f 5;
+#X floatatom 805 281 5 0 0 0 Channel - -, f 5;
+#X obj 539 441 swap;
 #X obj 620 428 pack f f f;
 #X msg 620 450 \$3 \$1 \$2;
 #X obj 522 570 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -35,40 +29,36 @@ the elements (or at least place the channel first):;
 #X obj 225 223 midiparse;
 #X obj 191 262 import cyclone;
 #X obj 181 709 pipe 0 0 0;
-#X obj 276 764 pack f f;
-#X obj 276 786 print;
-#X text 351 766 <- reassemble for printing;
+#X obj 276 772 pack f f;
+#X obj 276 794 print;
 #X obj 852 1386 noteout 1;
-#X obj 206 857 noteout 1;
-#X msg 139 795 69 100;
-#X msg 173 823 69 0;
-#X text 79 683 Basic delay:;
+#X obj 206 860 noteout 1;
+#X msg 116 818 69 100;
+#X msg 181 820 69 0;
+#X text 176 612 Basic delay:;
 #X text 642 531 <- Output from here is <note \, velocity>;
 #X obj 248 641 loadbang;
 #X msg 248 663 750;
-#X obj 554 832 unpack f f;
-#X floatatom 554 854 5 0 0 0 - - -, f 5;
-#X floatatom 625 855 5 0 0 0 - - -, f 5;
-#X obj 625 874 / 127;
-#X floatatom 625 896 5 0 0 0 - - -, f 5;
-#X obj 557 938 pipe 0 0 0;
-#X obj 558 970 noteout 2;
-#X obj 683 854 loadbang;
-#X msg 683 876 2000;
-#X floatatom 683 898 5 0 0 0 - - -, f 5;
-#X obj 625 915 *;
-#X text 585 630 A refinement would be to have the delay determined
-by the MIDI velocity \, note number \, and channel. This would allow
-us to handle all kinds of note-playing mechanisms.;
-#X text 643 831 Here's a simple linear one:;
-#X text 561 1025 Of course \, this kind of model assumes that the robot
+#X obj 557 857 unpack f f;
+#X floatatom 557 879 5 0 0 0 - - -, f 5;
+#X floatatom 625 880 5 0 0 0 - - -, f 5;
+#X obj 625 899 / 127;
+#X floatatom 625 921 5 0 0 0 - - -, f 5;
+#X obj 557 963 pipe 0 0 0;
+#X obj 557 995 noteout 2;
+#X obj 683 879 loadbang;
+#X msg 683 901 2000;
+#X floatatom 683 923 5 0 0 0 - - -, f 5;
+#X obj 625 940 *;
+#X text 643 856 Here's a simple linear one:;
+#X text 653 1026 Of course \, this kind of model assumes that the robot
 will return to its resting position in time for the next note. If it's
 still moving \, all bets are off \, unless we have some way to tell
 where it is. As long as the notes don't come too fast \, it shouldn't
 be a problem. Hm \, maybe we could use a rate limiter to cull notes
 that are too fast for the robot in question?;
-#X obj 692 1113 speedlim;
-#X text 567 1146 NOTE: because velocity 0 -> note off \, this approach
+#X obj 784 1114 speedlim;
+#X text 659 1147 NOTE: because velocity 0 -> note off \, this approach
 won't work properly for instruments that can hold notes! They will
 often get stuck. However \, for drums \, it's probably fine.;
 #X obj 857 801 unpack f f;
@@ -83,16 +73,13 @@ often get stuck. However \, for drums \, it's probably fine.;
 #X obj 924 906 +;
 #X obj 1056 845 loadbang;
 #X floatatom 1056 889 5 0 0 0 - - -, f 5;
-#X obj 858 970 noteout 3;
+#X obj 857 970 noteout 3;
 #X obj 532 514 route 1 2 3 10;
 #X msg 1056 867 200;
 #X msg 986 847 70;
-#X text 565 1215 The more I think about \, the more I realise how difficult
+#X text 657 1216 The more I think about \, the more I realise how difficult
 the planning and motion control would be if we want the robots to play
 with variable dynamics!;
-#X text 143 1041 It might be reasonable to apply a different delay
-for different notes however \, as in the case of a percussion robot
-with different swings for the different drums.;
 #X obj 603 571 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 188 1101 unpack;
@@ -103,7 +90,7 @@ with different swings for the different drums.;
 #X obj 97 1410 pack f f;
 #X text 172 1412 <- reassemble for printing;
 #X obj 97 1432 print drum:;
-#X obj 125 1208 print routed;
+#X obj 83 1237 print routed;
 #X obj 191 1378 pipe 36 0 100;
 #X obj 216 1339 pipe 38 0 250;
 #X obj 243 1310 pipe 40 0 500;
@@ -119,85 +106,143 @@ are outputted in right-to-left ordering.;
 ;
 #X text 689 450 <- Then reorder \, with channel first so we can filter
 on it.;
+#X text 129 1175 Because the messages going into the [route] are individual
+values \, the outputs are bang events (not note numbers).;
+#X text 351 774 <- reassemble for printing (for debugging);
+#X text 224 816 <- You can send note-velocity-channel lists to [noteout]
+to play/stop notes.;
+#X text 717 223 <- [notein] receives MIDI note data from the outside
+world.;
+#X text 577 442 ?;
+#X text 120 416 Split according to channel. Initially we'll assume
+that each channel has its own delay.;
+#X text 35 515 NOTE: the MIDI streams going to the computer's synthesiser
+(FluidSynth) will probably need the longest delays \, in order to play
+in sync with the physical instruments.;
+#X text 699 375 To filter/route by channel \, we need to change the
+order of the elements so that the channel number is first.;
 #X text 646 502 <- [route] splits up a stream based on the first element
-of the message.;
-#X connect 1 0 25 2;
-#X connect 7 0 8 0;
-#X connect 7 1 9 0;
-#X connect 7 2 10 0;
-#X connect 8 0 13 0;
-#X connect 9 0 13 1;
-#X connect 10 0 13 2;
-#X connect 13 0 14 0;
-#X connect 14 0 66 0;
-#X connect 25 0 26 0;
-#X connect 25 0 30 0;
-#X connect 25 1 26 1;
-#X connect 25 1 30 1;
-#X connect 26 0 27 0;
-#X connect 31 0 30 0;
-#X connect 32 0 30 0;
+of the message. The first element is not copied to the output.;
+#X text 585 630 A refinement would be to have the delay determined
+by the MIDI velocity \, note number \, and channel \, instead of having
+a single delay applied to the whole channel. This would allow us to
+handle all kinds of note-playing mechanisms.;
+#X text 272 708 [pipe] is the core element of this whole patch. Each
+pipe is a delaying buffer \, with the delay time (in ms) set by the
+right inlet. We give it several arguments because we want to handle
+<note \, velocity> lists.;
+#X text 143 1041 It might be reasonable to apply a different delay
+for different notes \, as in the case of a percussion robot with different
+swings for the different drums.;
+#X text 41 201 It can play a MIDI file!;
+#X obj 408 173 random 48;
+#X obj 408 195 + 24;
+#X obj 408 108 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 408 130 metro;
+#X obj 440 64 loadbang;
+#X msg 440 86 250;
+#X floatatom 440 108 5 0 0 0 - - -, f 5;
+#X obj 408 150 bng 15 100 25 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 408 217 5 0 0 0 - - -, f 5;
+#X obj 408 244 makenote 100 125;
+#X obj 408 274 pack f f 1;
+#X floatatom 498 277 5 0 0 2 Ch - -, f 5;
+#X floatatom 508 149 5 0 0 2 Range - -, f 5;
+#X floatatom 509 181 5 0 0 2 Offset - -, f 5;
+#X connect 1 0 22 2;
+#X connect 5 0 6 0;
+#X connect 5 1 7 0;
+#X connect 5 2 8 0;
+#X connect 6 0 10 0;
+#X connect 7 0 10 1;
+#X connect 8 0 10 2;
+#X connect 10 0 11 0;
+#X connect 11 0 61 0;
+#X connect 22 0 23 0;
+#X connect 22 0 26 0;
+#X connect 22 1 23 1;
+#X connect 22 1 26 1;
+#X connect 23 0 24 0;
+#X connect 27 0 26 0;
+#X connect 28 0 26 0;
+#X connect 31 0 32 0;
+#X connect 32 0 1 0;
+#X connect 33 0 34 0;
+#X connect 33 1 35 0;
+#X connect 34 0 38 0;
 #X connect 35 0 36 0;
-#X connect 36 0 1 0;
-#X connect 37 0 38 0;
-#X connect 37 1 39 0;
-#X connect 38 0 42 0;
-#X connect 39 0 40 0;
-#X connect 39 0 42 1;
+#X connect 35 0 38 1;
+#X connect 36 0 37 0;
+#X connect 37 0 43 0;
+#X connect 38 0 39 0;
+#X connect 38 1 39 1;
 #X connect 40 0 41 0;
-#X connect 41 0 47 0;
-#X connect 42 0 43 0;
-#X connect 42 1 43 1;
-#X connect 44 0 45 0;
-#X connect 45 0 46 0;
-#X connect 46 0 47 1;
-#X connect 47 0 42 2;
-#X connect 53 0 54 0;
-#X connect 53 1 55 0;
-#X connect 54 0 58 0;
-#X connect 55 0 56 0;
-#X connect 55 0 58 1;
+#X connect 41 0 42 0;
+#X connect 42 0 43 1;
+#X connect 43 0 38 2;
+#X connect 48 0 49 0;
+#X connect 48 1 50 0;
+#X connect 49 0 53 0;
+#X connect 50 0 51 0;
+#X connect 50 0 53 1;
+#X connect 51 0 52 0;
+#X connect 52 0 56 0;
+#X connect 53 0 60 0;
+#X connect 53 1 60 1;
+#X connect 54 0 63 0;
+#X connect 55 0 56 1;
 #X connect 56 0 57 0;
-#X connect 57 0 61 0;
-#X connect 58 0 65 0;
-#X connect 58 1 65 1;
-#X connect 59 0 68 0;
-#X connect 60 0 61 1;
-#X connect 61 0 62 0;
-#X connect 62 0 58 2;
-#X connect 63 0 67 0;
-#X connect 64 0 62 1;
-#X connect 66 0 15 0;
-#X connect 66 0 25 0;
-#X connect 66 1 18 0;
-#X connect 66 1 37 0;
-#X connect 66 2 16 0;
-#X connect 66 2 53 0;
-#X connect 66 3 71 0;
-#X connect 66 3 72 0;
-#X connect 66 4 17 0;
-#X connect 67 0 64 0;
-#X connect 68 0 60 0;
-#X connect 72 0 73 0;
-#X connect 72 1 74 0;
-#X connect 73 0 75 0;
-#X connect 74 0 81 1;
-#X connect 74 0 82 1;
-#X connect 74 0 83 1;
-#X connect 74 0 84 1;
-#X connect 75 0 80 0;
-#X connect 75 0 81 0;
-#X connect 75 1 82 0;
-#X connect 75 2 83 0;
-#X connect 75 3 84 0;
-#X connect 77 0 79 0;
-#X connect 81 0 76 0;
-#X connect 81 0 77 0;
-#X connect 81 1 76 1;
-#X connect 81 1 77 1;
-#X connect 82 0 76 0;
-#X connect 82 1 76 1;
-#X connect 83 0 76 0;
-#X connect 83 1 76 1;
-#X connect 84 0 76 0;
-#X connect 84 1 76 1;
+#X connect 57 0 53 2;
+#X connect 58 0 62 0;
+#X connect 59 0 57 1;
+#X connect 61 0 12 0;
+#X connect 61 0 22 0;
+#X connect 61 1 15 0;
+#X connect 61 1 33 0;
+#X connect 61 2 13 0;
+#X connect 61 2 48 0;
+#X connect 61 3 65 0;
+#X connect 61 3 66 0;
+#X connect 61 4 14 0;
+#X connect 62 0 59 0;
+#X connect 63 0 55 0;
+#X connect 66 0 67 0;
+#X connect 66 1 68 0;
+#X connect 67 0 69 0;
+#X connect 68 0 75 1;
+#X connect 68 0 76 1;
+#X connect 68 0 77 1;
+#X connect 68 0 78 1;
+#X connect 69 0 74 0;
+#X connect 69 0 75 0;
+#X connect 69 1 76 0;
+#X connect 69 2 77 0;
+#X connect 69 3 78 0;
+#X connect 71 0 73 0;
+#X connect 75 0 70 0;
+#X connect 75 0 71 0;
+#X connect 75 1 70 1;
+#X connect 75 1 71 1;
+#X connect 76 0 70 0;
+#X connect 76 1 70 1;
+#X connect 77 0 70 0;
+#X connect 77 1 70 1;
+#X connect 78 0 70 0;
+#X connect 78 1 70 1;
+#X connect 96 0 97 0;
+#X connect 97 0 104 0;
+#X connect 98 0 99 0;
+#X connect 99 0 103 0;
+#X connect 100 0 101 0;
+#X connect 101 0 102 0;
+#X connect 102 0 99 1;
+#X connect 103 0 96 0;
+#X connect 104 0 105 0;
+#X connect 105 0 106 0;
+#X connect 105 1 106 1;
+#X connect 106 0 11 0;
+#X connect 107 0 106 2;
+#X connect 108 0 96 1;
+#X connect 109 0 97 1;
