@@ -92,3 +92,9 @@ Note how airflow and pressure are analogous to electrical current and voltage!  
 is like a resistor (it will reduce the current and the pressure coming out).  Acoustic impedance (analogous to electrical impedance) is 
 an important characteristic of air-column instruments such as brass and woodwind.
 
+We will also want to be able to regulate the pressure/flow at the instrument in order to get acceptable intonation. We have tested an 
+arrangement using a servo motor squeezing on a thin air tube made from heatshrink tubing.  The Hitec servos seem to be strong enough for 
+this application.  If this can cut off the air supply completely, then we would not require a separate solenoid valve.  An alternative 
+to the squeezed tube would be a butterfly valve: a disc-shaped valve rotating inside a cylindrical pipe.  This would be a good match for 
+a servo motor, and would probably be easier to actuate as the airflow is roughly balanced on both sides of the valve (having to work 
+against the airflow would require more force).
