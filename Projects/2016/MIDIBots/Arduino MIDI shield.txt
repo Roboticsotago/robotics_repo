@@ -12,6 +12,7 @@ We plan to do a small run of printed circuit boards (PCBs) for the Arduino MIDI 
  - Self-test button
  - Potentiometer input(s) for latency tweaking? (or this could be adjusted at the co-ordinating computer that sends out the MIDI data)
  - Separate power input? Or piggy-back off the Arduino's Vin (which will need to be 12 V)
+ - Power supply filtering (capacitors), fuses?!
  - Switch for hard-disconnecting RX for reprogramming (RX is shared between pin 0 and the Arduino's USB serial link)
 
 Paul Campbell recommends Dirty PCBs for cheap fabrication of small runs. I'm planning on no more than 8 MusicBots:
