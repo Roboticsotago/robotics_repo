@@ -1,0 +1,33 @@
+We plan to do a small run of printed circuit boards (PCBs) for the Arduino MIDI shields.  These will have the following features:
+
+ - MIDI IN port, using the proper opto-coupled circuit defined in the standard
+ - MIDI THRU port, sending a buffered copy of the MIDI IN electrical signal
+ - Offboard 5-pin DIN connectors, allowing chassis-mounting of these connectors (more robust, more maintainable)
+ - DIP switches for setting the MIDI channel to respond to (and possibly an omni switch? or we could set that in firmware)
+ - Servo outputs (maybe 3 or 4 for a drummer bot, if the Arduino has enough PWM outputs that can be used via the Servo library)
+ - MOSFET outputs (maybe 4) for switching solenoids and high-brightness LEDs (with resistors and diodes)
+ - Power LED?
+ - LED connected to standard Arduino LED pin (D13)
+ - Reset button carried out from the main Arduino board
+ - Self-test button
+ - Potentiometer input(s) for latency tweaking? (or this could be adjusted at the co-ordinating computer that sends out the MIDI data)
+ - Separate power input? Or piggy-back off the Arduino's Vin (which will need to be 12 V)
+ - Switch for hard-disconnecting RX for reprogramming (RX is shared between pin 0 and the Arduino's USB serial link)
+
+Paul Campbell recommends Dirty PCBs for cheap fabrication of small runs. I'm planning on no more than 8 MusicBots:
+ - DrummerBot
+ - PercussionBot
+ - RecorderBot
+ - UkeBot
+ - SynthBot
+ - Racket/RattleBot
+ - KeyBot (melodica, toy piano, keytar?)
+
+SparkFun's Arduino MIDI shield would be worth studying for design and implementation ideas:
+
+
+https://www.sparkfun.com/products/12898
+https://learn.sparkfun.com/tutorials/midi-shield-hookup-guide
+
+Olimex have a similar board:
+https://www.olimex.com/Products/Duino/Shields/SHIELD-MIDI/open-source-hardware
