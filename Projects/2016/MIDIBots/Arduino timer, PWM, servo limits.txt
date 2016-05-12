@@ -3,3 +3,8 @@ Arduino limits for servos (PWM), direct PWM, timers, and stuff for MusicBots pro
 <<
 The Servo library supports up to 12 motors on most Arduino boards and 48 on the Arduino Mega. On boards other than the Mega, use of the library disables analogWrite() (PWM) functionality on pins 9 and 10, whether or not there is a Servo on those pins. On the Mega, up to 12 servos can be used without interfering with PWM functionality; use of 12 to 23 motors will disable PWM on pins 11 and 12.
 >>
+
+Note also:
+<<
+in Arduino 0016 and earlier, the Servo library supports only servos on only two pins: 9 and 10.
+>>
