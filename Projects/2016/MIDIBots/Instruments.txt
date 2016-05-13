@@ -1,0 +1,22 @@
+Ideas for instruments for the 2016 MusicBots:
+
+Drum(s)
+Cymbal
+Triangle
+Bell(s)
+Castanets
+Tambourine
+
+Bird whistle
+Recorder/flute
+Slide whistle
+Kazoo
+
+Toy trumpet
+Harmonica (mouth organ)
+Toy piano
+Melodica
+Keytar
+PWM synth
+	-> could be played via Beldon's FM transmitter/receiver!
+Ukulele

@@ -1,0 +1,80 @@
+Types of electric motor
+
+Solenoid
+	Not a rotary motor, but still a common kind of electromagnetic actuator
+	
+DC motor
+	fixed permanent magnets
+	several phase coils on rotor
+	often mechanically commutated
+	how to make self-starting?
+
+synchronous AC motor
+
+stepper motor
+	Technically a kind of AC motor, ...
+
+brushless DC motor
+	Essentially an AC motor with integrated electronics.  Often uses a hall sensor to detect the position of the rotor and govern the timing of the coil energisation.
+
+servo motor
+	Has built-in feedback (closed-loop) control system to sense where the motor position is and correct for it.
+
+--
+
+Servo control signals
+
+Vcc for hobby servo motors is, depending on who you ask, 4.8 V, 5.0 V, or 6.0 V.  Hitec spec is 4.8-6 V.  Industrial servos might use much higher voltages.
+
+The control signal for hobby servos is a pulse-width modulation signal (or pulse-duration modulation), with the following timing characteristics:
+
+
+     |<-------------------->| 20 ms period (or 18 ms?)
+      _____                  _____
+     |     |                |     |
+     |     |                |     |
+_____|     |________________|     |____
+
+     |<--->| 1-2 ms pulse width (0.9-21 ms)
+
+With a pulse width of 1 ms, the servo will try to move to the 0 degrees position.
+With 2 ms pulse width, the target position is 180 degrees.
+At 1.5 ms, the position should be in the middle (90 degrees).
+Some servos may have a greater range.  There are also fully rotary servos.
+
+Note that it's the length of the pulses that controls the position, not the duty cycle per se.
+
+The frequency of this control signal is the reciprocal of the period:
+
+f = 1 / (20 ms)
+  = 50 Hz
+
+Analog servos typically only drive the motor during the pulse interval, and may benefit from a higher PWM frequency (if supported).
+
+Digital servos do not have this limitation and ofter exhibit higher torque.  Some digital servos are also programmable, allowing the PID parameters to be optimised for the application.
+
+--
+
+Electronic Speed Controllers (ESCs)
+
+Widely used in hobby radio-controlled vehicles
+
+Often use back-EMF from the motor to detect rotation, but can also use magnetic (Hall-effect sensors)
+
+Control signal is typically PWM at 50 Hz, the same as for servo motors.  However, quadcopter ESCs often use higher frequencies, such as 400 Hz.
+
+PPM = Pulse Position Modulation
+
+Example: Turnigy Plush 30 A
+Has + and - inputs for the DC supply from the battery.
+Has three-phase output (A, B, C) for the brushless motor
+Has a conventional 3-pin servo-type connector for speed control.  Has a built-in voltage regulator ("Battery Eliminator Circuit" or BEC) supplying 2 A @ 5 V for the radio control receiver.
+
+Example: Exceed-RC Proton-18A
+5.6..16.8 V DC in
+18 A
+5 V 2 A BEC output
+
+--
+
+Example motor: Alpha 370

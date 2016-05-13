@@ -6,7 +6,7 @@ Safety notes:
 
 Soldering is quite safe if done with care.
 
- - Soldering irons are HOT!  Do not touch the tip, and be careful of the cables.  Keep focused on your work while soldering.  Treat burns with cold running water for 10 minutes.
+ - Soldering irons are HOT!  Do not touch the tip, and be careful not to trip or catch the cables of the soldering iron. Keep focused on your work while soldering.  Treat burns with cold running water for 10 minutes.
  
  - Disconnect all power from a circuit before working on it.
  
@@ -16,13 +16,11 @@ Soldering is quite safe if done with care.
 
  - Wear sensible clothing.  Your legs and feet should be covered, in case you drop something hot.
  
- - Be careful not to trip or catch the cables of the soldering iron.
- 
 --
 
 About Solder:
 
-Solder is an alloy - a mixture of metals - traditionally tin and lead, but more recently lead-free solders are used in industy.  It has a fairly low melting point for a metal: around 200 degrees Celsius.  Different proportions of tin and lead give the solder different characteristics:
+Solder is an alloy - a mixture of metals - traditionally tin and lead, but more recently lead-free solders are used in industy.  It has a fairly low melting point for metal: around 200 degrees Celsius for tin-lead solder.  Different proportions of tin and lead give the solder different characteristics:
 
 60% tin, 40% lead: 
 63% tin, 37% lead: called "eutectic" solder, this has the lowest melting point, 183 degC, and no "pasty" phase: it goes straight from solid to liquid and back.

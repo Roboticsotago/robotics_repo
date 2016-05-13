@@ -1,0 +1,15 @@
+Some candidate software for controlling the performance:
+
+ - Rosegarden (MIDI composition/sequencing/recording software)
+ - Pure Data (for applying latency compensation for each of the bots; could also be used as a MIDI mixer (mute/unmute for testing, and 
+can probably be used to play back the MIDI file using the [seq] and [midiparse] objects from the Cyclone library)
+
+TODO: fluidsynth, aconnect
+
+--
+
+We should also consider the possibility of a MIDI-controlled light show!  We can have lights built into each robot, or have separate 
+lighting bots.  MIDI Control Change (CC) messages would be good candidates for light control - you could even use them to fade in/out 
+gradually.
+
+The DMX show control protocol, which is often used in professional stage/production contexts, owes a lot to MIDI.
