@@ -1,0 +1,23 @@
+Robotics 2016-05-16 Lesson Plan
+
+We need to finalise the circuit and PCB designs for the Arduino MIDI shields pretty soon!
+
+Things to test:
+
+[ ] The number of servo motors usable with the Servo library
+[ ] Which Arduino pins work reliably with the Servo library
+	It seems it's not just the PWM ones - pin D9 didn't work last time!
+[ ] Current draw for different servos at 5 V (we have 12 and 5 V lines with an ATX PC PSU)
+	Hobby servo motors are nominally 4.8 V, or 6 V, or sometimes higher.  5 V is probably OK.
+[ ] Voltage spikes using solenoids - 
+[ ] How to supply +12 V and +5 V to the board.
+	Maybe use a Molex connector?
+	If the board only needs 12 V we could use the barrel jack on the Arduino mainboard
+
+If we have time: a lesson in Pure Data (Pd)
+
+[ ] Get from http://www.puredata.info/
+[ ] Build a simple controllable oscillator
+[ ] Add a volume control
+[ ] Arduino serial input (with light sensor) - Theremin!
+[ ] Look at MIDI processing?  Esp. per-channel delays for the MusicBots.
