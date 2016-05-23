@@ -8,3 +8,38 @@ Note also:
 <<
 in Arduino 0016 and earlier, the Servo library supports only servos on only two pins: 9 and 10.
 >>
+
+--
+
+Possible approaches/ideas:
+
+ - Maintain a queue (an array of length <x>?) of future events - basically <time, function-call> tuples.
+ - Store a variable for each servo, lamp, solenoid, etc. indicating when the next event should happen. Could store absolute time (in ms) when the event should happen, the relative time interval from the start, or maybe a countdown in ms.
+	It's probably most sensible to store the absolute time, and calculate that in a function for scheduling a future event.
+
+
+--
+
+References:
+
+Example use of TimerOne library:
+https://github.com/PaulStoffregen/TimerOne/blob/master/examples/Interrupt/Interrupt.pde
+This could be used with a suitable function such as release(servo[1].pin) or release(myServoObject)
+
+.PNG Arduino Framework has a nice timer facility, with support for one-shot and recurring calling of functions:
+http://png-arduino-framework.readthedocs.io/timer.html
+
+On declaring and using function pointers in C:
+https://www.eskimo.com/~scs/cclass/int/sx10a.html
+
+e.g.
+<<
+int (*fp)(int x);	// declare function pointer
+extern int f1(int x);	// declare other function
+f = &f1;	// assign function pointer to point to functio f1
+(*f)(3);	// call the function
+>>
+
+AutoDesk's Arduino simulator:
+https://123d.circuits.io/
+
