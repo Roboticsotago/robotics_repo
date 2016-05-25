@@ -1,6 +1,12 @@
+#include <Arduino.h>
+#include <Servo.h> 
+void setup();
+void strum(Servo servo);
+void loop();
+#line 1 "src/sketch.ino"
 // Testing servo strumming ukulele
 
-#include <Servo.h> 
+//#include <Servo.h> 
 
 Servo servos [6];
 int pos = 0;    // variable to store the servo position
