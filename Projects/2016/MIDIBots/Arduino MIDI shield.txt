@@ -32,3 +32,30 @@ https://learn.sparkfun.com/tutorials/midi-shield-hookup-guide
 
 Olimex have a similar board:
 https://www.olimex.com/Products/Duino/Shields/SHIELD-MIDI/open-source-hardware
+
+--
+
+2016-05-25
+Pin assignments:
+
+We'll need to finalise these soon! We have tested the Arduino Servo library and checked that the following PWM pins work:
+3
+5
+6
+9
+10
+11
+
+Some pins that could/should be reserved:
+D0: RX (serial receive)
+D1: TX (serial transmit)
+D13: built-in LED
+Analog inputs?  We might want a control pot for latency, volume, perhaps.
+
+Other pin considerations:
+ - Might want PWM capability on MOSFET outputs (e.g. for DC motor control, lamp dimming)
+ - Stepper motor driver? Perhaps 2 axes.  Could adapt RAMPS design for using Allegro driver carrier boards.
+ - MIDI channel DIP switch (4 pins, no need for PWM).
+	I had thought that 4 consecutive pins would be good, so that the DIP switch can be placed right next to the pins for a compact layout.  However, that might use too many PWM-capable pins.
+	D1, 2, 3, 4?
+	D2, 4, 7, 8?
