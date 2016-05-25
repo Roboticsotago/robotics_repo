@@ -32,3 +32,88 @@ https://learn.sparkfun.com/tutorials/midi-shield-hookup-guide
 
 Olimex have a similar board:
 https://www.olimex.com/Products/Duino/Shields/SHIELD-MIDI/open-source-hardware
+
+--
+
+2016-05-25
+Pin assignments:
+
+We'll need to finalise these soon! We have tested the Arduino Servo library and checked that the following PWM pins work:
+3
+5
+6
+9
+10
+11
+
+Some pins that could/should be reserved:
+D0: RX (serial receive)
+D1: TX (serial transmit) - in case we want to have MIDI output as well
+D13: built-in LED
+Analog inputs?  We might want a control pot for latency, volume, perhaps.
+
+Other pin considerations:
+ - Might want PWM capability on MOSFET outputs (e.g. for DC motor control, lamp dimming)
+ - Stepper motor driver? Perhaps 2 axes.  Could adapt RAMPS design for using Allegro driver carrier boards.
+ - MIDI channel DIP switch (4 pins, no need for PWM).
+	I had thought that 4 consecutive pins would be good, so that the DIP switch can be placed right next to the pins for a compact layout.  However, that might use too many PWM-capable pins.
+	D1, 2, 3, 4?
+	D2, 4, 7, 8?
+
+Current-limiting resistors on the DIP switches?
+
+Parallel and series resistors on the MOSFET gates.  How many MOSFET output?  And how many with PWM?
+	10 ohm in series with gate
+	100 kOhm gate-to-ground
+	Also a 1.8 kOhm resistor and LED for each to show activity?  NOTE: will only function if +12V applied.
+
+--
+
+Here's the design for the pin assignments then:
+
+Arduino
+Pin:	PWM:	Function:
+
+D0		RX
+D1		TX
+D2		MIDI_CH_0
+D3	~	MIDI_CH_1
+D4		MIDI_CH_2
+D5	~	MIDI_CH_3
+D6	~	Dimmable MOSFET output
+D7		Stepper DIR (or STEP)
+D8		Stepper STEP (or DIR)
+D9	~	Servo 1
+D10	~	Servo 2
+D11	~	Servo 3
+D12		On/Off MOSFET output
+D13		LED
+
+A0
+A1
+A2
+A3
+A4
+A5
+A6
+
+		RESET
+
+That wastes a couple of PWM outputs but is otherwise pretty logical. Keep it simple for easier testing!
+
+Unassigned:
+	MIDI channel DIP switch (bits 0, 1, 2 and 3)
+	Servo 1-3
+	MOSFET 1-3
+	Stepper motor (1 or 2) DIR/STEP?
+	RESET button
+	SELF_TEST button
+
+--
+
+TODO:
+[ ] Include Molex power connector
+	Power Arduino from +5V from Molex? Or can we just pass +12V to the Arduino's VIN?
+[ ] Provide grounding connection for metal enclosure (screw terminal?)
+[ ] Screw terminals or polarised SIL headers for MOSFET outputs?
+[ ] Mini headers for servo outputs..are these JSTs of some sort? Polarised?
