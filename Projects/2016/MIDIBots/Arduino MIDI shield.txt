@@ -72,21 +72,21 @@ Parallel and series resistors on the MOSFET gates.  How many MOSFET output?  And
 Here's the design for the pin assignments then:
 
 Arduino
-Pin:	PWM:	Function:
+Pin:	PWM:	Label:		Description:
 
-D0		RX
-D1		TX
-D2		MIDI_CH_0
-D3	~	MIDI_CH_1
-D4		MIDI_CH_2
-D5	~	MIDI_CH_3
-D6	~	Dimmable MOSFET output
-D7		Stepper DIR (or STEP)
-D8		Stepper STEP (or DIR)
-D9	~	Servo 1
-D10	~	Servo 2
-D11	~	Servo 3
-D12		On/Off MOSFET output
+D0		MIDI_IN_TTL	Serial RX
+D1		MIDI_OUT_TTL	Serial TX (potentially)
+D2		MIDI_CH_1x	MIDI channel "ones" (LSB)
+D3	~	MIDI_CH_2x	MIDI channel "twos"
+D4		MIDI_CH_4x	MIDI channel "fours"
+D5	~	MIDI_CH_8x	MIDI channel "eights" (MSB)
+D6	~	MOSFET_PWM	Dimmable MOSFET output (for lamp or DC motor)
+D7		STEPPER_DIR	Stepper DIR (or STEP)
+D8		STEPPER_STEP	Stepper STEP (or DIR)
+D9	~	SERVO_1		Servo 1
+D10	~	SERVO_2		Servo 2
+D11	~	SERVO_3		Servo 3
+D12		MOSFET		On/Off MOSFET output (for solenoid, lamp, etc.)
 D13		LED
 
 A0
@@ -97,7 +97,8 @@ A4
 A5
 A6
 
-		RESET
+RESET		RESET
+		SELF_TEST
 
 That wastes a couple of PWM outputs but is otherwise pretty logical. Keep it simple for easier testing!
 
@@ -108,6 +109,9 @@ Unassigned:
 	Stepper motor (1 or 2) DIR/STEP?
 	RESET button
 	SELF_TEST button
+
+TODO:
+[ ] Create a header file that defines constants for all of the above.
 
 --
 
