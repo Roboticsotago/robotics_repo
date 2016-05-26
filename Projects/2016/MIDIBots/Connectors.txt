@@ -1,0 +1,34 @@
+Special connector types:
+ - keyed SIL PCB headers for the MIDI IN and THRU (2- or 3-pin? tie shield ground to chassis or PCB ground?)
+ - keyed 3-pin PCB headers for the servo motors
+ - 4-pin PC-style "Molex" (actually AMP) connector for power (+12V, +5V, GND)
+ 
+PCB header connectors with keying (like wot you could get from Dick Smith, and can still from Jaycar)
+	These are the type that have been used for PC motherboard fan headers for like forever.
+	2.54 mm pitch, JYK crimp, Molex KK, 
+	
+For the servos:
+	JST SH or JR? Hansen Hobbies say JR as well. JR/Spektrum/Uni
+	JST ZHR? No, that's the tiny one used on micro servos.
+	0.1" spacing, 22 AWG cable (as a guide to PCB track width)
+	0.1" spacing confirmed by BRC hobbies (JR connector)
+	
+	https://www.pololu.com/product/1926
+		Futaba J connector is 0.1" pitch and has keying
+		JR connector is very similar but lacks the keying
+	
+	http://www.ledametrix.com/gcs/connector.htm
+	
+	Sigh, could just use ordinary 0.1" header pins and be careful with orientation when plugging in (include orientation guide in the silkscreening!)
+	
+	NOTE: JST RCY is the 2-pole type used often for power connectors.
+
+
+Power connector is an AMP MATE-N-LOK (not Molex, haha), 11 A per pin
+	1: +12v (yellow)
+	2: GND (black)
+	3: GND (black)
+	4: +5V (red)
+	
+	DSpace Robot uses part 9090-4V
+
