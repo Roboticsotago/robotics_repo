@@ -1,4 +1,4 @@
-update=2016-05-30T15:52:36 NZST
+update=2016-06-02T18:25:26 NZST
 last_client=kicad
 [cvpcb]
 version=1
@@ -45,7 +45,7 @@ LibName16=valves
 LibName17=/home/cedwards/Documents/Settings/KiCAD/arduino-kicad-nicholasclewis/arduino_shields
 [eeschema]
 version=1
-LibDir=
+LibDir=/home/cedwards/Documents/Settings/KiCAD/freetronics_kicad_library;/home/cedwards/Documents/Settings/KiCAD/xess.pretty;/home/cedwards/Documents/Settings/KiCAD
 [eeschema/libraries]
 LibName1=power
 LibName2=device
