@@ -48,12 +48,12 @@ $EndDescr
 $Comp
 L PC900V IC1
 U 1 1 56E34A6F
-P 3700 1650
-F 0 "IC1" H 3490 1840 40  0000 C CNN
-F 1 "PC900V" H 3880 1460 40  0000 C CNN
-F 2 "DIP6" H 3490 1470 30  0000 C CIN
-F 3 "~" H 3700 1650 60  0000 C CNN
-	1    3700 1650
+P 4350 1750
+F 0 "IC1" H 4140 1940 40  0000 C CNN
+F 1 "PC900V" H 4530 1560 40  0000 C CNN
+F 2 "DIP6" H 4140 1570 30  0000 C CIN
+F 3 "~" H 4350 1750 60  0000 C CNN
+	1    4350 1750
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -97,13 +97,7 @@ MIDI_CH_8x
 Wire Wire Line
 	12350 7050 12350 7150
 Wire Wire Line
-	12350 7150 12450 7150
-Wire Wire Line
-	12450 7150 12500 7150
-Wire Wire Line
-	12500 7150 12550 7150
-Wire Wire Line
-	12550 7150 12650 7150
+	12350 7150 12650 7150
 Wire Wire Line
 	12650 7150 12650 7050
 Wire Wire Line
@@ -118,12 +112,12 @@ Connection ~ 12500 7150
 $Comp
 L DIN_5 P1
 U 1 1 56E351B5
-P 1250 1750
-F 0 "P1" H 1250 1750 70  0000 C CNN
-F 1 "MIDI_IN" H 1250 1600 70  0000 C CNN
-F 2 "" H 1250 1750 60  0001 C CNN
-F 3 "" H 1250 1750 60  0000 C CNN
-	1    1250 1750
+P 1900 1850
+F 0 "P1" H 1900 1850 70  0000 C CNN
+F 1 "MIDI_IN" H 1900 1700 70  0000 C CNN
+F 2 "" H 1900 1850 60  0001 C CNN
+F 3 "" H 1900 1850 60  0000 C CNN
+	1    1900 1850
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -140,23 +134,23 @@ $EndComp
 $Comp
 L R R1
 U 1 1 56E351E3
-P 2800 1450
-F 0 "R1" V 2880 1450 40  0000 C CNN
-F 1 "220R" V 2807 1451 40  0000 C CNN
-F 2 "" V 2730 1450 30  0001 C CNN
-F 3 "~" H 2800 1450 30  0000 C CNN
-	1    2800 1450
+P 3450 1550
+F 0 "R1" V 3530 1550 40  0000 C CNN
+F 1 "220R" V 3457 1551 40  0000 C CNN
+F 2 "" V 3380 1550 30  0001 C CNN
+F 3 "~" H 3450 1550 30  0000 C CNN
+	1    3450 1550
 	0    -1   -1   0   
 $EndComp
 $Comp
 L DIODE D1
 U 1 1 56E35230
-P 3150 1650
-F 0 "D1" H 3150 1750 40  0000 C CNN
-F 1 "1N914" H 3150 1550 40  0000 C CNN
-F 2 "" H 3150 1650 60  0001 C CNN
-F 3 "~" H 3150 1650 60  0000 C CNN
-	1    3150 1650
+P 3800 1750
+F 0 "D1" H 3800 1850 40  0000 C CNN
+F 1 "1N914" H 3800 1650 40  0000 C CNN
+F 2 "" H 3800 1750 60  0001 C CNN
+F 3 "~" H 3800 1750 60  0000 C CNN
+	1    3800 1750
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -179,7 +173,7 @@ MIDI_CH_4x
 Text Label 4750 8000 0    60   ~ 0
 MIDI_CH_8x
 Text Label 2850 7500 2    60   ~ 0
-ARDUINO_+5V
++5V_LOGIC
 Text Label 2850 7300 2    60   ~ 0
 RESET
 Text Label 2850 7600 2    60   ~ 0
@@ -195,23 +189,23 @@ SELF_TEST
 $Comp
 L GND #PWR02
 U 1 1 56E493E9
-P 4600 1950
-F 0 "#PWR02" H 4600 1950 30  0001 C CNN
-F 1 "GND" H 4600 1880 30  0001 C CNN
-F 2 "" H 4600 1950 60  0000 C CNN
-F 3 "" H 4600 1950 60  0000 C CNN
-	1    4600 1950
+P 5250 2050
+F 0 "#PWR02" H 5250 2050 30  0001 C CNN
+F 1 "GND" H 5250 1980 30  0001 C CNN
+F 2 "" H 5250 2050 60  0000 C CNN
+F 3 "" H 5250 2050 60  0000 C CNN
+	1    5250 2050
 	1    0    0    -1  
 $EndComp
 $Comp
 L R R2
 U 1 1 56E49407
-P 4600 1400
-F 0 "R2" V 4680 1400 40  0000 C CNN
-F 1 "280R" V 4607 1401 40  0000 C CNN
-F 2 "" V 4530 1400 30  0001 C CNN
-F 3 "~" H 4600 1400 30  0000 C CNN
-	1    4600 1400
+P 5250 1500
+F 0 "R2" V 5330 1500 40  0000 C CNN
+F 1 "280R" V 5257 1501 40  0000 C CNN
+F 2 "" V 5180 1500 30  0001 C CNN
+F 3 "~" H 5250 1500 30  0000 C CNN
+	1    5250 1500
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -249,38 +243,28 @@ NoConn ~ 2850 8200
 NoConn ~ 2850 8300
 NoConn ~ 2850 8400
 Wire Wire Line
-	3050 1450 3150 1450
+	3700 1550 4000 1550
 Wire Wire Line
-	3150 1450 3350 1450
+	4000 1950 4000 1850
 Wire Wire Line
-	3350 1850 3350 1750
+	3150 1950 4000 1950
 Wire Wire Line
-	2500 1850 3150 1850
+	4700 1850 5250 1850
 Wire Wire Line
-	3150 1850 3350 1850
+	5250 1850 5250 2050
 Wire Wire Line
-	4050 1750 4300 1750
+	4700 1250 5250 1250
 Wire Wire Line
-	4300 1750 4600 1750
+	4700 1250 4700 1650
 Wire Wire Line
-	4600 1750 4600 1950
+	4700 1750 5750 1750
+Text Label 5250 1150 2    60   ~ 0
++5V_LOGIC
 Wire Wire Line
-	4050 1150 4300 1150
-Wire Wire Line
-	4300 1150 4600 1150
-Wire Wire Line
-	4050 1150 4050 1550
-Wire Wire Line
-	4050 1650 4600 1650
-Wire Wire Line
-	4600 1650 5100 1650
-Text Label 4600 1050 2    60   ~ 0
-+5V
-Wire Wire Line
-	4600 1150 4600 1050
-Text Notes 11700 2350 0    60   ~ 0
+	5250 1250 5250 1150
+Text Notes 700  11050 0    60   ~ 0
 TODO:\n\n[ ] Servo output(s)\n[ ] MOSFET output(s)\n[ ] RX disconnection switch\n[ ] DIN connector grounding (pin 2, one end only? cap? what about chassis ground?)\n[ ] EMI ferrite beads on I/O lines?\n[ ] Polarised SIL connectors for MIDI I/O\n[ ] Bypass caps\n[ ] IC power pins\n\n[X] 12 V connector (incl. GND)? Just use Arduino barrel jack.\n\n[Y] Reset switch\n[Y] MIDI THRU circuitry (buffer)\n[Y] Self-test button\n[Y] Latency control potentiometer\n[Y] LED + resistor on Pin 13\n
-Text Label 5100 1650 0    60   ~ 0
+Text Label 5750 1750 0    60   ~ 0
 MIDI_IN_TTL
 Text Label 4750 8500 0    60   ~ 0
 MIDI_IN_TTL
@@ -296,7 +280,7 @@ F 3 "~" H 3800 2800 30  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 Text Label 3550 2700 2    60   ~ 0
-+5V
++5V_LOGIC
 Wire Wire Line
 	3550 2800 3550 2700
 Text Label 1750 3000 2    60   ~ 0
@@ -423,7 +407,7 @@ $EndComp
 Text Label 14300 8050 2    60   ~ 0
 LATENCY_ADJ
 Text Label 14600 7650 2    60   ~ 0
-+5V
++5V_LOGIC
 $Comp
 L GND #PWR06
 U 1 1 572AF432
@@ -438,22 +422,22 @@ $EndComp
 $Comp
 L GND #PWR07
 U 1 1 572AF481
-P 8700 3050
-F 0 "#PWR07" H 8700 3050 30  0001 C CNN
-F 1 "GND" H 8700 2980 30  0001 C CNN
-F 2 "" H 8700 3050 60  0000 C CNN
-F 3 "" H 8700 3050 60  0000 C CNN
-	1    8700 3050
+P 9400 3700
+F 0 "#PWR07" H 9400 3700 30  0001 C CNN
+F 1 "GND" H 9400 3630 30  0001 C CNN
+F 2 "" H 9400 3700 60  0000 C CNN
+F 3 "" H 9400 3700 60  0000 C CNN
+	1    9400 3700
 	1    0    0    -1  
 $EndComp
-Text Notes 7500 600  0    60   ~ 0
+Text Notes 8750 750  0    60   ~ 0
 Power
 Text Notes 13300 5600 0    60   ~ 0
 User interface
-Text Label 8700 2700 2    60   ~ 0
+Text Label 9400 3350 2    60   ~ 0
 GND
 Wire Wire Line
-	8700 2700 8700 3050
+	9400 3350 9400 3700
 Text Notes 3500 6500 0    60   ~ 0
 Arduino shield
 Wire Wire Line
@@ -464,29 +448,14 @@ Wire Wire Line
 	14300 8050 14450 8050
 Text Notes 13450 8200 0    60   ~ 0
 TODO: series resistor?
-$Comp
-L +5V #PWR08
-U 1 1 572B0054
-P 8650 2300
-F 0 "#PWR08" H 8650 2390 20  0001 C CNN
-F 1 "+5V" H 8650 2390 30  0000 C CNN
-F 2 "" H 8650 2300 60  0000 C CNN
-F 3 "" H 8650 2300 60  0000 C CNN
-	1    8650 2300
-	1    0    0    -1  
-$EndComp
-Text Label 8650 2400 0    60   ~ 0
-+5V
-Wire Wire Line
-	8650 2300 8650 2400
-Text Notes 7750 3350 0    60   ~ 0
+Text Notes 8900 4100 0    60   ~ 0
 TODO: I should probably have used proper power ports from the beginning, rather than labelled ports.
 Text Notes 13550 8800 0    60   ~ 0
 TODO: IIRC there was another pot planned
 Text Notes 13750 5900 0    60   ~ 0
 TODO: switch debouncing?
-Connection ~ 3150 1450
-Connection ~ 3150 1850
+Connection ~ 3800 1550
+Connection ~ 3800 1950
 Text Notes 3250 8900 0    60   ~ 0
 Do we need all these GND labels?\nWon't the parent Arduino board connect these anyway?
 $Comp
@@ -506,9 +475,9 @@ Wire Wire Line
 	6000 2800 6300 2800
 Wire Wire Line
 	6300 2800 6300 3300
-NoConn ~ 650  1750
-NoConn ~ 1250 1150
-Connection ~ 4600 1650
+NoConn ~ 1300 1850
+NoConn ~ 1900 1250
+Connection ~ 5250 1750
 Text Label 4750 8400 0    60   ~ 0
 MIDI_OUT_TTL
 Text Label 4750 7900 0    60   ~ 0
@@ -550,57 +519,51 @@ $EndComp
 $Comp
 L CONN_4 P3
 U 1 1 574F9691
-P 8700 1150
-F 0 "P3" V 8650 1150 50  0000 C CNN
-F 1 "CONN_MOLEX_POWER" V 8750 1150 50  0000 C CNN
-F 2 "xess:xess-MOLEX-8981-04P" H 8700 1150 60  0001 C CNN
-F 3 "" H 8700 1150 60  0000 C CNN
-	1    8700 1150
+P 9400 1800
+F 0 "P3" V 9350 1800 50  0000 C CNN
+F 1 "CONN_MOLEX_POWER" V 9450 1800 50  0000 C CNN
+F 2 "xess:xess-MOLEX-8981-04P" H 9400 1800 60  0001 C CNN
+F 3 "" H 9400 1800 60  0000 C CNN
+	1    9400 1800
 	0    -1   -1   0   
 $EndComp
 $Comp
 L GND #PWR011
 U 1 1 574F9DA1
-P 8700 1750
-F 0 "#PWR011" H 8700 1750 30  0001 C CNN
-F 1 "GND" H 8700 1680 30  0001 C CNN
-F 2 "" H 8700 1750 60  0000 C CNN
-F 3 "" H 8700 1750 60  0000 C CNN
-	1    8700 1750
+P 9400 2400
+F 0 "#PWR011" H 9400 2400 30  0001 C CNN
+F 1 "GND" H 9400 2330 30  0001 C CNN
+F 2 "" H 9400 2400 60  0000 C CNN
+F 3 "" H 9400 2400 60  0000 C CNN
+	1    9400 2400
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8650 1500 8650 1600
+	9350 2150 9350 2250
 Wire Wire Line
-	8650 1600 8700 1600
+	9350 2250 9450 2250
 Wire Wire Line
-	8700 1600 8750 1600
+	9450 2250 9450 2150
 Wire Wire Line
-	8750 1600 8750 1500
-Wire Wire Line
-	8700 1600 8700 1750
-Connection ~ 8700 1600
+	9400 2250 9400 2400
+Connection ~ 9400 2250
 $Comp
 L CONN_2 P4
 U 1 1 574FB495
-P 2050 1650
-F 0 "P4" V 2000 1650 40  0000 C CNN
-F 1 "CONN_MIDI_IN" V 2100 1650 40  0000 C CNN
-F 2 "" H 2050 1650 60  0001 C CNN
-F 3 "" H 2050 1650 60  0000 C CNN
-	1    2050 1650
+P 2700 1750
+F 0 "P4" V 2650 1750 40  0000 C CNN
+F 1 "CONN_MIDI_IN" V 2750 1750 40  0000 C CNN
+F 2 "" H 2700 1750 60  0001 C CNN
+F 3 "" H 2700 1750 60  0000 C CNN
+	1    2700 1750
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	2550 1450 2500 1450
+	3200 1550 3150 1550
 Wire Wire Line
-	1850 1550 2400 1550
+	2500 1650 3150 1650
 Wire Wire Line
-	2400 1550 2500 1550
-Wire Wire Line
-	1850 1750 2400 1750
-Wire Wire Line
-	2400 1750 2500 1750
+	2500 1850 3150 1850
 $Comp
 L CONN_2 P5
 U 1 1 574FC28D
@@ -613,21 +576,17 @@ F 3 "" H 4500 2900 60  0000 C CNN
 	1    0    0    1   
 $EndComp
 Wire Wire Line
-	4050 2800 4150 2800
+	4050 2800 4850 2800
 Wire Wire Line
-	4150 2800 4850 2800
-Wire Wire Line
-	4050 3000 4150 3000
-Wire Wire Line
-	4150 3000 4850 3000
+	4050 3000 4850 3000
 Connection ~ 4150 2800
 Connection ~ 4150 3000
 Wire Wire Line
-	2500 1550 2500 1450
-Connection ~ 2400 1550
+	3150 1650 3150 1550
+Connection ~ 3050 1650
 Wire Wire Line
-	2500 1750 2500 1850
-Connection ~ 2400 1750
+	3150 1850 3150 1950
+Connection ~ 3050 1850
 $Comp
 L GNDPWR #PWR012
 U 1 1 574FC8DB
@@ -640,24 +599,24 @@ F 3 "" H 6300 3450 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3350 1450 3350 1550
+	4000 1550 4000 1650
 $Comp
 L C C1
 U 1 1 574FCB0A
-P 4300 1400
-F 0 "C1" H 4300 1500 40  0000 L CNN
-F 1 "C" H 4306 1315 40  0000 L CNN
-F 2 "" H 4338 1250 30  0001 C CNN
-F 3 "" H 4300 1400 60  0000 C CNN
-	1    4300 1400
+P 4950 1500
+F 0 "C1" H 4950 1600 40  0000 L CNN
+F 1 "C" H 4956 1415 40  0000 L CNN
+F 2 "" H 4988 1350 30  0001 C CNN
+F 3 "" H 4950 1500 60  0000 C CNN
+	1    4950 1500
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4300 1200 4300 1150
-Connection ~ 4300 1150
+	4950 1300 4950 1250
+Connection ~ 4950 1250
 Wire Wire Line
-	4300 1600 4300 1750
-Connection ~ 4300 1750
+	4950 1700 4950 1850
+Connection ~ 4950 1850
 $Comp
 L F12N10L Q1
 U 1 1 574FDEDF
@@ -764,26 +723,16 @@ Wire Wire Line
 Wire Wire Line
 	9100 10100 9100 10200
 Wire Wire Line
-	9050 9550 9100 9550
-Wire Wire Line
-	9100 9550 9150 9550
+	9050 9550 9150 9550
 Wire Wire Line
 	9100 9600 9100 9550
 Connection ~ 9100 9550
 Wire Wire Line
 	8550 9550 8450 9550
 Wire Wire Line
-	9450 9100 9450 9200
+	9450 9100 9450 9300
 Wire Wire Line
-	9450 9200 9450 9250
-Wire Wire Line
-	9450 9250 9450 9300
-Wire Wire Line
-	9450 8050 9450 8300
-Wire Wire Line
-	9450 8300 9450 8800
-Wire Wire Line
-	9450 8800 9450 8900
+	9450 8050 9450 8900
 Connection ~ 9450 9200
 Wire Wire Line
 	9250 8800 9450 8800
@@ -831,8 +780,8 @@ F 3 "" H 1300 4550 60  0000 C CNN
 $EndComp
 Wire Wire Line
 	1300 4550 1300 4450
-Text Notes 6600 900  0    60   ~ 0
-NOTE: the Arduino has a voltage regulator that takes 7-12 V (recommended range) and provides regulated +5 V for powering the board.  We also have a +5 V supply from the ATX power supply.  We need to distinguish between these, so let's call them ATX+12V, ATX+5V, and ARDUINO+5V.
+Text Notes 8900 1150 0    60   ~ 0
+NOTE: the Arduino has a voltage regulator that takes 7-12 V (recommended range) and provides regulated +5 V for powering the board.\nWe also have a +5 V supply from the ATX power supply.\nWe need to distinguish between these, so let's call them ATX+12V, ATX+5V, and ARDUINO+5V.
 Text Notes 1200 3700 0    60   ~ 0
 Connect cable shield to chassis ground at entry, a la balanced audio cable?  The spec says to connect at one end only!
 $Comp
@@ -916,58 +865,58 @@ MIDI channel selection
 $Comp
 L LED D?
 U 1 1 57513FA6
-P 9600 2550
-F 0 "D?" H 9600 2650 50  0000 C CNN
-F 1 "LED_PWR_12V" H 9600 2450 50  0000 C CNN
-F 2 "led:LED-3MM" H 9600 2550 60  0001 C CNN
-F 3 "" H 9600 2550 60  0000 C CNN
-	1    9600 2550
+P 10300 3200
+F 0 "D?" H 10300 3300 50  0000 C CNN
+F 1 "LED_PWR_12V" H 10300 3100 50  0000 C CNN
+F 2 "led:LED-3MM" H 10300 3200 60  0001 C CNN
+F 3 "" H 10300 3200 60  0000 C CNN
+	1    10300 3200
 	0    1    1    0   
 $EndComp
 $Comp
 L R R?
 U 1 1 57513FAC
-P 9600 2100
-F 0 "R?" V 9680 2100 40  0000 C CNN
-F 1 "1.8K" V 9607 2101 40  0000 C CNN
-F 2 "" V 9530 2100 30  0001 C CNN
-F 3 "" H 9600 2100 30  0000 C CNN
-	1    9600 2100
+P 10300 2750
+F 0 "R?" V 10380 2750 40  0000 C CNN
+F 1 "1.8K" V 10307 2751 40  0000 C CNN
+F 2 "" V 10230 2750 30  0001 C CNN
+F 3 "" H 10300 2750 30  0000 C CNN
+	1    10300 2750
 	1    0    0    -1  
 $EndComp
-Text Notes 9350 2650 1    60   ~ 0
+Text Notes 10050 3300 1    60   ~ 0
 +12V Power LED
 $Comp
 L +12V #PWR?
 U 1 1 57514198
-P 9600 1850
-F 0 "#PWR?" H 9600 1800 20  0001 C CNN
-F 1 "+12V" H 9600 1950 30  0000 C CNN
-F 2 "" H 9600 1850 60  0000 C CNN
-F 3 "" H 9600 1850 60  0000 C CNN
-	1    9600 1850
+P 10300 2500
+F 0 "#PWR?" H 10300 2450 20  0001 C CNN
+F 1 "+12V" H 10300 2600 30  0000 C CNN
+F 2 "" H 10300 2500 60  0000 C CNN
+F 3 "" H 10300 2500 60  0000 C CNN
+	1    10300 2500
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR?
 U 1 1 5751433B
-P 9600 2750
-F 0 "#PWR?" H 9600 2750 30  0001 C CNN
-F 1 "GND" H 9600 2680 30  0001 C CNN
-F 2 "" H 9600 2750 60  0000 C CNN
-F 3 "" H 9600 2750 60  0000 C CNN
-	1    9600 2750
+P 10300 3400
+F 0 "#PWR?" H 10300 3400 30  0001 C CNN
+F 1 "GND" H 10300 3330 30  0001 C CNN
+F 2 "" H 10300 3400 60  0000 C CNN
+F 3 "" H 10300 3400 60  0000 C CNN
+	1    10300 3400
 	1    0    0    -1  
 $EndComp
 $Comp
 L +12V #PWR?
 U 1 1 575146C0
-P 8550 1500
-F 0 "#PWR?" H 8550 1450 20  0001 C CNN
-F 1 "+12V" H 8550 1600 30  0000 C CNN
-F 2 "" H 8550 1500 60  0000 C CNN
-F 3 "" H 8550 1500 60  0000 C CNN
-	1    8550 1500
+P 9250 2150
+F 0 "#PWR?" H 9250 2100 20  0001 C CNN
+F 1 "+12V" H 9250 2250 30  0000 C CNN
+F 2 "" H 9250 2150 60  0000 C CNN
+F 3 "" H 9250 2150 60  0000 C CNN
+	1    9250 2150
 	-1   0    0    1   
 $EndComp
 $Comp
@@ -999,12 +948,12 @@ Unused hex inverter units:
 $Comp
 L +5V #PWR?
 U 1 1 575159EA
-P 8850 1500
-F 0 "#PWR?" H 8850 1590 20  0001 C CNN
-F 1 "+5V" H 8850 1590 30  0000 C CNN
-F 2 "" H 8850 1500 60  0000 C CNN
-F 3 "" H 8850 1500 60  0000 C CNN
-	1    8850 1500
+P 9550 2150
+F 0 "#PWR?" H 9550 2240 20  0001 C CNN
+F 1 "+5V" H 9550 2240 30  0000 C CNN
+F 2 "" H 9550 2150 60  0000 C CNN
+F 3 "" H 9550 2150 60  0000 C CNN
+	1    9550 2150
 	-1   0    0    1   
 $EndComp
 $Comp
@@ -1041,6 +990,50 @@ Wire Wire Line
 	8700 6500 8700 6550
 Connection ~ 8700 6100
 Connection ~ 8700 6500
-Text Notes 9500 1200 0    60   ~ 0
+Text Notes 10200 1850 0    60   ~ 0
 TODO: filter caps, fuses, ...
+Wire Wire Line
+	2150 2350 2150 2900
+Wire Wire Line
+	2150 3350 2150 3100
+Text Notes 8900 1350 0    60   ~ 0
+Use ATX +5V for powering only the servo motors?  And regulated Arduino +5V for logic only.
+Text Label 2150 2350 2    60   ~ 0
++5V_LOGIC
+$Comp
+L GND #PWR?
+U 1 1 575198C0
+P 2150 3350
+F 0 "#PWR?" H 2150 3350 30  0001 C CNN
+F 1 "GND" H 2150 3280 30  0001 C CNN
+F 2 "" H 2150 3350 60  0000 C CNN
+F 3 "" H 2150 3350 60  0000 C CNN
+	1    2150 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 57519937
+P 1950 2850
+F 0 "#PWR?" H 1950 2850 30  0001 C CNN
+F 1 "GND" H 1950 2780 30  0001 C CNN
+F 2 "" H 1950 2850 60  0000 C CNN
+F 3 "" H 1950 2850 60  0000 C CNN
+	1    1950 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 57519B5E
+P 1950 2650
+F 0 "C?" H 1950 2750 40  0000 L CNN
+F 1 "100nF" H 1956 2565 40  0000 L CNN
+F 2 "" H 1988 2500 30  0000 C CNN
+F 3 "" H 1950 2650 60  0000 C CNN
+	1    1950 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1950 2450 2150 2450
+Connection ~ 2150 2450
 $EndSCHEMATC
