@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/cedwards/robotics_repo/Projects/2016/MIDIBots/kicad/MIDI_Shield.sch)
-    (date "Sun 05 Jun 2016 00:32:12 NZST")
+    (date "Sun 05 Jun 2016 00:59:21 NZST")
     (tool "Eeschema 4.0.2+dfsg1-2~bpo8+1-stable")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
