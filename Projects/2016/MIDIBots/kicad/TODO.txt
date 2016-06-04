@@ -1,0 +1,13 @@
+[ ] Break out remaining Arduino pins (there's only about 2!) and put header with a GND in the bottom left corner.
+[ ] Move LAT_ADJ label so it won't be covered by the PC900V IC socket
+[ ] Move the servo headers to the left a little
+[ ] Label SW2 as CH or MIDI_CH
+[ ] Filter and bypass caps as part of each MOSFET circuit? Think DC motor, solenoid, lamp, etc.
+[ ] Tidy up silkscreen (remove old Arduino border?)
+[ ] Check for conflict with big USB-B on some Arduino boards
+[ ] Remove mounting holes in board?
+[ ] Board outline cuts
+[ ] Decorative text, logo
+
+
+
