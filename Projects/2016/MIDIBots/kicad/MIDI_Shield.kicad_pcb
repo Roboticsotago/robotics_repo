@@ -217,13 +217,13 @@
     (add_net "Net-(F2-Pad1)")
   )
 
-  (module arduino_shields:ARDUINO_SHIELD locked (layer F.Cu) (tedit 5752D849) (tstamp 575280B6)
+  (module arduino_shields:ARDUINO_SHIELD locked (layer F.Cu) (tedit 5752F14F) (tstamp 575280B6)
     (at 71.12 81.28 270)
     (path /56E490D8)
-    (fp_text reference SHIELD1 (at -5.08 -92.71 270) (layer F.SilkS)
+    (fp_text reference SHIELD1 (at -13.208 -24.892 360) (layer F.SilkS)
       (effects (font (thickness 0.3048)))
     )
-    (fp_text value ARDUINO_SHIELD (at 0 -95.25 270) (layer F.SilkS) hide
+    (fp_text value ARDUINO_SHIELD (at -10.668 -25.146 360) (layer F.SilkS) hide
       (effects (font (thickness 0.3048)))
     )
     (fp_line (start 66.04 -40.64) (end 66.04 -52.07) (layer F.SilkS) (width 0.381))
@@ -2607,4 +2607,21 @@
   (segment (start 124.714 128.016) (end 124.714 122.174) (width 0.508) (layer F.Cu) (net 44) (tstamp 5752ED10))
   (segment (start 124.714 122.174) (end 126.873 120.015) (width 0.508) (layer F.Cu) (net 44) (tstamp 5752ED1D))
 
+  (zone (net 0) (net_name "") (layer Edge.Cuts) (tstamp 5752F0D7) (hatch edge 0.508)
+    (connect_pads (clearance 0.508))
+    (min_thickness 0.254)
+    (fill yes (arc_segments 16) (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon
+      (pts
+        (xy 131.572 72.39) (xy 142.748 83.566) (xy 142.748 144.78) (xy 136.906 150.622) (xy 59.69 150.622)
+        (xy 52.07 143.002) (xy 52.07 89.916) (xy 69.596 72.39) (xy 95.758 65.024)
+      )
+    )
+    (filled_polygon
+      (pts
+        (xy 131.509119 72.506725) (xy 142.621 83.618606) (xy 142.621 144.727394) (xy 136.853394 150.495) (xy 59.742606 150.495)
+        (xy 52.197 142.949394) (xy 52.197 89.968606) (xy 69.662349 72.503257) (xy 95.762679 65.15462)
+      )
+    )
+  )
 )
