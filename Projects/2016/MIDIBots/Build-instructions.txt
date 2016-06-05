@@ -3,7 +3,15 @@ Some instructions and notes for building the Arduino MIDI shield boards for Robo
 
 Start with the shortest parts, and work your way up. This helps avoid the nuisance of parts falling out when you flip the board over for soldering.
 
-Start with the 220-ohm resistors, as these are the most common.  There should be ?? of these.
+Resistors: there are a variety of these, but all low-power.
+	10R: one in each MOSFET circuit
+	100k: one in each MOSFET circuit
+	1.8K: one in each MOSFET circuit, plus one for the +12V supply
+	220R: one on MIDI_IN and two on MIDI_THRU
+	330R: pin D13 LED, +5V supply LED
+
+
+The current-limiting resistors for diodes are mostly 330 ohm, but those on the 12 V supply are 1.8k.
 
 Diodes (watch the polarity!) are almost all 1N4007 parts:
 	One per MOSFET output (4 total), pointing outwards
@@ -17,7 +25,7 @@ Diodes (watch the polarity!) are almost all 1N4007 parts:
 	A yellow or orange one for each MOSFET output to indicate activity.  I like to reserve red for error warnings.
 	There's also D2 near the top right (this connects to Arduino pin D13)..whatever colour you like!
 
-6.5 mm: Decoupling capacitors (little blue "104" marked ones). Non-polarised.
+6.5 mm: Decoupling capacitors (little blue "104" marked ones). Non-polarised. 5 per board, I think.
 
 DIP switches for setting the MIDI input channel using binary.
 
@@ -36,4 +44,7 @@ MOSFET parts (TO-220, vertically installed).
 	Watch the polarity!
 	They should all face the same way, with pin 1 at the top.
 	
-Lastly, the strips of header pins for mounting the shield on the main Arduino board.  You might even wish to try the combo pin/socket headers (I don't know if they'll fit).
+Lastly, the strips of header pins for mounting the shield on the main Arduino board.
+	You might even wish to try the combo pin/socket headers (I don't know if they'll fit).
+	Tip: mount the headers and the shield on a real Arduino to hold everything in place while soldering.
+	
