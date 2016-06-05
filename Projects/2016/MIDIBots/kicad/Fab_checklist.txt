@@ -1,0 +1,30 @@
+DirtyPCBs.com
+
+Will definitely need to use the 10 cm x 10 cm maximum board size
+
+Essential layers and filename requirements (see also Ian's talk at Makerspace from early 2016):
+ - In Pcbnew's Plot dialog, check the "Use Protel filename extensions". This will set most correctly.
+ - Rename Edge.Cuts
+
+Ext.:		KiCad:		Description:
+GTO		F.SilkS		Top Silkscreen (text)
+GTS		F.Mask		Top Soldermask (the 'green' stuff)
+GTL		F.Cu		Top Copper (conducting layer)
+GBL		B.Cu		Bottom Copper
+GBS		B.Mask		Bottom Soldermask
+GBO		B.SilkS		Bottom Silkscreen
+GML/GKO/GBR*	Edge.Cuts	Board Outline* <-- REQUIRED
+TXT				Routing and Drill (the holes and slots)
+
+Archive all the files into a Zip file.
+
+--
+
+References:
+
+http://ianrrees.github.io/KiCad_talk/#/
+
+https://forum.kicad.info/t/dirtypcbs-com-gerber-output-not-useable-by-boardhouse/1594/6
+
+http://dirtypcbs.com/about.php/#formats
+
