@@ -1,6 +1,5 @@
 [ ] Add some more net labels to assist with assigning track styles on PCB.
 [ ] Filter and bypass caps as part of each MOSFET circuit? Think DC motor, solenoid, lamp, etc.
-[ ] Finalise outline and add ground plane!
 [ ] Tidy up silkscreen (remove old Arduino border?)
 [ ] Check for conflict with big USB-B on some Arduino boards
 [ ] Remove mounting holes in board?
@@ -27,3 +26,4 @@
 [Y] Route VCC tracks/zones
 [Y] Fixed some unconnected track segments
 [Y] Moved some reference labels
+[Y] Finalise outline and add ground plane!
