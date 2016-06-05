@@ -47,6 +47,18 @@ zip ... TODO
 
 --
 
+Questions for Paul and Ian:
+
+ - Where should the origin be?  Top-left corner?  Centre of board?  Does it matter that the board is currently offset from the top-left corner by several cm?
+ 
+ - Drills and vias: so many settings, I didn't change anything! Is that OK?
+ 
+ - Do they want the edge cuts layer to appear in all Gerbers, or just the one?
+
+ - Should the .zip file contain a top-level folder?
+ 
+--
+
 References:
 
 http://ianrrees.github.io/KiCad_talk/#/
