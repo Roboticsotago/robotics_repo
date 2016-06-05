@@ -33,17 +33,7 @@ I get the following files:
 
 They have the base filename with the KiCAD layer names added, e.g. MIDI_Shield-F.Mask.gts
 
-Might as well have a script to bundle them all up:
-
-<<
-#!/bin/sh
-BASENAME=MIDI_Shield
-ls $BASENAME{.gto,.gts,.gtl,.gbl,.gbs,.gbo,.gml,.txt}
-
-mv $BASENAME.drl $BASENAME.txt
-mv $BASENAME.gm1 $BASENAME.gml
-zip ... TODO
->>
+I've created a script for renaming those two problem files and creating a .zip archive ("make-package.sh").
 
 --
 
@@ -56,6 +46,8 @@ Questions for Paul and Ian:
  - Do they want the edge cuts layer to appear in all Gerbers, or just the one?
 
  - Should the .zip file contain a top-level folder?
+ 
+ - Are they picky about the basename of the Gerber files being the same? KiCAD by default adds the layer name for some, e.g. "-F.Mask.gts"
  
 --
 
