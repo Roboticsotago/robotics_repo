@@ -40,3 +40,5 @@
 [Y] Tidy up +12V trace supplying the Arduino VIN.
 --
 [Y] Move the MOSFET output flyback diodes to the other side of the connector and LED, for slightly tidier layout.
+--
+[Y] Make MOSFET connector labels more consistent.
