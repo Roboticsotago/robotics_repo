@@ -1,0 +1,39 @@
+Some instructions and notes for building the Arduino MIDI shield boards for Robocup 2016
+
+
+Start with the shortest parts, and work your way up. This helps avoid the nuisance of parts falling out when you flip the board over for soldering.
+
+Start with the 220-ohm resistors, as these are the most common.  There should be ?? of these.
+
+Diodes (watch the polarity!) are almost all 1N4007 parts:
+	One per MOSFET output (4 total), pointing outwards
+	Two in the power input circuit
+	A 1N914 in the MIDI input circuit
+
+4.5 mm: IC sockets for the 6-pin PC900V and the 14-pin. Watch the orientation!  Pin 1 has a square pad, and that end is also marked with a "U" shape.
+
+5.5 mm: LEDs next, again watch the polarity!  The footprints are for 3 mm parts but you can probably fit 5 mm ones if you want.
+	I suggest using two green ones in the power supply LEDs
+	A yellow or orange one for each MOSFET output to indicate activity.  I like to reserve red for error warnings.
+	There's also D2 near the top right (this connects to Arduino pin D13)..whatever colour you like!
+
+6.5 mm: Decoupling capacitors (little blue "104" marked ones). Non-polarised.
+
+DIP switches for setting the MIDI input channel using binary.
+
+
+8 mm: Plain pin headers:
+	Three 1x3 headers for the servo outputs
+	Two 1x2 headers for analog 3 and 4 output (or general use)
+
+11.5 mm: Polarised SIL headers:
+	A single 1x3 for the latency adjustment pot (chassis-mounted off-board)
+	1x2 headers for the four auxiliary power outputs, the four MOSFET outputs, MIDI IN, MIDI THRU, and stepper motor header.
+
+12 mm: Filter capacitors: watch the polarity!
+
+MOSFET parts (TO-220, vertically installed).
+	Watch the polarity!
+	They should all face the same way, with pin 1 at the top.
+	
+Lastly, the strips of header pins for mounting the shield on the main Arduino board.  You might even wish to try the combo pin/socket headers (I don't know if they'll fit).
