@@ -21,4 +21,9 @@
 [Y] Break out remaining Arduino pins (there's only about 2!) and put header with a GND in the bottom left corner.
 [Y] Fixed unexpected mess with use of old DIP socket footprints
 [Y] Various footprints remapped
-
+--
+[Y] Flip resistors around MOSFET circuits and reroute tracks
+[Y] Add 12V aux track
+[Y] Route VCC tracks/zones
+[Y] Fixed some unconnected track segments
+[Y] Moved some reference labels
