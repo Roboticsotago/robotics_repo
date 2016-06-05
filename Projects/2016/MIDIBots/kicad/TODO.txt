@@ -1,6 +1,6 @@
-[ ] Break out remaining Arduino pins (there's only about 2!) and put header with a GND in the bottom left corner.
 [ ] Add some more net labels to assist with assigning track styles on PCB.
 [ ] Filter and bypass caps as part of each MOSFET circuit? Think DC motor, solenoid, lamp, etc.
+[ ] Finalise outline and add ground plane!
 [ ] Tidy up silkscreen (remove old Arduino border?)
 [ ] Check for conflict with big USB-B on some Arduino boards
 [ ] Remove mounting holes in board?
@@ -16,4 +16,9 @@
 --
 [Y] Added Current_Loop track style
 [Y] Assigned some more track styles and ran a few additional tracks
+--
+[Y] Remap pins for MOSFET 3 and 4 to make PCB routing easier
+[Y] Break out remaining Arduino pins (there's only about 2!) and put header with a GND in the bottom left corner.
+[Y] Fixed unexpected mess with use of old DIP socket footprints
+[Y] Various footprints remapped
 
