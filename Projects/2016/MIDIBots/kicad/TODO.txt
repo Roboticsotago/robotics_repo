@@ -1,4 +1,5 @@
 [ ] Break out remaining Arduino pins (there's only about 2!) and put header with a GND in the bottom left corner.
+[ ] Add some more net labels to assist with assigning track styles on PCB.
 [ ] Filter and bypass caps as part of each MOSFET circuit? Think DC motor, solenoid, lamp, etc.
 [ ] Tidy up silkscreen (remove old Arduino border?)
 [ ] Check for conflict with big USB-B on some Arduino boards
@@ -12,3 +13,7 @@
 [Y] Label SW2 as CH or MIDI_CH
 [Y] Corrected layout orientation of input diode D1
 [Y] Moved some part reference labels to be visible
+--
+[Y] Added Current_Loop track style
+[Y] Assigned some more track styles and ran a few additional tracks
+
