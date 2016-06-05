@@ -1,4 +1,4 @@
 (fp_lib_table
   (lib (name dips-s)(type Legacy)(uri "$(KIPRJMOD)/lib/dips-s.mod")(options "")(descr ""))
-  (lib (name extras)(type KiCad)(uri "$(KIPRJMOD)/lib/extras.pretty")(options "")(descr ""))
+  (lib (name infomechatronics)(type KiCad)(uri "$(KIPRJMOD)/lib/infomechatronics.pretty")(options "")(descr ""))
 )
