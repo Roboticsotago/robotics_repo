@@ -1,13 +1,11 @@
-[ ] Tidy up +12V trace supplying the Arduino VIN.
-[ ] Move the MOSFET output flyback diodes to the other side of the connector and LED, for tidier layout?
+[ ] Maybe move the MOSFET output flyback diodes to the other side of the connector and LED, for tidier layout?
 
 [ ] Add some more net labels to assist with assigning track styles on PCB.
 [ ] Filter and bypass caps as part of each MOSFET circuit? Think DC motor, solenoid, lamp, etc.
-[ ] Tidy up silkscreen (remove old Arduino border?)
+
 [ ] Check for conflict with big USB-B on some Arduino boards
 [ ] Remove mounting holes in board?
-[ ] Board outline cuts
-[ ] Decorative text, logo
+[ ] Decorative logo?  Maybe for rev. 2!
 
 --
 [Y] Move LAT_ADJ label so it won't be covered by the PC900V IC socket
@@ -40,3 +38,5 @@
 --
 [Y] Move entire board to be nearer the origin (in case that's important for keeping within the size limit)? Or set origin, if that's possible. Paul says the origin should be at the bottom-left of the board.  There is also a "Use auxiliary axis as origin" option when plotting to Gerber - relevant?  Seems so.  Oh, don't forget to do the same with the drill settings!
 [Y] Add copyright information and tidy up notice
+--
+[Y] Tidy up +12V trace supplying the Arduino VIN.
