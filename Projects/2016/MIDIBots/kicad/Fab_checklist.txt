@@ -1,10 +1,12 @@
 DirtyPCBs.com
 
-Will definitely need to use the 10 cm x 10 cm maximum board size
+Will definitely need to use the 10 cm x 10 cm maximum board size!
 
 Essential layers and filename requirements (see also Ian's talk at Makerspace from early 2016):
  - In Pcbnew's Plot dialog, check the "Use Protel filename extensions". This will set most correctly.
- - Rename Edge.Cuts
+ - It's possibly a good idea to include the edge layers on all the output files (or not???)
+ - Rename Edge.Cuts file (.gm1 to .gml)
+
 
 Ext.:		KiCad:		Description:
 GTO		F.SilkS		Top Silkscreen (text)
@@ -17,6 +19,31 @@ GML/GKO/GBR*	Edge.Cuts	Board Outline* <-- REQUIRED
 TXT				Routing and Drill (the holes and slots)
 
 Archive all the files into a Zip file.
+
+--
+
+I get the following files:
+	.gtl
+	.gbl
+	.gbs
+	.gbo
+	.gm1
+	.gts
+	.gto
+
+They have the base filename with the KiCAD layer names added, e.g. MIDI_Shield-F.Mask.gts
+
+Might as well have a script to bundle them all up:
+
+<<
+#!/bin/sh
+BASENAME=MIDI_Shield
+ls $BASENAME{.gto,.gts,.gtl,.gbl,.gbs,.gbo,.gml,.txt}
+
+mv $BASENAME.drl $BASENAME.txt
+mv $BASENAME.gm1 $BASENAME.gml
+zip ... TODO
+>>
 
 --
 
