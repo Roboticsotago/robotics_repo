@@ -1,11 +1,9 @@
-[ ] Maybe move the MOSFET output flyback diodes to the other side of the connector and LED, for tidier layout?
-
 [ ] Add some more net labels to assist with assigning track styles on PCB.
 [ ] Filter and bypass caps as part of each MOSFET circuit? Think DC motor, solenoid, lamp, etc.
 
 [ ] Check for conflict with big USB-B on some Arduino boards
 [ ] Remove mounting holes in board?
-[ ] Decorative logo?  Maybe for rev. 2!
+[ ] Decorative logo?  Maybe for rev. 2!  (Ideas: musical note logo, smiley face)
 
 --
 [Y] Move LAT_ADJ label so it won't be covered by the PC900V IC socket
@@ -40,3 +38,5 @@
 [Y] Add copyright information and tidy up notice
 --
 [Y] Tidy up +12V trace supplying the Arduino VIN.
+--
+[Y] Move the MOSFET output flyback diodes to the other side of the connector and LED, for slightly tidier layout.
