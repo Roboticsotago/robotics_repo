@@ -20,3 +20,44 @@ Keytar
 PWM synth
 	-> could be played via Beldon's FM transmitter/receiver!
 Ukulele
+
+--
+
+2016-06-06
+Now that we've got the Arduino shield design sussed, let's figure out which robots will play what, and using what actuators...
+
+DrumBot:
+	Servo 1: Bass drum
+	Servo 2: Snare drum
+	Servo 3: Cymbal
+	MOSFET: light
+
+PercussionBot:
+	Servo 1: Shaker
+	Servo 2: Woodblock
+	Servo 3: Triangle
+	MOSFET n: DC motor for football rattle
+	+ lights?
+	
+UkeBot:
+	tune to an open chord tuning
+
+	Servo 1: Strumming/picking
+	Stepper: Slide
+
+RecorderBot:
+	Will need air supply to be built!
+	Tape over the thumb hole?
+
+	Servo 1: air regulator
+	MOSFETs: tone holes via solenoids
+	also an air solenoid valve?  Or will the servo be able to cut it off completely and sharply enough?
+
+SynthBot:
+	use PWM to generate simple monophonic square waves (with variable duty)
+	MOSFET on D6 (PWM): drive a speaker directly?  Add DC blocking capacitor to avoid damaging the speaker with DC?
+	MOSFET: light
+
+LightingBot:
+	Servos 1-3: Use PWM to control Henry's RGB LED strip, via a suitable transistor circuit for each channel
+	MOSFETs for other lights (one dimmable)
