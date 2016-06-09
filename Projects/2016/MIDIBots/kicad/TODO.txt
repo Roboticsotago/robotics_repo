@@ -1,3 +1,5 @@
+[ ] Reposition MIDI IN connector in case it interferes with the IOREF and spare header pin above it (present on newer Arduino models).
+
 [ ] Add some more net labels to assist with assigning track styles on PCB.
 [ ] Filter and bypass caps as part of each MOSFET circuit? Think DC motor, solenoid, lamp, etc.
 
