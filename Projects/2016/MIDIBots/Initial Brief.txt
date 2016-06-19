@@ -1,19 +1,21 @@
-MIDIBotís
+MIDIBot‚Äôs
 
-Brief:
-For the 2016 RoboCup, we plan to make a robotic band. We plan to make at least four robotic band members. Our initial concept, was to have robots which are under the control of a computer, playing physical instruments using actuators (Servos, Solenoids etc.)   These robots will be controlled with a computer language called ìMIDIî (Musical Instrument Digital Interface), the benefit of using this language is that it is open source and widely used. These robots will need to be completed by the 25th of June for the 2016 RoboCup. Our goal is to get the circuit boards (PCB) for this band fabricated professionally. We will design the circuit board to hold all of the required components, these circuit boards will attach to the ìArduinoî microcontroller, and this will allow us to have very fine control of our circuit board. We will be performing this in the theater division of the RoboCup. This means that we need to be able to assemble the ëbandí on stage in a short amount of time. As well as this band making ëniceí sounds from the instruments, the circuit boards/ instruments also needs to look appealing to the judges. We will make one general purpose circuit board to save on time and cost, it also means that the circuit boards can be used in other projects after the ìMIDIBotî project has concluded.
+Initial Brief:
+For the 2016 RoboCup, we plan to make a robotic band. We plan to make at least four robotic band members. Our initial concept, is to have robots which are controlled by a computer, playing physical instruments, using actuators (Servos, Solenoids etc.)   These robots will be controlled with a computer language called ‚ÄúMIDI‚Äù (Musical Instrument Digital Interface), the benefit of using this language is that it is open source and widely used. These robots will need to be completed by the 25th of June for the 2016 RoboCup. Our goal is to get the circuit boards (PCB) for this band fabricated professionally. We will design the circuit board to hold all of the required components, these circuit boards will attach to the ‚ÄúArduino‚Äù microcontroller, allowing specific control of our circuit board.
 
-Requirements:
-	We must have at least 4 robots, we plan to have the following robots:
+ We will be performing our robotic band in the theater division of the RoboCup. This means that we need to be able to assemble the ‚Äòband‚Äô on stage in a short amount of time. As well as this band making ‚Äònice‚Äô sounds from the instruments, the circuit boards/instruments also needs to look appealing to the judges. We will make one general purpose circuit board to save on time and cost, it also means that the circuit boards can be used in other projects after the ‚ÄúMIDIBot‚Äù project has concluded.
+
+Objectives:
+	We will have at least 4 robots, we plan to have the following robots:
 		DrumBot (Toy Drum Kit)
 		PercussionBot (Triangle, shaker etc.)
 		UkeBot (ukulele)
 		SynthBot (computer generated noise that the instruments cannot make)
 		WindBot (recorder, harmonica etc.)
 		LightBot (RGB led bar for illuminating the logo/robots etc.)
-	We must design our own circuit boards
-	We must get the ìMIDIBotî circuit boards professionally fabricated.
-	We must be able to receive and process MIDI data.
+	We will design our own circuit boards
+	We will get the ‚ÄúMIDIBot‚Äù circuit boards professionally fabricated.
+	We will be able to receive and process MIDI data.
 	The circuit boards must be able to control at least one servo motor and a MOSFET.
 	The circuit boards should be protected and stored in a durable plastic container.
 
