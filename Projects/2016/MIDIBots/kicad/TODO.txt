@@ -1,3 +1,5 @@
+[ ] Swap power and signal lines on the servo connectors!
+[ ] Find a footprint for the Molex 8981 power connector with larger through-holes
 [ ] Reposition MIDI IN connector in case it interferes with the IOREF and spare header pin above it (present on newer Arduino models).
 
 [ ] Add some more net labels to assist with assigning track styles on PCB.
