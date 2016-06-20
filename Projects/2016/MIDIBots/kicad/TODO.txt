@@ -1,4 +1,3 @@
-[ ] Swap power and signal lines on the servo connectors!
 [ ] Find a footprint for the Molex 8981 power connector with larger through-holes
 [ ] Reposition MIDI IN connector in case it interferes with the IOREF and spare header pin above it (present on newer Arduino models).
 
@@ -46,3 +45,5 @@
 [Y] Move the MOSFET output flyback diodes to the other side of the connector and LED, for slightly tidier layout.
 --
 [Y] Make MOSFET connector labels more consistent.
+--
+[Y] Swap power and signal lines on the servo connectors!
