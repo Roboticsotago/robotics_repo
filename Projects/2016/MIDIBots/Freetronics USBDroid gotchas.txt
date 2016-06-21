@@ -1,0 +1,27 @@
+While testing the MIDIBot shields, we noticed that the DIP switch for setting the MIDI channel wasn't working.  The pin for setting the 4x bit was ignored, as if it was always stuck low (not quite zero volts when we measured it).
+
+This pin connects to Arduino pin 4.  It turns out that on the USBDroid boards, D4 is one of a number of pins used for special functions such as the USB host and SD card interface.
+
+Here's the schematic:
+
+https://github.com/freetronics/USBDroid/blob/master/USBDroid.pdf?raw=true
+
+According to that, D4 is used for Chip Select (CS) on the SD card interface. It is hardwired to a 1k series resistor and then a 2.2k pulldown to ground!  That would explain it!
+
+We can probably manage without that one switch: it will limit the number of MIDI channels we can set, but we will still have 8 that we could use.
+
+Ones we can't use with the USBDroids:
+
+0100 = 4 (MIDI channel number 5)
+0101 = 5 (6)
+0110 = 6 (7)
+0111 = 7 (8)
+1100 = 12 (13)
+1101 = 13 (14)
+1110 = 14 (15)
+1111 = 15 (16)
+
+Alternatively, we could use some ordinary Arduino boards if we really needed an extra channel or so.
+
+
+NOTE: The schematic also shows the same resistor network for Arduino pins D11 and D13!  D13 on the MIDIBot shield just connects to an LED (+resistor), but D11 is used for Servo 3!  Watch out for this, and use a different Ardunio board if you need Servo 3 (DrumBot, PercussionBot, LightingBot).
