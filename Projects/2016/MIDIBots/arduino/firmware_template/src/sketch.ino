@@ -63,6 +63,7 @@ void flash_number(int n) {
 
 
 // Read MIDI channel DIP switches and store the result:
+// NOTE: Freetronics USBDroid has a pull-down resistor on pin D4, which makes that pin unusable! It acts as if D4 is always grounded, i.e. the switch is on.
 void read_MIDI_channel() {
 	MIDI_channel =
 		!digitalRead(MIDI_8x_PIN) * 8 +
@@ -118,7 +119,6 @@ void loop()
 }
 
 void process_MIDI() {
-	// TODO: handle MIDI channel separately (already have code somewhere for this?)
 	if (Serial.available() > 0) {
 		int data = Serial.read();
 		if (data > 127) {
@@ -128,26 +128,29 @@ void process_MIDI() {
 		} else {
 			// It's a data byte.
 			dataByte[i] = data;
-			if (statusByte == 0x90 && i == 1) {
+			if (statusByte == (0x90 | MIDI_channel) && i == 1) {
 				// Note-on message received
 				if (dataByte[1] == 0 && dataByte[0] == current_note_number) {
 					// Stop note playing
+				//	pwm_off();
 					digitalWrite(LED_PIN, LOW);
 					analogWrite(MOSFET_PWM_PIN, 0);
 				} else {
 					// Start note playing
 					current_note_number = dataByte[0];
+//					pwm(frequency(current_note_number), dataByte[1] / 127.0 / 2); // TODO: map velocity to PWM duty
 					digitalWrite(LED_PIN, HIGH);
 					analogWrite(MOSFET_PWM_PIN, 64);
+				//	drum();
 				}
-			} else if (statusByte == 0x80 && i == 1 && dataByte[0] == current_note_number) {
+			} else if (statusByte == (0x80 | MIDI_channel) && i == 1 && dataByte[0] == current_note_number) {
 				// Note-off message received
-				// TODO: also recognise 0x9 but with velocity 0 as note-off.
+				// TODO: also respond to note-on with vel=0 as note-off
 				// Stop note playing
 				digitalWrite(LED_PIN, LOW);
 				analogWrite(MOSFET_PWM_PIN, 0);
+			//	pwm_off();
 			}
-			// TODO: also handle CC messages for LightingBot
 			i++;
 			// TODO: error detection if i goes beyond the array size.
 		}
