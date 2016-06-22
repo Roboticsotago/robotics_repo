@@ -37,10 +37,11 @@ void clearData(){
 // Even though this is only monophonic, it's still useful to keep track of the note currently being played, so that any note-off messages for other notes can be ignored.
 int current_note_number = 0;
 
+
 // Tricky low-level code from Chris for programming the PWM output for precise frequencies...
 
 // On the Mega, we have timer1 attached to pins D11 and D12, D12 being the primary one.
-// On "ordinary" Arduinos, it's on pins 9 and 10.  On the MIDIBot shield, pin 10 is Servo 2.
+// On "ordinary" Arduinos, it's on pins 9 and 10.  On the MIDIBot shield, pin 10 is Servo 2 (middle pin).
 // Ideally we'd use the PWM MOSFET output on D6, but that uses Timer 0 and doesn't support frequency-accurate PWM, as far as I can tell.
 // This will need an external circuit anyway to limit the current and block DC, so it's not a huge hassle to add a MOSFET circuit (with resistors and protection diode) to this as well.  It can be powered from one of the aux 12 V headers.
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
@@ -82,11 +83,12 @@ byte timer_prescale_bits(int prescale) {
 		return 0x00;	// Error?!
 }
 
-
+// Map MIDI note numbers to frequency in Hz:
 float frequency(int note) {
 	return 440 * pow(2.0, (note - 69) / 12.0);
 }
 
+// Function for computing the PWM wrap limit ("top" value) based on the desired frequency (and the CPU clock speed and prescaler setting):
 unsigned int top(float frequency) {
 	return round(F_CPU / (prescale * frequency) - 1);
 }
@@ -154,9 +156,9 @@ void read_MIDI_channel() {
 
 void self_test() {
 	// Robot-specific self-test routine goes here
-	flash(50, 50); flash(50, 50); flash(50, 50); flash(50, 50);
+//	flash(50, 50); flash(50, 50); flash(50, 50); flash(50, 50);
 	read_MIDI_channel();
-	pwm_off();
+	flash_number(MIDI_channel);
 	pwm(frequency(40), 0.1); delay(250);
 	pwm(frequency(52), 0.1); delay(250);
 	pwm(frequency(64), 0.1); delay(250);
@@ -198,7 +200,11 @@ void setup()
 	// Only available on certain pins?  Just poll in main loop instead.
 	
 	// Flash to indicate startup/ready:
-	flash(50, 200); flash(50, 400); flash(50, 200); flash(400, 0);
+//	flash(50, 200); flash(50, 400); flash(50, 200); flash(400, 0);
+	// or not, since we're flashing the MIDI channel ID number anyway. ;)
+	
+	// Run self-test at startup as well?
+//	self_test();
 	
 	pwm_off();
 }
