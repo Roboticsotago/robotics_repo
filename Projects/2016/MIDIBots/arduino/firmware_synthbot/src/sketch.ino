@@ -1,5 +1,6 @@
 // SynthBot code for the 2016 MIDIBots
 // Team _underscore_, Information Science Mechatronics, University of Otago
+// NOTE: there's a limit to how low a frequency this can play, given the PWM settings.  Note frequencies will jump around below this limit.
 
 
 // Define pin mappings for the MIDIBot shield:
@@ -83,7 +84,7 @@ byte timer_prescale_bits(int prescale) {
 
 
 float frequency(int note) {
-	return 440 * pow(2, (note - 69) / 12.0);
+	return 440 * pow(2.0, (note - 69) / 12.0);
 }
 
 unsigned int top(float frequency) {
@@ -93,6 +94,7 @@ unsigned int top(float frequency) {
 
 void pwm(float frequency, float duty_cycle) {
 	TCNT1 = 0;        // Reset timer counter
+//	pwm_off(); // Maybe necessary to avoid stuck at 5 V condition? Nope, not enough...
 	
 	unsigned int wrap_limit = top(frequency);
 	OCR1A = wrap_limit;
@@ -152,9 +154,14 @@ void read_MIDI_channel() {
 
 void self_test() {
 	// Robot-specific self-test routine goes here
-//	flash(50, 50); flash(50, 50); flash(50, 50); flash(50, 50);
+	flash(50, 50); flash(50, 50); flash(50, 50); flash(50, 50);
 	read_MIDI_channel();
-	flash_number(MIDI_channel);
+	pwm_off();
+	pwm(frequency(40), 0.1); delay(250);
+	pwm(frequency(52), 0.1); delay(250);
+	pwm(frequency(64), 0.1); delay(250);
+	pwm(frequency(76), 0.1); delay(250);
+	pwm_off();
 }
 
 void setup()
@@ -192,6 +199,8 @@ void setup()
 	
 	// Flash to indicate startup/ready:
 	flash(50, 200); flash(50, 400); flash(50, 200); flash(400, 0);
+	
+	pwm_off();
 }
 
 void loop()
