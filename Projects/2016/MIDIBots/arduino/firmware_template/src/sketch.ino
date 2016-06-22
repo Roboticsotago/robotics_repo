@@ -23,6 +23,19 @@ const int
 int
 	MIDI_channel = 0;	// 1..16, 10=drums
 
+// MIDI messages have up to 2 data bytes, which we store in an array:
+int dataByte[2], statusByte = 0, i = 0;
+
+void clearData(){
+  dataByte[0] = 0;
+  dataByte[1] = 0;
+  i = 0;
+}
+
+// Even though this is only monophonic, it's still useful to keep track of the note currently being played, so that any note-off messages for other notes can be ignored.
+int current_note_number = 0;
+
+
 void flash(int on_time, int off_time) {
 	digitalWrite(LED_PIN, HIGH);
 	delay(on_time);
@@ -86,22 +99,59 @@ void setup()
 	
 	// Set up MIDI communication:
 	Serial.begin(31250);
-
+	clearData();
 
 	// Flash to indicate startup/ready:
-	flash(50, 200);
-	flash(250, 0);
+	flash(50, 200); flash(50, 400); flash(50, 200); flash(400, 0);
 }
 
 void loop()
 {
-	test_blink();
+	process_MIDI();
+//	test_blink();
 //	test_button();
 //	test_flash_number();
 //	test_MIDI_channel();
 //	test_MOSFETs();
 //	test_MOSFETs_cycle();
 //	test_PWM();
+}
+
+void process_MIDI() {
+	// TODO: handle MIDI channel separately (already have code somewhere for this?)
+	if (Serial.available() > 0) {
+		int data = Serial.read();
+		if (data > 127) {
+			// It's a status byte. Store it for future reference.
+			statusByte = data;
+			clearData();  
+		} else {
+			// It's a data byte.
+			dataByte[i] = data;
+			if (statusByte == 0x90 && i == 1) {
+				// Note-on message received
+				if (dataByte[1] == 0 && dataByte[0] == current_note_number) {
+					// Stop note playing
+					digitalWrite(LED_PIN, LOW);
+					analogWrite(MOSFET_PWM_PIN, 0);
+				} else {
+					// Start note playing
+					current_note_number = dataByte[0];
+					digitalWrite(LED_PIN, HIGH);
+					analogWrite(MOSFET_PWM_PIN, 64);
+				}
+			} else if (statusByte == 0x80 && i == 1 && dataByte[0] == current_note_number) {
+				// Note-off message received
+				// TODO: also recognise 0x9 but with velocity 0 as note-off.
+				// Stop note playing
+				digitalWrite(LED_PIN, LOW);
+				analogWrite(MOSFET_PWM_PIN, 0);
+			}
+			// TODO: also handle CC messages for LightingBot
+			i++;
+			// TODO: error detection if i goes beyond the array size.
+		}
+	}
 }
 
 void test_blink() {
