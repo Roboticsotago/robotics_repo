@@ -21,14 +21,46 @@ const int
 ;
 
 
-// Set up servo definitions:
-#include <Servo.h>
-Servo servo_1;
+#include "Timer.h"
+#include <Servo.h> 
 
-// TODO: also define max, min angles for each of the elements.
-// ...
-// Bass drum: about 10-30 degrees
-// Shaker egg: about 60-110 degrees
+void triangle_release() {}
+void shaker_release() {}
+void drum_release() {}
+
+
+Timer *triangle_timer = new Timer(10, &triangle_release, 1);
+Timer *shaker_timer = new Timer(10, &shaker_release, 1);
+Timer *drum_timer = new Timer(10, &drum_release, 1);
+
+Servo
+	triangle_servo,
+	shaker_servo,
+	drum_servo
+;
+
+int pos = 0;    // variable to store the servo position
+
+const int TRIANGLE_NOTE = 60; // Middle C
+const int TRIANGLE_MIN = 35;
+const int TRIANGLE_MAX = 5;
+const int TRIANGLE_DELAY = 100;
+// Checked!
+
+const int SHAKER_NOTE = 62;
+const int SHAKER_MIN = 60;
+const int SHAKER_MAX = 110;
+const int SHAKER_DELAY = 100;
+
+// Numbers here for cymbal testing:
+// cymbal: 60..90 degrees, 100 ms
+// snare drum: 40..62 degrees, 100 ms
+// bass drum: 
+const int DRUM_NOTE = 64;
+const int DRUM_MIN = 30;
+const int DRUM_MAX = 12;
+const int DRUM_DELAY = 100;
+
 
 
 int MIDI_channel = 0;	// 1..16, 10=drums
@@ -87,9 +119,9 @@ void read_MIDI_channel() {
 
 void self_test() {
 	// Robot-specific self-test routine goes here
-//	flash(50, 50); flash(50, 50); flash(50, 50); flash(50, 50);
-	read_MIDI_channel();
-	flash_number(MIDI_channel + 1);
+//	read_MIDI_channel();
+//	flash_number(MIDI_channel + 1);
+	drum();
 }
 
 void setup()
@@ -114,7 +146,14 @@ void setup()
 	pinMode(SERVO_3_PIN, OUTPUT); digitalWrite(SERVO_3_PIN, LOW);
 	
 	// Servo setup:
-	servo_1.attach(SERVO_1_PIN);
+	triangle_servo.attach(SERVO_1_PIN);
+	shaker_servo.attach(SERVO_2_PIN);
+	drum_servo.attach(SERVO_3_PIN);
+	
+	// TODO: set initial position to _MIN values
+	triangle_servo.write(TRIANGLE_MIN);
+	shaker_servo.write(SHAKER_MIN);
+	drum_servo.write(DRUM_MIN);
 
 	// Initialise MIDI channel number according to DIP switch settings:
 	read_MIDI_channel();
@@ -138,7 +177,7 @@ void loop()
 	if (!digitalRead(SELF_TEST_PIN)) {
 		self_test();
 	}
-//	process_MIDI();
+	process_MIDI();
 //	test_blink();
 //	test_button();
 //	test_flash_number();
@@ -146,7 +185,19 @@ void loop()
 //	test_MOSFETs();
 //	test_MOSFETs_cycle();
 //	test_PWM();
-	test_servo();
+//	test_servo();
+}
+
+
+void drum() {
+/*
+ 	triangle_servo.write(TRIANGLE_MAX);
+	delay(TRIANGLE_DELAY);
+	triangle_servo.write(TRIANGLE_MIN);
+*/
+	drum_servo.write(DRUM_MAX);
+	delay(DRUM_DELAY);
+	drum_servo.write(DRUM_MIN);
 }
 
 void process_MIDI() {
@@ -161,25 +212,25 @@ void process_MIDI() {
 			dataByte[i] = data;
 			if (statusByte == (0x90 | MIDI_channel) && i == 1) {
 				// Note-on message received
-				if (dataByte[1] == 0 && dataByte[0] == current_note_number) {
+				if (dataByte[1] == 0) {
 					// Stop note playing
 				//	pwm_off();
-					digitalWrite(LED_PIN, LOW);
-					analogWrite(MOSFET_PWM_PIN, 0);
+				//	digitalWrite(LED_PIN, LOW);
+				//	analogWrite(MOSFET_PWM_PIN, 0);
 				} else {
 					// Start note playing
-					current_note_number = dataByte[0];
 //					pwm(frequency(current_note_number), dataByte[1] / 127.0 / 2); // TODO: map velocity to PWM duty
-					digitalWrite(LED_PIN, HIGH);
-					analogWrite(MOSFET_PWM_PIN, 64);
-				//	drum();
+				//	digitalWrite(LED_PIN, HIGH);
+				//	analogWrite(MOSFET_PWM_PIN, 64);
+					drum();
+					// dataByte[0]
 				}
-			} else if (statusByte == (0x80 | MIDI_channel) && i == 1 && dataByte[0] == current_note_number) {
+			} else if (statusByte == (0x80 | MIDI_channel) && i == 1) {
 				// Note-off message received
 				// TODO: also respond to note-on with vel=0 as note-off
 				// Stop note playing
-				digitalWrite(LED_PIN, LOW);
-				analogWrite(MOSFET_PWM_PIN, 0);
+			//	digitalWrite(LED_PIN, LOW);
+			//	analogWrite(MOSFET_PWM_PIN, 0);
 			//	pwm_off();
 			}
 			i++;
@@ -199,19 +250,6 @@ void test_button() {
 	digitalWrite(LED_PIN, !digitalRead(SELF_TEST_PIN));
 }
 
-void test_flash_number() {
-	if (!digitalRead(SELF_TEST_PIN)) {
-		flash_number(3);
-		delay(2000);
-		flash_number(16);
-		delay(2000);
-		flash_number(235);
-		delay(2000);
-		flash_number(127);
-		delay(2000);
-	}
-}
-
 void test_MIDI_channel() {
 	if (!digitalRead(SELF_TEST_PIN)) {
 		read_MIDI_channel();
@@ -223,48 +261,9 @@ void test_MIDI_channel() {
 	}
 }
 
-void test_MOSFETs() {
-	if (!digitalRead(SELF_TEST_PIN)) {
-		analogWrite(MOSFET_PWM_PIN, 64);
-		digitalWrite(MOSFET_2_PIN, HIGH);
-		digitalWrite(MOSFET_3_PIN, HIGH);
-		digitalWrite(MOSFET_4_PIN, HIGH);
-	} else {
-		analogWrite(MOSFET_PWM_PIN, 0);
-		digitalWrite(MOSFET_2_PIN, LOW);
-		digitalWrite(MOSFET_3_PIN, LOW);
-		digitalWrite(MOSFET_4_PIN, LOW);
-	}
-}
-
-void test_MOSFETs_cycle() {
-	digitalWrite(MOSFET_PWM_PIN, HIGH);
-	delay(250);
-	digitalWrite(MOSFET_PWM_PIN, LOW);
-	
-	digitalWrite(MOSFET_2_PIN, HIGH);
-	delay(250);
-	digitalWrite(MOSFET_2_PIN, LOW);
-	
-	digitalWrite(MOSFET_3_PIN, HIGH);
-	delay(250);
-	digitalWrite(MOSFET_3_PIN, LOW);
-
-	digitalWrite(MOSFET_4_PIN, HIGH);
-	delay(250);
-	digitalWrite(MOSFET_4_PIN, LOW);
-}
-
-void test_PWM() {
-	analogWrite(MOSFET_PWM_PIN, 64);
-	delay(250);
-	analogWrite(MOSFET_PWM_PIN, 0);
-	delay(500);
-}
-
 void test_servo() {
-	servo_1.write(15);
-	delay(2000);
-	servo_1.write(20);
-	delay(2000);
+	triangle_servo.write(60);
+	delay(500);
+	triangle_servo.write(110);
+	delay(500);
 }
