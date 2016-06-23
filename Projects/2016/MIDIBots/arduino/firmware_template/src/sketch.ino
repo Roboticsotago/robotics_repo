@@ -79,7 +79,7 @@ void self_test() {
 	// Robot-specific self-test routine goes here
 //	flash(50, 50); flash(50, 50); flash(50, 50); flash(50, 50);
 	read_MIDI_channel();
-	flash_number(MIDI_channel);
+	flash_number(MIDI_channel + 1);
 }
 
 void setup()
@@ -116,7 +116,8 @@ void setup()
 	// Only available on certain pins?  Just poll in main loop instead.
 	
 	// Flash to indicate startup/ready:
-	flash(50, 200); flash(50, 400); flash(50, 200); flash(400, 0);
+//	flash(50, 200); flash(50, 400); flash(50, 200); flash(400, 0);
+	// Don't bother if flashing MIDI channel - it's confusing!
 }
 
 void loop()
@@ -125,13 +126,13 @@ void loop()
 		self_test();
 	}
 //	process_MIDI();
-//	test_blink();
+	test_blink();
 //	test_button();
 //	test_flash_number();
 //	test_MIDI_channel();
 //	test_MOSFETs();
 //	test_MOSFETs_cycle();
-	test_PWM();
+//	test_PWM();
 }
 
 void process_MIDI() {
@@ -200,8 +201,11 @@ void test_flash_number() {
 void test_MIDI_channel() {
 	if (!digitalRead(SELF_TEST_PIN)) {
 		read_MIDI_channel();
-		Serial.println(MIDI_channel);
-		flash_number(MIDI_channel);
+		Serial.print(MIDI_channel);
+		Serial.print(" (");
+		Serial.print(MIDI_channel + 1);
+		Serial.println(")");
+		flash_number(MIDI_channel + 1);
 	}
 }
 
