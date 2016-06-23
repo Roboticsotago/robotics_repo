@@ -20,8 +20,7 @@ const int
 	SELF_TEST_PIN = A5
 ;
 
-int
-	MIDI_channel = 0;	// 1..16, 10=drums
+int MIDI_channel = 0;	// 1..16, 10=drums
 
 // MIDI messages have up to 2 data bytes, which we store in an array:
 int dataByte[2], statusByte = 0, i = 0;
@@ -32,7 +31,7 @@ void clearData(){
   i = 0;
 }
 
-// Even though this is only monophonic, it's still useful to keep track of the note currently being played, so that any note-off messages for other notes can be ignored.
+// For monophonic instruments, it's useful to keep track of the note currently being played, so that any note-off messages for other notes can be ignored.
 int current_note_number = 0;
 
 
@@ -60,7 +59,7 @@ void flash_number(int n) {
 	for (int i = 0; i < (n % 10); i++) {
 		flash(200, 200);
 	}
-	delay(500);
+	delay(1000);
 }
 
 
