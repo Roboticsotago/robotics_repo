@@ -1,4 +1,4 @@
-// Template/skeleton code for the 2016 MIDIBots
+// PercussionBot code for the 2016 MIDIBots
 // Team _underscore_, Information Science Mechatronics, University of Otago
 
 
@@ -19,6 +19,17 @@ const int
 	LATENCY_ADJUST_PIN = A0,
 	SELF_TEST_PIN = A5
 ;
+
+
+// Set up servo definitions:
+#include <Servo.h>
+Servo servo_1;
+
+// TODO: also define max, min angles for each of the elements.
+// ...
+// Bass drum: about 10-30 degrees
+// Shaker egg: about 60-110 degrees
+
 
 int MIDI_channel = 0;	// 1..16, 10=drums
 
@@ -101,6 +112,9 @@ void setup()
 	pinMode(SERVO_1_PIN, OUTPUT); digitalWrite(SERVO_1_PIN, LOW);
 	pinMode(SERVO_2_PIN, OUTPUT); digitalWrite(SERVO_2_PIN, LOW);
 	pinMode(SERVO_3_PIN, OUTPUT); digitalWrite(SERVO_3_PIN, LOW);
+	
+	// Servo setup:
+	servo_1.attach(SERVO_1_PIN);
 
 	// Initialise MIDI channel number according to DIP switch settings:
 	read_MIDI_channel();
@@ -125,13 +139,14 @@ void loop()
 		self_test();
 	}
 //	process_MIDI();
-	test_blink();
+//	test_blink();
 //	test_button();
 //	test_flash_number();
 //	test_MIDI_channel();
 //	test_MOSFETs();
 //	test_MOSFETs_cycle();
 //	test_PWM();
+	test_servo();
 }
 
 void process_MIDI() {
@@ -245,4 +260,11 @@ void test_PWM() {
 	delay(250);
 	analogWrite(MOSFET_PWM_PIN, 0);
 	delay(500);
+}
+
+void test_servo() {
+	servo_1.write(15);
+	delay(2000);
+	servo_1.write(20);
+	delay(2000);
 }
