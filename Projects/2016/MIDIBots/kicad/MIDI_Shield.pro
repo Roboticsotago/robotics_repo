@@ -1,4 +1,4 @@
-update=Sat 04 Jun 2016 18:16:21 NZST
+update=Mon 13 Jun 2016 21:31:57 NZST
 last_client=kicad
 [cvpcb]
 version=1
@@ -43,19 +43,14 @@ LibName14=dip_sockets
 LibName15=pga_sockets
 LibName16=valves
 LibName17=/home/cedwards/Documents/Settings/KiCAD/arduino-kicad-nicholasclewis/arduino_shields
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-LabSize=60
 [eeschema]
 version=1
 LibDir=/home/cedwards/Documents/Settings/KiCAD/freetronics_kicad_library;/home/cedwards/Documents/Settings/KiCAD/xess.pretty;/home/cedwards/Documents/Settings/KiCAD
+NetFmtName=
+RptD_X=0
+RptD_Y=100
+RptLab=1
+LabSize=60
 [eeschema/libraries]
 LibName1=power
 LibName2=device
@@ -89,3 +84,13 @@ LibName29=valves
 LibName30=lib/dips-s
 LibName31=lib/arduino-kicad-nicholasclewis/arduino_shieldsNCL
 LibName32=lib/freetronics_kicad_library/freetronics_schematic
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60

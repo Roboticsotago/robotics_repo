@@ -18,7 +18,7 @@ int phase = 0;
 void setup() 
 { 
 	
-	servos[0].attach(3);
+	servos[0].attach(10);
 	servos[1].attach(11);
 	
 	phase_timer->setOnTimer(&hit); //sets new timer
