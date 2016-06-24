@@ -33,12 +33,12 @@ Servo
 int pos = 0;    // variable to store the servo position
 
 const int TRIANGLE_NOTE = 60; // Middle C
-const int TRIANGLE_MIN = 35;
-const int TRIANGLE_MAX = 5;
+const int TRIANGLE_MIN = 30;
+const int TRIANGLE_MAX = 14;
 const int TRIANGLE_DELAY = 100;
 // Checked!
 
-const int SHAKER_NOTE = 62;
+const int SHAKER_NOTE = 39; //62
 const int SHAKER_MIN = 100;
 const int SHAKER_MAX = 110;
 const int SHAKER_DELAY = 100;
@@ -50,7 +50,7 @@ const int SHAKER_DELAY = 100;
 // snare drum: 40..62 degrees, 100 ms
 // bass drum: 30..12, 100 ms
 
-const int DRUM_NOTE = 64;
+const int DRUM_NOTE = 36; //64
 const int DRUM_MIN = 160;
 const int DRUM_MAX = 137;	
 const int DRUM_DELAY = 100;
@@ -201,9 +201,11 @@ void loop()
 	if (!digitalRead(SELF_TEST_PIN)) {
 		self_test();
 	}
+	
 	triangle_timer->Update();
 	shaker_timer->Update();
 	drum_timer->Update();
+	
 	process_MIDI();
 //	test_blink();
 //	test_button();
@@ -228,7 +230,7 @@ void process_MIDI() {
 			dataByte[i] = data;
 			if (statusByte == (0x90 | MIDI_channel) && i == 1) {
 				// Note-on message received
-				flash(20,20);
+			//	flash(20,0); // Warning: blocks!
 				if (dataByte[1] == 0) {
 					// Stop note playing - nothing to do for percussion!
 				} else {
