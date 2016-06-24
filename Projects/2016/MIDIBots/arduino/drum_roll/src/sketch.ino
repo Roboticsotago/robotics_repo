@@ -17,7 +17,6 @@ int phase = 0;
 
 void setup() 
 { 
-	
 	servos[0].attach(9);
 	servos[1].attach(10);
 	
