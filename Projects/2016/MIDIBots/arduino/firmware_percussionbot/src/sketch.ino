@@ -44,47 +44,38 @@ const int SHAKER_MAX = 110;
 const int SHAKER_DELAY = 100;
 // Checked! 
 
-// Numbers here for DrumBot testing:
+// Numbers here for DrumBot from testing:
 
 // cymbal: 60..90 degrees, 100 ms
 // snare drum: 40..62 degrees, 100 ms
 // bass drum: 30..12, 100 ms
 
-// TODO: check coconut drum!
 const int DRUM_NOTE = 64;
-const int DRUM_MIN = 30;
-const int DRUM_MAX = 12;
+const int DRUM_MIN = 160;
+const int DRUM_MAX = 137;	
 const int DRUM_DELAY = 100;
+// Checked!
 
 // Problem when testing Henry's drum on the PercussionBot. It was not changing the position of the servo in corrolation to what we set the servo range to, it was acting as if it was stuck in the center.
 
-Timer *triangle_timer = new Timer(100, &triangle_release, 1);
-Timer *shaker_timer = new Timer(100, &shaker_release, 1);
-Timer *drum_timer = new Timer(100, &drum_release, 1);
+// Timers for asynchronous release of drum hits:
+Timer *triangle_timer = new Timer(TRIANGLE_DELAY, &triangle_release, 1);
+Timer *shaker_timer = new Timer(SHAKER_DELAY, &shaker_release, 1);
+Timer *drum_timer = new Timer(DRUM_DELAY, &drum_release, 1);
 
-// Generic drum hit function for testing:
-void drum() {
-/*
- 	triangle_servo.write(TRIANGLE_MAX);
-	delay(TRIANGLE_DELAY);
-	triangle_servo.write(TRIANGLE_MIN);
-*/
-	drum_servo.write(DRUM_MAX);
-	delay(DRUM_DELAY);
-	drum_servo.write(DRUM_MIN);
-}
 
 // Separate functions for hit and release for each drum:
 void triangle_hit() {
-	flash(20,20);
 	triangle_servo.write(TRIANGLE_MAX);
 	triangle_timer->Start();
 }
 void shaker_hit() {
-	// ...
+	shaker_servo.write(SHAKER_MAX);
+	shaker_timer->Start();
 }
 void drum_hit() {
-	// ...
+	drum_servo.write(DRUM_MAX);
+	drum_timer->Start();
 }
 
 void triangle_release() {triangle_servo.write(TRIANGLE_MIN);}
@@ -152,8 +143,9 @@ void self_test() {
 	// Robot-specific self-test routine goes here
 //	read_MIDI_channel();
 //	flash_number(MIDI_channel + 1);
-//	drum();
 	triangle_hit();
+	shaker_hit();
+	drum_hit();
 }
 
 void setup()
@@ -209,12 +201,15 @@ void loop()
 	if (!digitalRead(SELF_TEST_PIN)) {
 		self_test();
 	}
-//	process_MIDI();
+	triangle_timer->Update();
+	shaker_timer->Update();
+	drum_timer->Update();
+	process_MIDI();
 //	test_blink();
 //	test_button();
 //	test_flash_number();
 //	test_MIDI_channel();
-test_MOSFETs();
+//	test_MOSFETs();
 //	test_MOSFETs_cycle();
 //	test_PWM();
 //	test_servo();
@@ -233,26 +228,24 @@ void process_MIDI() {
 			dataByte[i] = data;
 			if (statusByte == (0x90 | MIDI_channel) && i == 1) {
 				// Note-on message received
+				flash(20,20);
 				if (dataByte[1] == 0) {
-					// Stop note playing
-				//	pwm_off();
-				//	digitalWrite(LED_PIN, LOW);
-				//	analogWrite(MOSFET_PWM_PIN, 0);
+					// Stop note playing - nothing to do for percussion!
 				} else {
 					// Start note playing
-//					pwm(frequency(current_note_number), dataByte[1] / 127.0 / 2); // TODO: map velocity to PWM duty
-				//	digitalWrite(LED_PIN, HIGH);
-				//	analogWrite(MOSFET_PWM_PIN, 64);
-					drum();
-					// dataByte[0]
+					if (dataByte[0] == TRIANGLE_NOTE) {
+						triangle_hit();
+					}
+					if (dataByte[0] == SHAKER_NOTE) {
+						shaker_hit();
+					}
+					if (dataByte[0] == DRUM_NOTE) {
+						drum_hit();
+					}					
 				}
 			} else if (statusByte == (0x80 | MIDI_channel) && i == 1) {
 				// Note-off message received
-				// TODO: also respond to note-on with vel=0 as note-off
-				// Stop note playing
-			//	digitalWrite(LED_PIN, LOW);
-			//	analogWrite(MOSFET_PWM_PIN, 0);
-			//	pwm_off();
+				// Nothing to do for percussion!
 			}
 			i++;
 			// TODO: error detection if i goes beyond the array size.
