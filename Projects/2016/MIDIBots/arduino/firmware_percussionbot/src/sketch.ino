@@ -24,15 +24,6 @@ const int
 #include "Timer.h"
 #include <Servo.h> 
 
-void triangle_release() {}
-void shaker_release() {}
-void drum_release() {}
-
-
-Timer *triangle_timer = new Timer(10, &triangle_release, 1);
-Timer *shaker_timer = new Timer(10, &shaker_release, 1);
-Timer *drum_timer = new Timer(10, &drum_release, 1);
-
 Servo
 	triangle_servo,
 	shaker_servo,
@@ -48,18 +39,58 @@ const int TRIANGLE_DELAY = 100;
 // Checked!
 
 const int SHAKER_NOTE = 62;
-const int SHAKER_MIN = 60;
+const int SHAKER_MIN = 100;
 const int SHAKER_MAX = 110;
 const int SHAKER_DELAY = 100;
+// Checked! 
 
-// Numbers here for cymbal testing:
+// Numbers here for DrumBot testing:
+
 // cymbal: 60..90 degrees, 100 ms
 // snare drum: 40..62 degrees, 100 ms
-// bass drum: 
+// bass drum: 30..12, 100 ms
+
+// TODO: check coconut drum!
 const int DRUM_NOTE = 64;
 const int DRUM_MIN = 30;
 const int DRUM_MAX = 12;
 const int DRUM_DELAY = 100;
+
+// Problem when testing Henry's drum on the PercussionBot. It was not changing the position of the servo in corrolation to what we set the servo range to, it was acting as if it was stuck in the center.
+
+Timer *triangle_timer = new Timer(100, &triangle_release, 1);
+Timer *shaker_timer = new Timer(100, &shaker_release, 1);
+Timer *drum_timer = new Timer(100, &drum_release, 1);
+
+// Generic drum hit function for testing:
+void drum() {
+/*
+ 	triangle_servo.write(TRIANGLE_MAX);
+	delay(TRIANGLE_DELAY);
+	triangle_servo.write(TRIANGLE_MIN);
+*/
+	drum_servo.write(DRUM_MAX);
+	delay(DRUM_DELAY);
+	drum_servo.write(DRUM_MIN);
+}
+
+// Separate functions for hit and release for each drum:
+void triangle_hit() {
+	flash(20,20);
+	triangle_servo.write(TRIANGLE_MAX);
+	triangle_timer->Start();
+}
+void shaker_hit() {
+	// ...
+}
+void drum_hit() {
+	// ...
+}
+
+void triangle_release() {triangle_servo.write(TRIANGLE_MIN);}
+void shaker_release() {shaker_servo.write(SHAKER_MIN);}
+void drum_release() {drum_servo.write(DRUM_MIN);}
+
 
 
 
@@ -121,7 +152,8 @@ void self_test() {
 	// Robot-specific self-test routine goes here
 //	read_MIDI_channel();
 //	flash_number(MIDI_channel + 1);
-	drum();
+//	drum();
+	triangle_hit();
 }
 
 void setup()
@@ -150,7 +182,7 @@ void setup()
 	shaker_servo.attach(SERVO_2_PIN);
 	drum_servo.attach(SERVO_3_PIN);
 	
-	// TODO: set initial position to _MIN values
+	// Set initial position to _MIN values
 	triangle_servo.write(TRIANGLE_MIN);
 	shaker_servo.write(SHAKER_MIN);
 	drum_servo.write(DRUM_MIN);
@@ -177,28 +209,17 @@ void loop()
 	if (!digitalRead(SELF_TEST_PIN)) {
 		self_test();
 	}
-	process_MIDI();
+//	process_MIDI();
 //	test_blink();
 //	test_button();
 //	test_flash_number();
 //	test_MIDI_channel();
-//	test_MOSFETs();
+test_MOSFETs();
 //	test_MOSFETs_cycle();
 //	test_PWM();
 //	test_servo();
 }
 
-
-void drum() {
-/*
- 	triangle_servo.write(TRIANGLE_MAX);
-	delay(TRIANGLE_DELAY);
-	triangle_servo.write(TRIANGLE_MIN);
-*/
-	drum_servo.write(DRUM_MAX);
-	delay(DRUM_DELAY);
-	drum_servo.write(DRUM_MIN);
-}
 
 void process_MIDI() {
 	if (Serial.available() > 0) {
