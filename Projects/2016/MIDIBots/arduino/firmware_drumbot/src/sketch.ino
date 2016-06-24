@@ -1,4 +1,4 @@
-// PercussionBot code for the 2016 MIDIBots
+// DrumBot code for the 2016 MIDIBots
 // Team _underscore_, Information Science Mechatronics, University of Otago
 
 
@@ -25,24 +25,12 @@ const int
 #include <Servo.h> 
 
 Servo
-	triangle_servo,
-	shaker_servo,
-	drum_servo
+	bass_drum_servo,
+	snare_drum_servo,
+	cymbal_servo
 ;
 
 int pos = 0;    // variable to store the servo position
-
-const int TRIANGLE_NOTE = 60; // Middle C
-const int TRIANGLE_MIN = 30;
-const int TRIANGLE_MAX = 14;
-const int TRIANGLE_DELAY = 100;
-// Checked!
-
-const int SHAKER_NOTE = 39; //62
-const int SHAKER_MIN = 100;
-const int SHAKER_MAX = 110;
-const int SHAKER_DELAY = 100;
-// Checked! 
 
 // Numbers here for DrumBot from testing:
 
@@ -50,37 +38,45 @@ const int SHAKER_DELAY = 100;
 // snare drum: 40..62 degrees, 100 ms
 // bass drum: 30..12, 100 ms
 
-const int DRUM_NOTE = 36; //64
-const int DRUM_MIN = 160;
-const int DRUM_MAX = 137;	
-const int DRUM_DELAY = 100;
-// Checked!
+const int BASS_DRUM_NOTE = 36;
+const int BASS_DRUM_MIN = 30;
+const int BASS_DRUM_MAX = 12;
+const int BASS_DRUM_DELAY = 100;
 
-// Problem when testing Henry's drum on the PercussionBot. It was not changing the position of the servo in corrolation to what we set the servo range to, it was acting as if it was stuck in the center.
+const int SNARE_DRUM_NOTE = 39;
+const int SNARE_DRUM_MIN = 40;
+const int SNARE_DRUM_MAX = 62;
+const int SNARE_DRUM_DELAY = 100;
+
+const int CYMBAL_NOTE = 42;
+const int CYMBAL_MIN = 60;
+const int CYMBAL_MAX = 90;	
+const int CYMBAL_DELAY = 100;
+
 
 // Timers for asynchronous release of drum hits:
-Timer *triangle_timer = new Timer(TRIANGLE_DELAY, &triangle_release, 1);
-Timer *shaker_timer = new Timer(SHAKER_DELAY, &shaker_release, 1);
-Timer *drum_timer = new Timer(DRUM_DELAY, &drum_release, 1);
+Timer *bass_drum_timer = new Timer(BASS_DRUM_DELAY, &bass_drum_release, 1);
+Timer *snare_drum_timer = new Timer(SNARE_DRUM_DELAY, &snare_drum_release, 1);
+Timer *cymbal_timer = new Timer(CYMBAL_DELAY, &cymbal_release, 1);
 
 
 // Separate functions for hit and release for each drum:
-void triangle_hit() {
-	triangle_servo.write(TRIANGLE_MAX);
-	triangle_timer->Start();
+void bass_drum_hit() {
+	bass_drum_servo.write(BASS_DRUM_MAX);
+	bass_drum_timer->Start();
 }
-void shaker_hit() {
-	shaker_servo.write(SHAKER_MAX);
-	shaker_timer->Start();
+void snare_drum_hit() {
+	snare_drum_servo.write(SNARE_DRUM_MAX);
+	snare_drum_timer->Start();
 }
-void drum_hit() {
-	drum_servo.write(DRUM_MAX);
-	drum_timer->Start();
+void cymbal_hit() {
+	cymbal_servo.write(CYMBAL_MAX);
+	cymbal_timer->Start();
 }
 
-void triangle_release() {triangle_servo.write(TRIANGLE_MIN);}
-void shaker_release() {shaker_servo.write(SHAKER_MIN);}
-void drum_release() {drum_servo.write(DRUM_MIN);}
+void bass_drum_release() {bass_drum_servo.write(BASS_DRUM_MIN);}
+void snare_drum_release() {snare_drum_servo.write(SNARE_DRUM_MIN);}
+void cymbal_release() {cymbal_servo.write(CYMBAL_MIN);}
 
 
 
@@ -143,9 +139,9 @@ void self_test() {
 	// Robot-specific self-test routine goes here
 //	read_MIDI_channel();
 //	flash_number(MIDI_channel + 1);
-	triangle_hit();
-	shaker_hit();
-	drum_hit();
+	bass_drum_hit();
+	snare_drum_hit();
+	cymbal_hit();
 }
 
 void setup()
@@ -170,14 +166,14 @@ void setup()
 	pinMode(SERVO_3_PIN, OUTPUT); digitalWrite(SERVO_3_PIN, LOW);
 	
 	// Servo setup:
-	triangle_servo.attach(SERVO_1_PIN);
-	shaker_servo.attach(SERVO_2_PIN);
-	drum_servo.attach(SERVO_3_PIN);
+	bass_drum_servo.attach(SERVO_1_PIN);
+	snare_drum_servo.attach(SERVO_2_PIN);
+	cymbal_servo.attach(SERVO_3_PIN);
 	
 	// Set initial position to _MIN values
-	triangle_servo.write(TRIANGLE_MIN);
-	shaker_servo.write(SHAKER_MIN);
-	drum_servo.write(DRUM_MIN);
+	bass_drum_servo.write(BASS_DRUM_MIN);
+	snare_drum_servo.write(SNARE_DRUM_MIN);
+	cymbal_servo.write(CYMBAL_MIN);
 
 	// Initialise MIDI channel number according to DIP switch settings:
 	read_MIDI_channel();
@@ -202,9 +198,9 @@ void loop()
 		self_test();
 	}
 	
-	triangle_timer->Update();
-	shaker_timer->Update();
-	drum_timer->Update();
+	bass_drum_timer->Update();
+	snare_drum_timer->Update();
+	cymbal_timer->Update();
 	
 	process_MIDI();
 //	test_blink();
@@ -230,19 +226,19 @@ void process_MIDI() {
 			dataByte[i] = data;
 			if (statusByte == (0x90 | MIDI_channel) && i == 1) {
 				// Note-on message received
-			//	flash(20,0); // Warning: blocks!
+				flash(20,0); // Warning: blocks!
 				if (dataByte[1] == 0) {
 					// Stop note playing - nothing to do for percussion!
 				} else {
 					// Start note playing
-					if (dataByte[0] == TRIANGLE_NOTE) {
-						triangle_hit();
+					if (dataByte[0] == BASS_DRUM_NOTE) {
+						bass_drum_hit();
 					}
-					if (dataByte[0] == SHAKER_NOTE) {
-						shaker_hit();
+					if (dataByte[0] == SNARE_DRUM_NOTE) {
+						snare_drum_hit();
 					}
-					if (dataByte[0] == DRUM_NOTE) {
-						drum_hit();
+					if (dataByte[0] == CYMBAL_NOTE) {
+						cymbal_hit();
 					}					
 				}
 			} else if (statusByte == (0x80 | MIDI_channel) && i == 1) {
@@ -278,8 +274,8 @@ void test_MIDI_channel() {
 }
 
 void test_servo() {
-	triangle_servo.write(60);
+	bass_drum_servo.write(60);
 	delay(500);
-	triangle_servo.write(110);
+	bass_drum_servo.write(110);
 	delay(500);
 }
