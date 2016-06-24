@@ -125,12 +125,12 @@ void loop()
 		self_test();
 	}
 //	process_MIDI();
-	test_blink();
+//	test_blink();
 //	test_button();
 //	test_flash_number();
 //	test_MIDI_channel();
 //	test_MOSFETs();
-//	test_MOSFETs_cycle();
+	test_MOSFETs_cycle();
 //	test_PWM();
 }
 
