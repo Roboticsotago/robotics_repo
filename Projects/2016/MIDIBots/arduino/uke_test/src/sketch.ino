@@ -2,25 +2,19 @@
 
 #include <Servo.h> 
 
-Servo servos [6];
+Servo servos [1];
 int pos = 0;    // variable to store the servo position
 const int CENTRE = 90;
-const int RANGE = 46;
+const int RANGE = 20;
 const int MAX_POS = CENTRE + RANGE/2;
 const int MIN_POS = CENTRE - RANGE/2;
 
-const int SERVO_TIME = 100; // ms delay to allow motion to happen
+const int SERVO_TIME = 500; // ms delay to allow motion to happen
 
 
 void setup() 
-{ 
-	servos[0].attach(3);
-	servos[1].attach(5);
-	servos[2].attach(6);
-	servos[3].attach(9);
-	servos[4].attach(10);
-	servos[5].attach(11);
-
+{
+	servos[0].attach(11);
 } 
  
 void strum(Servo servo)
@@ -33,10 +27,4 @@ void strum(Servo servo)
 
 void loop() {
 	strum(servos[0]);
-	strum(servos[1]);
-	strum(servos[2]);
-	strum(servos[3]);
-	strum(servos[4]);
-	strum(servos[5]);
-
 }
