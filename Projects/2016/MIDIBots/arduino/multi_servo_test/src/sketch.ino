@@ -35,7 +35,20 @@ void playbeat (Servo servo, int duration)
 }
 
 void loop() {
-	rhythm_3();
+	rhythm_4();
+}
+
+void rhythm_4()
+{
+	playbeat(servo1, 400);
+	playbeat(servo1, 400);
+	playbeat(servo1, 200);
+	playbeat(servo1, 200);
+	playbeat(servo2, 400);
+	playbeat(servo1, 200);
+	playbeat(servo2, 200);
+	playbeat(servo2, 200);
+	playbeat(servo1, 200);
 }
 
 void rhythm_3()
