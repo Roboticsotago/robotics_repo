@@ -6,16 +6,16 @@
 const int
 	MIDI_1x_PIN = 2,
 	MIDI_2x_PIN = 3,
-	MIDI_4x_PIN = 4,
+	MIDI_4x_PIN = 4,	/* USBDroid has pulldown resistor on D4! */
 	MIDI_8x_PIN = 5,
 	MOSFET_PWM_PIN = 6,
-	SERVO_1_PIN = 9,
+	SERVO_1_PIN = 9,	/* USBDroid has pulldown resistor on D9! */
 	SERVO_2_PIN = 10,
-	SERVO_3_PIN = 11,
+	SERVO_3_PIN = 11,	/* */
 	MOSFET_2_PIN = 12,
-	MOSFET_3_PIN = A1, /* not A3 as on the silkscreen! */
-	MOSFET_4_PIN = A2, /* not A4 as on the silkscreen! */
-	LED_PIN = 13,
+	MOSFET_3_PIN = A1,	/* not A3 as on the silkscreen! */
+	MOSFET_4_PIN = A2,	/* not A4 as on the silkscreen! */
+	LED_PIN = 13,		/* USBDroid has pulldown resistor on D13! */
 	LATENCY_ADJUST_PIN = A0,
 	SELF_TEST_PIN = A5
 ;
@@ -26,6 +26,11 @@ const int WHITE_PIN = MOSFET_3_PIN;
 
 const int BLUE_NOTE = 60; // MIDI middle C
 const int WHITE_NOTE = 62; // MIDI D above middle C
+
+// RGB LED strip setup:
+const int R_PIN = SERVO_1_PIN; // red
+const int G_PIN = SERVO_2_PIN; // green
+const int B_PIN = SERVO_3_PIN; // blue
 
 
 int pos = 0;    // variable to store the servo position
@@ -143,7 +148,7 @@ void loop()
 		self_test();
 	}
 	
-	process_MIDI();
+//	process_MIDI();
 
 //	test_blink();
 //	test_button();
@@ -153,6 +158,8 @@ void loop()
 //	test_MOSFETs_cycle();
 //	test_PWM();
 //	test_servo();
+//	RGB_blink();
+	RGB_fade();
 }
 
 
@@ -211,3 +218,61 @@ void test_MIDI_channel() {
 	}
 }
 
+void RGB_blink() {
+	digitalWrite(R_PIN, HIGH);
+	digitalWrite(G_PIN, LOW);
+	digitalWrite(B_PIN, LOW);
+	delay(150);
+
+	digitalWrite(R_PIN, LOW);
+	digitalWrite(G_PIN, HIGH);
+	digitalWrite(B_PIN, LOW);
+	delay(150);
+
+	digitalWrite(R_PIN, LOW);
+	digitalWrite(G_PIN, LOW);
+	digitalWrite(B_PIN, HIGH);
+	delay(150);
+
+	digitalWrite(R_PIN, LOW);
+	digitalWrite(G_PIN, LOW);
+	digitalWrite(B_PIN, LOW);
+//	delay(1500);
+}
+
+int r, g, b;
+const int FADE_DELAY = 5;
+
+void RGB_fade() {
+	digitalWrite(R_PIN, LOW);
+	digitalWrite(G_PIN, LOW);
+	digitalWrite(B_PIN, LOW);
+	
+	// Fade in:
+	for (r = 0; r < 256; r++) {
+		analogWrite(R_PIN, r);
+		delay(FADE_DELAY);
+	}
+	for (g = 0; g < 256; g++) {
+		analogWrite(G_PIN, g);
+		delay(FADE_DELAY);
+	}
+	for (b = 0; b < 256; b++) {
+		analogWrite(B_PIN, b);
+		delay(FADE_DELAY);
+	}
+
+	// Fade out:
+	for (r = 255; r >= 0; r--) {
+		analogWrite(R_PIN, r);
+		delay(FADE_DELAY);
+	}
+	for (g = 255; g >= 0; g--) {
+		analogWrite(G_PIN, g);
+		delay(FADE_DELAY);
+	}
+	for (b = 255; b >= 0; b--) {
+		analogWrite(B_PIN, b);
+		delay(FADE_DELAY);
+	}
+}
