@@ -1,0 +1,16 @@
+2016 Otago Regional event was a success!  We placed 1st in the Senior Theatre, yay! :)
+
+National event is in Auckland on Saturday, September 10 (entries close Friday, August 26).  Some things to work on between now and then:
+
+[ ] Troubleshoot PercussionBot
+[ ] PercussionBot: use alternating note numbers for shaker movement
+[ ] Finalise firmware for LightingBot to include driving the RGB lighting strip(s), maybe look at MIDI CC messages
+[ ] Tweak lighting on individual bots (placement, colour, fading)
+[ ] Slide mechanism for UkeBot (stepper motor)
+[ ] Laser-cut logo
+[ ] Get a proper snare drum for DrumBot
+[ ] PercussionBot: add rattle (DC motor)
+[ ] Air reservoir system for woodwind instruments (learn about control systems in the process)
+[ ] RecorderBot. With a taped-over thumb-hole and solenoid finger-hole valves on the first four holes, we can play the important bits of the melody from "We Will Rock You".
+[ ] Harmonica? Bird Whistle? Pan Pipes?
+[ ] Could extend music to include a medley of different music. Suggestions..?
