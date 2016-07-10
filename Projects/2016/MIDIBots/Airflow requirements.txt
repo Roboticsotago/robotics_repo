@@ -101,6 +101,7 @@ Delta-Electronics BCB0812UHN-TP09
 	PWM control and tach! (4-wire)
 	http://www.digikey.com/product-detail/en/delta-electronics/BCB0812UHN-TP09/603-1213-ND/2034820
 	Could use with plain Arduino (no shield required) - with pressure sensor for control feedback
+		Have ordered one of these from Digi-Key
 
 --
 
