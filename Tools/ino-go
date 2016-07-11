@@ -1,0 +1,182 @@
+#!/usr/bin/env tclsh
+
+# A front-end to `ino` (inotool) which tries to be smart about detecting Arduino-type devices and prompts the user when necessary (or asked) for which device to use.
+# Since Ino is Linux-only, it's probably OK that this is too.
+# CME 2015-06-06
+
+# Design notes:
+# We're assuming that the device type can be inferred reliably from the /dev/serial/by-id special file name. AFAICT, on Linux, those names are derived from the USB device IDs, mapping known vendor/product ID combinations to strings. Some sort of serial number seems to be appended (not by the kernel? the format seems to vary widely).
+
+
+puts "\nChris's `ino` front-end, (C) 2015 Chris Edwards"
+
+# Not because it's likely to change, but to get relative link following to work later on:
+set by_id_path /dev/serial/by-id
+
+
+# NOTE: One use case of this program is calling it from the Geany IDE.  Geany can pass the directory containing the source file, but we want to build in the directory bove that. If there's no argument passed, stay where we are.
+
+if {[llength $argv] == 1} {
+	set dir [file dirname [lindex $argv 0]]
+	cd $dir
+	set env(PWD) $dir
+}
+
+# First up, a "database" (ha) of known Arduino and compatible models:
+
+# Here we're trying to map from detected device names to device types.  We could maybe do something clever with udev or /proc or /sys, but the approach below seems to work pretty well.  For this first stuff we only care about identifying what type of device corresponds to each serial device. We use the by-id dev filenames since they include distinctive strings that should let us infer the device type.
+
+# NOTE: Unfortunately, it looks like devices using FTDI USB-serial chips (e.g. older 1280-based Mega, Funduino Nano, etc.) all share the same USB ID, so I don't think we can reliably infer the board type for these. :(  Perhaps just present another dialog in this event so that the user can choose.
+# Looks like the by-id filenames differ only in the serial numbers:
+# Funduino Nano: /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A603ANIP-if00-port0
+# Mega1280:      /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A6008hfy-if00-port0
+# These also use FTDI chips:
+#   atmega328: Arduino Duemilanove w/ ATmega328
+#   diecimila: Arduino Diecimila or Duemilanove w/ ATmega168
+#   atmega168: Arduino NG or older w/ ATmega168
+#     atmega8: Arduino NG or older w/ ATmega8
+# Arduino NG uses the FTDI FT232RL
+
+# Obviously these data are really a relation. It might be overkill to use SQLite however..?  Perhaps we can set things up as a list of lists and then transfer that into arrays.
+# Row structure is: USB device ID, distinctive substring in /dev/serial/by-id, Ino/boards.txt profile identifier, descriptive text.
+set Arduino_model_data {
+	0403:6001  FTDI_FT232R                    ???       {FDTI-connected device (older 1280-based Mega, Nano, etc.))}
+	2341:003b  www.arduino.cc__TODO           ???       {Arduino Serial Adapter}
+	2341:0045  www.arduino.cc__TODO           ???       {Arduino Serial Adapter R3}
+	2341:0001  www.arduino.cc__Arduino_Uno    uno       {Arduino Uno or clone}
+	2341:0043  www.arduino.cc__TODO           uno       {Arduino Uno R3}
+	2341:0010  Arduino__TODO                  mega2560  {Arduino Mega 2560}
+	2341:0042  Arduino__www.arduino.cc__0042  mega2560  {Arduino Mega 2560 R3}
+	2341:003f  Arduino__TODO                  mega2560  {Arduino Mega ADK}
+	2341:0044  Arduino__TODO                  mega2560  {Arduino Mega ADK R3}
+	2341:8036  Arduino_LLC_Arduino_Leonardo   leonardo  {Arduino Leonardo or clone (Freetronics Leostick v1.0, DSpace SMD kit board, etc.)}
+	26ba:0003  www.freetronics.com_0003       uno       {Freetronics Eleven}
+	20a0:4150  www.freetronics.com_Eleven     uno       {Freetronics USBDroid}
+	26ba:8002  Unknown_USB_IO_Board           leonardo  {Freetronics LeoStick}
+	03eb:204b  Donald_Delmar_Davis_Benito7g   dspace_badge_unknown  {DSpace Badge kit + base}
+	03eb:2060  DSpace__www.dspace.org.nz__DSpace_Robot_2.0  robot  {DSpace Robot}
+}
+
+# NOTE: lsusb gives the DSpace Robot details as:
+# Bus 001 Device 002: ID 03eb:2060 Atmel Corp. Benito Programmer Project
+
+# TODO: Other official Arduino models, Freetronics USBDroid, DSpace Robot details.
+# The USB IDs don't seem to be floating around on the Internet, so I might have to get my hands on some of these for testing.  Many of the smaller boards have no on-board USB serial connectivity, and of those that do, the older ones generally just use an FTDI chip.
+#     nano328: Arduino Nano w/ ATmega328
+#        nano: Arduino Nano w/ ATmega168
+#     mini328: Arduino Mini w/ ATmega328
+#        mini: Arduino Mini w/ ATmega168
+#    ethernet: Arduino Ethernet
+#         fio: Arduino Fio
+#       bt328: Arduino BT w/ ATmega328
+#          bt: Arduino BT w/ ATmega168
+#  lilypad328: LilyPad Arduino w/ ATmega328
+#     lilypad: LilyPad Arduino w/ ATmega168
+#    pro5v328: Arduino Pro or Pro Mini (5V, 16 MHz) w/ ATmega328
+#       pro5v: Arduino Pro or Pro Mini (5V, 16 MHz) w/ ATmega168
+#      pro328: Arduino Pro or Pro Mini (3.3V, 8 MHz) w/ ATmega328
+#         pro: Arduino Pro or Pro Mini (3.3V, 8 MHz) w/ ATmega168
+
+# Also seen: 26ba:0002 LeoStick Loader
+# 26ba:0003 Freetronics ???
+# 20a0:4151 LeoStick Loader
+# 2341:0034 Arduino Leonardo
+
+# Copy the model data into arrays for ease of use:
+foreach {usb_id the_dev_substring the_ino_model the_model_label} $Arduino_model_data {
+#	puts $usb_id
+	set dev_substring($usb_id) $the_dev_substring
+	set     ino_model($usb_id) $the_ino_model
+	set   model_label($usb_id) $the_model_label
+}
+
+set known_devices [array names dev_substring]
+
+# That's it for the general IDs. Now to detect and recognise any attached boards...
+
+# Here we should really be building another database based on the current scan. I don't think we can really just return a value, sadly (maybe a structured list, but arrays would be nicer, and lend themselves to later updating if the guessed model is wrong).
+# The devices found during the scan are keyed by e.g. /dev/ttyACM0 rather than USB device ID.
+
+array unset found_devices
+
+proc scan_for_devices {} {
+	global known_devices dev_substring ino_model model_label
+	global found_usb_id found_ino_model found_model_label
+	set candidate_devices [list]
+	foreach device [glob -nocomplain /dev/serial/by-id/*] {
+		foreach id $known_devices {
+			if {[string match *$dev_substring($id)* $device]} {
+				set dev [file normalize /dev/serial/by-id/[file readlink $device]]
+				set found_usb_id($dev) $id
+				set found_ino_model($dev) $ino_model($id)
+				set found_model_label($dev) $model_label($id)
+				lappend candidate_devices $dev
+			}
+		}
+	}
+	return $candidate_devices
+}
+
+# We have to find the devices and then print them, since we're sorting them. The list is used twice, so let's store it in a variable:
+set found_dev_list [lsort [scan_for_devices]]
+
+puts "\nFound devices:"
+foreach dev $found_dev_list {puts "$dev: $found_usb_id($dev) $found_model_label($dev) ($found_ino_model($dev))"}
+puts {}
+
+# Invoke zenity to prompt for which device to program? Even if there's only one candidate?! (could be a good idea to avoid accidentally reprogramming the wrong device)
+# AFAICT there's no way to have the selection default to the first item in the list (namely if it's the only one).
+
+set zenity_exec_command [list]
+lappend zenity_exec_command exec -ignorestderr zenity {--title=Available Arduino Devices} --list {--text=Choose the device to program:} --separator=| --width=720 --height=280 --column=Device: {--column=USB ID:} {--column=Model ID:} {--column=Device Type:}
+
+# Tack on the found Arduino-type device details to the zenity command line:
+foreach dev $found_dev_list {
+	lappend zenity_exec_command $dev
+	lappend zenity_exec_command $found_usb_id($dev)
+	lappend zenity_exec_command $found_ino_model($dev)
+	lappend zenity_exec_command $found_model_label($dev)
+}
+
+#puts $zenity_exec_command
+puts "Launching zenity..."
+# What a shame zenity is so slow to launch.  TODO: maybe replace zenity with a Tk GUI?!  Esp. if we want further interaction with the user: asking for device model where ambiguous, reporting build/upload errors/status, creating/updating .ini file.
+
+if {[catch {set selected_device [{*}$zenity_exec_command]}] || $selected_device == {}} {
+	puts "No device selected. Quitting."
+	exit 1
+}
+
+puts "Selected device = $selected_device"
+
+# TODO: if device model is unknown ("???"), prompt additionally for the device model.
+
+set model $found_ino_model($selected_device)
+set serial $selected_device
+
+# TODO: offer to store the settings in an .ini file.
+# TODO: create .ini file (or allow user to choose whether this is a one-off?)
+
+# Hmm, I don't think build_result normally ends up with anything useful, and if there's an exception, it won't be set at all.
+# TODO: add ANSI terminal codes for helpful colouring. Will that pass through to Geany?
+puts "\nBuilding code..."
+if [catch {set build_result  [exec -ignorestderr ino build -m $model]} message] {
+	puts "ERROR: ino build: <<$message>>"
+	exit 2
+} else {
+	if {$build_result != {}} {
+		puts "build_result=<<\n$build_result\n>>"
+	}
+}
+
+puts "\nUploading..."
+if [catch {set upload_result [exec -ignorestderr ino upload -m $model -p $serial]} message] {
+	puts "ERROR: ino upload: <<$message>>"
+	exit 3
+} else {
+	if {$upload_result != {}} {
+		puts "upload_result=<<\n$upload_result\n>>"
+	}
+}
+
+# ENDUT! HOCH HECH!
