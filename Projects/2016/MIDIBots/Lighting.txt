@@ -33,6 +33,7 @@ Testing:
 		Starts to dim above this!
 
 		80-150 mA target current
+		probably go with 100 mA
 
 	Green:
 		lights dimly at 2.4 V
@@ -46,6 +47,7 @@ Testing:
 		4.0 V	0.26 A
 
 		50-150 mA looks reasonable (gets whiter at higher currents)
+		60 mA is probably plenty, actually
 
 	Blue:
 		lights dimly at 2.5 V
@@ -55,7 +57,34 @@ Testing:
 		4.0 V	0.23 A
 
 		looks like 100-200 mA is about the "knee"
+		probably go with 100 mA
 
 
 Henry's one (still attached to the scan head and circuit board) behaves differently due to the extra circuitry being present (will sometimes turn on multiple LED channels depending on the supply voltage).
+
+--
+
+Test of Jaycar blue LED lighting strip
+
+Apparently this is designed for 12 V constant-voltage operation, with the LEDs (and presumably integrated current-limiting resistors) in parallel.
+
+Lights just visibly at 6.6 V.
+Good brightness at 8.0 V, 10 mA.
+9.0 V	0.05 A
+10.0 V	0.10 A
+11.0 V	0.15 A
+12.0 V	0.20 A
+
+--
+
+Test of Jaycar white LED lighting strip
+
+Lights just visibly at 7.0 V
+8.0 V	0.01 A
+9.0 V	0.06 A	Quite bright already!
+10.0 V	0.14 A
+11.0 V	0.21 A
+12.0 V	0.28 A
+
+--
 
