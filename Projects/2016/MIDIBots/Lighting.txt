@@ -62,6 +62,18 @@ Testing:
 
 Henry's one (still attached to the scan head and circuit board) behaves differently due to the extra circuitry being present (will sometimes turn on multiple LED channels depending on the supply voltage).
 
+A convenient, programmable constant-current source circuit would use e.g. an LM317 (negative complement part: LM337) voltage regulator, which develops a 1.25 V difference across Vout and Vadj.
+
+Iout = Vref / Rh
+
+Alternatively, we could use a suitable current-limiting resistor for each R/G/B channel:
+
+R: R = 2.9 V / 0.08 A = 36 ohm, P = 0.23 W
+G: R = 1.7 V / 0.06 A = 28 ohm, P = 0.1 W
+B: R = 1.5 V / 0.08 A = 19 ohm, P = 0.12 W
+
+Have some 50 ohm resistors in the lab, but they run the LED bar a little dim.
+ 
 --
 
 Test of Jaycar blue LED lighting strip
