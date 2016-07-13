@@ -188,14 +188,14 @@ void process_MIDI() {
 			//	flash(20,0); // Warning: blocks!
 				if (dataByte[1] == 0) {
 					// Stop note playing - nothing to do for percussion!
-					if (dataByte[0] == BLUE_NOTE) {digitalWrite(BLUE_PIN, LOW);}
+					if (dataByte[0] ==  BLUE_NOTE) {digitalWrite( BLUE_PIN, LOW);}
 					if (dataByte[0] == WHITE_NOTE) {digitalWrite(WHITE_PIN, LOW);}
 					if (dataByte[0] == R_NOTE) {analogWrite(R_PIN, 0);}
 					if (dataByte[0] == G_NOTE) {analogWrite(G_PIN, 0);}
 					if (dataByte[0] == B_NOTE) {analogWrite(B_PIN, 0);}
 				} else {
 					// Start note playing
-					if (dataByte[0] == BLUE_NOTE) {digitalWrite(BLUE_PIN, HIGH);}
+					if (dataByte[0] ==  BLUE_NOTE) {digitalWrite( BLUE_PIN, HIGH);}
 					if (dataByte[0] == WHITE_NOTE) {digitalWrite(WHITE_PIN, HIGH);}
 					if (dataByte[0] == R_NOTE) {analogWrite(R_PIN, dataByte[1]*2);}
 					if (dataByte[0] == G_NOTE) {analogWrite(G_PIN, dataByte[1]*2);}
@@ -203,7 +203,7 @@ void process_MIDI() {
 				}
 			} else if (statusByte == (0x80 | MIDI_channel) && i == 1) {
 				// Note-off message received
-					if (dataByte[0] == BLUE_NOTE) {digitalWrite(BLUE_PIN, LOW);}
+					if (dataByte[0] ==  BLUE_NOTE) {digitalWrite( BLUE_PIN, LOW);}
 					if (dataByte[0] == WHITE_NOTE) {digitalWrite(WHITE_PIN, LOW);}
 					if (dataByte[0] == R_NOTE) {analogWrite(R_PIN, 0);}
 					if (dataByte[0] == G_NOTE) {analogWrite(G_PIN, 0);}
@@ -315,6 +315,7 @@ void RGB_fade_integer() {
 	}
 }
 
+// TODO: finish testing this and complete it:
 void RGB_fade() {
 	digitalWrite(R_PIN, LOW);
 	digitalWrite(G_PIN, LOW);
@@ -350,11 +351,19 @@ void RGB_fade() {
 }
 
 void RGB_colour_test() {
-	analogWrite(R_PIN, 255); analogWrite(G_PIN,   0); analogWrite(B_PIN,   0); delay(500);	// red
-	analogWrite(R_PIN,   0); analogWrite(G_PIN, 255); analogWrite(B_PIN,   0); delay(500);	// green
-	analogWrite(R_PIN,   0); analogWrite(G_PIN,   0); analogWrite(B_PIN, 255); delay(500);	// blue
-	analogWrite(R_PIN,   0); analogWrite(G_PIN, 255); analogWrite(B_PIN, 255); delay(500);	// cyan
-	analogWrite(R_PIN, 255); analogWrite(G_PIN,   0); analogWrite(B_PIN, 255); delay(500);	// magenta
-	analogWrite(R_PIN, 255); analogWrite(G_PIN, 255); analogWrite(B_PIN,   0); delay(500);	// yellow
-	analogWrite(R_PIN, 255); analogWrite(G_PIN, 255); analogWrite(B_PIN, 255); delay(500);	// white
+	const int DELAY = 500;
+	RGB_write(255,   0,   0); delay(DELAY);	// red
+	RGB_write(  0, 255,   0); delay(DELAY);	// green
+	RGB_write(  0,   0, 255); delay(DELAY);	// blue
+	RGB_write(  0, 255, 255); delay(DELAY);	// cyan
+	RGB_write(255,   0, 255); delay(DELAY);	// magenta
+	RGB_write(255, 255,   0); delay(DELAY);	// yellow
+	RGB_write(255, 255, 255); delay(DELAY);	// white
+	delay(DELAY);
+}
+
+void RGB_write(int R, int G, int B) {
+	analogWrite(R_PIN, R);
+	analogWrite(G_PIN, G);
+	analogWrite(B_PIN, B);
 }
