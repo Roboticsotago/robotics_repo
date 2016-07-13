@@ -32,6 +32,11 @@ const int R_PIN = SERVO_1_PIN; // red
 const int G_PIN = SERVO_2_PIN; // green
 const int B_PIN = SERVO_3_PIN; // blue
 
+// RGB LED strip control notes:
+const int R_NOTE = 67;	// G above middle C
+const int G_NOTE = 69;	// A above middle C
+const int B_NOTE = 71;  // B above middle C
+
 
 int pos = 0;    // variable to store the servo position
 
@@ -102,6 +107,10 @@ void self_test() {
 	digitalWrite(WHITE_PIN, HIGH);
 	delay(500);
 	digitalWrite(WHITE_PIN, LOW);
+
+	RGB_colour_test();
+	
+	RGB_fade_integer();
 }
 
 void setup()
@@ -148,7 +157,7 @@ void loop()
 		self_test();
 	}
 	
-//	process_MIDI();
+	process_MIDI();
 
 //	test_blink();
 //	test_button();
@@ -159,7 +168,8 @@ void loop()
 //	test_PWM();
 //	test_servo();
 //	RGB_blink();
-	RGB_fade();
+//	RGB_fade_integer();
+//	RGB_colour_test();
 }
 
 
@@ -180,20 +190,48 @@ void process_MIDI() {
 					// Stop note playing - nothing to do for percussion!
 					if (dataByte[0] == BLUE_NOTE) {digitalWrite(BLUE_PIN, LOW);}
 					if (dataByte[0] == WHITE_NOTE) {digitalWrite(WHITE_PIN, LOW);}
+					if (dataByte[0] == R_NOTE) {analogWrite(R_PIN, 0);}
+					if (dataByte[0] == G_NOTE) {analogWrite(G_PIN, 0);}
+					if (dataByte[0] == B_NOTE) {analogWrite(B_PIN, 0);}
 				} else {
 					// Start note playing
 					if (dataByte[0] == BLUE_NOTE) {digitalWrite(BLUE_PIN, HIGH);}
 					if (dataByte[0] == WHITE_NOTE) {digitalWrite(WHITE_PIN, HIGH);}
+					if (dataByte[0] == R_NOTE) {analogWrite(R_PIN, dataByte[1]*2);}
+					if (dataByte[0] == G_NOTE) {analogWrite(G_PIN, dataByte[1]*2);}
+					if (dataByte[0] == B_NOTE) {analogWrite(B_PIN, dataByte[1]*2);}
 				}
 			} else if (statusByte == (0x80 | MIDI_channel) && i == 1) {
 				// Note-off message received
 					if (dataByte[0] == BLUE_NOTE) {digitalWrite(BLUE_PIN, LOW);}
 					if (dataByte[0] == WHITE_NOTE) {digitalWrite(WHITE_PIN, LOW);}
+					if (dataByte[0] == R_NOTE) {analogWrite(R_PIN, 0);}
+					if (dataByte[0] == G_NOTE) {analogWrite(G_PIN, 0);}
+					if (dataByte[0] == B_NOTE) {analogWrite(B_PIN, 0);}
 			}
 			i++;
 			// TODO: error detection if i goes beyond the array size.
 		}
 	}
+}
+
+const float EXP = 2.0; // Stevens power-law brightness exponent
+
+// Human perception of brightness is non-linear. This function attempts to compensate and provide linear control over perceived brightness.  Input and output are (assumed to be) normalised to the range 0..1.
+float brightness(float level) {
+	// Exponential (to compensate for logarithmic response):
+	// TODO: ...
+	// Stevens (power-law) model:
+	return pow(level, EXP);	// Min. step size = (1/255)^(1/exponent)
+}
+
+// Compute minimum step size to achive full output resolution with 0..255 PWM (STEP computed WRT 0..1 range):
+//const float STEP = pow(1.0 / 255.0, 1.0 / EXP); // Stevens
+const float STEP = 0.0001;
+
+// Plus another function to quantise to the 0..255 levels provided by the PWM output:
+int quantise(float value) {
+	return (int) round(value * 255.0);
 }
 
 void test_blink() {
@@ -240,10 +278,10 @@ void RGB_blink() {
 //	delay(1500);
 }
 
-int r, g, b;
-const int FADE_DELAY = 5;
+long r, g, b;
+const int FADE_DELAY = 1;
 
-void RGB_fade() {
+void RGB_fade_integer() {
 	digitalWrite(R_PIN, LOW);
 	digitalWrite(G_PIN, LOW);
 	digitalWrite(B_PIN, LOW);
@@ -275,4 +313,48 @@ void RGB_fade() {
 		analogWrite(B_PIN, b);
 		delay(FADE_DELAY);
 	}
+}
+
+void RGB_fade() {
+	digitalWrite(R_PIN, LOW);
+	digitalWrite(G_PIN, LOW);
+	digitalWrite(B_PIN, LOW);
+	
+	// Fade in:
+//	for (r = 0; r < 256; r++) {
+//		analogWrite(R_PIN, quantise(brightness(r));
+//		delay(FADE_DELAY);
+//	}
+	for (g = 0; g < (long) round(1.0/STEP); g++) {
+		analogWrite(G_PIN, quantise(brightness(g * STEP)));
+	//	delay(FADE_DELAY);
+	}
+//	for (b = 0; b < 256; b++) {
+//		analogWrite(B_PIN, b);
+//		delay(FADE_DELAY);
+//	}
+
+	// Fade out:
+//	for (r = 255; r >= 0; r--) {
+//		analogWrite(R_PIN, r);
+//		delay(FADE_DELAY);
+//	}
+	for (g = (long) round(1.0/STEP); g >= 0; g--) {
+		analogWrite(G_PIN, quantise(brightness(g * STEP)));
+	//	delay(FADE_DELAY);
+	}
+//	for (b = 255; b >= 0; b--) {
+//		analogWrite(B_PIN, b);
+//		delay(FADE_DELAY);
+//	}
+}
+
+void RGB_colour_test() {
+	analogWrite(R_PIN, 255); analogWrite(G_PIN,   0); analogWrite(B_PIN,   0); delay(500);	// red
+	analogWrite(R_PIN,   0); analogWrite(G_PIN, 255); analogWrite(B_PIN,   0); delay(500);	// green
+	analogWrite(R_PIN,   0); analogWrite(G_PIN,   0); analogWrite(B_PIN, 255); delay(500);	// blue
+	analogWrite(R_PIN,   0); analogWrite(G_PIN, 255); analogWrite(B_PIN, 255); delay(500);	// cyan
+	analogWrite(R_PIN, 255); analogWrite(G_PIN,   0); analogWrite(B_PIN, 255); delay(500);	// magenta
+	analogWrite(R_PIN, 255); analogWrite(G_PIN, 255); analogWrite(B_PIN,   0); delay(500);	// yellow
+	analogWrite(R_PIN, 255); analogWrite(G_PIN, 255); analogWrite(B_PIN, 255); delay(500);	// white
 }
