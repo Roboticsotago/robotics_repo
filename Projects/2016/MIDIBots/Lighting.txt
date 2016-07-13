@@ -1,0 +1,102 @@
+LightingBot has a number of options:
+ - LED lighting strip (white, blue)
+ - PWM-controlled RGB lighting bar from flatbed scanner
+ - Bright 12-V automotive LED lights
+
+
+--
+
+
+Test of Chris's RGB LED lighting bar from a flatbed scanner:
+
+36250B69 part number
+
+Testing after desoldering from scan head assembly.
+
+               __________________________...
+Pins:         |
+	Anode | -
+	Blue  | -
+	Red   | -
+	Green | -
+              |__________________________...
+
+
+Testing:
+
+	Red:
+		lights dimly at 1.6 V
+		1.8 V	0.01 A
+		2.0 V	0.04 A	usably bright
+		2.1 V	0.10 A	quite bright
+		2.3 V	0.18 A
+		Starts to dim above this!
+
+		80-150 mA target current
+		probably go with 100 mA
+
+	Green:
+		lights dimly at 2.4 V
+		2.5 V	0.00 A
+		3.0 V	0.01 A	quite usably bright
+		3.1 V	0.02 A
+		3.2 V	0.03 A
+		3.3 V	0.04 A
+		3.4 V	0.07 A
+		3.5 V	0.11 A
+		4.0 V	0.26 A
+
+		50-150 mA looks reasonable (gets whiter at higher currents)
+		60 mA is probably plenty, actually
+
+	Blue:
+		lights dimly at 2.5 V
+		2.7 V	0.00 A
+		3.1 V	0.01 A
+		3.5 V	0.04 A	quite bright
+		4.0 V	0.23 A
+
+		looks like 100-200 mA is about the "knee"
+		probably go with 100 mA
+
+
+Henry's one (still attached to the scan head and circuit board) behaves differently due to the extra circuitry being present (will sometimes turn on multiple LED channels depending on the supply voltage).
+
+A convenient, programmable constant-current source circuit would use e.g. an LM317 (negative complement part: LM337) voltage regulator, which develops a 1.25 V difference across Vout and Vadj.
+
+Iout = Vref / Rh
+
+Alternatively, we could use a suitable current-limiting resistor for each R/G/B channel:
+
+R: R = 2.9 V / 0.08 A = 36 ohm, P = 0.23 W
+G: R = 1.7 V / 0.06 A = 28 ohm, P = 0.1 W
+B: R = 1.5 V / 0.08 A = 19 ohm, P = 0.12 W
+
+Have some 50 ohm resistors in the lab, but they run the LED bar a little dim.
+ 
+--
+
+Test of Jaycar blue LED lighting strip
+
+Apparently this is designed for 12 V constant-voltage operation, with the LEDs (and presumably integrated current-limiting resistors) in parallel.
+
+Lights just visibly at 6.6 V.
+Good brightness at 8.0 V, 10 mA.
+9.0 V	0.05 A
+10.0 V	0.10 A
+11.0 V	0.15 A
+12.0 V	0.20 A
+
+--
+
+Test of Jaycar white LED lighting strip
+
+Lights just visibly at 7.0 V
+8.0 V	0.01 A
+9.0 V	0.06 A	Quite bright already!
+10.0 V	0.14 A
+11.0 V	0.21 A
+12.0 V	0.28 A
+
+--
+
