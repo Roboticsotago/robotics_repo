@@ -72,8 +72,10 @@ R: R = 2.9 V / 0.08 A = 36 ohm, P = 0.23 W
 G: R = 1.7 V / 0.06 A = 28 ohm, P = 0.1 W
 B: R = 1.5 V / 0.08 A = 19 ohm, P = 0.12 W
 
-Have some 50 ohm resistors in the lab, but they run the LED bar a little dim.
- 
+Have some 47 ohm resistors in the lab, but they run the LED bar a little dim, and they're pretty lightweight (maybe 1/4 W), so we'll just run a pair in parallel for each R/G/B channel.
+
+Because the lighting bar has a common anode, each MOSFET driver circuit will have just a single port for the R/G/B cathode, incorporating the current-limiting resistor.
+
 --
 
 Test of Jaycar blue LED lighting strip
