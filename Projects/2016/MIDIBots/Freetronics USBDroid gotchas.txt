@@ -25,4 +25,6 @@ One simple workaround would be to modify the firmware to ignore the 4x pin (trea
 
 Alternatively, we could use some ordinary Arduino boards.
 
+	We should pick up a batch of cheap Chinese Arduino Uno clones (the ones with the CH340 chipset). These are so cheap they might as well be permanently installed. We could also do with a larger, uniform, and less tricksy class set of (maybe 15-20) Arduino boards for other outreach activities.
+
 NOTE: The schematic also shows the same resistor network for Arduino pins D11 and D13!  D13 on the MIDIBot shield just connects to an LED (+resistor), but D11 is used for Servo 3!  Watch out for this, and use a different Ardunio board if you need Servo 3 (DrumBot, PercussionBot, LightingBot).
