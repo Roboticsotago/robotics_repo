@@ -53,7 +53,9 @@ Sebastian discovered that ino doesn't work with the latest version of the Arduni
 lsusb equivalent on Mac OS X:
 
 https://github.com/jlhonora/lsusb
-ioreg -p IOUSB -l -w 0 -x
+
+ioreg -p IOUSB -l -w 0 -x -c IOUSBDevice -r
+
 	-p -> I/O kit plane (dev type)
 	-l -> list properties (including handy attributes such as idVendor, idProduct, "USB Vendor Name", "USB Product Name", bDeviceClass, bDeviceSubClass
 	-w 0 -> no text wrapping
@@ -91,7 +93,7 @@ pack .boards.label -expand 0 -fill x
 # NOTE: column #0 is always the tree column (even if not shown).
 ttk::treeview .boards.tree -columns {<tree> Device USB_ID Model Type} -selectmode browse -show headings
 pack .boards.tree -expand 1 -fill both
-.boards.tree heading #0  -anchor w-text <tree>
+.boards.tree heading #0 -anchor w -text <tree>
 .boards.tree heading #1 -anchor w -text Device:
 .boards.tree heading #2 -anchor w -text {USB ID:}
 .boards.tree heading #3 -anchor w -text {Model ID:}
@@ -100,6 +102,17 @@ pack .boards.tree -expand 1 -fill both
 # To insert a row:
 .boards.tree insert {} end -text the_text -values [list dev id model type]
 
+# A more realistic one:
+.boards.tree insert {} end -text NoMatter -values [list /dev/ttyACM0 dead:beef uno {Arduino Uno}]
+
+# TODO: column widths
 
 # TODO: scrolling
+
+# Buttons
+button .boards.cancel_button -text Cancel -command {}
+button .boards.ok_button -text OK -command {}
+
+pack .boards.ok_button .boards.cancel_button -side right
+
 
