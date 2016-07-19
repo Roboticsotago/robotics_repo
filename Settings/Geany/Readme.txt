@@ -43,3 +43,63 @@ templates/files/sketch.ino
 
 MIME type:
 text/x-arduino
+
+--
+
+Geany/ino/Arduino on Mac OS X
+
+Sebastian discovered that ino doesn't work with the latest version of the Ardunio IDE installation, on which it depends.
+
+lsusb equivalent on Mac OS X:
+
+https://github.com/jlhonora/lsusb
+ioreg -p IOUSB -l -w 0 -x
+	-p -> I/O kit plane (dev type)
+	-l -> list properties (including handy attributes such as idVendor, idProduct, "USB Vendor Name", "USB Product Name", bDeviceClass, bDeviceSubClass
+	-w 0 -> no text wrapping
+	-x -> show numbers as hexadecimal
+	-a -> archive format (relatively nasty XML output)
+	-c IOUSBDevice -> limit to IOUSBDevice classes (and subclasses)
+	-r -> root subtrees according to filter criteria
+
+Ugh, will still have to parse a lump of text to get the useful data out...
+
+system_profiler SPUSBDataType
+
+Would be preferable not to require installation of additional scripts/programs/packages.
+
+
+/dev/cu.usbmodem1a21
+/dev/tty.usbmodem1a21
+USBDroid	20A0:4150
+
+
+Tcl OS detection:
+
+if {$tcl_platform(os) eq "Darwin"} {...}
+
+
+# New toplevel for .boards? Or just use the main "." frame?
+
+toplevel .boards
+wm title .boards {Available Arduino Devices}
+
+
+label .boards.label -text {Choose the device to program:}
+pack .boards.label -expand 0 -fill x
+
+# NOTE: column #0 is always the tree column (even if not shown).
+ttk::treeview .boards.tree -columns {<tree> Device USB_ID Model Type} -selectmode browse -show headings
+pack .boards.tree -expand 1 -fill both
+.boards.tree heading #0  -anchor w-text <tree>
+.boards.tree heading #1 -anchor w -text Device:
+.boards.tree heading #2 -anchor w -text {USB ID:}
+.boards.tree heading #3 -anchor w -text {Model ID:}
+.boards.tree heading #4 -anchor w -text {Device Type:}
+
+# To insert a row:
+.boards.tree insert {} end -text the_text -values [list dev id model type]
+
+
+# TODO: scrolling
+
