@@ -1,0 +1,64 @@
+Notes and issues with Arduino on Mac
+CME 2016-07-21
+
+ - Arduino IDE has a pretty ugly text editor, and it's pretty slow to do things (Java).  I'd used ino/inotool to good effect on Linux, but it's no longer being maintained and tends not to work with newer (>1.5) Arduino IDE installations.
+ 
+ - Arturo/ano supposedly doesn't work with the latest Arduino IDE, but the current (2016-07-21) github release works with the current (1.6.9) Arduino IDE release.
+ 
+ - Compiling (esp. the first time) in Arduino IDE 1.6.9 sometimes fails. Just try again.
+ 
+ - Ditto uploading.  This is more annoying, as avrdude will retry ~10 times before giving up, which takes a while.  Killing the avrdude process and retrying is probably faster.
+ 
+ - I'd like to have a single source file shared usably between the Arduino IDE and Arturo.  It's a bit unfortunate that Arturo (and inotool before it) uses a different directory structure, but it was probably necessary: Arduino IDE will try to compile all files in the top level of the sketch folder.
+
+Arduino IDE:
+ - Requries a folder named <sketchname> containing a file named <sketchname>.ino (formerly <sketchname>.pde).
+ - Tries to open and compile all files in the sketch folder.
+
+Arturo:
+ - Requires a src folder containing the file sketch.ino
+ - Also has a lib folder and a (normally hidden) .build folder.
+ - Refuses to init a project in a non-empty folder
+
+
+ Originally I had tried to set up projects to work with either Arduino IDE or ino by creating the files under the ino "src" folder and creating a symlink to that named according to the Arduino IDE requirements.  However, that didn't really work:
+
+SKETCH=Blink_1
+cd ~/Documents/Arduino
+mkdir $SKETCH
+cd $SKETCH
+ano init
+ln -s src/sketch.ino $SKETCH.ino
+
+ano build -m uno
+ano upload -m uno -p /dev/cu.usbmodem1a21
+
+That much works.  However, opening the file Blink_ano/Blink_ano.ino in Arduino IDE gives the error: 'The file "sketch.ino" needs to be inside a sketch folder named "sketch". Create this folder, move the file, and continue?'  Obviously it's getting confused by the symlink.  OK-ing this results in the file structure $SKETCH/src/sketch/sketch.ino, which is obviously not going to work for ino/ano, and also breaks the symlink so that Arduino IDE can't open it either.
+
+This approach WILL work in Arduino IDE if the sketch is loaded from the File:Sketchbook menu, but of course that menu doesn't auto-refresh, so you may have to exit and restart Arduino IDE to pick up new sketches.
+
+The other way round (initialise as Arduino IDE format canonically and then set up the ino/ano tree underneath, symlinked to the Arduino IDE copy) might then be the better approach:
+
+SKETCH=Blink_2
+cd ~/Documents/Arduino
+mkdir $SKETCH
+cd $SKETCH
+touch $SKETCH.ino
+mkdir ano
+cd ano 
+ano init
+cd src
+rm sketch.ino 
+ln -s ../../$SKETCH.ino sketch.ino
+
+ano build -m uno
+ano upload -m uno -p /dev/cu.usbmodem1a21
+
+# Works, both at the command line and in Arduino IDE. :)
+
+This approach will probably work better with Geany as well, as its model is "create empty file and then save it somewhere". We can add a build tool command for "Setup for ino/Arturo/ano" that can do the init and symlink setup routine, once the files has been saved.  However, care will need to be taken that the file is saved in a folder of the same name, to keep Arduino IDE happy.
+
+Not sure if Geany has the necessary capabilities/workflow model to cleanly support creating a new Arduino project.  Default Sketchbook location is platform-dependent, of course, but even if the user specifies a folder, the folder name must match the sketch name.
+
+	Ah, maybe the way to do it is to save the file as an ordinary file in the specified location, then have a Geany script to create the $SKETCH folder and move the file to $SKETCH/$SKETCH.ino
+
