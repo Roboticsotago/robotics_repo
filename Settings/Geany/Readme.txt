@@ -30,7 +30,21 @@ Files to perhaps edit:
 
 	Add Arduino file type to the Programming group.
 
-Could we just add .ino to the list of C++ suffixes in filetype_extensions.conf?
+<<
+...
+[Extensions]
+# <CME>
+Arduino=*.ino;*.pde;
+# </CME>
+...
+[Groups]
+# <CME>
+Programming=Arduino;Clojure;CUDA;Cython;Genie;Scala;
+# </CME>
+...
+>>
+
+Alternatively, could we just add .ino to the list of C++ suffixes in filetype_extensions.conf?
 
 	Yes, but then it just inherits the C++ build/toolchain commands, which we don't want.
 
@@ -43,6 +57,38 @@ templates/files/sketch.ino
 
 MIME type:
 text/x-arduino
+
+
+Files added (to be installed):
+~/.config/geany/filetype_extensions.conf
+~/.config/geany/filedefs/filetypes.Arduino.conf
+~/.config/geany/templates/files/sketch.ino
+
+Hmm, it's reading the file_type_extensions.conf file (cos if I add *.pde to the C++ list it gets set as that type), but it's ignoring my Arduino definition line from the same.
+
+<<
+sbis4114:geany admin$ /Applications/Geany.app/Contents/MacOS/geany -v 
+Geany-INFO: Geany 1.28, en_US.UTF-8
+Geany-INFO: GTK 2.24.30, GLib 2.48.0
+Geany-INFO: System data dir: /Applications/Geany.app/Contents/Resources/share/geany
+Geany-INFO: User config dir: /Users/admin/.config/geany
+Geany-INFO: System plugin path: /Applications/Geany.app/Contents/Resources/lib/geany
+Geany-INFO: Added filetype Clojure (61).
+Geany-INFO: Added filetype CUDA (62).
+Geany-INFO: Added filetype Cython (63).
+Geany-INFO: Added filetype Genie (64).
+Geany-INFO: Added filetype Graphviz (65).
+Geany-INFO: Added filetype JSON (66).
+Geany-INFO: Added filetype Scala (67).
+Geany-INFO: Could not find filetype 'Arduino'.
+Geany-INFO: Filetype 'Arduino' not found for group 'Programming'!
+Geany-INFO: /Users/admin/.config/geany/filetype_extensions.conf : Conf (UTF-8)
+>>
+
+Ah, it needs to be called filetypes.Arduino.conf
+
+[ ] Problem: New file should be called sketch.ino, but it's getting named as untitled.ino
+[ ] Symbols (function names, constants, etc.) are not being picked up, even when using C as the file type.  Ah, they don't get scanned until you save the file!
 
 --
 
