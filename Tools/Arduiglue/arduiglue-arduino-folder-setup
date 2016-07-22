@@ -1,6 +1,8 @@
 #!/bin/sh
 
-# Take an existing filename as argument and set it up as an Arduino IDE compatible filesystem subtree.
+# Take an existing unfiled Arduino sketch filename as an argument and set it up with an Arduino IDE compatible filesystem subtree.
+# e.g.:
+# arduiglue-arduino-folder-setup ~/Documents/Arduino/untitled.ino
 # Arduino IDE expects the structure $SKETCHBOOK/$SKETCH/$SKETCH.ino
 # Older sketches might have had the name $SKETCH.pde but let's not worry about that initially.
 # Note also that Arduino IDE would normally normalise filenames (e.g. 's/ /_/g'). Maybe this should do that too.

@@ -2,21 +2,25 @@
 
 # Take an existing Arduino IDE compatible project and set it up for use also with Arturo/ano.
 # Command-line argument is expected to be the path to the directory containing an existing Arduino IDE project.
+# e.g.
+# arduiglue-arturo-folder-setup ~/Documents/Arduino/Blink
+
 # We create an "ano" folder within that folder to satisfy Arturo's `ano init` requirement for an empty folder.
 # We then replace the default ano sketch with a symlink to the existing Arduino sketch file.
 
 # TODO:
 # [ ] check for safety with space-containing filenames.
 # [ ] exit if "$1" is blank/nonsensical.  Or, if blank, use the current directory.
+# [ ] Optionally file everything away in the default sketchbook folder?
 
 SKETCH_PATH="$1"
 SKETCH_NAME="`basename $SKETCH_PATH`"
 #SKETCH_NAME="$(basename $(dirname $SKETCH_PATH))"
 
 cd $SKETCH_PATH
-mkdir ano
+mkdir -v ano
 cd ano 
 ano init
 cd src
-rm sketch.ino 
+rm -v sketch.ino 
 ln -s ../../$SKETCH_NAME.ino sketch.ino
