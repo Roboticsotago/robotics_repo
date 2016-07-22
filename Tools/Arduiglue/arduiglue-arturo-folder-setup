@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Take an existing Arduino IDE compatible project and set it up for use also with Arturo/ano.
+# We create an "ano" folder to satisfy Arturo's `ano init` requirement for an empty folder.
+# We then replace the default sketch with a symlink to the existing Arduino sketch file.
+
+# TODO: check for safety with space-containing filenames.
+
+# TODO: exit if "$1" is blank/nonsensical.
+
+SKETCH_PATH="$1"
+SKETCH_NAME="`basename $SKETCH_PATH`"
+#SKETCH_NAME="$(basename $(dirname $SKETCH_PATH))"
+
+#echo $SKETCH_PATH
+#echo $SKETCH_NAME
+#exit
+
+# TODO: determine proper Sketchbook path...
+#cd ~/Documents/Arduino
+#mkdir $SKETCH
+#cd $SKETCH
+#touch $SKETCH.ino
+
+cd $SKETCH_PATH
+mkdir ano
+cd ano 
+ano init
+cd src
+rm sketch.ino 
+ln -s ../../$SKETCH_NAME.ino sketch.ino
