@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Take an existing filename as argument and set it up as an Arduino IDE compatible filesystem subtree.
+# Arduino IDE expects the structure $SKETCHBOOK/$SKETCH/$SKETCH.ino
+# Older sketches might have had the name $SKETCH.pde but let's not worry about that initially.
+# Note also that Arduino IDE would normally normalise filenames (e.g. 's/ /_/g'). Maybe this should do that too.
+
+# TODO:
+# [ ] Handle paths containing spaces
+# [ ] Normalise filename a la Arduino IDE rules.
+# [ ] Error handling (e.g. sketch folder or file already exists, preflight check for existence of source file)
+
+FILENAME="$1"
+SKETCH=`basename $FILENAME .ino`
+FOLDER=`dirname $FILENAME`
+
+# TODO: determine proper Sketchbook path...
+#cd ~/Documents/Arduino
+# or just assume we're given the full path to the existing sketch file.
+cd $FOLDER
+mkdir -v $SKETCH
+mv -v -n $SKETCH.ino $SKETCH/
