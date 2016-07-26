@@ -6,10 +6,9 @@
 #include "Arduino.h"
 #include "MIDIBot.h"
 
-
 // Constructor:
 // At least some of the setup routine will be standard, but some firmware-specific setup code will also be likely.
-void MIDIBot::MIDIBot()
+MIDIBot::MIDIBot()
 {
 	// Set up pin modes for the MIDIBot Shield (input, internal pull-up resistor enabled):
 	pinMode(MIDI_1x_PIN, INPUT_PULLUP);
@@ -108,7 +107,7 @@ void MIDIBot::read_MIDI_channel() {
 // Can we factor out some parts of process_MIDI into common functions, and make process_MIDI generic?  Perhaps define constants such as NOTE_ON?
 // We could have it expect functions note_on(pitch, velocity), note_off(pitch, velocity), but I think these will need prototype/forward declarations.
 // TODO: copy _dataByte[0..1] to meaningfully-named variables (pitch/note, velocity) for better readability?
-void process_MIDI() {
+void MIDIBot::process_MIDI() {
 	if (Serial.available() > 0) {
 		int data = Serial.read();
 		if (data > 127) {
@@ -117,8 +116,8 @@ void process_MIDI() {
 			clearData();  
 		} else {
 			// It's a data byte.
-			_dataByte[i] = data;
-			if (_statusByte == (0x90 | _MIDI_channel) && i == 1) {
+			_dataByte[_i] = data;
+			if (_statusByte == (0x90 | _MIDI_channel) && _i == 1) {
 				// Note-on message received
 			//	flash(20,0); // Warning: blocks!
 				if (_dataByte[1] == 0) {
@@ -128,11 +127,11 @@ void process_MIDI() {
 					// Start note playing
 					note_on(_dataByte[0], _dataByte[1]);
 				}
-			} else if (_statusByte == (0x80 | _MIDI_channel) && i == 1) {
+			} else if (_statusByte == (0x80 | _MIDI_channel) && _i == 1) {
 				// Note-off message received
 				note_off(_dataByte[0], _dataByte[1]);
 			}
-			i++;
+			_i++;
 			// TODO: error detection if i goes beyond the array size.
 		}
 	}
@@ -146,7 +145,6 @@ void MIDIBot::test_blink() {
 	digitalWrite(LED_PIN, LOW);
 	delay(500);
 }
-
 
 void MIDIBot::test_button() {
 	digitalWrite(LED_PIN, !digitalRead(SELF_TEST_PIN));

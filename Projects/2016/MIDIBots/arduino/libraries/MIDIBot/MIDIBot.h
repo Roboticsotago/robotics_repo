@@ -14,6 +14,7 @@
 
 #include "Arduino.h"
 
+
 // Define pin mappings for the MIDIBot shield:
 // For a library, should these be global symbols or defined within the class?
 // Also, how do we make the class a singleton?
@@ -36,6 +37,9 @@ const int
 	SELF_TEST_PIN = A5
 ;
 
+//void note_on(int note, int velocity);
+//void note_off(int note, int velocity);
+
 class MIDIBot {
 	public:
 		MIDIBot();	// Class-specific setup(), essentially. Maybe pass Serial object?  Or hard-code to that internally?  Given hardware is hardwired, maybe OK to do that.
@@ -43,7 +47,7 @@ class MIDIBot {
 		void flash(int on_time, int off_time);
 		void flash_number(int n);
 		void read_MIDI_channel();
-		void self_test();	// self_test() will be specific to each robot, but a reasonable basis would be to re-read the MIDI channel from the DIP switches and flash the number.
+		//void self_test();	// self_test() will be specific to each robot, but a reasonable basis would be to re-read the MIDI channel from the DIP switches and flash the number.
 		void process_MIDI();	// Main MIDI-processing "loop"
 	//	void note_off(int note, int velocity);	// Define note_on/off within the class and require user to subclass, or just assume externally defined?
 	//	void note_on(int note, int velocity);
@@ -52,14 +56,16 @@ class MIDIBot {
 		void test_button();
 		void test_MIDI_channel();
 	private:
-		int _MIDI_channel = 0;	// 1..16, 10=drums
+		int _MIDI_channel;	// 1..16, 10=drums
 		
 		// MIDI messages have up to 2 data bytes, which we store in an array:
 		// TODO: perhaps name the index more sensibly/explicitly:
-		int _dataByte[2], _statusByte = 0, _i = 0;
+		int _dataByte[2], _statusByte, _i;
 		
 		// For monophonic instruments, it's useful to keep track of the note currently being played, so that any note-off messages for other notes can be ignored.
-		int _current_note_number = 0;
+		int _current_note_number;
 };
+
+//#include "MIDIBot.cpp"
 
 #endif
