@@ -37,6 +37,7 @@ puts "\nChris's `ano` (Arturo) front-end, (C) 2016 Chris Edwards\n"
 
 if {[llength $argv] == 1} {
 	set dir [file dirname [lindex $argv 0]]
+	puts "Arduino project directory = \"$dir\""
 	cd $dir
 	set env(PWD) $dir
 }
@@ -254,7 +255,7 @@ pack .tree -expand 1 -fill both
 set found_dev_list [lsort [scan_for_devices]]
 
 # TEST:
-.tree insert {} end -id /dev/ttyACM0 -text NoMatter -values [list /dev/ttyACM0 dead:beef uno {Arduino Uno}]
+#.tree insert {} end -id /dev/ttyACM0 -text NoMatter -values [list /dev/ttyACM0 dead:beef uno {Arduino Uno}]
 
 puts "\nFound devices:"
 foreach dev $found_dev_list {
