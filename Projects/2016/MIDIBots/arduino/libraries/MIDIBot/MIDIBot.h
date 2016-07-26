@@ -3,6 +3,9 @@
  * Team _underscore_, Information Science Mechatronics, University of Otago
 */
 
+// NOTE:
+//  - Due to apparent problems with calling delay() inside a constructor, you can't flash the MIDI channel number on the LED automatically at startup (though you can read the MIDI channel DIP switches).  Therefore, call yourMIDIBot.test_MIDI_channel() it your setup() function if you want this to happen.
+
 // TODO:
 // [ ] Have the use of Serial be generic?  Or maybe it's OK to hardcode to use the hardware serial always, since we're dealing with hardware shields.
 // [ ] Convert to camelCase throughout for function names?  It's recommended in the Arduino API style guide.  Also member variables?
@@ -37,8 +40,12 @@ const int
 	SELF_TEST_PIN = A5
 ;
 
-//void note_on(int note, int velocity);
-//void note_off(int note, int velocity);
+// Empty prototypes for additional functions that the sketch using this library should define (bot-specific functionality):
+// (Do these need to be declared "extern" as well?)
+//void setup(); // I think Arduino.h will declare this already.
+void note_on(int note, int velocity);
+void note_off(int note, int velocity);
+// I think it probably doesn't make sense for self_test() to be defined like this. Just define it in the robot-specific firmware sketch.
 
 class MIDIBot {
 	public:
@@ -47,7 +54,7 @@ class MIDIBot {
 		void flash(int on_time, int off_time);
 		void flash_number(int n);
 		void read_MIDI_channel();
-		//void self_test();	// self_test() will be specific to each robot, but a reasonable basis would be to re-read the MIDI channel from the DIP switches and flash the number.
+	//	void self_test();	// self_test() will be specific to each robot, but a reasonable basis would be to re-read the MIDI channel from the DIP switches and flash the number.
 		void process_MIDI();	// Main MIDI-processing "loop"
 	//	void note_off(int note, int velocity);	// Define note_on/off within the class and require user to subclass, or just assume externally defined?
 	//	void note_on(int note, int velocity);
@@ -65,7 +72,5 @@ class MIDIBot {
 		// For monophonic instruments, it's useful to keep track of the note currently being played, so that any note-off messages for other notes can be ignored.
 		int _current_note_number;
 };
-
-//#include "MIDIBot.cpp"
 
 #endif
