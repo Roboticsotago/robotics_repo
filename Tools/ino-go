@@ -40,25 +40,27 @@ if {[llength $argv] == 1} {
 # Bus 001 Device 026: ID 1a86:7523 QinHeng Electronics HL-340 USB-Serial adapter
 # Freetronics Eleven v2.0 R3:
 # Bus 001 Device 028: ID 26ba:0003  
+# NOTE: doesn't report an iProduct string, hence the 0003 in Linux's constructed device special filename.
 
 # Obviously these data are really a relation. It might be overkill to use SQLite however..?  Perhaps we can set things up as a list of lists and then transfer that into arrays.
 # Row structure is: USB device ID, distinctive substring in /dev/serial/by-id, Ino/boards.txt profile identifier, descriptive text.
 set Arduino_model_data {
-	0403:6001  FTDI_FT232R                    ???       {FDTI-connected device (older 1280-based Mega, Nano, etc.))}
-	2341:003b  www.arduino.cc__TODO           ???       {Arduino Serial Adapter}
-	2341:0045  www.arduino.cc__TODO           ???       {Arduino Serial Adapter R3}
-	2341:0001  www.arduino.cc__Arduino_Uno    uno       {Arduino Uno or clone}
-	2341:0043  www.arduino.cc__TODO           uno       {Arduino Uno R3}
-	2341:0010  Arduino__TODO                  mega2560  {Arduino Mega 2560}
-	2341:0042  Arduino__www.arduino.cc__0042  mega2560  {Arduino Mega 2560 R3}
-	2341:003f  Arduino__TODO                  mega2560  {Arduino Mega ADK}
-	2341:0044  Arduino__TODO                  mega2560  {Arduino Mega ADK R3}
-	2341:8036  Arduino_LLC_Arduino_Leonardo   leonardo  {Arduino Leonardo or clone (Freetronics Leostick v1.0, DSpace SMD kit board, etc.)}
-	26ba:0003  www.freetronics.com_0003       uno       {Freetronics Eleven}
-	20a0:4150  www.freetronics.com_Eleven     uno       {Freetronics USBDroid}
-	26ba:8002  Unknown_USB_IO_Board           leonardo  {Freetronics LeoStick}
-	03eb:204b  Donald_Delmar_Davis_Benito7g   dspace_badge_unknown  {DSpace Badge kit + base}
-	03eb:2060  DSpace__www.dspace.org.nz__DSpace_Robot_2.0  robot  {DSpace Robot}
+	0403:6001  FTDI_FT232R                        ???       {FDTI-connected device (older 1280-based Mega, Nano, etc.))}
+	1a86:7523  usb-1a86_USB2.0-Serial-if00-port0  uno   {Chinese Uno}
+	2341:003b  www.arduino.cc__TODO               ???       {Arduino Serial Adapter}
+	2341:0045  www.arduino.cc__TODO               ???       {Arduino Serial Adapter R3}
+	2341:0001  www.arduino.cc__Arduino_Uno        uno       {Arduino Uno or clone}
+	2341:0043  www.arduino.cc__TODO               uno       {Arduino Uno R3}
+	20a0:4150  www.freetronics.com_Eleven         uno       {Freetronics USBDroid}
+	26ba:0003  www.freetronics.com_0003           uno       {Freetronics Eleven}
+	2341:0010  Arduino__TODO                      mega2560  {Arduino Mega 2560}
+	2341:0042  Arduino__www.arduino.cc__0042      mega2560  {Arduino Mega 2560 R3}
+	2341:003f  Arduino__TODO                      mega2560  {Arduino Mega ADK}
+	2341:0044  Arduino__TODO                      mega2560  {Arduino Mega ADK R3}
+	2341:8036  Arduino_LLC_Arduino_Leonardo       leonardo  {Arduino Leonardo or clone (Freetronics Leostick v1.0, DSpace SMD kit board, etc.)}
+	26ba:8002  Unknown_USB_IO_Board               leonardo  {Freetronics LeoStick}
+	03eb:204b  Donald_Delmar_Davis_Benito7g                 dspace_badge_unknown  {DSpace Badge kit + base}
+	03eb:2060  DSpace__www.dspace.org.nz__DSpace_Robot_2.0  robot                 {DSpace Robot}
 }
 
 # NOTE: lsusb gives the DSpace Robot details as:
