@@ -5,9 +5,11 @@
 # Want compatibility with Linux, Mac OS, Windows.
 # Imagine using with Geany, TextWrangler, Sublime Text, as well as plain command-line use.
 
+# TODO:
+# [ ] copy across any remaining code from existing ino-go program.
+# [ ] Detect if GUI and Tk are available, otherwise fall back to text-based board selection menu.
 
-# TODO: copy across some code from existing ino-go program.
-
+package require Tk
 
 # Platform detection stuff:
 switch $tcl_platform(os) {
@@ -27,23 +29,117 @@ switch $tcl_platform(os) {
 	}
 }
 
-# OS-specific procedures for identifying potential Arduino devices that are attached to the system:
+puts "\nChris's `ano` (Arturo) front-end, (C) 2016 Chris Edwards\n"
+
+
+# Command-line arg handling:
+# NOTE: One use case of this program is calling it from the Geany IDE.  Geany can pass the directory containing the source file, but we want to build in the directory bove that. If there's no argument passed, stay where we are.
+
+if {[llength $argv] == 1} {
+	set dir [file dirname [lindex $argv 0]]
+	cd $dir
+	set env(PWD) $dir
+}
+
+# First up, a "database" (ha) of known Arduino and compatible models:
+
+# Here we're trying to map from detected device names to device types.  We could maybe do something clever with udev or /proc or /sys, but the approach below seems to work pretty well.  For this first stuff we only care about identifying what type of device corresponds to each serial device. We use the by-id dev filenames since they include distinctive strings that should let us infer the device type.
+
+# NOTE: Unfortunately, it looks like devices using FTDI USB-serial chips (e.g. older 1280-based Mega, Funduino Nano, etc.) all share the same USB ID, so I don't think we can reliably infer the board type for these. :(  Perhaps just present another dialog in this event so that the user can choose.
+# Looks like the by-id filenames differ only in the serial numbers:
+# Funduino Nano: /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A603ANIP-if00-port0
+# Mega1280:      /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A6008hfy-if00-port0
+# These also use FTDI chips:
+#   atmega328: Arduino Duemilanove w/ ATmega328
+#   diecimila: Arduino Diecimila or Duemilanove w/ ATmega168
+#   atmega168: Arduino NG or older w/ ATmega168
+#     atmega8: Arduino NG or older w/ ATmega8
+# Arduino NG uses the FTDI FT232RL
+# Chinese Uno with CH340G chip:
+# Bus 001 Device 026: ID 1a86:7523 QinHeng Electronics HL-340 USB-Serial adapter
+# Freetronics Eleven v2.0 R3:
+# Bus 001 Device 028: ID 26ba:0003  
+# NOTE: doesn't report an iProduct string, hence the 0003 in Linux's constructed device special filename.
+
+# Obviously these data are really a relation. It might be overkill to use SQLite however..?  Perhaps we can set things up as a list of lists and then transfer that into arrays.
+# Row structure is: USB device ID, distinctive substring in /dev/serial/by-id, Ino/boards.txt profile identifier, descriptive text.
+set Arduino_model_data {
+	0403:6001  FTDI_FT232R                        ???       {FDTI-connected device (older 1280-based Mega, Nano, etc.))}
+	1a86:7523  usb-1a86_USB2.0-Serial-if00-port0  uno   {Chinese Uno}
+	2341:003b  www.arduino.cc__TODO               ???       {Arduino Serial Adapter}
+	2341:0045  www.arduino.cc__TODO               ???       {Arduino Serial Adapter R3}
+	2341:0001  www.arduino.cc__Arduino_Uno        uno       {Arduino Uno or clone}
+	2341:0043  www.arduino.cc__TODO               uno       {Arduino Uno R3}
+	20a0:4150  www.freetronics.com_Eleven         uno       {Freetronics USBDroid}
+	26ba:0003  www.freetronics.com_0003           uno       {Freetronics Eleven}
+	2341:0010  Arduino__TODO                      mega2560  {Arduino Mega 2560}
+	2341:0042  Arduino__www.arduino.cc__0042      mega2560  {Arduino Mega 2560 R3}
+	2341:003f  Arduino__TODO                      mega2560  {Arduino Mega ADK}
+	2341:0044  Arduino__TODO                      mega2560  {Arduino Mega ADK R3}
+	2341:8036  Arduino_LLC_Arduino_Leonardo       leonardo  {Arduino Leonardo or clone (Freetronics Leostick v1.0, DSpace SMD kit board, etc.)}
+	26ba:8002  Unknown_USB_IO_Board               leonardo  {Freetronics LeoStick}
+	03eb:204b  Donald_Delmar_Davis_Benito7g                 dspace_badge_unknown  {DSpace Badge kit + base}
+	03eb:2060  DSpace__www.dspace.org.nz__DSpace_Robot_2.0  robot                 {DSpace Robot}
+}
+
+# NOTE: lsusb gives the DSpace Robot details as:
+# Bus 001 Device 002: ID 03eb:2060 Atmel Corp. Benito Programmer Project
+
+# TODO: Other official Arduino models, Freetronics USBDroid, DSpace Robot details.
+# The USB IDs don't seem to be floating around on the Internet, so I might have to get my hands on some of these for testing.  Many of the smaller boards have no on-board USB serial connectivity, and of those that do, the older ones generally just use an FTDI chip.
+#     nano328: Arduino Nano w/ ATmega328
+#        nano: Arduino Nano w/ ATmega168
+#     mini328: Arduino Mini w/ ATmega328
+#        mini: Arduino Mini w/ ATmega168
+#    ethernet: Arduino Ethernet
+#         fio: Arduino Fio
+#       bt328: Arduino BT w/ ATmega328
+#          bt: Arduino BT w/ ATmega168
+#  lilypad328: LilyPad Arduino w/ ATmega328
+#     lilypad: LilyPad Arduino w/ ATmega168
+#    pro5v328: Arduino Pro or Pro Mini (5V, 16 MHz) w/ ATmega328
+#       pro5v: Arduino Pro or Pro Mini (5V, 16 MHz) w/ ATmega168
+#      pro328: Arduino Pro or Pro Mini (3.3V, 8 MHz) w/ ATmega328
+#         pro: Arduino Pro or Pro Mini (3.3V, 8 MHz) w/ ATmega168
+
+# Also seen: 26ba:0002 LeoStick Loader
+# 26ba:0003 Freetronics ???
+# 20a0:4151 LeoStick Loader
+# 2341:0034 Arduino Leonardo
+
+# Copy the model data into arrays for ease of use:
+foreach {usb_id the_dev_substring the_ino_model the_model_label} $Arduino_model_data {
+#	puts $usb_id
+	set ::dev_substring($usb_id) $the_dev_substring
+	set     ::ino_model($usb_id) $the_ino_model
+	set   ::model_label($usb_id) $the_model_label
+}
+
+set known_devices [array names dev_substring]
+
+
+# That's it for the general IDs. Now to detect and recognise any attached boards...
+
+
+
+# Next we have various OS-specific procedures for identifying potential Arduino devices that are attached to the system. These follow the naming convention "scan_for_devices_${PLATFORM}".
+
+# We use "interp alias" to make the platform-specific proc available as "scan_for_devices" (see platform detection code at start).
 
 # Original Linux-specific technique from my first implementation:
 # Uses the nice system-generated by-id paths from /dev, which generally contain a substring based on the USB device's reported vendor and product names.
-# Note the side-effects here: it copies data into the arrays (found_usb_id, found_ino_model, found_model) as well as returning a list of canonical device special file names.
+# Alternatively, could use lsusb or /sys/bus/usb/devices, e.g /sys/bus/usb/devices/usb1/1-1/1-1.1/1-1.1.4/1-1.1.4:1.0/ttyUSB0/tty/ttyUSB0/uevent:DEVNAME=ttyUSB0
+# Note the side-effects here: it copies data into the (global) arrays (found_usb_id, found_ino_model, found_model) as well as returning a list of canonical device special file names.
 
 proc scan_for_devices_Linux {} {
-	global known_devices dev_substring ino_model model_label
-	global found_usb_id found_ino_model found_model_label
 	set candidate_devices [list]
 	foreach device [glob -nocomplain /dev/serial/by-id/*] {
-		foreach id $known_devices {
-			if {[string match *$dev_substring($id)* $device]} {
+		foreach id $::known_devices {
+			if {[string match *$::dev_substring($id)* $device]} {
 				set dev [file normalize /dev/serial/by-id/[file readlink $device]]
-				set found_usb_id($dev) $id
-				set found_ino_model($dev) $ino_model($id)
-				set found_model_label($dev) $model_label($id)
+				set ::found_usb_id($dev) $id
+				set ::found_ino_model($dev) $::ino_model($id)
+				set ::found_model_label($dev) $::model_label($id)
 				lappend candidate_devices $dev
 			}
 		}
@@ -55,18 +151,23 @@ proc scan_for_devices_Linux {} {
 
 # On the Mac, we don't have such a nice /dev tree, or /proc, or /sys, nor is lsusb available.
 # Instead, there is an ioreg command that can enumerate USB devices, although the output isn't pretty (either the default text-based tree or the XML "archive" format).
+# We could do a glob on known candidate /dev paths, e.g. *.usbmodem* or *.whc*, but we'd still want to know the USB device IDs to try to infer the model.
+# Arturo does some of this stuff internally; how?
 
 # Also, can ioreg be used to determine which /dev special file corresponds to the given USB vendor/product ID?  On Linux we could simply find where the /dev/serial/by-id symlink pointed.
 proc scan_for_devices_Mac {} {
 	puts stderr "Sorry, device search on Mac OS not implemented yet."
+	set candidate_devices [list]
+	return $candidate_devices
 }
 
 # On Windows, serial devices are named COM1, COM3, etc.  How to enumerate?  And how to relate to USB device IDs?  One way is to use the Registry:
 
 # TODO: put platform detection code all in one place, at the start maybe?  And automatically alias platform-specific procs?
+# Any special privileges required to read from (this part of) the Registry?
 #package require registry
  
-proc get_serial_ports { } {
+proc get_windows_serial_ports { } {
 	set serial_base "HKEY_LOCAL_MACHINE\\HARDWARE\\DEVICEMAP\\SERIALCOMM"
 	set values [ registry values $serial_base ]
  
@@ -86,14 +187,125 @@ proc get_serial_ports { } {
 
 proc scan_for_devices_Windows {} {
 	puts stderr "Sorry, device search on Windows not implemented yet."
+	set candidate_devices [list]
+	# ... get_windows_serial_ports
+	return $candidate_devices
 }
 
 
 
-# TODO: Zenity replacement code for GUI selection of device here...
 
 
-puts "Scanning for candidate Arduino devices:"
-puts [scan_for_devices]
+# Hmm, I don't think build_result normally ends up with anything useful, and if there's an exception, it won't be set at all.
+# TODO: add ANSI terminal codes for helpful colouring. Will that pass through to Geany?
+proc build {model} {
+	puts "\nBuilding code..."
+	if [catch {set build_result  [exec -ignorestderr ano build -m $model]} message] {
+		puts "ERROR: ano build: <<$message>>"
+		exit 2
+	} else {
+		if {$build_result != {}} {
+			puts "build_result=<<\n$build_result\n>>"
+		}
+	}
+}
 
-# TODO: call ano to build and upload...
+proc upload {model serial} {
+	puts "\nUploading..."
+	if [catch {set upload_result [exec -ignorestderr ano upload -m $model -p $serial]} message] {
+		puts "ERROR: ano upload: <<$message>>"
+		exit 3
+	} else {
+		if {$upload_result != {}} {
+			puts "upload_result=<<\n$upload_result\n>>"
+		}
+	}
+}
+
+#build
+#upload
+
+
+# Now we implement a basic GUI for selection of device to program...
+# (and possibly also manual selection of device type, esp. for FTDI-based boards or other ambiguous types..perhaps also with persistence (remember chosen type))
+
+# Have a procedure for this or just run the code directly?  If it's the only GUI, maybe OK to run directly.
+
+# New toplevel for .boards? Or just use the main "." frame?
+
+wm title . {Available Arduino Devices}
+
+label .label -text {Choose the device to program:}
+pack .label -expand 0 -fill x
+
+# NOTE: column #0 is always the tree column (even if not shown).
+ttk::treeview .tree -columns {<tree> Device USB_ID Model Type} -selectmode browse -show headings
+pack .tree -expand 1 -fill both
+.tree heading #0 -anchor w -text <tree>
+.tree heading #1 -anchor w -text Device:
+.tree heading #2 -anchor w -text {USB ID:}
+.tree heading #3 -anchor w -text {Model ID:}
+.tree heading #4 -anchor w -text {Device Type:}
+
+
+# Scan for candidate Arduino devices:
+
+# We have to find the devices and then print them, since we're sorting them. The list is used twice, so let's store it in a variable:
+set found_dev_list [lsort [scan_for_devices]]
+
+# TEST:
+.tree insert {} end -id /dev/ttyACM0 -text NoMatter -values [list /dev/ttyACM0 dead:beef uno {Arduino Uno}]
+
+puts "\nFound devices:"
+foreach dev $found_dev_list {
+	puts "$dev: $found_usb_id($dev) $found_model_label($dev) ($found_ino_model($dev))"
+	.tree insert {} end -id $dev -text NoMatter -values [list $dev $found_usb_id($dev) $found_ino_model($dev) $found_model_label($dev)]
+}
+puts {}
+
+# TODO: column widths
+
+# TODO: scrolling
+
+# TODO: have first item in list selected by default
+# TODO: how to communicate the selected item with the "build" proc?
+# .tree selection	# returns internal node ID
+# TODO: support double-clicking list item to start build+upload.
+# TODO: handle Esc key for cancelling, Enter/Return for OK
+# TODO: implement arrow up/down for selection.
+
+# Buttons
+button .cancel_button -text Cancel -command {exit}
+button .ok_button -text OK -command {build_for_selected_device [.tree selection]}
+
+pack .ok_button .cancel_button -side right
+
+# TODO: have "Build", "Upload" buttons, and perhaps even consider a life-cycle that exists alongside an editor to provide a basic Arduino IDE, which would include a serial port monitor/launcher and perhaps even a Jenkins-style auto-build capability.
+
+
+# Pass this the device name to build for:
+proc build_for_selected_device {selected_device} {
+	# DUMMY:
+#	set selected_device [lindex $found_dev_list 0]
+	#if {[catch {set selected_device [{*}$zenity_exec_command]}] || $selected_device == {}} {
+	#	puts "No device selected. Quitting."
+	#	exit 1
+	#}
+	if {$selected_device eq ""} {
+		puts stderr "No device selected?!"
+		return
+	}
+
+#	puts "Selected device = $selected_device"
+
+	# TODO: if device model is unknown ("???"), prompt additionally for the device model.
+
+	set model $::found_ino_model($selected_device)
+	set serial $selected_device
+	wm withdraw .
+	build $model
+	upload $model $serial
+	exit
+}
+
+# ENDUT! HOCH HECH!
