@@ -36,6 +36,10 @@ if {[llength $argv] == 1} {
 #   atmega168: Arduino NG or older w/ ATmega168
 #     atmega8: Arduino NG or older w/ ATmega8
 # Arduino NG uses the FTDI FT232RL
+# Chinese Uno with CH340G chip:
+# Bus 001 Device 026: ID 1a86:7523 QinHeng Electronics HL-340 USB-Serial adapter
+# Freetronics Eleven v2.0 R3:
+# Bus 001 Device 028: ID 26ba:0003  
 
 # Obviously these data are really a relation. It might be overkill to use SQLite however..?  Perhaps we can set things up as a list of lists and then transfer that into arrays.
 # Row structure is: USB device ID, distinctive substring in /dev/serial/by-id, Ino/boards.txt profile identifier, descriptive text.
