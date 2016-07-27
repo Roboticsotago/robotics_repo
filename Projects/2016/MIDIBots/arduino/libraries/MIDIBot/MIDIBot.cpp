@@ -7,7 +7,7 @@
 #include "MIDIBot.h"
 
 // Constructor:
-// At least some of the setup routine will be standard, but some firmware-specific setup code will also be likely.
+// At least some of the setup routine will be standard, but some firmware-specific setup code will also be likely.  That can be done in the usual setup().
 MIDIBot::MIDIBot()
 {
 
@@ -49,7 +49,6 @@ MIDIBot::MIDIBot()
 	// Don't bother if flashing MIDI channel - it's confusing!
 
 }
-
 
 
 void MIDIBot::clearData(){
@@ -100,24 +99,13 @@ void MIDIBot::read_MIDI_channel() {
 }
 
 
-// self_test() will be specific to each robot, but a reasonable basis would be to re-read the MIDI channel from the DIP switches and flash the number.
-/*
-void self_test() {
-	// Robot-specific self-test routine goes here. Example:
-	if (!digitalRead(SELF_TEST_PIN)) {
-		read_MIDI_channel();
-		flash_number(_MIDI_channel + 1);
-	}
-}
-*/
+// self_test() will need to be implemented by the sketch using this library.
+// Ditto note_on(), note_off().
 
-// TODO: similar examples for implementations of note_on() and note_off()
-// ...
 
-// Can we factor out some parts of process_MIDI into common functions, and make process_MIDI generic?  Perhaps define constants such as NOTE_ON?
+// Can we factor out some parts of process_MIDI into common functions, and make process_MIDI generic?  Perhaps define constants, such as NOTE_ON=0x90?
 // We could have it expect functions note_on(pitch, velocity), note_off(pitch, velocity), but I think these will need prototype/forward declarations.
 // TODO: copy _dataByte[0..1] to meaningfully-named variables (pitch/note, velocity) for better readability?
-
 void MIDIBot::process_MIDI() {
 	if (Serial.available() > 0) {
 		int data = Serial.read();
@@ -149,8 +137,8 @@ void MIDIBot::process_MIDI() {
 }
 
 
-
 // Some standard self-test routines:
+
 void MIDIBot::test_blink() {
 	digitalWrite(LED_PIN, HIGH);
 	delay(500);
