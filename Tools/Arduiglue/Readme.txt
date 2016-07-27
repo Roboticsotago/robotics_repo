@@ -29,3 +29,6 @@ There are a number of hassles in getting the ino/ano folder structure to match t
 		Fails to build in Arduino IDE because it tries to build the ano copy as well.
 
 However, recent versions of ano support a --source-dir argument, allowing you to compile wherever the file happens to be, and some discussion on github indicates that it should now work with the Arduino IDE's folder structure.  That would make like much easier!
+
+See:
+https://github.com/scottdarch/Arturo/issues/7
