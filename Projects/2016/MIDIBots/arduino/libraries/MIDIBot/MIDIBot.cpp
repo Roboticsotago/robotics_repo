@@ -7,9 +7,10 @@
 #include "MIDIBot.h"
 
 // Constructor:
-// At least some of the setup routine will be standard, but some firmware-specific setup code will also be likely.
+// At least some of the setup routine will be standard, but some firmware-specific setup code will also be likely.  That can be done in the usual setup().
 MIDIBot::MIDIBot()
 {
+
 	// Set up pin modes for the MIDIBot Shield (input, internal pull-up resistor enabled):
 	pinMode(MIDI_1x_PIN, INPUT_PULLUP);
 	pinMode(MIDI_2x_PIN, INPUT_PULLUP);
@@ -31,9 +32,11 @@ MIDIBot::MIDIBot()
 	
 	// Initialise MIDI channel number according to DIP switch settings:
 	read_MIDI_channel();
-	flash_number(_MIDI_channel);
+//	flash_number(_MIDI_channel + 1);	// This seems to be the cause of the problems with using this as a library!  I suspect it's because it uses delay() internally.
 	
 	// Set up MIDI communication:
+	// TODO: might be a good idea to introduce a delay here before opening Serial to make reprogramming a bit less unreliable.
+//	delay(6000);	// No, that also causes things to fail!  Maybe anything calling delay() in the constructor will cause the sketch to hang.
 	Serial.begin(31250);
 	clearData();
 	
@@ -44,8 +47,8 @@ MIDIBot::MIDIBot()
 	// Flash to indicate startup/ready:
 //	flash(50, 200); flash(50, 400); flash(50, 200); flash(400, 0);
 	// Don't bother if flashing MIDI channel - it's confusing!
-}
 
+}
 
 
 void MIDIBot::clearData(){
@@ -96,15 +99,11 @@ void MIDIBot::read_MIDI_channel() {
 }
 
 
-// self_test() will be specific to each robot, but a reasonable basis would be to re-read the MIDI channel from the DIP switches and flash the number.
-//void self_test() {
-	// Robot-specific self-test routine goes here
-//	read_MIDI_channel();
-//	flash_number(_MIDI_channel + 1);
-//}
+// self_test() will need to be implemented by the sketch using this library.
+// Ditto note_on(), note_off().
 
 
-// Can we factor out some parts of process_MIDI into common functions, and make process_MIDI generic?  Perhaps define constants such as NOTE_ON?
+// Can we factor out some parts of process_MIDI into common functions, and make process_MIDI generic?  Perhaps define constants, such as NOTE_ON=0x90?
 // We could have it expect functions note_on(pitch, velocity), note_off(pitch, velocity), but I think these will need prototype/forward declarations.
 // TODO: copy _dataByte[0..1] to meaningfully-named variables (pitch/note, velocity) for better readability?
 void MIDIBot::process_MIDI() {
@@ -132,13 +131,14 @@ void MIDIBot::process_MIDI() {
 				note_off(_dataByte[0], _dataByte[1]);
 			}
 			_i++;
-			// TODO: error detection if i goes beyond the array size.
+			// TODO: error detection if _i goes beyond the array size.
 		}
 	}
 }
 
 
 // Some standard self-test routines:
+
 void MIDIBot::test_blink() {
 	digitalWrite(LED_PIN, HIGH);
 	delay(500);
@@ -146,18 +146,19 @@ void MIDIBot::test_blink() {
 	delay(500);
 }
 
+
 void MIDIBot::test_button() {
 	digitalWrite(LED_PIN, !digitalRead(SELF_TEST_PIN));
 }
 
 
 void MIDIBot::test_MIDI_channel() {
-	if (!digitalRead(SELF_TEST_PIN)) {
-		read_MIDI_channel();
-		Serial.print(_MIDI_channel);
-		Serial.print(" (");
-		Serial.print(_MIDI_channel + 1);
-		Serial.println(")");
-		flash_number(_MIDI_channel + 1);
-	}
+	read_MIDI_channel();
+	flash_number(_MIDI_channel + 1);
+/*
+	Serial.print(_MIDI_channel);
+	Serial.print(" (");
+	Serial.print(_MIDI_channel + 1);
+	Serial.println(")");
+*/
 }
