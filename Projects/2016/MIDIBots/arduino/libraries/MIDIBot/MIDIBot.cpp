@@ -37,7 +37,7 @@ MIDIBot::MIDIBot()
 	// Set up MIDI communication:
 	// TODO: might be a good idea to introduce a delay here before opening Serial to make reprogramming a bit less unreliable.
 //	delay(6000);	// No, that also causes things to fail!  Maybe anything calling delay() in the constructor will cause the sketch to hang.
-	Serial.begin(31250);
+	//Serial.begin(31250);
 	clearData();
 	
 	// Attach interrupt for self-test button and function:
@@ -108,6 +108,7 @@ void MIDIBot::read_MIDI_channel() {
 // TODO: copy _dataByte[0..1] to meaningfully-named variables (pitch/note, velocity) for better readability?
 void MIDIBot::process_MIDI() {
 	if (Serial.available() > 0) {
+		flash(20,0); // Warning: blocks!
 		int data = Serial.read();
 		if (data > 127) {
 			// It's a status byte. Store it for future reference.
@@ -118,7 +119,6 @@ void MIDIBot::process_MIDI() {
 			_dataByte[_i] = data;
 			if (_statusByte == (0x90 | _MIDI_channel) && _i == 1) {
 				// Note-on message received
-			//	flash(20,0); // Warning: blocks!
 				if (_dataByte[1] == 0) {
 					// Note-on with velocity=0: Stop note playing (nothing to do for percussion!)
 					note_off(_dataByte[0], _dataByte[1]);
