@@ -13,8 +13,10 @@ Servo
 	drum_servo
 ;
 
-// Unused?
+// TODO: Unused? Remove if so.
 int pos = 0;    // variable to store the servo position
+
+// TODO: carefully test required delay for each instrument and tweak *_DELAY constants below.
 
 const int TRIANGLE_NOTE = 60; // Middle C
 const int TRIANGLE_MIN = 30;
@@ -28,6 +30,7 @@ const int SHAKER_MAX = 110;
 const int SHAKER_DELAY = 100;
 // Checked! 
 
+// TODO: (re)move these:
 // Numbers here for DrumBot from testing:
 
 // cymbal: 60..90 degrees, 100 ms
@@ -40,7 +43,6 @@ const int DRUM_MAX = 137;
 const int DRUM_DELAY = 100;
 // Checked!
 
-// Problem when testing Henry's drum on the PercussionBot. It was not changing the position of the servo in corrolation to what we set the servo range to, it was acting as if it was stuck in the center.
 
 // Timers for asynchronous release of drum hits:
 Timer *triangle_timer = new Timer(TRIANGLE_DELAY, &triangle_release, 1);
@@ -67,6 +69,7 @@ void shaker_release() {shaker_servo.write(SHAKER_MIN);}
 void drum_release() {drum_servo.write(DRUM_MIN);}
 
 
+// TODO: convert to switch statement instead?
 void note_on(int note, int velocity) {
 	if (note == TRIANGLE_NOTE) {
 		triangle_hit();
@@ -79,6 +82,15 @@ void note_on(int note, int velocity) {
 	}					
 }
 
+/*
+void note_on(int note, int velocity) {
+	switch (note) {
+		case TRIANGLE_NOTE: triangle_hit(); break;
+		case SHAKER_NOTE:   shaker_hit();   break;
+		case DRUM_NOTE:     drum_hit();     break;
+	}					
+}
+*/
 
 void note_off(int note, int velocity) {
 	// Nothing to do for percussion!
@@ -123,13 +135,4 @@ void loop()
 	drum_timer->Update();
 	
 	percussionBot.process_MIDI();
-	
-//	test_blink();
-//	test_button();
-//	test_flash_number();
-//	test_MIDI_channel();
-//	test_MOSFETs();
-//	test_MOSFETs_cycle();
-//	test_PWM();
-//	test_servo();
 }
