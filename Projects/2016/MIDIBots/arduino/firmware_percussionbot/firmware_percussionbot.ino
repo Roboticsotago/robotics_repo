@@ -181,7 +181,7 @@ void setup()
 
 	// Initialise MIDI channel number according to DIP switch settings:
 	read_MIDI_channel();
-	flash_number(MIDI_channel);
+	flash_number(MIDI_channel + 1);
 	
 	// Set up MIDI communication:
 	Serial.begin(31250);
