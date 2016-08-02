@@ -37,13 +37,11 @@ MIDIBot::MIDIBot()
 	// Set up MIDI communication:
 	// TODO: might be a good idea to introduce a delay here before opening Serial to make reprogramming a bit less unreliable.
 //	delay(6000);	// No, that also causes things to fail!  Maybe anything calling delay() in the constructor will cause the sketch to hang.
-<<<<<<< HEAD
-=======
+
 	// NOTE: Do not call Serial.begin() in the constructor either! It doesn't hang, but serial communication will not work subsequently.
 	//Serial.begin(31250);
 //	Serial.begin(9600);
 
->>>>>>> 4a6967e032a254e906190f1048586a9615131362
 	clearData();
 	
 	// Attach interrupt for self-test button and function:
