@@ -19,9 +19,9 @@ const int STRUM_MIN = 90;
 const int STRUM_MAX = 110;
 
 // For slide max/min, we probably want min to be at the nut end, and max at the soundhole end.
-const int SLIDE_MIN = 60;	// 55 is too far - it can get stuck!
-const int SLIDE_MAX = 88;
-const int SLIDE_HOME = 108; // Somewhere far enough beyond MAX that it will avoid the backlash.
+const int SLIDE_MIN = 60;	// 55 is too far - it can get stuck! 60
+const int SLIDE_MAX = 88;	// 88
+const int SLIDE_HOME = 108; // Somewhere far enough beyond MAX that it will avoid the backlash.  108
 
 int slide_position = SLIDE_MIN;
 
@@ -63,6 +63,10 @@ void move_slide(int pos) {
 	delay(SLIDE_DELAY);
 }
 
+void note_on(int note, int velocity) {}
+
+void note_off(int note, int velocity) {}
+
 void setup()
 {
 	UkeBot.begin();
@@ -75,7 +79,7 @@ void setup()
 	slide.write(SLIDE_HOME);
 }
 
-void self_test()
+void self_test_2()
 {
 	down_slide();
 	delay(500);
@@ -92,8 +96,7 @@ void self_test()
 	delay(500);
 }
 
-void loop()
-{
+void self_test() {
 	slide_position = SLIDE_MAX;
 	for (i=0; i<=5; i++){
 		move_slide(slide_position);
@@ -103,4 +106,9 @@ void loop()
 		delay(500);
 		slide_position = slide_position - 5;
 	}
+}
+
+void loop()
+{
+	UkeBot.process_MIDI();
 }
