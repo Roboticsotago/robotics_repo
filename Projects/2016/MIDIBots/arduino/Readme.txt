@@ -15,3 +15,9 @@ It might be possible to call the Arduino IDE in command-line mode to find out th
 On Mac OS, assuming you've cloned the git repo into ~/robotics_repo:
 
 ln -s ~/robotics_repo/Projects/2016/MIDIBots/arduino ~/Documents/Arduino/MIDIBots
+
+--
+
+Timer.h is from the PNG library:
+
+https://github.com/aron-bordin/PNG-Arduino-Framework/blob/master/docs/installation.rst
