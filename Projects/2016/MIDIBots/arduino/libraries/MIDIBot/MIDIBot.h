@@ -93,6 +93,7 @@ void self_test();
 class MIDIBot {
 	public:
 		MIDIBot();	// Constructor method.  Sets up the MIDIBot Shield's pins, sets the MIDI channel ID from the DIP switches, and starts Serial input for MIDI compatibility.
+		void begin();	// Start serial comms
 		void clearData();	// Zeroes out the buffer for received MIDI data
 		void flash(int on_time, int off_time);	// Flash the onboard LED with specified on/off duration in milliseconds
 		void flash_number(int n);	// Flash the LED in a pattern to indicate the value of <n>
@@ -101,7 +102,6 @@ class MIDIBot {
 		// Generic self-test functions:
 		void test_blink();	// Blink the onboard LED once
 		void test_button();	// Light the onboard LED if the self-test button is pressed
-		void begin();
 		void test_MIDI_channel();	// Read and flash-display the MIDI channel number
 	private:
 		int _MIDI_channel;	// 1..16, 10=drums
