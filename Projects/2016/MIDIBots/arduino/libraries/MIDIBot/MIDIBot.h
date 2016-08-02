@@ -77,7 +77,9 @@ const int
 	MOSFET_4_PIN = A2,	/* not A4 as on the silkscreen! */
 	LED_PIN = 13,		/* USBDroid has pulldown resistor on D13! */
 	LATENCY_ADJUST_PIN = A0,
-	SELF_TEST_PIN = A5
+	SELF_TEST_PIN = A5,
+	SERIAL_SPEED = 31250
+	
 ;
 
 // Empty prototypes for additional functions that the sketch using this library should define (bot-specific functionality):
@@ -99,6 +101,7 @@ class MIDIBot {
 		// Generic self-test functions:
 		void test_blink();	// Blink the onboard LED once
 		void test_button();	// Light the onboard LED if the self-test button is pressed
+		void begin();
 		void test_MIDI_channel();	// Read and flash-display the MIDI channel number
 	private:
 		int _MIDI_channel;	// 1..16, 10=drums

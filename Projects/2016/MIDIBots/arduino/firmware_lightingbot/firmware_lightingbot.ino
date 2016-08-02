@@ -55,15 +55,10 @@ void self_test() {
 }
 
 void setup() {
-        delay(5000);
-        Serial.begin(9600);
-	thisMIDIBot.test_MIDI_channel();	// Indicate MIDI channel at startup
+	thisMIDIBot.begin();
 }
 
 void loop() {
-	if (!digitalRead(SELF_TEST_PIN)) {
-		self_test();
-	}
 	thisMIDIBot.process_MIDI();
 }
 
