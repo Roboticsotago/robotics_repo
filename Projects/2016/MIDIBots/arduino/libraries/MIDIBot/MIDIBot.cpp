@@ -116,9 +116,6 @@ void MIDIBot::read_MIDI_channel() {
 // We could have it expect functions note_on(pitch, velocity), note_off(pitch, velocity), but I think these will need prototype/forward declarations.
 // TODO: copy _dataByte[0..1] to meaningfully-named variables (pitch/note, velocity) for better readability?
 void MIDIBot::process_MIDI() {
-	if (!digitalRead(SELF_TEST_PIN)) {
-		self_test();
-	}
 	if (Serial.available() > 0) {
 		flash(20,0); // Warning: blocks!
 		int data = Serial.read();
@@ -143,6 +140,9 @@ void MIDIBot::process_MIDI() {
 				note_off(_dataByte[0], _dataByte[1]);
 			}
 			_i++;
+			if (!digitalRead(SELF_TEST_PIN)) {
+				self_test();
+	}
 			// TODO: error detection if _i goes beyond the array size.
 		}
 	}
