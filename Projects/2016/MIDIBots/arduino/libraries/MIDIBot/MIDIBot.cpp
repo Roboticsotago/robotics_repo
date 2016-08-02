@@ -117,7 +117,7 @@ void MIDIBot::read_MIDI_channel() {
 // TODO: copy _dataByte[0..1] to meaningfully-named variables (pitch/note, velocity) for better readability?
 void MIDIBot::process_MIDI() {
 	if (Serial.available() > 0) {
-		flash(20,0); // Warning: blocks!
+		// flash(20,0); // Warning: blocks!
 		int data = Serial.read();
 		if (data > 127) {
 			// It's a status byte. Store it for future reference.
