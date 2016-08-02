@@ -47,7 +47,9 @@ void self_test() {
 	digitalWrite(WHITE_PIN, HIGH);
 	delay(500);
 	digitalWrite(WHITE_PIN, LOW);
-        Serial.print("hello");
+
+//        Serial.print("hello");
+
 	RGB_colour_test();
 	
 	RGB_fade_integer();
@@ -55,7 +57,14 @@ void self_test() {
 }
 
 void setup() {
+<<<<<<< HEAD
 	thisMIDIBot.begin();
+=======
+        delay(5000);
+	thisMIDIBot.test_MIDI_channel();	// Indicate MIDI channel at startup
+        Serial.begin(31250);
+//        Serial.begin(9600);
+>>>>>>> 4a6967e032a254e906190f1048586a9615131362
 }
 
 void loop() {
