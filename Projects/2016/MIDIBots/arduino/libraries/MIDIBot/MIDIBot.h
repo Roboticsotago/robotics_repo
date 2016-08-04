@@ -3,11 +3,10 @@
 Arduino library for our MIDIBot shield circuit board, Robocup 2016
 Team _underscore_, Information Science Mechatronics, University of Otago
 
-To use this library, #include it, and instantiate a la "MIDIBot drumBot;" (note: no trailing parentheses - that would make it a function call!).
-You will also need to define a note_on() and note_off() implementation for the specific robot.
-If you want a self_test() function (recommended!), you should implement it in the main sketch, and conditionally call it from the main loop() function.
-It's nice to indicate the MIDI channel on startup, but the library constructor can't do that itself (can't use delay()), so do it in your setup() function instead.
-
+To use this library, #include it, and instantiate a la "MIDIBot drumBot;" (note: no trailing parentheses - that would make it a function declaration!).
+You will also need to define a note_on() and note_off() implementation for the specific robot. These will be called from MIDIBot::process_MIDI, passing the MIDI note number and velocity as arguments.
+Your sketch will also need to implement a self_test() function, which will be called from MIDIBot::process_MIDI if the Self-Test button is pressed.
+Because you can't use delay() or Serial.begin() in the constructor, this class defines a separate MIDIBot::begin() method which reads the MIDI channel from the DIP switches, flashes the MIDI channel number, and starts serial communication at MIDI baud rate (after a 5-second pause to avoid reprogramming problems).
 
 The following is a basic example:
 --
