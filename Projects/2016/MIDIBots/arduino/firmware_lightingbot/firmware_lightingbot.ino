@@ -58,10 +58,6 @@ void self_test() {
 
 void setup() {
 	thisMIDIBot.begin();
-        delay(5000);
-	thisMIDIBot.test_MIDI_channel();	// Indicate MIDI channel at startup
-        Serial.begin(31250);
-//        Serial.begin(9600);
 }
 
 void loop() {
