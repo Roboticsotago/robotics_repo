@@ -1,4 +1,0 @@
-Redundant file to test a timelapse on the Git repo.
-Edited.
-Edited once again.
-Hopefully final edit.
