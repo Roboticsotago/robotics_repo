@@ -1,6 +1,8 @@
 // PercussionBot code for the 2016 MIDIBots
 // Team _underscore_, Information Science Mechatronics, University of Otago
 
+// TODO: add a DC motor operating a football/cog rattle? And a similar mechanism for repeatedly striking the triangle?
+
 #include <MIDIBot.h>
 MIDIBot percussionBot;
 
@@ -65,11 +67,11 @@ void drum_hit() {
 }
 
 void triangle_release() {triangle_servo.write(TRIANGLE_MIN);}
-void shaker_release() {shaker_servo.write(SHAKER_MIN);}
-void drum_release() {drum_servo.write(DRUM_MIN);}
+void   shaker_release() {  shaker_servo.write(SHAKER_MIN);}
+void     drum_release() {   drum_servo.write(DRUM_MIN);}
 
 
-// TODO: convert to switch statement instead?
+// TODO: convert to switch statement instead?  See (untested) example code below...
 void note_on(int note, int velocity) {
 	if (note == TRIANGLE_NOTE) {
 		triangle_hit();

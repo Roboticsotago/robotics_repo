@@ -22,6 +22,9 @@ const int G_NOTE = 69;	// A above middle C
 const int B_NOTE = 71;  // B above middle C
 
 
+// TODO: refactor to use switch statements in note_on(), note_off():
+// (see PercussionBot firmware for example)
+
 void note_on(int note, int velocity) {
 	if (note ==  BLUE_NOTE) {digitalWrite( BLUE_PIN, HIGH);}
 	if (note == WHITE_NOTE) {digitalWrite(WHITE_PIN, HIGH);}
@@ -39,7 +42,6 @@ void note_off(int note, int velocity) {
 }
 
 void self_test() {
-
 	digitalWrite(BLUE_PIN, HIGH);
 	digitalWrite(WHITE_PIN, LOW);
 	delay(500);
@@ -48,20 +50,13 @@ void self_test() {
 	delay(500);
 	digitalWrite(WHITE_PIN, LOW);
 
-//        Serial.print("hello");
-
-	RGB_colour_test();
-	
+	RGB_colour_test();	
 	RGB_fade_integer();
-	
 }
 
 void setup() {
 	thisMIDIBot.begin();
-        delay(5000);
 	thisMIDIBot.test_MIDI_channel();	// Indicate MIDI channel at startup
-        Serial.begin(31250);
-//        Serial.begin(9600);
 }
 
 void loop() {
