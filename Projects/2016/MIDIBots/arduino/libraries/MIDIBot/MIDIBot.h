@@ -5,7 +5,7 @@ Team _underscore_, Information Science Mechatronics, University of Otago
 
 To use this library, #include it, and instantiate a la "MIDIBot drumBot;" (note: no trailing parentheses - that would make it a function call!).
 You will also need to define a note_on() and note_off() implementation for the specific robot.
-If you want a self_test() function (recommended!), you should implement it in the main sketch, and conditionally call it from the main loop() function.
+If you want a self_test() function (recommended!), you should implement it in the main sketch.  It will be called from the MIDIBot::process_MIDI() function if the self-test button is pressed.
 It's nice to indicate the MIDI channel on startup, but the library constructor can't do that itself (can't use delay()), so do it in your setup() function instead.
 
 
@@ -34,9 +34,6 @@ void setup() {
 }
 
 void loop() {
-	if (!digitalRead(SELF_TEST_PIN)) {
-		self_test();
-	}
 	thisMIDIBot.process_MIDI();
 }
 --
@@ -84,10 +81,9 @@ const int
 
 // Empty prototypes for additional functions that the sketch using this library should define (bot-specific functionality):
 // (Do these need to be declared "extern" as well?)
-//void setup(); // I think Arduino.h will declare this already.
 void note_on(int note, int velocity);
 void note_off(int note, int velocity);
-void self_test();
+void self_test(); // Called from process_MIDI() when the self-test button is pressed
 
 
 class MIDIBot {
