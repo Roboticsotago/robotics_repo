@@ -6,19 +6,20 @@ National event is in Auckland on Saturday, September 10 (entries close Friday, A
 	[Y] UkeBot
 	[Y] LightingBot
 	[Y] PercussionBot
-	[ ] DrumBot
-	[ ] SynthBot
+	[Y] DrumBot
+	[Y] SynthBot
 [ ] Tweak lighting on individual bots (placement, colour, fading)
 
 UkeBot:
 	[ ] Slide mechanism for UkeBot (stepper motor)
 
 DrumBot:
-	[ ] Get a proper snare drum for DrumBot
+	[ ] Get a proper snare drum for DrumBot (or adapt existing one)
 
 PercussionBot:
 	[Y] Troubleshoot PercussionBot
 		The shield was not properly seated, and digital pins 10 and 11 do not work properly any more (tested on oscilloscope).  With a new Arduino board it seems OK.
+	[ ] Fix backlash in triangle sriker
 	[ ] PercussionBot: add rattle (DC motor)
 	[ ] PercussionBot: use alternating note numbers for shaker movement
 
@@ -26,6 +27,8 @@ LightingBot:
 	[Y] Finalise firmware for LightingBot to include driving the RGB lighting strip(s), maybe look at MIDI CC messages
 		Works fine with MIDI note messages; don't bother with MIDI CC for now.
 	[ ] Laser-cut logo
+
+[ ] Make custom Molex power wiring?
 
 [ ] Air reservoir system for woodwind instruments (learn about control systems in the process)
 [ ] RecorderBot. With a taped-over thumb-hole and solenoid finger-hole valves on the first four holes, we can play the important bits of the melody from "We Will Rock You".
