@@ -68,7 +68,7 @@ void triangle_release() {triangle_servo.write(TRIANGLE_MIN);}
 void shaker_release() {shaker_servo.write(SHAKER_MIN);}
 void drum_release() {drum_servo.write(DRUM_MIN);}
 
-
+/*
 // TODO: convert to switch statement instead?
 void note_on(int note, int velocity) {
 	if (note == TRIANGLE_NOTE) {
@@ -82,7 +82,8 @@ void note_on(int note, int velocity) {
 	}					
 }
 
-/*
+*/
+
 void note_on(int note, int velocity) {
 	switch (note) {
 		case TRIANGLE_NOTE: triangle_hit(); break;
@@ -90,7 +91,7 @@ void note_on(int note, int velocity) {
 		case DRUM_NOTE:     drum_hit();     break;
 	}					
 }
-*/
+
 
 void note_off(int note, int velocity) {
 	// Nothing to do for percussion!
