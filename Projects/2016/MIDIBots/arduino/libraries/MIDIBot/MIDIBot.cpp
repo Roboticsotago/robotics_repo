@@ -137,7 +137,7 @@ void MIDIBot::process_MIDI() {
 			if (_statusByte == (0x90 | _MIDI_channel) && _i == 1) {
 				// Note-on message received
 				if (_dataByte[1] == 0) {
-					// Note-on with velocity=0: Stop note playing (nothing to do for percussion!)
+					// Note-on with velocity=0: equialent to note-off, so stop note playing (nothing to do for percussion!)
 					note_off(_dataByte[0], _dataByte[1]);
 				} else {
 					// Start note playing
