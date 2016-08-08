@@ -4,8 +4,11 @@ Arduino library for our MIDIBot shield circuit board, Robocup 2016
 Team _underscore_, Information Science Mechatronics, University of Otago
 
 To use this library, #include it, and instantiate a la "MIDIBot drumBot;" (note: no trailing parentheses - that would make it a function declaration!).
+
 You will also need to define a note_on() and note_off() implementation for the specific robot. These will be called from MIDIBot::process_MIDI, passing the MIDI note number and velocity as arguments.
+
 Your sketch will also need to implement a self_test() function, which will be called from MIDIBot::process_MIDI if the Self-Test button is pressed.
+
 Because you can't use delay() or Serial.begin() in the constructor, this class defines a separate MIDIBot::begin() method which reads the MIDI channel from the DIP switches, flashes the MIDI channel number, and starts serial communication at MIDI baud rate (after a 5-second pause to avoid reprogramming problems).
 
 The following is a basic example:
@@ -33,9 +36,6 @@ void setup() {
 }
 
 void loop() {
-	if (!digitalRead(SELF_TEST_PIN)) {
-		self_test();
-	}
 	thisMIDIBot.process_MIDI();
 }
 --
@@ -83,10 +83,9 @@ const int
 
 // Empty prototypes for additional functions that the sketch using this library should define (bot-specific functionality):
 // (Do these need to be declared "extern" as well?)
-//void setup(); // I think Arduino.h will declare this already.
 void note_on(int note, int velocity);
 void note_off(int note, int velocity);
-void self_test();
+void self_test(); // Called from process_MIDI() when the self-test button is pressed
 
 
 class MIDIBot {
