@@ -56,7 +56,6 @@ void self_test() {
 
 void setup() {
 	thisMIDIBot.begin();
-	thisMIDIBot.test_MIDI_channel();	// Indicate MIDI channel at startup
 }
 
 void loop() {
