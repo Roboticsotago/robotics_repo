@@ -8,9 +8,10 @@
  * [ ] Have MIDI velocity mapped to PWM duty cycle.
 */
 
-int current_note_number = 0;
 #include <MIDIBot.h>
 MIDIBot synthBot;
+
+int current_note_number = 0;
 
 // Tricky low-level code from Chris for programming the PWM output for precise frequencies...
 
