@@ -2,6 +2,11 @@
 // Team _underscore_, Information Science Mechatronics, University of Otago
 // NOTE: there's a limit to how low a frequency this can play, given the PWM settings.  Note frequencies will jump around below this limit.
 
+/*
+ * TODO:
+ * [ ] Fix note-playing glitch at startup (first note is a weird bleep)
+ * [ ] Have MIDI velocity mapped to PWM duty cycle.
+*/
 
 int current_note_number = 0;
 #include <MIDIBot.h>
@@ -106,15 +111,17 @@ void loop()
 
 void note_on(int note, int velocity){
 	// Start note playing
-	current_note_number = note;
-	pwm(frequency(current_note_number), velocity / 127.0 / 2); // TODO: map velocity to PWM duty
+	current_note_number = note;	// Store current note for future reference (since we're monophonic)
+	// We map MIDI velocity to PWM duty cycle.  Divide by two since the upper half (1..0.5) sounds the same as the lower half (0..0.5).
+	pwm(frequency(current_note_number), velocity / 127.0 / 2.0);
 	// Plus illumination:
 	digitalWrite(LED_PIN, HIGH);
 	analogWrite(MOSFET_PWM_PIN, 64);	
 }
 
 void note_off(int note, int velocity){
-	// Because this is monophonic, we only want to turn the note off if the note-off message is for the note we're currently playing.
+	// Because this is monophonic, we only want to turn the note off if the note-off message we just received is for the note we're currently playing.
+	// That is, ignore any note-offs for notes other than the current one.
 	if (note == current_note_number) {
 		pwm_off();
 		digitalWrite(LED_PIN, LOW);
