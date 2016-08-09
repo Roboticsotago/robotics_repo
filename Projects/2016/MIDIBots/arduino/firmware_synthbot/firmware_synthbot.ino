@@ -114,10 +114,10 @@ void note_on(int note, int velocity){
 }
 
 void note_off(int note, int velocity){
-	// Note-off message received
-	// TODO: also respond to note-on with vel=0 as note-off
-	// Stop note playing
-	pwm_off();
-	digitalWrite(LED_PIN, LOW);
-	analogWrite(MOSFET_PWM_PIN, 0);
+	// Because this is monophonic, we only want to turn the note off if the note-off message is for the note we're currently playing.
+	if (note == current_note_number) {
+		pwm_off();
+		digitalWrite(LED_PIN, LOW);
+		analogWrite(MOSFET_PWM_PIN, 0);
+	}
 }
