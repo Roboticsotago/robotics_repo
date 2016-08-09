@@ -5,7 +5,6 @@
 /*
  * TODO:
  * [ ] Fix note-playing glitch at startup (first note is a weird bleep)
- * [ ] Have MIDI velocity mapped to PWM duty cycle.
 */
 
 #include <MIDIBot.h>
