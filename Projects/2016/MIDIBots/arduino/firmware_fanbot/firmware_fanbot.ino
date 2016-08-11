@@ -1,3 +1,5 @@
+// Fan control firmware for 2016 MIDIBots
+// Possibly doesn't need to use MIDIBot library, but the MIDI control is handy for testing.
 
 #include <MIDIBot.h>
 MIDIBot fanBot;
@@ -10,17 +12,8 @@ void setup() {
 
 void loop() {
 	fanBot.process_MIDI();
-	//pwm(PWM_FREQUENCY, 0.9);
-	//delay(10000);
-	//pwm(PWM_FREQUENCY, 0.9);
-	//delay(10000);
-	//pwm(PWM_FREQUENCY, 1.0);
-	//delay(10000);
 }
 
-// Coppied from Synthbot
-
-int current_note_number = 0;
 
 // Tricky low-level code from Chris for programming the PWM output for precise frequencies...
 
@@ -67,12 +60,9 @@ byte timer_prescale_bits(int prescale) {
 		return 0x00;	// Error?!
 }
 
-// Map MIDI note numbers to frequency in Hz:
-float frequency(int note) {
-	return 440 * pow(2.0, (note - 69) / 12.0);
-}
 
 // Function for computing the PWM wrap limit ("top" value) based on the desired frequency (and the CPU clock speed and prescaler setting):
+// TODO: parameterise for prescale, rather than relying on it being globally defined?
 unsigned int top(float frequency) {
 	return round(F_CPU / (prescale * frequency) - 1);
 }
@@ -95,24 +85,29 @@ void pwm(float frequency, float duty_cycle) {
 void pwm_off() {
 	TCCR1B = (TCCR1B & TIMER_PRESCALE_MASK) | TIMER_CLK_STOP;
 	TCNT1 = 0;
-	digitalWrite(OUTPUT_PIN, LOW); // This seems to be necessary to silence it properly (sometimes gets stuck at 5 V otherwise!)
+	digitalWrite(OUTPUT_PIN, LOW); // This seems to be necessary to silence it properly (sometimes gets stuck high otherwise!)
 }
-	
+
+
+void fan_speed(float target) {
+	pwm(PWM_FREQUENCY, target);
+}	
 
 void self_test() {
-	// Robot-specific self-test routine goes here
-	pwm(frequency(40), 0.1); delay(250);
-	pwm(frequency(52), 0.1); delay(250);
-	pwm(frequency(64), 0.1); delay(250);
-	pwm(frequency(76), 0.1); delay(250);
-	pwm_off();
+	fan_speed(0.1);
+	delay(1000);
+	fan_speed(0.5);
+	delay(4000);
+	fan_speed(1.0);
+	delay(5000);
+	fan_speed(0);
+	delay(5000);
 }
 
-void note_on(int note, int velocity){
-//	pwm(PWM_FREQUENCY, velocity / 127.0);
-	pwm(PWM_FREQUENCY, note / 127.0);
+void note_on(int note, int velocity) {
+	fan_speed(note / 127.0);	// Could also derive fan speed from note velocity
 }
 
-void note_off(int note, int velocity){
-//	pwm_off();
+void note_off(int note, int velocity) {
+	// Just leave fan running at current speed
 }
