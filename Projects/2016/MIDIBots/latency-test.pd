@@ -1,37 +1,37 @@
-#N canvas 101 51 895 549 10;
+#N canvas 101 53 1237 715 10;
 #X text 199 11 Testing how to delay different MIDI channels by different
 amounts \, for the MIDIBots 2016 project for Robocup.;
 #X floatatom 248 660 5 0 0 1 ms - -, f 5;
-#X text 166 111 Generate some MIDI note events:;
+#X text 214 119 Generate some MIDI note events:;
 #X obj 771 1394 midiout;
 #X text 693 1317 Do we need separate MIDI outputs for FluidSynth and
 for the MIDIBot MIDI daisy-chain? How are the [midiout]s numbered?
 ;
-#X obj 658 224 notein;
-#X floatatom 578 281 5 0 0 0 Note - -, f 5;
-#X floatatom 696 279 5 0 0 0 Velocity - -, f 5;
-#X floatatom 805 281 5 0 0 0 Channel - -, f 5;
-#X obj 539 441 swap;
+#X obj 789 332 notein;
+#X floatatom 615 382 5 0 0 0 Note - -, f 5;
+#X floatatom 715 380 5 0 0 0 Velocity - -, f 5;
+#X floatatom 811 372 5 0 0 0 Channel - -, f 5;
+#X obj 511 446 swap;
 #X obj 620 428 pack f f f;
 #X msg 620 450 \$3 \$1 \$2;
 #X obj 522 570 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 577 571 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 635 567 bng 15 250 50 0 empty empty IGNORED! 17 7 0 10 -262144
+#X obj 675 571 bng 15 250 50 0 empty empty IGNORED! 17 7 0 10 -262144
 -1 -1;
 #X obj 550 569 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 945 1392 ctlout;
 #X text 667 1420 [midiout] is for raw MIDI output;
-#X text 42 180 What package provides [seq]?;
-#X obj 191 262 import cyclone;
+#X text 879 10 What package provides [seq]?;
+#X obj 1003 93 import cyclone;
 #X obj 181 697 pipe 0 0 0;
 #X obj 276 802 print;
 #X obj 852 1386 noteout 1;
 #X msg 91 826 69 100;
 #X msg 156 828 69 0;
-#X text 642 531 <- Output from here is <note \, velocity>;
+#X text 730 540 <- Output from here is <note \, velocity>;
 #X obj 248 614 loadbang;
 #X msg 248 636 750;
 #X obj 557 869 unpack f f;
@@ -68,27 +68,20 @@ often get stuck. However \, for drums \, it's probably fine.;
 #X obj 1056 845 loadbang;
 #X floatatom 1056 889 5 0 0 0 - - -, f 5;
 #X obj 857 970 noteout 3;
-#X obj 532 514 route 1 2 3 10;
 #X msg 1056 867 200;
 #X msg 986 847 70;
 #X obj 603 571 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 188 1101 unpack;
 #X floatatom 188 1123 5 0 0 0 - - -, f 5;
-#X floatatom 413 1252 5 0 0 0 - - -, f 5;
-#X obj 188 1144 route 36 38 40 42;
-#X obj 201 1438 noteout 10;
+#X floatatom 412 1237 5 0 0 0 - - -, f 5;
 #X obj 97 1410 pack f f;
 #X text 172 1412 <- reassemble for printing;
 #X obj 97 1432 print drum:;
-#X obj 191 1378 pipe 36 0 100;
-#X obj 216 1339 pipe 38 0 250;
-#X obj 243 1310 pipe 40 0 500;
-#X obj 272 1280 pipe 42 0 800;
 #X text 818 744 Slightly safer would be one with a zero-offset \, but
 even with a shallow slope \, note-offs could come out before the corresponding
 note-on!:;
-#X text 586 149 MIDI notes in Pd are triples of numbers \, indicating
+#X text 779 227 MIDI notes in Pd are triples of numbers \, indicating
 the note \, velocity \, and channel. [notein] receives these from the
 outside world \, and splits them into streams. Note that the values
 are outputted in right-to-left ordering.;
@@ -101,7 +94,7 @@ values \, the outputs are bang events (not note numbers).;
 #X text 351 782 <- reassemble for printing (for debugging);
 #X text 199 824 <- You can send note-velocity-channel lists to [noteout]
 to play/stop notes.;
-#X text 717 223 <- [notein] receives MIDI note data from the outside
+#X text 848 331 <- [notein] receives MIDI note data from the outside
 world.;
 #X text 577 442 ?;
 #X text 120 416 Split according to channel. Initially we'll assume
@@ -109,31 +102,25 @@ that each channel has its own delay.;
 #X text 35 515 NOTE: the MIDI streams going to the computer's synthesiser
 (FluidSynth) will probably need the longest delays \, in order to play
 in sync with the physical instruments.;
-#X text 699 375 To filter/route by channel \, we need to change the
+#X text 760 393 To filter/route by channel \, we need to change the
 order of the elements so that the channel number is first.;
-#X text 646 502 <- [route] splits up a stream based on the first element
+#X text 734 512 <- [route] splits up a stream based on the first element
 of the message. The first element is not copied to the output.;
 #X text 585 630 A refinement would be to have the delay determined
 by the MIDI velocity \, note number \, and channel \, instead of having
 a single delay applied to the whole channel. This would allow us to
 handle all kinds of note-playing mechanisms.;
-#X text 41 201 It can play a MIDI file!;
-#X obj 408 173 random 48;
-#X obj 408 195 + 24;
-#X obj 408 108 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X text 878 31 It can play a MIDI file!;
+#X obj 444 116 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X obj 408 130 metro;
-#X obj 440 64 loadbang;
-#X msg 440 86 250;
-#X floatatom 440 108 5 0 0 0 - - -, f 5;
-#X obj 408 150 bng 15 100 25 0 empty empty empty 17 7 0 10 -262144
+#X obj 444 137 metro;
+#X obj 476 71 loadbang;
+#X floatatom 476 115 5 0 0 0 - - -, f 5;
+#X obj 444 157 bng 15 100 25 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 408 217 5 0 0 0 - - -, f 5;
-#X obj 408 244 makenote 100 125;
-#X obj 408 274 pack f f 1;
-#X floatatom 498 277 5 0 0 2 Ch - -, f 5;
-#X floatatom 508 149 5 0 0 2 Range - -, f 5;
-#X floatatom 509 181 5 0 0 2 Offset - -, f 5;
+#X obj 575 249 makenote 100 125;
+#X obj 575 279 pack f f 1;
+#X floatatom 665 282 5 0 0 2 Ch - -, f 5;
 #X text 657 1216 Also \, the more I think about \, the more I realise
 how difficult the planning and motion control would be if we want the
 robots to play with variable dynamics!;
@@ -149,13 +136,10 @@ for different notes \, as in the case of a percussion robot with different
 swings for the different drums. This would even let us have multiple
 bots playing drums on channel 10 \, provided their instrument notes
 didn't overlap.;
-#X obj 225 223 cyclone/midiparse;
-#X obj 267 180 cyclone/seq;
-#X obj 337 342 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 1037 54 cyclone/midiparse;
+#X obj 1079 11 cyclone/seq;
+#X obj 612 309 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 445 304 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X obj 311 311 pack f f 10;
 #X obj 452 1385 noteout 10 2;
 #X floatatom 449 857 5 0 0 1 ms - -, f 5;
 #X obj 382 876 pipe 0 0 0;
@@ -175,8 +159,8 @@ didn't overlap.;
 to the [noteout]/[midiout] \, but that doesn't seem to work here.;
 #X text 133 986 Ah \, channels 1..16 are for port 1 \, 17..32 for port
 2 \, etc.;
-#X obj 539 215 loadbang;
-#X msg 539 237 1;
+#X obj 706 220 loadbang;
+#X msg 706 242 1;
 #X obj 511 802 loadbang;
 #X msg 511 824 1;
 #X obj 382 903 noteout;
@@ -184,6 +168,40 @@ to the [noteout]/[midiout] \, but that doesn't seem to work here.;
 #X obj 451 941 print;
 #X obj 276 780 pack f f f;
 #X floatatom 379 1376 5 0 0 0 - - -, f 5;
+#X obj 532 514 route 5 6 7 8 9 10 11;
+#X obj 201 1438 noteout 11;
+#X obj 651 572 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 644 223 5 0 0 0 - - -, f 5;
+#X obj 191 1378 pipe 60 0 100;
+#X text 76 1320 PercussionBot;
+#X obj 7 267 makenote 100 125;
+#X msg 7 243 60;
+#X obj 7 294 pack f f 11;
+#X obj 137 267 makenote 100 125;
+#X obj 137 294 pack f f 11;
+#X obj 267 267 makenote 100 125;
+#X obj 267 294 pack f f 11;
+#X msg 137 243 36;
+#X msg 267 243 39;
+#X msg 476 93 1000;
+#X obj 216 1339 pipe 36 0 250;
+#X obj 265 1298 pipe 39 0 500;
+#X obj 160 1146 route 60 36 39 40;
+#X obj 268 1265 pipe 40 0 500;
+#X obj 418 271 makenote 100 125;
+#X obj 418 298 pack f f 11;
+#X msg 418 247 40;
+#X obj 444 177 t b b b b;
+#X obj 386 217 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 425 218 moses 1;
+#X obj 476 1181 vsl 15 128 0 500 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 1400 1;
+#X obj 499 1193 vsl 15 128 0 500 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 1900 1;
+#X floatatom 503 1342 5 0 0 0 - - -, f 5;
+#X floatatom 426 1301 5 0 0 0 - - -, f 5;
 #X connect 1 0 20 2;
 #X connect 5 0 6 0;
 #X connect 5 1 7 0;
@@ -192,14 +210,14 @@ to the [noteout]/[midiout] \, but that doesn't seem to work here.;
 #X connect 7 0 10 1;
 #X connect 8 0 10 2;
 #X connect 10 0 11 0;
-#X connect 11 0 55 0;
-#X connect 20 0 113 0;
-#X connect 20 0 122 0;
-#X connect 20 0 132 0;
-#X connect 20 1 122 1;
-#X connect 20 1 132 1;
-#X connect 23 0 122 0;
-#X connect 24 0 122 0;
+#X connect 11 0 119 0;
+#X connect 20 0 98 0;
+#X connect 20 0 107 0;
+#X connect 20 0 117 0;
+#X connect 20 1 107 1;
+#X connect 20 1 117 1;
+#X connect 23 0 107 0;
+#X connect 24 0 107 0;
 #X connect 26 0 27 0;
 #X connect 27 0 1 0;
 #X connect 28 0 29 0;
@@ -224,83 +242,102 @@ to the [noteout]/[midiout] \, but that doesn't seem to work here.;
 #X connect 46 0 50 0;
 #X connect 47 0 54 0;
 #X connect 47 1 54 1;
-#X connect 48 0 57 0;
+#X connect 48 0 56 0;
 #X connect 49 0 50 1;
 #X connect 50 0 51 0;
 #X connect 51 0 47 2;
-#X connect 52 0 56 0;
+#X connect 52 0 55 0;
 #X connect 53 0 51 1;
-#X connect 55 0 12 0;
-#X connect 55 0 20 0;
-#X connect 55 1 15 0;
-#X connect 55 1 28 0;
-#X connect 55 2 13 0;
-#X connect 55 2 42 0;
-#X connect 55 3 58 0;
-#X connect 55 3 59 0;
-#X connect 55 3 112 0;
-#X connect 55 4 14 0;
-#X connect 56 0 53 0;
-#X connect 57 0 49 0;
-#X connect 59 0 60 0;
-#X connect 59 1 61 0;
-#X connect 60 0 62 0;
-#X connect 61 0 67 1;
-#X connect 61 0 68 1;
-#X connect 61 0 69 1;
-#X connect 61 0 70 1;
-#X connect 62 0 67 0;
-#X connect 62 1 68 0;
-#X connect 62 2 69 0;
-#X connect 62 3 70 0;
-#X connect 64 0 66 0;
-#X connect 67 0 63 0;
-#X connect 67 0 64 0;
-#X connect 67 1 63 1;
-#X connect 67 1 64 1;
-#X connect 68 0 63 0;
-#X connect 68 1 63 1;
-#X connect 69 0 63 0;
-#X connect 69 1 63 1;
-#X connect 70 0 63 0;
-#X connect 70 1 63 1;
-#X connect 86 0 87 0;
-#X connect 87 0 94 0;
-#X connect 88 0 89 0;
-#X connect 89 0 93 0;
-#X connect 90 0 91 0;
-#X connect 91 0 92 0;
-#X connect 92 0 89 1;
-#X connect 93 0 86 0;
-#X connect 94 0 95 0;
-#X connect 95 0 96 0;
-#X connect 95 0 109 0;
-#X connect 95 1 96 1;
-#X connect 95 1 109 1;
-#X connect 96 0 11 0;
-#X connect 96 0 108 0;
-#X connect 97 0 96 2;
-#X connect 98 0 86 1;
-#X connect 99 0 87 1;
-#X connect 109 0 107 0;
-#X connect 109 0 11 0;
-#X connect 111 0 112 2;
-#X connect 112 0 114 0;
-#X connect 112 0 129 0;
-#X connect 112 0 130 0;
-#X connect 112 1 129 1;
-#X connect 112 1 130 1;
-#X connect 117 0 116 0;
-#X connect 118 0 129 0;
-#X connect 119 0 120 0;
-#X connect 120 0 129 2;
-#X connect 120 0 130 2;
-#X connect 121 0 122 2;
-#X connect 121 0 132 2;
-#X connect 125 0 126 0;
-#X connect 126 0 97 0;
-#X connect 127 0 128 0;
-#X connect 128 0 119 0;
+#X connect 55 0 53 0;
+#X connect 56 0 49 0;
+#X connect 58 0 59 0;
+#X connect 58 1 60 0;
+#X connect 59 0 137 0;
+#X connect 60 0 123 1;
+#X connect 60 0 135 1;
+#X connect 60 0 136 1;
+#X connect 60 0 138 1;
+#X connect 61 0 63 0;
+#X connect 79 0 80 0;
+#X connect 80 0 83 0;
+#X connect 81 0 134 0;
+#X connect 82 0 80 1;
+#X connect 83 0 142 0;
+#X connect 84 0 85 0;
+#X connect 84 1 85 1;
+#X connect 85 0 11 0;
+#X connect 85 0 94 0;
+#X connect 86 0 85 2;
+#X connect 96 0 97 2;
+#X connect 97 0 99 0;
+#X connect 97 0 114 0;
+#X connect 97 0 115 0;
+#X connect 97 1 114 1;
+#X connect 97 1 115 1;
+#X connect 102 0 101 0;
+#X connect 103 0 114 0;
+#X connect 104 0 105 0;
+#X connect 105 0 114 2;
+#X connect 105 0 115 2;
+#X connect 106 0 107 2;
+#X connect 106 0 117 2;
+#X connect 110 0 111 0;
+#X connect 111 0 86 0;
+#X connect 112 0 113 0;
+#X connect 113 0 104 0;
+#X connect 115 0 116 0;
+#X connect 117 0 21 0;
+#X connect 118 0 120 2;
+#X connect 119 0 12 0;
+#X connect 119 0 20 0;
+#X connect 119 1 15 0;
+#X connect 119 1 28 0;
+#X connect 119 2 13 0;
+#X connect 119 2 42 0;
+#X connect 119 3 57 0;
+#X connect 119 3 97 0;
+#X connect 119 6 58 0;
+#X connect 119 6 121 0;
+#X connect 119 7 14 0;
+#X connect 122 0 84 1;
+#X connect 123 0 61 0;
+#X connect 123 0 120 0;
+#X connect 123 1 61 1;
+#X connect 123 1 120 1;
+#X connect 125 0 127 0;
+#X connect 125 1 127 1;
+#X connect 126 0 125 0;
+#X connect 127 0 11 0;
+#X connect 128 0 129 0;
+#X connect 128 1 129 1;
+#X connect 129 0 11 0;
 #X connect 130 0 131 0;
-#X connect 132 0 21 0;
-#X connect 133 0 63 2;
+#X connect 130 1 131 1;
+#X connect 131 0 11 0;
+#X connect 132 0 128 0;
+#X connect 133 0 130 0;
+#X connect 134 0 82 0;
+#X connect 135 0 120 0;
+#X connect 135 1 120 1;
+#X connect 136 0 120 0;
+#X connect 136 1 120 1;
+#X connect 137 0 123 0;
+#X connect 137 1 135 0;
+#X connect 137 2 136 0;
+#X connect 137 3 138 0;
+#X connect 138 0 120 0;
+#X connect 138 1 120 1;
+#X connect 139 0 140 0;
+#X connect 139 1 140 1;
+#X connect 140 0 11 0;
+#X connect 141 0 139 0;
+#X connect 142 1 132 0;
+#X connect 142 2 126 0;
+#X connect 142 2 143 0;
+#X connect 143 0 144 0;
+#X connect 144 0 133 0;
+#X connect 144 1 141 0;
+#X connect 145 0 148 0;
+#X connect 146 0 147 0;
+#X connect 147 0 136 2;
+#X connect 148 0 138 2;
