@@ -1,0 +1,16 @@
+Pure Data: problems with [midiout]
+
+Does it only affect alsa_seq output?
+
+Is it a 64-bit problem?
+
+Does the problem lie with [midiout] or [seq]?  How would we test this?
+
+
+Use the source, Luke...
+
+Here's where midiout is defined:
+
+src/x_midi.c:    midiout_class = class_new(gensym("midiout"), (t_newmethod)midiout_new, 0,
+
+sys_putmidibyte()

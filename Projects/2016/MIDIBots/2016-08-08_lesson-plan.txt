@@ -1,0 +1,10 @@
+Mechatronics class plan, 2016-08-06
+
+[ ] Code review, refactor remaining firmware programs
+	[ ] DrumBot
+	[ ] SynthBot
+[ ] Introduce C/C++ "switch" statement
+	[ ] Refactor PercussionBot, LightingBot firmware
+[ ] Ensemble test (plug all bots in and test)
+[ ] Pd basics, latency compensation
+
