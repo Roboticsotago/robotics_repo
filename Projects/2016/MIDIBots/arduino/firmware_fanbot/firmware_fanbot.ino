@@ -1,12 +1,19 @@
 // Fan control firmware for 2016 MIDIBots
 // Possibly doesn't need to use MIDIBot library, but the MIDI control is handy for testing.
 
+/*
+TODO:
+[ ] Add code to read from pressure sensor. Should take initial reading for "zero" reference.
+[ ] Add code to control fan speed to maintain desired pressure. Have some sanity checks, e.g. spin down if fault detected/suspected.
+*/
+
 #include <MIDIBot.h>
 MIDIBot fanBot;
 
-const int PWM_FREQUENCY = 25000; // Intel 4-wire fan spec
+const int PWM_FREQUENCY = 25000; // Intel 4-wire fan spec. The Delta fan datasheet indicates 30 kHz .. 300 kHz, however.
 
 void setup() {
+//	fan_speed(0);	// Bit dodgy setting this before the setup routine, but the fan spools up for some seconds otherwise.
 	fanBot.begin();
 }
 
@@ -91,17 +98,17 @@ void pwm_off() {
 
 void fan_speed(float target) {
 	pwm(PWM_FREQUENCY, target);
-}	
+}
 
 void self_test() {
 	fan_speed(0.1);
-	delay(1000);
+	delay(2000);
 	fan_speed(0.5);
-	delay(4000);
-	fan_speed(1.0);
 	delay(5000);
+//	fan_speed(1.0);
+//	delay(6000);
 	fan_speed(0);
-	delay(5000);
+	delay(6000);
 }
 
 void note_on(int note, int velocity) {
