@@ -1,0 +1,18 @@
+#N canvas 102 51 450 300 10;
+#X obj 48 17 import cyclone;
+#X obj 77 125 cyclone/seq;
+#X obj 75 165 midiout;
+#X msg 191 48 bang;
+#X msg 191 75 stop;
+#X msg 241 74 pause;
+#X msg 301 74 continue;
+#X text 229 47 play;
+#X msg 48 49 read rockyou.mid;
+#X obj 180 164 print;
+#X connect 1 0 2 0;
+#X connect 1 0 9 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 6 0 1 0;
+#X connect 8 0 1 0;
