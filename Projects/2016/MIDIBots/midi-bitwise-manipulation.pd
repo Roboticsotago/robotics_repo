@@ -1,0 +1,527 @@
+#N canvas 246 82 1115 625 8;
+#X text 14 3 Binary operations that might be handy for manipulating
+data such as MIDI streams \, CME 2016-05-13;
+#X floatatom 166 185 5 0 0 0 - - -, f 5;
+#X obj 166 222 moses 128;
+#X obj 220 249 - 128;
+#X floatatom 220 269 5 0 0 0 Status - -, f 5;
+#X floatatom 80 245 5 0 0 0 Data - -, f 5;
+#X text 553 148 So really the first bit indicates whether it's a status
+byte \, the next 3 bits indicate the message type \, and the final
+4 bits of the status byte indicate the channel number.;
+#X text 239 219 First \, separate status bytes from data bytes;
+#X msg 260 108 144;
+#X text 292 108 Note on \, channel 1;
+#X obj 66 291 >> 4;
+#X floatatom 66 311 5 0 0 0 Message_Type - -, f 5;
+#X obj 66 330 select 0 1 2 3 4 5 6 7;
+#X floatatom 445 434 5 0 0 0 - - -, f 5;
+#X obj 445 451 + 1;
+#X floatatom 445 471 5 0 0 0 Channel - -, f 5;
+#X obj 445 414 & 15;
+#X obj 50 428 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 70 448 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 296 129 Note off \, ch.1;
+#X symbolatom 65 592 16 0 0 0 Message_Type - -, f 16;
+#X msg 85 448 symbol note-on;
+#X msg 65 428 symbol note-off;
+#X msg 264 129 128;
+#X obj 90 468 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 110 488 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 130 508 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 125 488 symbol control-change;
+#X msg 145 508 symbol program-change;
+#X obj 150 528 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 170 548 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 190 568 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 165 528 symbol channel-pressure;
+#X msg 185 548 symbol pitch-bend;
+#X msg 205 568 symbol UNDEFINED;
+#X msg 105 468 symbol key-pressure;
+#X obj 166 202 clip 0 255;
+#X obj 166 108 r midi-bytes;
+#X text 546 16 MIDI messages consist of a status byte followed by a
+variable number of data bytes. Some common MIDI message types and their
+formats:, f 64;
+#X obj 456 495 hradio 15 1 0 17 empty empty empty 0 -8 0 10 -262144
+-1 -1 10;
+#X obj 330 817 pack f s;
+#X text 573 60 1000nnnn 0kkkkkkk 0vvvvvvv <- Note off (ch \, key \,
+vel) 1001nnnn 0kkkkkkk 0vvvvvvv <- Note on (ch \, key \, vel) 1010nnnn
+0kkkkkkk 0ppppppp <- Key-pressure (ch \, key \, pr) 1011nnnn 0ccccccc
+0vvvvvvv <- Control Change 1100nnnn 0ppppppp <- Program Change 1101nnnn
+0vvvvvvv <- Channel-pressure (ch \, pr) 1110nnnn 0lllllll 0mmmmmmm
+<- Pitch bend (ch \, LSB \, MSB), f 66;
+#X text 744 490 Now to buffer up the remaining data bytes and output
+the complete message \, when we've received the expected number of
+data bytes according to the last status byte.;
+#X obj 300 386 s \$0-key-pressure;
+#X obj 300 406 s \$0-control-change;
+#X obj 300 426 s \$0-program-change;
+#X obj 300 446 s \$0-channel-pressure;
+#X obj 300 466 s \$0-pitch-bend;
+#X obj 300 486 s \$0-UNDEFINED;
+#X obj 65 413 r \$0-note-off;
+#X obj 300 346 s \$0-note-off;
+#X obj 300 366 s \$0-note-on;
+#X obj 700 324 r \$0-note-off;
+#X msg 700 344 2;
+#X obj 733 350 r \$0-note-on;
+#X msg 733 370 2;
+#X obj 766 373 r \$0-program-change;
+#X msg 766 393 1;
+#X obj 534 691 list length;
+#X floatatom 498 720 5 0 0 0 - - -, f 5;
+#X obj 743 559 t f f;
+#X obj 812 622 trigger list;
+#X obj 754 613 bng 15 250 50 0 empty empty Send 17 7 0 10 -262144 -1
+-1;
+#X obj 743 653 list prepend;
+#X obj 796 590 bng 15 250 50 0 empty empty Clear 17 7 0 10 -262144
+-1 -1;
+#X obj 534 772 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 749 726 list;
+#X obj 749 700 bng 15 250 50 0 empty empty Send 17 7 0 10 -262144 -1
+-1;
+#X obj 679 560 t b b b;
+#X obj 743 676 t l l;
+#X text 808 401 TODO: other message types;
+#X obj 534 745 select;
+#X obj 692 435 s \$0-expected-num-data-bytes;
+#X obj 567 716 r \$0-expected-num-data-bytes;
+#X obj 743 537 r \$0-data-bytes;
+#X obj 80 262 s \$0-data-bytes;
+#X floatatom 605 737 5 0 0 0 - - -, f 5;
+#X obj 285 346 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 763 413 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 749 753 print DATA;
+#X msg 329 174 69;
+#X msg 329 154 100;
+#X msg 264 151 196;
+#X msg 328 193 0;
+#X obj 292 260 s \$0-new-status-byte, f 22;
+#X obj 277 260 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 796 567 r \$0-new-status-byte, f 22;
+#X text 443 382 Extract coded channel number and convert to logical
+equivalent., f 34;
+#X text 554 205 To actually decode entire MIDI messages will require
+some sort of state machine \, I think. It will need to recognise how
+many data bytes are expected according to the status byte type \, and
+accumulate a short list of them. Would be good to do some kind of error
+detection \, too \, e.g. on unexpected status byte or extraneous data
+bytes. Or maybe not the latter \, as that's how running status works
+\, no?;
+#N canvas 246 82 1115 625 midi-message-generator 0;
+#X text 39 16 Generating MIDI message byte sequences should be a bit
+easier..., f 67;
+#X text 630 211 Might be useful to keep track of the number of note-on
+messages for each <channel \, note> so that they can be neutralised
+en masse if necessary.;
+#X floatatom 246 176 5 1 16 0 Channel - -, f 5;
+#X floatatom 346 172 5 0 127 0 Note - -, f 5;
+#X floatatom 462 170 5 0 127 0 Velocity - -, f 5;
+#X text 517 19 0: note-off 1: note-on 2: key-pressure 3: control-change
+4: program-change 5: channel-pressure 6: pitch-bend, f 23;
+#X obj 149 172 bng 30 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 246 214 - 1;
+#X floatatom 246 234 5 0 0 0 - - -, f 5;
+#X obj 261 262 loadbang;
+#X msg 261 282 1;
+#X obj 261 302 << 4;
+#X floatatom 261 322 5 0 0 0 - - -, f 5;
+#X text 290 282 note-on;
+#X text 93 410 Set the status bit:;
+#X obj 246 367 |;
+#X floatatom 261 438 5 0 0 0 - - -, f 5;
+#X floatatom 294 387 5 0 0 0 - - -, f 5;
+#X obj 246 411 | 128;
+#X obj 231 473 pack f f f, f 39;
+#X obj 246 193 clip 1 16;
+#X obj 231 438 i;
+#X text 542 345 Serialise the message as a sequence of bytes:, f 23
+;
+#X obj 231 493 print MIDI-message;
+#X obj 348 279 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 261 339 t b f;
+#X obj 562 463 list split 1;
+#X obj 562 420 until;
+#X obj 562 442 list append;
+#X obj 562 377 t b l, f 11;
+#X obj 589 399 bang;
+#X obj 562 503 s midi-bytes;
+#X obj 572 483 print midi-bytes;
+#X text 542 533 In theory \, this stream could be sent into [midiout]
+\, but I can't get that to work for some reason., f 35;
+#X text 181 147 First \, note-on/off (a bit like half of [makenote]):
+;
+#X connect 2 0 20 0;
+#X connect 3 0 19 1;
+#X connect 4 0 19 2;
+#X connect 6 0 21 0;
+#X connect 7 0 8 0;
+#X connect 8 0 15 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 12 0 25 0;
+#X connect 15 0 17 0;
+#X connect 15 0 18 0;
+#X connect 18 0 16 0;
+#X connect 18 0 21 1;
+#X connect 19 0 23 0;
+#X connect 19 0 29 0;
+#X connect 20 0 7 0;
+#X connect 21 0 19 0;
+#X connect 24 0 11 0;
+#X connect 25 0 15 0;
+#X connect 25 1 15 1;
+#X connect 26 0 31 0;
+#X connect 26 0 32 0;
+#X connect 26 1 28 1;
+#X connect 26 2 30 0;
+#X connect 27 0 28 0;
+#X connect 28 0 26 0;
+#X connect 29 0 27 0;
+#X connect 29 1 28 1;
+#X connect 30 0 27 1;
+#X restore 439 1 pd midi-message-generator;
+#X text 117 73 This does use a funny mixture of integer and binary
+operators \, according to what Pd's standard library provides.;
+#X text 34 818 Combine the message type \, channel \, and data:;
+#X obj 261 896 list prepend;
+#X msg 330 837 \$2 \$1;
+#X obj 364 878 print STATUS;
+#X obj 171 779 pack s f;
+#X text 68 921 We might also want to be able to generate streams suitable
+for feeding into [noteout] \, since [midiout] doesn't seem to work.
+;
+#X obj 293 1065 noteout;
+#X text 447 927 We want to restrict to just the note on/off messages.
+;
+#X obj 261 962 list trim;
+#X text 65 1018 Reorder channel \, note \, vel:;
+#X msg 261 1018 \$2 \$3 \$1;
+#X msg 325 1018 \$2 \$3 \$1;
+#X text 377 1178 Whew! Well \, useful learnings there at least...;
+#X obj 592 1044 pgmout;
+#X obj 261 988 route note-off note-on key-pressure control-change program-change
+channel-pressure pitch-bend, f 98;
+#X obj 641 1045 print program-change;
+#X msg 592 1009 \$2 \$1;
+#X obj 910 936 tgl 15 0 empty empty Sustain 17 7 0 10 -262144 -1 -1
+0 1;
+#X obj 910 956 * 127;
+#X floatatom 910 976 5 0 0 0 - - -, f 5;
+#X obj 910 1021 ctlout;
+#X floatatom 958 1021 5 0 0 0 - - -, f 5;
+#X obj 910 996 pack f 64;
+#X text 895 902 Other experimentation:;
+#X floatatom 1053 939 5 0 127 0 Modulation - -, f 5;
+#X obj 1053 956 pack f 1;
+#X obj 1168 1028 bendout;
+#X floatatom 1210 1000 5 0 0 0 - - -, f 5;
+#X text 1138 616 I never liked the artificially uniform sound of conventional
+MIDI modulation effects. Maybe we can roll our own more flexible one
+using pitch bends... We could control the rate and depth separately
+\, and introduce a more human-like modulation and onset.;
+#X floatatom 1166 972 8 0 0 0 - - -, f 8;
+#X obj 1204 943 hsl 128 15 -16384 16383 0 0 empty empty empty -2 -8
+0 10 -262144 -1 -1 6350 1;
+#X obj 1201 911 snapshot~;
+#X obj 1260 803 loadbang;
+#X obj 1261 830 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
+1 1;
+#X obj 1265 855 metro 10;
+#X floatatom 1308 825 5 0 0 0 - - -, f 5;
+#X floatatom 1225 875 5 0 0 0 - - -, f 5;
+#X floatatom 1180 686 5 0 0 0 - - -, f 5;
+#X obj 1178 734 +~ 1;
+#X obj 1178 754 /~ 2;
+#X obj 1178 774 pow~;
+#X floatatom 1230 754 5 0 0 0 - - -, f 5;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array scope 64 float 3;
+#A 0 -0.251735 -0.251686 -0.251698 -0.251601 -0.251597 -0.251567 -0.251575
+-0.251472 -0.251383 -0.251372 -0.251264 -0.251171 -0.251083 -0.251033
+-0.251045 -0.251065 -0.251028 -0.250995 -0.250901 -0.250921 -0.250816
+-0.250777 -0.25077 -0.250696 -0.250636 -0.250616 -0.250557 -0.250489
+-0.250505 -0.250407 -0.250428 -0.250314 -0.250226 -0.250179 -0.250142
+-0.250151 -0.250071 -0.250004 -0.249956 -0.249974 -0.249919 -0.249861
+-0.249851 -0.249765 -0.249698 -0.249647 -0.249607 -0.2495 -0.249409
+-0.249303 -0.249217 -0.249139 -0.249036 -0.248927 -0.248859 -0.248863
+-0.248748 -0.248722 -0.248618 -0.248578 -0.248555 -0.248491 -0.248498
+-0.248425;
+#X coords 0 1 63 -1 200 140 1;
+#X restore 827 750 graph;
+#X obj 1076 815 tabsend~ scope;
+#X msg 1261 687 4000;
+#X floatatom 1234 776 5 0 0 0 - - -, f 5;
+#X obj 1178 794 +~;
+#X msg 1263 891 0;
+#X obj 926 1108 pgmout;
+#X floatatom 966 1086 5 0 0 0 - - -, f 5;
+#X floatatom 921 1075 5 0 0 0 - - -, f 5;
+#X obj 1310 720 noise~;
+#X obj 1310 741 lop~ 3;
+#X msg 1303 889 3000;
+#X obj 1357 856 line~;
+#X floatatom 1360 788 5 0 0 0 - - -, f 5;
+#X obj 1177 840 *~;
+#X obj 1360 805 pack f 100;
+#X msg 1375 828 0 0;
+#X msg 1107 683 4.5;
+#X obj 1326 764 hsl 128 15 0 4000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X obj 1178 714 osc~ 4.5;
+#X text 32 30 Basically this is a basic MIDI deserialiser/decoder \,
+which I need since I can't get [midiout] to work as advertised (sending
+out a low-level series of bytes representing the MIDI data).;
+#X obj 592 1027 spigot;
+#X obj 653 1012 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
+1 1;
+#X obj 678 1012 loadbang;
+#X obj 779 1155 bendout;
+#X obj 776 1032 print bend;
+#X obj 779 1061 unpack f f f;
+#X obj 813 1109 +, f 7;
+#X obj 813 1087 * 127;
+#X floatatom 831 1134 5 0 0 0 - - -, f 5;
+#X text 406 815 TODO: maybe I should keep the element ordering the
+same as Pd's default \, as swapping gets to be a bit of a pain.;
+#X obj 779 1132 i;
+#X obj 779 1109 t b f;
+#X obj 488 1048 unpack f f f;
+#X obj 498 1110 i;
+#X obj 531 1109 i;
+#X obj 488 1068 t b b f;
+#X msg 417 1045 \$2 \$3 \$1;
+#X obj 488 1141 ctlout;
+#X text 342 1105 NOTE: I think there are subtypes of the CC message
+that only have 2 data bytes!, f 22;
+#X obj 442 514 select 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16;
+#X obj 442 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 457 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 472 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 487 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 502 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 517 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 532 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 547 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 562 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 577 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -261234 -1
+-1;
+#X obj 592 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 607 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 622 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 637 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 652 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 667 536 bng 15 50 25 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 566 1155 print CC;
+#X obj 565 1134 pack f f f;
+#X connect 1 0 36 0;
+#X connect 2 0 5 0;
+#X connect 2 1 3 0;
+#X connect 2 1 85 0;
+#X connect 3 0 4 0;
+#X connect 4 0 10 0;
+#X connect 4 0 16 0;
+#X connect 5 0 75 0;
+#X connect 8 0 1 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 12 0 77 0;
+#X connect 12 1 21 0;
+#X connect 12 1 51 0;
+#X connect 12 2 35 0;
+#X connect 12 2 43 0;
+#X connect 12 3 27 0;
+#X connect 12 3 44 0;
+#X connect 12 4 28 0;
+#X connect 12 4 45 0;
+#X connect 12 5 32 0;
+#X connect 12 5 46 0;
+#X connect 12 6 33 0;
+#X connect 12 6 47 0;
+#X connect 12 7 34 0;
+#X connect 12 7 48 0;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;
+#X connect 15 0 39 0;
+#X connect 15 0 40 0;
+#X connect 15 0 173 0;
+#X connect 16 0 13 0;
+#X connect 20 0 40 1;
+#X connect 21 0 18 0;
+#X connect 21 0 20 0;
+#X connect 22 0 17 0;
+#X connect 22 0 20 0;
+#X connect 23 0 1 0;
+#X connect 27 0 25 0;
+#X connect 27 0 20 0;
+#X connect 28 0 26 0;
+#X connect 28 0 20 0;
+#X connect 32 0 29 0;
+#X connect 32 0 20 0;
+#X connect 33 0 30 0;
+#X connect 33 0 20 0;
+#X connect 34 0 31 0;
+#X connect 34 0 20 0;
+#X connect 35 0 24 0;
+#X connect 35 0 20 0;
+#X connect 36 0 2 0;
+#X connect 37 0 1 0;
+#X connect 40 0 93 0;
+#X connect 49 0 22 0;
+#X connect 52 0 53 0;
+#X connect 53 0 72 0;
+#X connect 54 0 55 0;
+#X connect 55 0 72 0;
+#X connect 56 0 57 0;
+#X connect 57 0 72 0;
+#X connect 57 0 78 0;
+#X connect 58 0 59 0;
+#X connect 58 0 71 0;
+#X connect 60 0 63 0;
+#X connect 61 0 63 1;
+#X connect 62 0 63 0;
+#X connect 63 0 61 0;
+#X connect 63 0 69 0;
+#X connect 64 0 63 1;
+#X connect 65 0 68 0;
+#X connect 66 0 92 0;
+#X connect 67 0 66 0;
+#X connect 68 0 64 0;
+#X connect 68 1 67 0;
+#X connect 69 0 58 0;
+#X connect 69 1 66 1;
+#X connect 71 0 65 0;
+#X connect 73 0 71 1;
+#X connect 73 0 76 0;
+#X connect 74 0 60 0;
+#X connect 77 0 50 0;
+#X connect 80 0 1 0;
+#X connect 81 0 1 0;
+#X connect 82 0 1 0;
+#X connect 83 0 1 0;
+#X connect 85 0 84 0;
+#X connect 86 0 64 0;
+#X connect 92 0 99 0;
+#X connect 93 0 92 1;
+#X connect 99 0 105 0;
+#X connect 101 0 97 0;
+#X connect 102 0 97 0;
+#X connect 105 0 101 0;
+#X connect 105 1 102 0;
+#X connect 105 3 166 0;
+#X connect 105 4 107 0;
+#X connect 105 6 158 0;
+#X connect 105 6 159 0;
+#X connect 107 0 106 0;
+#X connect 107 0 154 0;
+#X connect 108 0 109 0;
+#X connect 109 0 110 0;
+#X connect 110 0 113 0;
+#X connect 112 0 111 2;
+#X connect 113 0 111 0;
+#X connect 115 0 116 0;
+#X connect 116 0 111 0;
+#X connect 118 0 117 1;
+#X connect 120 0 117 0;
+#X connect 121 0 120 0;
+#X connect 122 0 121 0;
+#X connect 123 0 124 0;
+#X connect 124 0 125 0;
+#X connect 125 0 122 0;
+#X connect 126 0 125 1;
+#X connect 128 0 152 0;
+#X connect 129 0 130 0;
+#X connect 130 0 131 0;
+#X connect 131 0 137 0;
+#X connect 132 0 131 1;
+#X connect 135 0 128 0;
+#X connect 136 0 137 1;
+#X connect 137 0 134 0;
+#X connect 137 0 147 0;
+#X connect 138 0 127 0;
+#X connect 140 0 139 1;
+#X connect 141 0 139 0;
+#X connect 142 0 143 0;
+#X connect 143 0 129 0;
+#X connect 144 0 127 0;
+#X connect 145 0 147 1;
+#X connect 146 0 148 0;
+#X connect 147 0 122 0;
+#X connect 148 0 145 0;
+#X connect 149 0 145 0;
+#X connect 150 0 128 0;
+#X connect 151 0 146 0;
+#X connect 152 0 129 0;
+#X connect 154 0 104 0;
+#X connect 155 0 154 1;
+#X connect 156 0 155 0;
+#X connect 159 0 165 0;
+#X connect 159 1 161 0;
+#X connect 159 2 160 1;
+#X connect 160 0 162 0;
+#X connect 160 0 164 1;
+#X connect 161 0 160 0;
+#X connect 164 0 157 0;
+#X connect 165 0 164 0;
+#X connect 165 1 157 1;
+#X connect 166 0 169 0;
+#X connect 166 1 167 1;
+#X connect 166 2 168 1;
+#X connect 167 0 171 0;
+#X connect 167 0 191 0;
+#X connect 168 0 171 1;
+#X connect 168 0 191 1;
+#X connect 169 0 167 0;
+#X connect 169 1 168 0;
+#X connect 169 2 171 2;
+#X connect 169 2 191 2;
+#X connect 173 0 174 0;
+#X connect 173 1 175 0;
+#X connect 173 2 176 0;
+#X connect 173 3 177 0;
+#X connect 173 4 178 0;
+#X connect 173 5 179 0;
+#X connect 173 6 180 0;
+#X connect 173 7 181 0;
+#X connect 173 8 182 0;
+#X connect 173 9 183 0;
+#X connect 173 10 184 0;
+#X connect 173 11 185 0;
+#X connect 173 12 186 0;
+#X connect 173 13 187 0;
+#X connect 173 14 188 0;
+#X connect 173 15 189 0;
+#X connect 191 0 190 0;
