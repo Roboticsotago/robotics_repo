@@ -1,0 +1,37 @@
+For Saturday's roboclass:
+
+[ ] Wine cask bladder
+[ ] Tubing
+[ ] Hose clamps
+[ ] Silicone tape
+[ ] Foam tape
+[ ] Hot glue + gun
+[ ] Scrap pieces of wood
+[ ] Drill, bits, pin vice and tiny bits
+[ ] Scrap metal, e.g. old PC expansion slot covers, aluminium, etc.
+[ ] Pulley and belt
+[ ] More stepper motors and drivers?
+[ ] Molex splitters
+
+
+To buy:
+[ ] Cask wine?! Did McDuffs Brewery have something like these available? Maybe I should have called in last night.
+[ ] Hardware
+	1/2" BSP threaded connectors, hoses?
+[ ] Materials: aluminium bar strips
+[ ] More solenoids
+
+
+AQT15SP is supposedly AC220 V?! 3/4" threaded
+
+	"Although the datasheet shows the valve working at 220 VAC, it's actually 12 VDC."
+
+SKU:EL-ATS02012P
+	1/4" PE
+	12 V DC
+
+
+SKU:EL-ASO1212GSV
+	Drainage version: 0-0.2 MPa (0-200 kPa)
+	Inlet version: 0.02-0.8 MPa (20-800 kPa)
+

@@ -12,9 +12,9 @@ Ch	#	Bot
 4	3	
 5	4	UkeBot
 6	5	LightingBot
-7	6	
+7	6	RecorderBot
 8	7	SynthBot
-9	8	
+9	8	WhistleBot
 10	9	DrumBot
 11	10	PercussionBot
 12	11	

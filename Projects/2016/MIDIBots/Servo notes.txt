@@ -1,0 +1,38 @@
+http://electronics.stackexchange.com/questions/77502/is-there-a-way-to-stop-servos-from-shaking
+
+<<
+When using the Servo library on an Arduino, a common source of servo buzz is that the interrupt-driven servo routines don't actually give a very stable output pulse. Because the AVR takes interrupts for servicing the millis() clock and other things in the Arduino runtime, the jitter in the Servo library is on the order of several microseconds, which translates to a lot of movement in the servo.
+
+The fix for this is to write your own pulse. Something like this:
+
+cli();
+long start = micros();
+digitalWrite(PIN, HIGH);
+while (micros() - start < duration)
+  ;
+digitalWrite(PIN, LOW);
+sei();
+This will turn off other interrupts, and generate a much cleaner PWM pulse. However, it will make the "millis() timer miss some clock ticks. (The "micros()" function may be called something else -- I forget exactly what.)
+
+In general, for timing critical code, you want to get rid of the Arduino runtime entirely, and write your own using the avr-gcc compiler and avr-libc library that powers the Arduino environment. Then you can set up a timer to tick 4 times per microsecond, or even 16 times per microsecond, and get a much better resolution in your PWM.
+
+Another cause of buzz in servos is cheap servos with cheap sensors, where the sensors are noisy, or when the exact position requested with the pulse can't actually be encoded by the sensor. The servo will see "move to position 1822" and try to do it, but ends up with the sensor reading 1823. The servo will then say "move back a little bit" and it ends up with the sensor reading 1821. Repeat! The fix for this is to use high-quality servos. Ideally, not hobby servos at all, but real servos with optical or magnetic absolute encoders.
+
+Finally, if the servos don't get enough power, or if you try to drive their power from the 5V rail on the Arduino, this will generate voltage-sag-induced buzz in the servos, as suggested above. You may be able to fix it with large electrolytic capacitors (which are a good idea for general filtering anyway) but you more likely want to make sure your servo power source can actually deliver several amps of current at the servo voltage.
+
+shareimprove this answer
+answered Jul 31 '13 at 5:51
+
+Jon Watte
+>>
+
+
+Note that the Arduino only support timer output on a few pins (the PWM pins,) and you can't use the Timer0 pins for this method. Thus, there are only 4 pins this really works for on a regular Arduino UNO. If you need to drive 4 or less servos, and don't need the timers for something else, that's a good option. – Jon Watte Mar 13 '15 at 0:33
+
+
+https://wp.josh.com/2015/03/05/the-perfect-pulse-some-tricks-for-generating-precise-one-shots-on-avr8/
+
+
+
+http://www.bhabbott.net.nz/Servo.html
+
