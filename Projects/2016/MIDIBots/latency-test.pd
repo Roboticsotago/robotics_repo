@@ -1,4 +1,4 @@
-#N canvas 101 53 1237 715 10;
+#N canvas 102 51 893 540 10;
 #X text 199 11 Testing how to delay different MIDI channels by different
 amounts \, for the MIDIBots 2016 project for Robocup.;
 #X floatatom 248 660 5 0 0 1 ms - -, f 5;
@@ -111,7 +111,7 @@ by the MIDI velocity \, note number \, and channel \, instead of having
 a single delay applied to the whole channel. This would allow us to
 handle all kinds of note-playing mechanisms.;
 #X text 878 31 It can play a MIDI file!;
-#X obj 444 116 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 444 116 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 444 137 metro;
 #X obj 476 71 loadbang;
@@ -197,11 +197,17 @@ to the [noteout]/[midiout] \, but that doesn't seem to work here.;
 1;
 #X obj 425 218 moses 1;
 #X obj 476 1181 vsl 15 128 0 500 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 1400 1;
+-1 -1 11400 1;
 #X obj 499 1193 vsl 15 128 0 500 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 1900 1;
+-1 -1 12700 1;
 #X floatatom 503 1342 5 0 0 0 - - -, f 5;
 #X floatatom 426 1301 5 0 0 0 - - -, f 5;
+#X obj 569 1193 vsl 15 128 0 500 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 8700 1;
+#X floatatom 573 1342 5 0 0 0 - - -, f 5;
+#X obj 619 1193 vsl 15 128 0 500 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 4000 1;
+#X floatatom 623 1342 5 0 0 0 - - -, f 5;
 #X connect 1 0 20 2;
 #X connect 5 0 6 0;
 #X connect 5 1 7 0;
@@ -341,3 +347,7 @@ to the [noteout]/[midiout] \, but that doesn't seem to work here.;
 #X connect 146 0 147 0;
 #X connect 147 0 136 2;
 #X connect 148 0 138 2;
+#X connect 149 0 150 0;
+#X connect 150 0 135 2;
+#X connect 151 0 152 0;
+#X connect 152 0 123 2;
