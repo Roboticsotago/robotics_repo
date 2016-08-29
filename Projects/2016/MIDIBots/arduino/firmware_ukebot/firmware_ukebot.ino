@@ -20,11 +20,24 @@ int pos = 0;    // variable to store the servo position
 
 const int UP_NOTE = 60; // Middle C
 const int DOWN_NOTE = 62; // D
+const int
+	STRUM_0_NOTE = 0,
+	STRUM_1_NOTE = 1,
+	STRUM_2_NOTE = 2,
+	STRUM_3_NOTE = 3,
+	STRUM_4_NOTE = 4;
+
 
 const int STRUM_MIN = 90;
 const int STRUM_MAX = 110;
 // TODO: constants for each inter-string position
 // ...
+const int
+	STRUM_0 = 92,
+	STRUM_1 = 96,
+	STRUM_2 = 99,
+	STRUM_3 = 102,
+	STRUM_4 = 106;
 
 // For slide max/min, we probably want min to be at the nut end, and max at the soundhole end.
 const int SLIDE_MIN = 60;	// 55 is too far - it can get stuck! 60
@@ -76,6 +89,11 @@ void note_on(int note, int velocity) {
 	switch (note) {
 		case UP_NOTE:   up_strum();   break;
 		case DOWN_NOTE: down_strum(); break;
+		case STRUM_0_NOTE:	strum.write(STRUM_0); break;
+		case STRUM_1_NOTE:	strum.write(STRUM_1); break;
+		case STRUM_2_NOTE:	strum.write(STRUM_2); break;
+		case STRUM_3_NOTE:	strum.write(STRUM_3); break;
+		case STRUM_4_NOTE:	strum.write(STRUM_4); break;
 	}
 }
 
