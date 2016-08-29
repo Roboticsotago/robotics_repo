@@ -5,7 +5,13 @@
 TODO:
 [ ] Add code to read from pressure sensor. Should take initial reading for "zero" reference.
 [ ] Add code to control fan speed to maintain desired pressure. Have some sanity checks, e.g. spin down if fault detected/suspected.
+https://www.youtube.com/watch?v=UR0hOmjaHp0
+http://robotics.stackexchange.com/questions/10127/pid-with-position-and-velocity-goal/10128#10128
+http://robotics.stackexchange.com/questions/5260/the-aerial-refueling-problem-sketch-of-a-feedback-controller
+https://www.youtube.com/watch?v=H4YlL3rZaNw
+https://www.youtube.com/watch?v=taSlxgvvrBM
 */
+
 
 #include <MIDIBot.h>
 MIDIBot fanBot;
