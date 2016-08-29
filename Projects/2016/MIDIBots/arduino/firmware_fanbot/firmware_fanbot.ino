@@ -101,6 +101,12 @@ void fan_speed(float target) {
 }
 
 void self_test() {
+	// Leave fan at current speed, and open and close the solenoid valve for testing...
+	digitalWrite(MOSFET_2_PIN, HIGH);
+	delay(1000);
+	digitalWrite(MOSFET_2_PIN, LOW);
+	delay(1000);
+/*
 	fan_speed(0.1);
 	delay(2000);
 	fan_speed(0.5);
@@ -109,6 +115,7 @@ void self_test() {
 //	delay(6000);
 	fan_speed(0);
 	delay(6000);
+*/
 }
 
 void note_on(int note, int velocity) {
