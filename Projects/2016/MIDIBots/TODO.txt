@@ -2,7 +2,7 @@
 
 National event is in Auckland on Saturday, September 10 (entries close Friday, August 26).  Some things to work on between now and then:
 
-[ ] Refactor the firmware programs to use our MIDIBot library:
+[Y] Refactor the firmware programs to use our MIDIBot library:
 	[Y] UkeBot
 	[Y] LightingBot
 	[Y] PercussionBot
@@ -31,9 +31,13 @@ LightingBot:
 [ ] Make custom Molex power wiring?
 
 [ ] Air reservoir system for woodwind instruments (learn about control systems in the process)
+[ ] WhistleBot (slide whistle)
 [ ] RecorderBot. With a taped-over thumb-hole and solenoid finger-hole valves on the first four holes, we can play the important bits of the melody from "We Will Rock You".
 [ ] Harmonica? Bird Whistle? Pan Pipes?
 [ ] Could extend music to include a medley of different music. Suggestions..?
+	Uke can now play bits of the melody from Fuer Elise (perhaps duet with SynthBot)
+	Smoke on the Water?
+	Percussion section solo (funky beats, with lighting show)
 
 Chris:
 [ ] Buy a set of Chinese Arduino clones
