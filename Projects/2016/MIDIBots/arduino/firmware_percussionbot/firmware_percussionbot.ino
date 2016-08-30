@@ -54,6 +54,7 @@ const int RATTLE_PIN = MOSFET_PWM_PIN;
 const int RATTLE_NOTE = 43;
 const int RATTLE_SPEED = 255;
 
+
 // Timers for asynchronous release of drum hits:
 Timer *triangle_timer = new Timer(TRIANGLE_DELAY, &triangle_release, 1);
 //Timer *shaker_l_timer = new Timer(SHAKER_L_DELAY, &shaker_l_release, 1);
@@ -119,6 +120,9 @@ void self_test() {
 	triangle_hit();
 	shaker_r_hit();
 	drum_hit();
+	rattle_start();
+	delay(1000);
+	rattle_stop();
 	// And rattle? Tricky, cos we'd need to schedule an OFF event for it somehow..
 	digitalWrite(LED_PIN, LOW);
 }
