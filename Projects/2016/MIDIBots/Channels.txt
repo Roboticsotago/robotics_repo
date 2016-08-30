@@ -4,19 +4,19 @@ Note that the Freetronics USBDroid boards have extra pull-down resistors on seve
 
 TODO: also make not of which MIDI note numbers have special functions for each bot, e.g. notes that correspond to lights on LightingBot.
 
-Ch	#	Bot
+Ch	#	Bot		Octave for testing
 
 1	0	
 2	1	
 3	2	
 4	3	
-5	4	UkeBot
-6	5	LightingBot
+5	4	UkeBot		0 (1st octave is strum, 2nd octave is slide)
+6	5	LightingBot	5
 7	6	RecorderBot
 8	7	SynthBot
 9	8	WhistleBot
-10	9	DrumBot
-11	10	PercussionBot
+10	9	DrumBot		3
+11	10	PercussionBot	3 (triangle is reachable on the high C)
 12	11	
 13	12	
 14	13	
