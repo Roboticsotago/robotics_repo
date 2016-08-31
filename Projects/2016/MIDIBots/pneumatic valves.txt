@@ -1,2 +1,105 @@
+General specifications:
+	Pneumatic (suitable for air)
+	Direct-acting
+	Normally Closed (NC)
+	12 V DC operation
+	Suitable for 1-2 kPa air pressure (< 1 PSI): "Low Pressure" or even "Ultra Low Pressure"
+		Ideally will open with no pressure, or merely tens of Pa
+	What fitting diameter/thread?  Screw-in hose fittings?  G or NPT?
+
+Air jet velocities of a under 20 m/s (a few tens of m/s according to Fletcher)
+
+Proportional one for the recorder and slide whistle, allowing local control of pressure?
+
+
+Air horn valve, maybe?  Aquarium pump supply store?  Dishwasher drain valve?  Garden supply?  Ask Donald?
+
+
+200 PSI is about 1.4 MPa
+We're only dealing with a couple of kPa
+
+
+1/4"	6.35 mm
+1/2" 	12.7 mm (prefer)
+
+--
+
+Flow capacity, flow value?  Cv?  Flow factor?  Acoustic impedance?
+
+Cv (flow coefficient) is an important specification for a valve.  Any valve will incur a certain pressure drop.  Since we're dealing with such low pressures to begin with, we want valves with minimal "resistance", and therefore a ??HIGH/LOW?? flow capacity constant.
+
+Metric equivalent is flow factor:
+
+Kv = Q / sqrt[dP]
+
+	Kv = flow factor (m^3/hour)
+	Q = flow rate (m^3/hour)
+	dP = pressure difference across device (bar)
+
+Can determine flow rate Q from jet velocity by multiplying by cross-sectional area?
+
+Let's guesstimate 1.5 mm * 10 mm = 15 mm^2 area for recorder mouthpiece.
+
+15 mm^2 * 15 m/s -> m^3/hour
+81/100 (exactly 0.81)
+
+We probably don't want the valve to drop more than a few hundred Pa (the fan can theoretically supply about 1 kPa, but there will be other losses and we don't want to have to run it at full speed).
+
+Let's say 1 m^3/hour, 100 Pa (0.001 bar) drop:
+
+Kv = (1 m^3/hour) / sqrt[0.001 bar]
+
+Kv = 32
+
+I don't think that's right...
+
+Let's try again:
+
+Q = 15 mm^2 * 15 m/s -> m^3/hour
+dP = 600 Pa - 250 Pa -> bar
+Kv = 0.81 / sqrt[0.0035]
+   = 13.7
+
+That seems more reasonable.
+
+To convert to Cv:
+
+Cv = Kv / 0.865
+
+Cv = ~16
+
+http://generant.com/cvcalc.aspx
+gave me a Cv of only 0.7
+hmm
+
+http://www.swagelok.com/downloads/webcatalogs/EN/MS-06-84.PDF
+
+Inlet pressure say 600 Pa = 0.006 bar
+That's off the bottom of the scale. :(
+
+
+http://www.engineeringtoolbox.com/flow-coefficients-d_277.html
+Cv = 12-20?
+
+That's a pretty high value. :(  Might have to consider another approach.
+
+Note that higher values of Cv indicate less resistance, i.e. more desirable.
+
+--
+
+Acoustic impedance, Zp, is acoustic pressure / acoustic volume flow, analogous to resistance in Ohm's law (R = V/I)
+
+--
+
+Candidate devices:
+
+Dammit, neither AdaFruit nor SparkFun seem to stock the low-pressure drainage version any more..
+
+Model: USS2-00005 maybe?
+
+Valco 2/2 Y-Type low pressure LDO type?
+
 Humphrey model 310 pneumatic solenoid valve
 http://www.humphrey-products.com/sc/nav/npdirectacting.html
+
+http://www.logos-electro.com/blog/2010/10/17/a-midi-controlled-arduino-pipe-organ-phase-1.html
