@@ -108,6 +108,9 @@ const int SLIDE_DELAY = 300;	// Worst-case slide motion time (HOME..MIN)
 
 
 int i;
+
+// Maybe we  don't need the following 5 functions, since we now have much finer control, and will use the MIDI note positions...
+
 void down_strum() {
 	strum.write(STRUM_MAX);
 }
@@ -139,6 +142,8 @@ void move_slide(int pos) {
 	slide.write(pos);
 //	delay(SLIDE_DELAY);
 }
+
+// TODO: similar to move_slide() but for picking?
 
 void note_on(int note, int velocity) {
 	switch (note) {
@@ -199,17 +204,29 @@ void self_test_2()
 	delay(500);
 }
 
+void self_test_picking() {
+	strum.write(STRUM_0); delay(250);
+	strum.write(STRUM_1); delay(250);
+	strum.write(STRUM_2); delay(250);
+	strum.write(STRUM_3); delay(250);
+	strum.write(STRUM_4); delay(250);
+	strum.write(STRUM_5); delay(250);
+	strum.write(STRUM_6); delay(250);
+	strum.write(STRUM_7); delay(250);
+	strum.write(STRUM_8); delay(250);
+	strum.write(STRUM_9); delay(250);
+	
+	strum.write(STRUM_0); delay(250);	// Return home
+}
+
 void self_test() {
+	// TODO: test each semitone, not just min/max slide position
 	digitalWrite(LED_PIN, HIGH);
-	slide_position = SLIDE_MAX;
-	for (i=0; i<=5; i++){
-		move_slide(slide_position);
-		up_strum();
-		delay(500);
-		down_strum();
-		delay(500);
-		slide_position = slide_position - 5;
-	}
+	move_slide(SLIDE_MIN); delay(500);
+	self_test_picking();
+	move_slide(SLIDE_MAX); delay(500);
+	self_test_picking();
+	move_slide(SLIDE_MIN); delay(500);
 	digitalWrite(LED_PIN, LOW);
 }
 
