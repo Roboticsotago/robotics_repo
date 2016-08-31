@@ -13,7 +13,7 @@ Ch	#	Bot		Octave for testing
 5	4	UkeBot		0 (1st octave is strum, 2nd octave is slide)
 6	5	LightingBot	5
 7	6	RecorderBot
-8	7	SynthBot
+8	7	SynthBot	2- (1st two octaves do not give playable notes with current PWM settings)
 9	8	WhistleBot
 10	9	DrumBot		3
 11	10	PercussionBot	3 (triangle is reachable on the high C)
