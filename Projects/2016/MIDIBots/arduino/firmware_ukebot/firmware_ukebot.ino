@@ -3,6 +3,7 @@
 
 /*
 TODO:
+[ ] Consider refactoring to use Servo.writeMicroseconds() for more accurate control over positioning. Maybe add a wrapper function that accepts target angle as a float.
 [ ] Calibrate slide positions to correspond to musical intervals
 [ ] Add note-on messages for slide positioning
 [ ] Add note-on messages for plucking indiviual strings (think of it as having 5 positions which can be reached: top, between first two strings, between middle strings, between last two strings, and bottom).  Could be tricky to get the timing right, as the time to pluck will depend on the current strumming position.  Perhaps just pick a single value that generally works OK.
@@ -23,15 +24,40 @@ int pos = 0;    // variable to store the servo position
 const int UP_NOTE = 50; // Middle C
 const int DOWN_NOTE = 52; // D
 
-// 1st attempt at strum positions, using midpoint between pairs of strings. Not reliable.
-/*
+// Servo angles for strumming...
+
+const int STRUM_MIN = 92; 
+const int STRUM_MAX = 105;
+
 const int
-	STRUM_0_NOTE = 0,
-	STRUM_1_NOTE = 1,
-	STRUM_2_NOTE = 2,
-	STRUM_3_NOTE = 3,
-	STRUM_4_NOTE = 4;
-*/
+	STRUM_0 = 92,	// OK
+	STRUM_1 = 93,	//
+	STRUM_2 = 95,	// 
+	STRUM_3 = 97,	// 
+	STRUM_4 = 98,	//
+	STRUM_5 = 100,	// 
+	STRUM_6 = 101,	// OK
+	STRUM_7 = 103,	// Maybe 102 - sometimes hits the next string
+	STRUM_8 = 104,	// 
+	STRUM_9 = 105;	// OK
+
+// ..and the slide.
+// For slide max/min, we probably want min to be at the nut end, and max at the soundhole end.
+const int SLIDE_MIN = 29;
+const int SLIDE_MAX = 83;
+
+const int
+	SLIDE_0 = 29,
+	SLIDE_1 = 37,
+	SLIDE_2 = 45,
+	SLIDE_3 = 52,
+	SLIDE_4 = 59,
+	SLIDE_5 = 65,
+	SLIDE_6 = 71,
+	SLIDE_7 = 77,
+	SLIDE_8 = 83;
+
+// MIDI note numbers for strumming...
 const int
 	STRUM_0_NOTE = 0,
 	STRUM_1_NOTE = 1,
@@ -44,6 +70,7 @@ const int
 	STRUM_8_NOTE = 8,
 	STRUM_9_NOTE = 9;
 
+// ...and picking:
 const int
 	SLIDE_0_NOTE = 12,
 	SLIDE_1_NOTE = 13,
@@ -54,48 +81,7 @@ const int
 	SLIDE_6_NOTE = 18,
 	SLIDE_7_NOTE = 19,
 	SLIDE_8_NOTE = 20;
-	
-const int STRUM_MIN = 92;  //90 
-const int STRUM_MAX = 97; //110
 
-// Midpoint positions between strings. Doesn't result in reliable picking.
-/*
-const int
-	STRUM_0 = 92,
-	STRUM_1 = 96,
-	STRUM_2 = 99,
-	STRUM_3 = 102,
-	STRUM_4 = 106;
-*/
-
-// Second attempt, using a pair of points either side of the midpoint for each string:
-const int
-	STRUM_0 = 92,
-	STRUM_1 = 93,
-	STRUM_2 = 95,
-	STRUM_3 = 97,
-	STRUM_4 = 98,
-	STRUM_5 = 100,
-	STRUM_6 = 101,
-	STRUM_7 = 103,
-	STRUM_8 = 105,
-	STRUM_9 = 106;
-
-const int
-	SLIDE_0 = 29,
-	SLIDE_1 = 37,
-	SLIDE_2 = 45,
-	SLIDE_3 = 52,
-	SLIDE_4 = 59,
-	SLIDE_5 = 65,
-	SLIDE_6 = 71,
-	SLIDE_7 = 77,
-	SLIDE_8 = 83;
-// For slide max/min, we probably want min to be at the nut end, and max at the soundhole end.
-const int SLIDE_MIN = 29;
-const int SLIDE_MAX = 83;
-// SLIDE_HOME should no longer be needed, at least for anti-backlash, now that we have the new Lego-based slide linkage.  Probably sensible to zero it to SLIDE_MIN at startup.
-//const int SLIDE_HOME = 50; // Somewhere far enough beyond MAX that it will avoid the backlash.  108
 // TODO: constants (or an array?) of servo positions that correspond to musical notes.
 
 // Keep track of last slide position set, in case we end up getting really fancy with the logic and trying to optimise the timings or something.
