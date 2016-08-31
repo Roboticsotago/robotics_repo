@@ -4,6 +4,8 @@ Note that the Freetronics USBDroid boards have extra pull-down resistors on seve
 
 TODO: also make not of which MIDI note numbers have special functions for each bot, e.g. notes that correspond to lights on LightingBot.
 
+Note that in Rosegarden, the first octave (MIDI notes 0-11) is denoted as octave -2, which is consistent with stanard octave notation (A4 is in octave 4 and is MIDI note 69).
+
 Ch	#	Bot		Octave for testing
 
 1	0	
