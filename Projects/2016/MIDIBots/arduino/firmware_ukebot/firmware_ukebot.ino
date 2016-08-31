@@ -104,51 +104,23 @@ int slide_position = SLIDE_MIN;
 // Unused?
 const int STRUM_DELAY = 100;
 
-const int SLIDE_DELAY = 300;	// Worst-case slide motion time (HOME..MIN)
+const int SLIDE_DELAY = 300;	// Worst-case slide motion time (HOME..MIN). Unconfirmed!
 
 
 int i;
 
-// Maybe we  don't need the following 5 functions, since we now have much finer control, and will use the MIDI note positions...
-
-void down_strum() {
-	strum.write(STRUM_MAX);
-}
-
-void up_strum() {
-	strum.write(STRUM_MIN);
-}
-
-void down_slide() {
-	slide.write(SLIDE_MAX);
-}
-
-void up_slide() {
-	slide.write(SLIDE_MIN);
-}
-
-void test_slide() {
-	slide.write(slide_position);
-}
-
 void move_slide(int pos) {
-	// Move to home position first so it always approaches from the same direction (anti-backlash)
-	// No longer needed with new Lego linkage
-//	slide.write(SLIDE_HOME);
-//	delay(SLIDE_DELAY);
 	// Clip motion to valid range:
 	if (pos < SLIDE_MIN) {pos = SLIDE_MIN;}
 	if (pos > SLIDE_MAX) {pos = SLIDE_MAX;}
+	// Move it:
 	slide.write(pos);
-//	delay(SLIDE_DELAY);
 }
 
-// TODO: similar to move_slide() but for picking?
+// TODO: similar to move_slide() but for picking, maybe?
 
 void note_on(int note, int velocity) {
 	switch (note) {
-		case UP_NOTE:   up_strum();   break;
-		case DOWN_NOTE: down_strum(); break;
 		case STRUM_0_NOTE:	strum.write(STRUM_0); break;
 		case STRUM_1_NOTE:	strum.write(STRUM_1); break;
 		case STRUM_2_NOTE:	strum.write(STRUM_2); break;
@@ -159,6 +131,7 @@ void note_on(int note, int velocity) {
 		case STRUM_7_NOTE:	strum.write(STRUM_7); break;
 		case STRUM_8_NOTE:	strum.write(STRUM_8); break;
 		case STRUM_9_NOTE:	strum.write(STRUM_9); break;
+
 		case SLIDE_0_NOTE:	move_slide(SLIDE_0); break;
 		case SLIDE_1_NOTE:	move_slide(SLIDE_1); break;
 		case SLIDE_2_NOTE:	move_slide(SLIDE_2); break;
@@ -187,46 +160,40 @@ void setup()
 	slide.write(SLIDE_MIN);
 }
 
-void self_test_2()
-{
-	down_slide();
-	delay(500);
-	up_strum();
-	delay(500);
-	down_strum();
-	delay(500);
-		
-	up_slide();
-	delay(500);
-	up_strum();
-	delay(500);
-	down_strum();
-	delay(500);
-}
-
 void self_test_picking() {
-	strum.write(STRUM_0); delay(250);
-	strum.write(STRUM_1); delay(250);
-	strum.write(STRUM_2); delay(250);
-	strum.write(STRUM_3); delay(250);
-	strum.write(STRUM_4); delay(250);
-	strum.write(STRUM_5); delay(250);
-	strum.write(STRUM_6); delay(250);
-	strum.write(STRUM_7); delay(250);
-	strum.write(STRUM_8); delay(250);
-	strum.write(STRUM_9); delay(250);
+	strum.write(STRUM_1); delay(500);
+	strum.write(STRUM_0); delay(500);
+	strum.write(STRUM_3); delay(500);
+	strum.write(STRUM_2); delay(500);
+	strum.write(STRUM_5); delay(500);
+	strum.write(STRUM_4); delay(500);
+	strum.write(STRUM_7); delay(500);
+	strum.write(STRUM_6); delay(500);
+	strum.write(STRUM_9); delay(500);
+	strum.write(STRUM_8); delay(500);
+
+	strum.write(STRUM_8); delay(500);
+	strum.write(STRUM_9); delay(500);
+	strum.write(STRUM_6); delay(500);
+	strum.write(STRUM_7); delay(500);
+	strum.write(STRUM_4); delay(500);
+	strum.write(STRUM_5); delay(500);
+	strum.write(STRUM_2); delay(500);
+	strum.write(STRUM_3); delay(500);
+	strum.write(STRUM_0); delay(500);
+	strum.write(STRUM_1); delay(500);
 	
-	strum.write(STRUM_0); delay(250);	// Return home
+	strum.write(STRUM_0); delay(500);	// Return home
 }
 
 void self_test() {
-	// TODO: test each semitone, not just min/max slide position
+	// TODO: test each semitone, not just min/max slide position. This would be easier if we used an array for the slide positions.
 	digitalWrite(LED_PIN, HIGH);
-	move_slide(SLIDE_MIN); delay(500);
+	move_slide(SLIDE_MIN); delay(SLIDE_DELAY);
 	self_test_picking();
-	move_slide(SLIDE_MAX); delay(500);
+	move_slide(SLIDE_MAX); delay(SLIDE_DELAY);
 	self_test_picking();
-	move_slide(SLIDE_MIN); delay(500);
+	move_slide(SLIDE_MIN); delay(SLIDE_DELAY);
 	digitalWrite(LED_PIN, LOW);
 }
 
