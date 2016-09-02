@@ -6,45 +6,55 @@ Start with the shortest parts, and work your way up. This helps avoid the nuisan
 Resistors: there are a variety of these, but all low-power.
 	10R: one in each MOSFET circuit
 	100k: one in each MOSFET circuit
-	1.8K: one in each MOSFET circuit, plus one for the +12V supply
+	1.8K: one in each MOSFET circuit, plus one for the +12V supply LED
 	220R: one on MIDI_IN and two on MIDI_THRU
+	280R: well, 270R, if 280 not available, between the two ICs
 	330R: pin D13 LED, +5V supply LED
-
-
-The current-limiting resistors for diodes are mostly 330 ohm, but those on the 12 V supply are 1.8k.
 
 Diodes (watch the polarity!) are almost all 1N4007 parts:
 	One per MOSFET output (4 total), pointing outwards
 	Two in the power input circuit
 	A 1N914 in the MIDI input circuit
 
-4.5 mm: IC sockets for the 6-pin PC900V and the 14-pin. Watch the orientation!  Pin 1 has a square pad, and that end is also marked with a "U" shape.
+4.5 mm: IC sockets for the 6-pin PC900V and the 14-pin. Watch the orientation!  Pin 1 has a square pad, and that end is also marked with a "U" shape.  Use a drop of superglue to hold them in place while soldering.
 
-5.5 mm: LEDs next, again watch the polarity!  The footprints are for 3 mm parts but you can probably fit 5 mm ones if you want.
+5.5 mm: LEDs next, again watch the polarity!  Superglue before soldering so they stay flat to the board. The footprints are for 3 mm parts but you can probably fit 5 mm ones if you want.
 	I suggest using two green ones in the power supply LEDs
 	A yellow or orange one for each MOSFET output to indicate activity.  I like to reserve red for error warnings.
 	There's also D2 near the top right (this connects to Arduino pin D13)..whatever colour you like!
 
+DIP switch bank for setting the MIDI input channel using binary.  The "ON" side goes to the right. Superglue before soldering if necessary.  Add label "8 4 2 1" to the bottom (OFF side).
+
 6.5 mm: Decoupling capacitors (little blue "104" marked ones). Non-polarised. 5 per board, I think.
 
-DIP switches for setting the MIDI input channel using binary.
-
-
-8 mm: Plain pin headers:
+8 mm: Plain pin headers (superglue):
 	Three 1x3 headers for the servo outputs
-	Two 1x2 headers for analog 3 and 4 output (or general use)
+	One 1x2 header for MIDI receive enable
+	Optionally, two 1x2 headers for analog 3 and 4 output (or general use)
 
+Switches (Reset, Self-Test):
+	Splay out the feet slightly to get it to fit. They will sit a bit high off the board.  They will fit two ways (180-degree rotation), but either will work.
+
+Fuse clips:
+	4 of these. These ARE polarised: look for the little tab that stops the fuse from sliding through. These go on the outside.  Superglue in place before soldering, or bend the leads down.
+
+Molex power connectors:
+	Use the black ones as they allow much easier unplugging!
+	The Rev. 1 boards do not have large enough through holes, so these will need to be carefully drilled out large enough. This will remove the hole plating, so it  would be wise to add doubled-up jumper wire on the reverse to ensure a good high-current connection.
+	The Rev. 1 boards also do not allow space for the diodes next to the Molex connector. Use a craft knife to cut away the plastic on the Molex housing so it can fit flush to the board. Superglue before soldering.
+	
 11.5 mm: Polarised SIL headers:
 	A single 1x3 for the latency adjustment pot (chassis-mounted off-board)
 	1x2 headers for the four auxiliary power outputs, the four MOSFET outputs, MIDI IN, MIDI THRU, and stepper motor header.
+	NOTE: the power connectors (Aux 12 V, Aux 5 V, and the four MOSFET outputs) should really be flipped around to be compatible with standard PC fan wiring (pin 1 is ground). Sorry about the mix-up!  The pin-numbering in KiCAD didn't match reality. :(
 
-12 mm: Filter capacitors: watch the polarity!
+12 mm: Filter capacitors: watch the polarity! It's also a bit of a squeeze beside the Molex housing with the proper flush-mounted ones.
 
 MOSFET parts (TO-220, vertically installed).
 	Watch the polarity!
 	They should all face the same way, with pin 1 at the top.
+	We can add heat sinks where necessary.
 	
 Lastly, the strips of header pins for mounting the shield on the main Arduino board.
-	You might even wish to try the combo pin/socket headers (I don't know if they'll fit).
+	You might even wish to try the combo pin/socket headers, with female headers on top and male pins underneath (I don't know if they'll fit).
 	Tip: mount the headers and the shield on a real Arduino to hold everything in place while soldering.
-	
