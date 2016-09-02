@@ -41,6 +41,12 @@ LightingBot:
 		Works fine with MIDI note messages; don't bother with MIDI CC for now.
 	[ ] Laser-cut logo
 
+FanBot:
+	[ ] Solder a wire onto the shield for 3.3 V supply for the BMP085 pressure sensor
+	[ ] Add break-out headers to the stripboard for the pressure sensor (already have ground, but will need 3.3 V supply, and SDA and SCL for I2C.  These will go to pins 20 and 21 on the Mega.
+	[Y] Wire up stripboard breakout for the fan. There's no connection yet between the tach output and the Mega, but everything else (including pull-up resistor) is there.
+	[Y] Solder on a wire from pin 12 on the shield, since that's the pin that's used for custom PWM on the Mega.  This is for fan speed control, which is supposed to be ~25 kHz.
+
 [ ] Make custom Molex power wiring?
 
 [ ] Air reservoir system for woodwind instruments (learn about control systems in the process)
