@@ -3,8 +3,8 @@
 
 /*
 TODO:
-[ ] Add code to read from pressure sensor. Should take initial reading for "zero" reference.
-[ ] Add code to control fan speed to maintain desired pressure. Have some sanity checks, e.g. spin down if fault detected/suspected.
+[ ] Add code to read from pressure sensor. Should take initial reading for "zero" reference at startup, since the sensor is absolute, not relative (differential) and ambient pressure can vary.
+[ ] Add code to control fan speed to maintain desired pressure. PID control? Have some sanity checks, e.g. spin down if fault detected/suspected (if monitoring the fan's tachometer output).
 https://www.youtube.com/watch?v=UR0hOmjaHp0
 http://robotics.stackexchange.com/questions/10127/pid-with-position-and-velocity-goal/10128#10128
 http://robotics.stackexchange.com/questions/5260/the-aerial-refueling-problem-sketch-of-a-feedback-controller
@@ -20,11 +20,45 @@ const int PWM_FREQUENCY = 25000; // Intel 4-wire fan spec. The Delta fan datashe
 
 void setup() {
 //	fan_speed(0);	// Bit dodgy setting this before the setup routine, but the fan spools up for some seconds otherwise.
-	fanBot.begin();
+//	fanBot.begin();
+	Serial.begin(9600);
 }
 
+int control_byte = 0;
+
+// For testing:
+int fan_speed = 0;
+const int FAN_SPEED_INCREMENT = 5,
+	MIN_SPEED = 0,
+	MAX_SPEED = 255;
+
+void speed_increase() {
+	fan_speed += FAN_SPEED_INCREMENT ;
+	if (fan_speed > MAX_SPEED) {fan_speed = MAX_SPEED;}
+	set_fan_speed(fan_speed / 255.0);
+}
+
+void speed_decrease() {
+	fan_speed -= FAN_SPEED_INCREMENT;
+	if (fan_speed < MIN_SPEED) {fan_speed = MIN_SPEED;}
+	set_fan_speed(fan_speed / 255.0);
+}
+
+
 void loop() {
-	fanBot.process_MIDI();
+//	fanBot.process_MIDI();
+
+	// For testing:
+	if (Serial.available()) {
+		control_byte = Serial.read();
+		// TODO: error-checking?
+		switch (control_byte) {
+			case '+': speed_increase(); break;
+			case '-': speed_decrease(); break;
+		}
+		Serial.println(fan_speed);
+	}
+
 }
 
 
@@ -35,7 +69,7 @@ void loop() {
 // Ideally we'd use the PWM MOSFET output on D6, but that uses Timer 0 and doesn't support frequency-accurate PWM, as far as I can tell.
 // This will need an external circuit anyway to limit the current and block DC, so it's not a huge hassle to add a MOSFET circuit (with resistors and protection diode) to this as well.  It can be powered from one of the aux 12 V headers.
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-const int OUTPUT_PIN     = 12,
+const int OUTPUT_PIN     = 12;
 const int OUTPUT_PIN_AUX = 11;
 #else
 const int OUTPUT_PIN     = 10;
@@ -102,7 +136,7 @@ void pwm_off() {
 }
 
 
-void fan_speed(float target) {
+void set_fan_speed(float target) {
 	pwm(PWM_FREQUENCY, target);
 }
 
@@ -125,7 +159,7 @@ void self_test() {
 }
 
 void note_on(int note, int velocity) {
-	fan_speed(note / 127.0);	// Could also derive fan speed from note velocity
+	set_fan_speed(note / 127.0);	// Could also derive fan speed from note velocity
 }
 
 void note_off(int note, int velocity) {
