@@ -8,10 +8,15 @@ National event is in Auckland on Saturday, September 10 (entries close Friday, A
 	[Y] PercussionBot
 	[Y] DrumBot
 	[Y] SynthBot
+
 [ ] Tweak lighting on individual bots (placement, colour, fading)
+	Maybe balloon idea? Especially if we can get some more of those 12 V LED modules from Jaycar
+
+[ ] Test the spare PSUs (power supply units) in case they're needed
 
 [ ] Fix bug in conditionally-copmiled code for the ATmega1280/2560 in programs that use custom PWM control (comma should be semicolon )
 [ ] Also, the custom PWM code doesn't correctly handle a duty cycle of 0, it seems - on the oscilloscope on the FanBot firmware test, a setting of 0 still gives a narrow pulse.
+
 
 UkeBot:
 	[ ] Reduce friction in slide guideway: reshape a little, rub wax into wood.
