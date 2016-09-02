@@ -10,6 +10,9 @@ National event is in Auckland on Saturday, September 10 (entries close Friday, A
 	[Y] SynthBot
 [ ] Tweak lighting on individual bots (placement, colour, fading)
 
+[ ] Fix bug in conditionally-copmiled code for the ATmega1280/2560 in programs that use custom PWM control (comma should be semicolon )
+[ ] Also, the custom PWM code doesn't correctly handle a duty cycle of 0, it seems - on the oscilloscope on the FanBot firmware test, a setting of 0 still gives a narrow pulse.
+
 UkeBot:
 	[ ] Reduce friction in slide guideway: reshape a little, rub wax into wood.
 	[ ] Cut off excess board behind tuning pegs for easier access.
