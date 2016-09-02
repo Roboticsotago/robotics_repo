@@ -11,7 +11,11 @@ National event is in Auckland on Saturday, September 10 (entries close Friday, A
 [ ] Tweak lighting on individual bots (placement, colour, fading)
 
 UkeBot:
-	[ ] Slide mechanism for UkeBot (stepper motor)
+	[ ] Reduce friction in slide guideway: reshape a little, rub wax into wood.
+	[ ] Cut off excess board behind tuning pegs for easier access.
+	[ ] Upgrade tuners to geared ones?
+	[Y] Slide mechanism for UkeBot (stepper motor)
+		In the end we used a servo motor and a linkage
 
 DrumBot:
 	[ ] Get a proper snare drum for DrumBot (or adapt existing one)
@@ -19,9 +23,10 @@ DrumBot:
 PercussionBot:
 	[Y] Troubleshoot PercussionBot
 		The shield was not properly seated, and digital pins 10 and 11 do not work properly any more (tested on oscilloscope).  With a new Arduino board it seems OK.
-	[ ] Fix backlash in triangle sriker
+	[ ] Fix backlash in triangle striker
+	[ ] Fix resonance in triangle mount
 	[ ] PercussionBot: add rattle (DC motor)
-	[ ] PercussionBot: use alternating note numbers for shaker movement
+	[Y] PercussionBot: use alternating note numbers for shaker movement
 
 LightingBot:
 	[Y] Finalise firmware for LightingBot to include driving the RGB lighting strip(s), maybe look at MIDI CC messages
