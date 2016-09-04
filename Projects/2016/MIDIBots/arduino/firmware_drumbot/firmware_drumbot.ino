@@ -20,7 +20,7 @@ const int BASS_DRUM_MIN = 30;
 const int BASS_DRUM_MAX = 12;
 const int BASS_DRUM_DELAY = 100;
 
-const int SNARE_DRUM_NOTE = 39;
+const int SNARE_DRUM_NOTE = 38;
 const int SNARE_DRUM_MIN = 40;
 const int SNARE_DRUM_MAX = 62;
 const int SNARE_DRUM_DELAY = 100;
@@ -56,9 +56,11 @@ void cymbal_release() {cymbal_servo.write(CYMBAL_MIN);}
 
 
 void self_test() {
+	digitalWrite(LED_PIN, HIGH);
 	bass_drum_hit();
 	snare_drum_hit();
 	cymbal_hit();
+	digitalWrite(LED_PIN, LOW);
 }
 
 void note_on(int note, int velocity) {
