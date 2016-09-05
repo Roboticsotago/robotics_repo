@@ -20,15 +20,18 @@ MIDIBot fanBot;
 
 const unsigned char OSS = 0;  // Oversampling Setting
 
-long target_pressure = 100600;
+long target_pressure = 200; //relative
 int control_enabled = 1;
 //TODO: final version control_enabled set to 0
 
-const float Kp = 0,
-	Ki = 0,
-	Kd = 0;
+const float Kp = 0.001,
+	Ki = 0.0001,
+	Kd = 0.001;
 
 long ref_pressure = 0;
+long integral = 0;
+long prev_error = 0;
+float control = 0;
 
 // Calibration values
 int ac1;
@@ -65,6 +68,7 @@ void setup() {
 	Serial.begin(9600);
 	Wire.begin();
 	bmp085Calibration();
+	calibrate();
 }
 
 int control_byte = 0;
@@ -88,15 +92,51 @@ void speed_decrease() {
 }
 */
 
-void loop() {
+void calibrate(){
 	temperature = bmp085GetTemperature(bmp085ReadUT());
-	pressure = bmp085GetPressure(bmp085ReadUP());
-	altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
+	ref_pressure = bmp085GetPressure(bmp085ReadUP());
+	Serial.println(ref_pressure);
+}
+
+int rel_pressure(){
+	temperature = bmp085GetTemperature(bmp085ReadUT());
+	return bmp085GetPressure(bmp085ReadUP()) - ref_pressure;
+} 
+
+void loop() {
+	Serial.print("Rel_pressure:");
+	Serial.println(rel_pressure());
+	//altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
 	fanBot.process_MIDI();
 	
-	int pressure_diffrence = target_pressure - pressure;
 	
-
+	long error = target_pressure - rel_pressure();
+	Serial.print("Error:");
+	Serial.println(error);
+	
+	if (control <= 1 && control >= 0)
+	{
+		integral += error; //integral
+	}
+	
+	Serial.print("Error Integral:");
+	Serial.println(integral);
+	
+	
+	long derivative = (error - prev_error);
+	Serial.print("Derivative");
+	Serial.println(derivative);
+	
+	
+	control = error * Kp + integral * Ki + derivative * Kd;
+	set_fan_speed(control);
+	Serial.print("Control");
+	Serial.println(control);
+	
+	
+	prev_error = error;
+	
+	/*
 	if (control_enabled = 1){
 		if (pressure < target_pressure){
 			set_fan_speed(1.5);
@@ -110,20 +150,19 @@ void loop() {
 	}else{
 		set_fan_speed(0);
 	}
-	delay(100);	
+	*/
+	delay(300);	
 	//TODO: Calculate the pressure error and adjust fan speed
 
 
-  Serial.print("Temperature: ");
-  Serial.print(temperature, DEC);
-  Serial.println(" *0.1 deg C");
-  Serial.print("Pressure: ");
-  Serial.print(pressure, DEC);
-  Serial.println(" Pa");
-  Serial.print("Altitude: ");
-  Serial.print(altitude, 2);
-  Serial.println(" m");
-  Serial.println();
+ // Serial.print("Temperature: ");
+  //Serial.print(temperature, DEC);
+  //Serial.println(" *0.1 deg C");
+  
+  //Serial.print("Altitude: ");
+ // Serial.print(altitude, 2);
+ // Serial.println(" m");
+ // Serial.println();
 /*
 	// For testing:
 	if (Serial.available()) {
@@ -207,7 +246,7 @@ void pwm(float frequency, float duty_cycle) {
 	TCCR1B = _BV(WGM13) | _BV(WGM12) | _BV(CS11);	
 	TCCR1B = (TCCR1B & TIMER_PRESCALE_MASK) | timer_prescale_bits(prescale);
 }
-0xBC
+
 void pwm_off() {
 	TCCR1B = (TCCR1B & TIMER_PRESCALE_MASK) | TIMER_CLK_STOP;
 	TCNT1 = 0;
