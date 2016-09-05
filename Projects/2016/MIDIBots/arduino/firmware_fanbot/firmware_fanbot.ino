@@ -20,13 +20,12 @@ MIDIBot fanBot;
 
 const unsigned char OSS = 0;  // Oversampling Setting
 
-long target_pressure = 200; //relative
-int control_enabled = 1;
-//TODO: final version control_enabled set to 0
+long target_pressure = 150; // Pa relative to initial reference reading
+int control_enabled = 1;	// TODO: final version control_enabled set to 0, to be enabled by MIDI messgge
 
 const float Kp = 0.001,
-	Ki = 0.0001,
-	Kd = 0.001;
+	Ki = 0.0003,
+	Kd = 0.0001;
 
 long ref_pressure = 0;
 long integral = 0;
@@ -68,6 +67,8 @@ void setup() {
 	Serial.begin(9600);
 	Wire.begin();
 	bmp085Calibration();
+	// NOTE: the Mega tends to output HIGH on pin 12 during programming, so we need to wait a bit for the fan to stop completely and the pressure to return to ambient before taking our initial reading.
+	delay(13000);
 	calibrate();
 }
 
@@ -104,34 +105,38 @@ int rel_pressure(){
 } 
 
 void loop() {
-	Serial.print("Rel_pressure:");
-	Serial.println(rel_pressure());
+	Serial.print("Target pressure: ");
+	Serial.println(target_pressure);
+
+	long pressure = rel_pressure();
+	Serial.print("pressure: ");
+	Serial.println(pressure);
 	//altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
 	fanBot.process_MIDI();
-	
-	
-	long error = target_pressure - rel_pressure();
-	Serial.print("Error:");
-	Serial.println(error);
+
+	long error = target_pressure - pressure;
+	Serial.print("Proportional: ");
+	Serial.println(error * Kp);
 	
 	if (control <= 1 && control >= 0)
 	{
 		integral += error; //integral
 	}
 	
-	Serial.print("Error Integral:");
-	Serial.println(integral);
+	Serial.print("Integral: ");
+	Serial.println(integral * Ki);
 	
 	
 	long derivative = (error - prev_error);
-	Serial.print("Derivative");
-	Serial.println(derivative);
+	Serial.print("Derivative: ");
+	Serial.println(derivative * Kd);
 	
 	
 	control = error * Kp + integral * Ki + derivative * Kd;
 	set_fan_speed(control);
-	Serial.print("Control");
+	Serial.print("Combined control: ");
 	Serial.println(control);
+	Serial.println();
 	
 	
 	prev_error = error;
@@ -236,6 +241,9 @@ unsigned int top(float frequency) {
 void pwm(float frequency, float duty_cycle) {
 	TCNT1 = 0;        // Reset timer counter
 //	pwm_off(); // Maybe necessary to avoid stuck at 5 V condition? Nope, not enough...
+
+	if (duty_cycle < 0.0) {duty_cycle = 0.0;}
+	if (duty_cycle > 1.0) {duty_cycle = 1.0;}
 	
 	unsigned int wrap_limit = top(frequency);
 	OCR1A = wrap_limit;
@@ -280,7 +288,7 @@ void note_on(int note, int velocity) {
 	switch (note) {
 			case FAN_NOTE_ON: control_enabled = 1; break;
 			case FAN_NOTE_OFF: control_enabled = 0; break;
-		// Could also derive fan speed from note velocity
+		// Could also derive fan speed or target pressure (TODO!) from note velocity
 	}
 }
 
