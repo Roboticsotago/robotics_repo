@@ -12,26 +12,69 @@ https://www.youtube.com/watch?v=H4YlL3rZaNw
 https://www.youtube.com/watch?v=taSlxgvvrBM
 */
 
-
+#include <Wire.h>
 #include <MIDIBot.h>
 MIDIBot fanBot;
+
+#define BMP085_ADDRESS 0x77  // I2C address of BMP085
+
+const unsigned char OSS = 0;  // Oversampling Setting
+
+long target_pressure = 100600;
+int control_enabled = 1;
+//TODO: final version control_enabled set to 0
+
+const float Kp = 0,
+	Ki = 0,
+	Kd = 0;
+
+long ref_pressure = 0;
+
+// Calibration values
+int ac1;
+int ac2; 
+int ac3; 
+unsigned int ac4;
+unsigned int ac5;
+unsigned int ac6;
+int b1; 
+int b2;
+int mb;
+int mc;
+int md;
+
+const int FAN_NOTE_ON = 1;
+const int FAN_NOTE_OFF = 0;
+
+// b5 is calculated in bmp085GetTemperature(...), this variable is also used in bmp085GetPressure(...)
+// so ...Temperature(...) must be called before ...Pressure(...).
+long b5; 
+
+short temperature;
+long pressure;
+
+// Use these for altitude conversions
+const float p0 = 101325;     // Pressure at sea level (Pa)
+float altitude;
 
 const int PWM_FREQUENCY = 25000; // Intel 4-wire fan spec. The Delta fan datasheet indicates 30 kHz .. 300 kHz, however.
 
 void setup() {
 //	fan_speed(0);	// Bit dodgy setting this before the setup routine, but the fan spools up for some seconds otherwise.
-//	fanBot.begin();
+	//fanBot.begin();
 	Serial.begin(9600);
+	Wire.begin();
+	bmp085Calibration();
 }
 
 int control_byte = 0;
 
 // For testing:
 int fan_speed = 0;
-const int FAN_SPEED_INCREMENT = 5,
-	MIN_SPEED = 0,
+//const int FAN_SPEED_INCREMENT = 5,
+const int  MIN_SPEED = 0,
 	MAX_SPEED = 255;
-
+/*
 void speed_increase() {
 	fan_speed += FAN_SPEED_INCREMENT ;
 	if (fan_speed > MAX_SPEED) {fan_speed = MAX_SPEED;}
@@ -43,11 +86,45 @@ void speed_decrease() {
 	if (fan_speed < MIN_SPEED) {fan_speed = MIN_SPEED;}
 	set_fan_speed(fan_speed / 255.0);
 }
-
+*/
 
 void loop() {
-//	fanBot.process_MIDI();
+	temperature = bmp085GetTemperature(bmp085ReadUT());
+	pressure = bmp085GetPressure(bmp085ReadUP());
+	altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
+	fanBot.process_MIDI();
+	
+	int pressure_diffrence = target_pressure - pressure;
+	
 
+	if (control_enabled = 1){
+		if (pressure < target_pressure){
+			set_fan_speed(1.5);
+		}	
+		if (pressure > target_pressure){
+			set_fan_speed(0.9);
+		}	
+		if (target_pressure == 0){
+			set_fan_speed(0.0);
+		}
+	}else{
+		set_fan_speed(0);
+	}
+	delay(100);	
+	//TODO: Calculate the pressure error and adjust fan speed
+
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature, DEC);
+  Serial.println(" *0.1 deg C");
+  Serial.print("Pressure: ");
+  Serial.print(pressure, DEC);
+  Serial.println(" Pa");
+  Serial.print("Altitude: ");
+  Serial.print(altitude, 2);
+  Serial.println(" m");
+  Serial.println();
+/*
 	// For testing:
 	if (Serial.available()) {
 		control_byte = Serial.read();
@@ -57,7 +134,9 @@ void loop() {
 			case '-': speed_decrease(); break;
 		}
 		Serial.println(fan_speed);
+
 	}
+*/ 
 
 }
 
@@ -109,7 +188,7 @@ byte timer_prescale_bits(int prescale) {
 
 
 // Function for computing the PWM wrap limit ("top" value) based on the desired frequency (and the CPU clock speed and prescaler setting):
-// TODO: parameterise for prescale, rather than relying on it being globally defined?
+// TO0xBCDO: parameterise for prescale, rather than relying on it being globally defined?
 unsigned int top(float frequency) {
 	return round(F_CPU / (prescale * frequency) - 1);
 }
@@ -128,14 +207,12 @@ void pwm(float frequency, float duty_cycle) {
 	TCCR1B = _BV(WGM13) | _BV(WGM12) | _BV(CS11);	
 	TCCR1B = (TCCR1B & TIMER_PRESCALE_MASK) | timer_prescale_bits(prescale);
 }
-
+0xBC
 void pwm_off() {
 	TCCR1B = (TCCR1B & TIMER_PRESCALE_MASK) | TIMER_CLK_STOP;
 	TCNT1 = 0;
 	digitalWrite(OUTPUT_PIN, LOW); // This seems to be necessary to silence it properly (sometimes gets stuck high otherwise!)
 }
-
-
 void set_fan_speed(float target) {
 	pwm(PWM_FREQUENCY, target);
 }
@@ -146,7 +223,9 @@ void self_test() {
 	delay(1000);
 	digitalWrite(MOSFET_2_PIN, LOW);
 	delay(1000);
-/*
+/*const int FAN_NOTE_ON = 1;
+const int FAN_NOTE_OFF = 0;
+
 	fan_speed(0.1);
 	delay(2000);
 	fan_speed(0.5);
@@ -159,9 +238,167 @@ void self_test() {
 }
 
 void note_on(int note, int velocity) {
-	set_fan_speed(note / 127.0);	// Could also derive fan speed from note velocity
+	switch (note) {
+			case FAN_NOTE_ON: control_enabled = 1; break;
+			case FAN_NOTE_OFF: control_enabled = 0; break;
+		// Could also derive fan speed from note velocity
+	}
 }
 
 void note_off(int note, int velocity) {
 	// Just leave fan running at current speed
+}
+
+void bmp085Calibration()
+{
+  ac1 = bmp085ReadInt(0xAA);
+  ac2 = bmp085ReadInt(0xAC);
+  ac3 = bmp085ReadInt(0xAE);
+  ac4 = bmp085ReadInt(0xB0);
+  ac5 = bmp085ReadInt(0xB2);
+  ac6 = bmp085ReadInt(0xB4);
+  b1 = bmp085ReadInt(0xB6);
+  b2 = bmp085ReadInt(0xB8);
+  mb = bmp085ReadInt(0xBA);
+  mc = bmp085ReadInt(0xBC);
+  md = bmp085ReadInt(0xBE);
+}
+
+// Calculate temperature given ut.
+// Value returned will be in units of 0.1 deg C
+short bmp085GetTemperature(unsigned int ut)
+{
+  long x1, x2;
+  
+  x1 = (((long)ut - (long)ac6)*(long)ac5) >> 15;
+  x2 = ((long)mc << 11)/(x1 + md);
+  b5 = x1 + x2;
+
+  return ((b5 + 8)>>4);  
+}
+
+// Calculate pressure given up
+// calibration values must be known
+// b5 is also required so bmp085GetTemperature(...) must be called first.
+// Value returned will be pressure in units of Pa.
+long bmp085GetPressure(unsigned long up)
+{
+  long x1, x2, x3, b3, b6, p;
+  unsigned long b4, b7;
+  
+  b6 = b5 - 4000;
+  // Calculate B3
+  x1 = (b2 * (b6 * b6)>>12)>>11;
+  x2 = (ac2 * b6)>>11;
+  x3 = x1 + x2;
+  b3 = (((((long)ac1)*4 + x3)<<OSS) + 2)>>2;
+  
+  // Calculate B4
+  x1 = (ac3 * b6)>>13;
+  x2 = (b1 * ((b6 * b6)>>12))>>16;
+  x3 = ((x1 + x2) + 2)>>2;
+  b4 = (ac4 * (unsigned long)(x3 + 32768))>>15;
+  
+  b7 = ((unsigned long)(up - b3) * (50000>>OSS));
+  if (b7 < 0x80000000)
+    p = (b7<<1)/b4;
+  else
+    p = (b7/b4)<<1;
+    
+  x1 = (p>>8) * (p>>8);
+  x1 = (x1 * 3038)>>16;
+  x2 = (-7357 * p)>>16;
+  p += (x1 + x2 + 3791)>>4;
+  
+  return p;
+}
+
+// Read 1 byte from the BMP085 at 'address'
+char bmp085Read(unsigned char address)
+{
+  unsigned char data;
+  
+  Wire.beginTransmission(BMP085_ADDRESS);
+  Wire.write(address);
+  Wire.endTransmission();
+  
+  Wire.requestFrom(BMP085_ADDRESS, 1);
+  while(!Wire.available())
+    ;
+    
+  return Wire.read();
+}
+
+// Read 2 bytes from the BMP085
+// First byte will be from 'address'
+// Second byte will be from 'address'+1
+int bmp085ReadInt(unsigned char address)
+{
+  unsigned char msb, lsb;
+  
+  Wire.beginTransmission(BMP085_ADDRESS);
+  Wire.write(address);
+  Wire.endTransmission();
+  
+  Wire.requestFrom(BMP085_ADDRESS, 2);
+  while(Wire.available()<2)
+    ;
+  msb = Wire.read();
+  lsb = Wire.read();
+  
+  return (int) msb<<8 | lsb;
+}
+
+// Read the uncompensated temperature value
+unsigned int bmp085ReadUT()
+{
+  unsigned int ut;
+  
+  // Write 0x2E into Register 0xF4
+  // This requests a temperature reading
+  Wire.beginTransmission(BMP085_ADDRESS);
+  Wire.write(0xF4);
+  Wire.write(0x2E);
+  Wire.endTransmission();
+  
+  // Wait at least 4.5ms
+  delay(5);
+  
+  // Read two bytes from registers 0xF6 and 0xF7
+  ut = bmp085ReadInt(0xF6);
+  return ut;
+}
+
+// Read the uncompensated pressure value
+unsigned long bmp085ReadUP()
+{
+  unsigned char msb, lsb, xlsb;
+  unsigned long up = 0;
+  
+  // Write 0x34+(OSS<<6) into register 0xF4
+  // Request a pressure reading w/ oversampling setting
+  Wire.beginTransmission(BMP085_ADDRESS);
+  Wire.write(0xF4);
+  Wire.write(0x34 + (OSS<<6));
+  Wire.endTransmission();
+  
+  // Wait for conversion, delay time dependent on OSS
+  delay(2 + (3<<OSS));
+  
+  // Read register 0xF6 (MSB), 0xF7 (LSB), and 0xF8 (XLSB)
+  Wire.beginTransmission(BMP085_ADDRESS);
+  Wire.write(0xF6);
+  Wire.endTransmission();
+  Wire.requestFrom(BMP085_ADDRESS, 3);
+  
+  // Wait for data to become available
+  while(Wire.available() < 3)
+    ;
+  msb = Wire.read();
+  lsb = Wire.read();
+  xlsb = Wire.read();
+  
+  up = (((unsigned long) msb << 16) | ((unsigned long) lsb << 8) | (unsigned long) xlsb) >> (8-OSS);
+  
+  return up;
 }
