@@ -13,8 +13,6 @@ Servo
 	cymbal_servo
 ;
 
-int pos = 0;    // variable to store the servo position
-
 const int BASS_DRUM_NOTE = 36;
 const int BASS_DRUM_MIN = 30;
 const int BASS_DRUM_MAX = 12;
@@ -32,11 +30,13 @@ const int CYMBAL_DELAY = 100;
 
 
 // Timers for asynchronous release of drum hits:
+
 Timer *bass_drum_timer = new Timer(BASS_DRUM_DELAY, &bass_drum_release, 1);
 Timer *snare_drum_timer = new Timer(SNARE_DRUM_DELAY, &snare_drum_release, 1);
 Timer *cymbal_timer = new Timer(CYMBAL_DELAY, &cymbal_release, 1);
 
 // Separate functions for hit and release for each drum:
+
 void bass_drum_hit() {
 	bass_drum_servo.write(BASS_DRUM_MAX);
 	bass_drum_timer->Start();
@@ -80,7 +80,7 @@ void setup()
 	snare_drum_servo.attach(SERVO_2_PIN);
 	cymbal_servo.attach(SERVO_3_PIN);
 
-	// Set initial position to _MIN values
+	// Move motors to starting positions
 	bass_drum_servo.write(BASS_DRUM_MIN);
 	snare_drum_servo.write(SNARE_DRUM_MIN);
 	cymbal_servo.write(CYMBAL_MIN);
