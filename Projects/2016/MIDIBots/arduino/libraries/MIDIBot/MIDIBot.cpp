@@ -45,9 +45,9 @@ MIDIBot::MIDIBot()
 }
 
 void MIDIBot::begin(){
-	delay(1000);
+	delay(250);
 	test_MIDI_channel();
-	delay(5000);
+	delay(1500);
 	// self_test();
 	flash(100, 100);
 	Serial.begin(SERIAL_SPEED);

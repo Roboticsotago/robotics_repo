@@ -1,0 +1,33 @@
+Tune ukulele to A-D-D-A?  A-D-F#-B?
+
+We Will Rock You (Queen, 1977), 81 BPM, about 0:35
+	DrumBot intro
+	SynthBot for vocal melody
+	PercussionBot too?
+	UkeBot?
+	Actions: stomp and clap as at regionals
+	Originally in E
+
+Smoke on the Water (Deep Purple, 1972), 112 BPM, about 0:35
+	UkeBot sliding chords, solo intro
+	PercussionBot could provide the hihat effect using the shaker
+	DrumBot joins in with snare and then full drumbeat
+	SynthBot then provides the bass
+	Probably abbreviate a little from the original: 1x Uke, 1x with shaker and snare, then 2x with full drums and synth bass
+	Actions: air guitar?
+	Would sound good in A if Rock You was in E, but pretty much has to be in open uke key, i.e. D
+
+"Fuer Elise" (Bagatelle No. 25 in A minor, Beethoven, 1810), also about 0:35!
+	UkeBot could play a simplified version of the melody
+	SynthBot could play the accompaniment and fill in notes that UkeBot can't reach
+	perhaps just a 30-second snippet, with the well-known A/B/A section
+	Actions: ballet dance with pirouettes? This is a popular tune for music boxes.
+	A in the original has to map to open uke note
+	Slide positions are programmed with C being the lowest note, so transpose up 3 semitones from the original.
+
+A percussion solo?  Could also showcase LightingBot in sync.
+	Actions: air drums
+
+A finale?  Some sort of punchline might be nice, like the single cymbal crash at the end of the regional performance.
+
+Trololo song?

@@ -17,6 +17,7 @@ Servo
 	drum_servo
 ;
 
+
 // TODO: Unused? Remove if so.
 int pos = 0;    // variable to store the servo position
 
@@ -48,6 +49,12 @@ const int DRUM_DELAY = 100;
 // Checked!
 
 
+// Simple on/off motor for rattle:
+const int RATTLE_PIN = MOSFET_PWM_PIN;
+const int RATTLE_NOTE = 43;
+const int RATTLE_SPEED = 255;
+
+
 // Timers for asynchronous release of drum hits:
 Timer *triangle_timer = new Timer(TRIANGLE_DELAY, &triangle_release, 1);
 //Timer *shaker_l_timer = new Timer(SHAKER_L_DELAY, &shaker_l_release, 1);
@@ -77,17 +84,28 @@ void triangle_release() {triangle_servo.write(TRIANGLE_MIN);}
 //void   shaker_release() {  shaker_servo.write(SHAKER_MIN);}
 void     drum_release() {   drum_servo.write(DRUM_MIN);}
 
+//void rattle_start() {digitalWrite(RATTLE_PIN, HIGH);}
+//void rattle_stop()  {digitalWrite(RATTLE_PIN, LOW);}
+// Could also analogWrite() if full-speed not required.
+void rattle_start() {analogWrite(RATTLE_PIN, RATTLE_SPEED);}
+void rattle_stop()  {analogWrite(RATTLE_PIN, 0);}
+
 void note_on(int note, int velocity) {
 	switch (note) {
 		case TRIANGLE_NOTE: triangle_hit(); break;
-		case SHAKER_L_NOTE:   shaker_l_hit();   break;
-		case SHAKER_R_NOTE:   shaker_r_hit();   break;
+		case SHAKER_L_NOTE: shaker_l_hit(); break;
+		case SHAKER_R_NOTE: shaker_r_hit(); break;
 		case DRUM_NOTE:     drum_hit();     break;
+		case RATTLE_NOTE:   rattle_start(); break;
 	}					
 }
 
 void note_off(int note, int velocity) {
 	// Nothing to do for percussion!
+	// Oh, except maybe the fan/rattle thing
+	switch (note) {
+		case RATTLE_NOTE: rattle_stop(); break;
+	}
 }
 
 void test_servo() {
@@ -98,9 +116,15 @@ void test_servo() {
 }
 
 void self_test() {
+	digitalWrite(LED_PIN, HIGH);
 	triangle_hit();
 	shaker_r_hit();
 	drum_hit();
+	rattle_start();
+	delay(1000);
+	rattle_stop();
+	// And rattle? Tricky, cos we'd need to schedule an OFF event for it somehow..
+	digitalWrite(LED_PIN, LOW);
 }
 
 void setup()

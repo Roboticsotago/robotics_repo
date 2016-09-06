@@ -2,16 +2,38 @@
 
 National event is in Auckland on Saturday, September 10 (entries close Friday, August 26).  Some things to work on between now and then:
 
-[ ] Refactor the firmware programs to use our MIDIBot library:
+[ ] Test the spare PSUs (power supply units) in case they're needed
+
+[ ] Double-check latency settings for the bots that need it
+
+[ ] Check that the latest code compiles and runs correctly, and that it's all in the repository and pushed to github
+	This will be very important if we have to make last-minute code changes at the event!
+
+[ ] Sequence the music and lighting in Rosegarden!
+	See Music.txt for suggestions for the medley
+	[ ] Check latency (delay) setting for each track. Parts for one channel might need to be split across multiple tracks, e.g. for PercussionBot's shaker, which has more delay I think.
+
+[Y] Refactor the firmware programs to use our MIDIBot library:
 	[Y] UkeBot
 	[Y] LightingBot
 	[Y] PercussionBot
 	[Y] DrumBot
 	[Y] SynthBot
+
 [ ] Tweak lighting on individual bots (placement, colour, fading)
+	Maybe balloon idea? Especially if we can get some more of those 12 V LED modules from Jaycar
+
+[ ] Fix bug in conditionally-compiled code for the ATmega1280/2560 in programs that use custom PWM control (comma should be semicolon)
+	We're only using one Mega (for FanBot) but just in case...
+[ ] Also, the custom PWM code doesn't correctly handle a duty cycle of 0, it seems - on the oscilloscope on the FanBot firmware test, a setting of 0 still gives a narrow pulse.
+
 
 UkeBot:
-	[ ] Slide mechanism for UkeBot (stepper motor)
+	[Y] Cut off excess board behind tuning pegs for easier access.
+	[ ] Upgrade tuners to geared ones?
+	[Y] Reduce friction in slide guideway: reshape a little, rub wax into wood.
+	[Y] Slide mechanism for UkeBot (stepper motor)
+		In the end we used a servo motor and a linkage
 
 DrumBot:
 	[ ] Get a proper snare drum for DrumBot (or adapt existing one)
@@ -19,21 +41,35 @@ DrumBot:
 PercussionBot:
 	[Y] Troubleshoot PercussionBot
 		The shield was not properly seated, and digital pins 10 and 11 do not work properly any more (tested on oscilloscope).  With a new Arduino board it seems OK.
-	[ ] Fix backlash in triangle sriker
-	[ ] PercussionBot: add rattle (DC motor)
-	[ ] PercussionBot: use alternating note numbers for shaker movement
+		I think the old board is more fried than just those two pins - it's been getting very hot, both in the power circuits and the main microcontroller chip it seems. Better not use it!
+	[ ] Fix backlash in triangle striker
+	[ ] Fix resonance in triangle mount
+	[ ] PercussionBot: add rattle (DC motor - fan with blade striker?)
+	[ ] Tweak latencies
+	[Y] PercussionBot: use alternating note numbers for shaker movement
 
 LightingBot:
 	[Y] Finalise firmware for LightingBot to include driving the RGB lighting strip(s), maybe look at MIDI CC messages
 		Works fine with MIDI note messages; don't bother with MIDI CC for now.
 	[ ] Laser-cut logo
 
-[ ] Make custom Molex power wiring?
+FanBot:
+	[ ] Solder a wire onto the shield for 3.3 V supply for the BMP085 pressure sensor
+	[ ] Add break-out headers to the stripboard for the pressure sensor (already have ground, but will need 3.3 V supply, and SDA and SCL for I2C.  These will go to pins 20 and 21 on the Mega.
+	[Y] Wire up stripboard breakout for the fan. There's no connection yet between the tach output and the Mega, but everything else (including pull-up resistor) is there.
+	[Y] Solder on a wire from pin 12 on the shield, since that's the pin that's used for custom PWM on the Mega.  This is for fan speed control, which is supposed to be ~25 kHz.
+
+[ ] Make custom Molex power wiring?  See Power.txt
 
 [ ] Air reservoir system for woodwind instruments (learn about control systems in the process)
+[ ] WhistleBot (slide whistle)
 [ ] RecorderBot. With a taped-over thumb-hole and solenoid finger-hole valves on the first four holes, we can play the important bits of the melody from "We Will Rock You".
 [ ] Harmonica? Bird Whistle? Pan Pipes?
 [ ] Could extend music to include a medley of different music. Suggestions..?
+	Uke can now play bits of the melody from Fuer Elise (perhaps duet with SynthBot)
+	Smoke on the Water?
+	Percussion section solo (funky beats, with lighting show)
 
 Chris:
 [ ] Buy a set of Chinese Arduino clones
+	No, we have enough if we use Paul Campbell's and use a Mega for the FanBot (in order to get access to the I2C pins).
