@@ -29,7 +29,7 @@ National event is in Auckland on Saturday, September 10 (entries close Friday, A
 
 
 UkeBot:
-	[ ] Cut off excess board behind tuning pegs for easier access.
+	[Y] Cut off excess board behind tuning pegs for easier access.
 	[ ] Upgrade tuners to geared ones?
 	[Y] Reduce friction in slide guideway: reshape a little, rub wax into wood.
 	[Y] Slide mechanism for UkeBot (stepper motor)
@@ -59,7 +59,7 @@ FanBot:
 	[Y] Wire up stripboard breakout for the fan. There's no connection yet between the tach output and the Mega, but everything else (including pull-up resistor) is there.
 	[Y] Solder on a wire from pin 12 on the shield, since that's the pin that's used for custom PWM on the Mega.  This is for fan speed control, which is supposed to be ~25 kHz.
 
-[ ] Make custom Molex power wiring?
+[ ] Make custom Molex power wiring?  See Power.txt
 
 [ ] Air reservoir system for woodwind instruments (learn about control systems in the process)
 [ ] WhistleBot (slide whistle)
@@ -72,3 +72,4 @@ FanBot:
 
 Chris:
 [ ] Buy a set of Chinese Arduino clones
+	No, we have enough if we use Paul Campbell's and use a Mega for the FanBot (in order to get access to the I2C pins).

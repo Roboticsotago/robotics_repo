@@ -112,6 +112,7 @@ Unassigned:
 
 TODO:
 [ ] Create a header file that defines constants for all of the above.
+[ ] For the Rev.2 boards, consider adding additional pins on the shield for the I2C SDA and SCL lines that are present on more recent Arduino boards. Will probably involve moving the D13 LED and resistor a little.
 
 --
 
