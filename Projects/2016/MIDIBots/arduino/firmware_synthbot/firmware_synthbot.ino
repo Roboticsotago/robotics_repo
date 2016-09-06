@@ -15,6 +15,9 @@ int current_note_number = 0;
 
 // Tricky low-level code from Chris for programming the PWM output for precise frequencies...
 
+// There's a good explanation of how this works here:
+// http://maxembedded.com/2011/08/avr-timers-pwm-mode-part-i/
+
 // On the Mega, we have timer1 attached to pins D11 and D12, D12 being the primary one.
 // On "ordinary" Arduinos, it's on pins 9 and 10.  On the MIDIBot shield, pin 10 is Servo 2 (middle pin).
 // Ideally we'd use the PWM MOSFET output on D6, but that uses Timer 0 and doesn't support frequency-accurate PWM, as far as I can tell.
@@ -28,7 +31,10 @@ const int OUTPUT_PIN_AUX = 9;
 #endif
 
 
-// General settings:
+// General settings first:
+
+// The prescale is applied to the CPU clock (F_CPU) by frequency division.
+// Only certain values are supported: /1, /8, /64, /256, /1024
 const int prescale = 8;
 
 // Some PWM control definitions:
