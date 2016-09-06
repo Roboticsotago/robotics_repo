@@ -4,7 +4,8 @@
 
 /*
  * TODO:
- * [ ] Fix note-playing glitch at startup (first note is a weird bleep)
+ * [ ] Fix note-playing glitch at startup (first note is a weird bleep). Is it due to calling pwm_off() at startup?  Should we always play a dummy test tone at startup?
+ * [ ] Also, even with a duty cycle of 0 it doesn't shut off completely.  This appears to explain the problem: http://stackoverflow.com/questions/23853066/how-to-achieve-zero-duty-cycle-pwm-in-avr-without-glitches
 */
 
 #include <MIDIBot.h>
@@ -19,7 +20,7 @@ int current_note_number = 0;
 // Ideally we'd use the PWM MOSFET output on D6, but that uses Timer 0 and doesn't support frequency-accurate PWM, as far as I can tell.
 // This will need an external circuit anyway to limit the current and block DC, so it's not a huge hassle to add a MOSFET circuit (with resistors and protection diode) to this as well.  It can be powered from one of the aux 12 V headers.
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-const int OUTPUT_PIN     = 12,
+const int OUTPUT_PIN     = 12;
 const int OUTPUT_PIN_AUX = 11;
 #else
 const int OUTPUT_PIN     = 10;
