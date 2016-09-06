@@ -1,0 +1,63 @@
+Beldon's PC power supply unit has four Molex connectors, so we will need both splitters and extender cables to power all the bots!
+
+PSU
+	cable
+		Molex
+		Molex
+	cable
+		Molex
+		Molex
+
+We have the following bots to power:
+	SynthBot
+	DrumBot
+	PercussionBot
+	UkeBot
+	LightingBot
+	FanBot
+	WhistleBot
+	and possibly another woodwind bot if we get time
+
+So let's say 8 bots to be powered...
+
+So, would need 4 splitters and 8 extension cables.
+
+Or, maybe we can place the bots close enough together that the splitters could connect to two adjacent robots.  Then we'd only need 4 extension cables, and would use the following arrangement:
+
+PSU
+	cable
+		Molex
+			extension
+				splitter
+					
+		Molex
+			extension
+				splitter
+					
+	cable
+		Molex
+			extension
+				splitter
+		Molex
+			extension
+				splitter
+
+
+We currently have:
+	1 extender
+	1 extender-plus-splitter.
+	3 splitters
+
+We could use terminal blocks to quickly fasten together additional cabling as required.
+
+Probably need to pick up some wire from Jaycar...
+	18 AWG is generally what's used
+	20 AWG (thinner) on some of the splitters, though
+	2U black to 1U red and 1U yellow.
+
+Jaycar shopping:
+[ ] 1 x PL0750 Molex splitter
+[ ] screw terminal strip block - maybe 10 A
+[ ] 18 AWG wire
+
+Or maybe Chris has some more spares at home that will suffice.  We could possibly  cut off some of the SATA power connectors from the power supply if required.
