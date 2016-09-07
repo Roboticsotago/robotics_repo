@@ -120,10 +120,10 @@ void self_test() {
 	triangle_hit();
 	shaker_r_hit();
 	drum_hit();
+	// And rattle? Tricky, cos we'd need to schedule an OFF event for it somehow..
 	rattle_start();
 	delay(1000);
 	rattle_stop();
-	// And rattle? Tricky, cos we'd need to schedule an OFF event for it somehow..
 	digitalWrite(LED_PIN, LOW);
 }
 
