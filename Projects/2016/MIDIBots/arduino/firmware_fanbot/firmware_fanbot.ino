@@ -12,9 +12,12 @@ https://www.youtube.com/watch?v=H4YlL3rZaNw
 https://www.youtube.com/watch?v=taSlxgvvrBM
 */
 
+#include <Servo.h> 
 #include <Wire.h>
 #include <MIDIBot.h>
 MIDIBot fanBot;
+
+Servo partyPopperServo;
 
 #define BMP085_ADDRESS 0x77  // I2C address of BMP085
 
@@ -31,6 +34,9 @@ long ref_pressure = 0;
 long integral = 0;
 long prev_error = 0;
 float control = 0;
+
+const int PARTY_POPPER_MAX = 170; 
+const int PARTY_POPPER_MIN = 40;
 
 // Calibration values
 int ac1;
@@ -63,12 +69,15 @@ const int PWM_FREQUENCY = 25000; // Intel 4-wire fan spec. The Delta fan datashe
 
 void setup() {
 //	fan_speed(0);	// Bit dodgy setting this before the setup routine, but the fan spools up for some seconds otherwise.
-	//fanBot.begin();
-	Serial.begin(9600);
+	fanBot.begin();
 	Wire.begin();
 	bmp085Calibration();
+	partyPopperServo.attach(SERVO_2_PIN);
+	partyPopperServo.write(PARTY_POPPER_MIN);
 	// NOTE: the Mega tends to output HIGH on pin 12 during programming, so we need to wait a bit for the fan to stop completely and the pressure to return to ambient before taking our initial reading.
+	digitalWrite(LED_PIN, HIGH); // Light the LED to indicate we're busy
 	delay(13000);
+	digitalWrite(LED_PIN, LOW);
 	calibrate();
 }
 
@@ -105,19 +114,20 @@ int rel_pressure(){
 } 
 
 void loop() {
-	Serial.print("Target pressure: ");
-	Serial.println(target_pressure);
+//	Serial.print("Target pressure: ");
+//	Serial.println(target_pressure);
 
 	long pressure = rel_pressure();
-	Serial.print("pressure: ");
-	Serial.println(pressure);
+	//Serial.print("pressure: ");
+	//Serial.println(pressure);
 	//altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
 	fanBot.process_MIDI();
+//	fanBot.test_blink();
 
 	// Proportional:
 	long error = target_pressure - pressure;
-	Serial.print("Proportional: ");
-	Serial.println(error * Kp);
+	//Serial.print("Proportional: ");
+	//Serial.println(error * Kp);
 	
 	if (control <= 1 && control >= 0)
 	{
@@ -125,20 +135,20 @@ void loop() {
 	}
 	
 	// Integral:
-	Serial.print("Integral: ");
-	Serial.println(integral * Ki);
+	//Serial.print("Integral: ");
+	//Serial.println(integral * Ki);
 	
 	// Derivative:
 	long derivative = (error - prev_error);
-	Serial.print("Derivative: ");
-	Serial.println(derivative * Kd);
+//	Serial.print("Derivative: ");
+//	Serial.println(derivative * Kd);
 	
 	// Combined control:
 	control = error * Kp + integral * Ki + derivative * Kd;
 	set_fan_speed(control);
-	Serial.print("Combined control: ");
-	Serial.println(control);
-	Serial.println();
+	//Serial.print("Combined control: ");
+	//Serial.println(control);
+	//Serial.println();
 	
 	
 	prev_error = error;
@@ -159,7 +169,9 @@ void loop() {
 		set_fan_speed(0);
 	}
 	*/
-	delay(300);
+	
+	// TODO: replace fixed delay with a measurement of elapsed time since the last reading, so as not to hold up MIDI or other processing.
+//	delay(300);
 
  // Serial.print("Temperature: ");
   //Serial.print(temperature, DEC);
@@ -268,14 +280,8 @@ void set_fan_speed(float target) {
 }
 
 void self_test() {
-	// Leave fan at current speed, and open and close the solenoid valve for testing...
-	digitalWrite(MOSFET_2_PIN, HIGH);
-	delay(1000);
-	digitalWrite(MOSFET_2_PIN, LOW);
-	delay(1000);
-/*const int FAN_NOTE_ON = 1;
-const int FAN_NOTE_OFF = 0;
-
+	party_popper_fire();
+/*
 	fan_speed(0.1);
 	delay(2000);
 	fan_speed(0.5);
@@ -286,17 +292,27 @@ const int FAN_NOTE_OFF = 0;
 	delay(6000);
 */
 }
+const int PARTY_POPPER_FIRE_NOTE =  3;
+const int PART_POPPER_RELEASE_NOTE= 4;
+
+void party_popper_fire() {
+	partyPopperServo.write(PARTY_POPPER_MAX);
+	digitalWrite(LED_PIN, HIGH);
+	delay(1000);
+	digitalWrite(LED_PIN, LOW);
+	partyPopperServo.write(PARTY_POPPER_MIN);
+} 
 
 void note_on(int note, int velocity) {
 	switch (note) {
 			case FAN_NOTE_ON: control_enabled = 1; break;
 			case FAN_NOTE_OFF: control_enabled = 0; break;
+			case PARTY_POPPER_FIRE_NOTE: party_popper_fire(); break;
 		// Could also derive fan speed or target pressure (TODO!) from note velocity
 	}
 }
 
 void note_off(int note, int velocity) {
-	// Just leave fan running at current speed
 }
 
 
