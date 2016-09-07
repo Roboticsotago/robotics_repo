@@ -28,7 +28,6 @@ const int CYMBAL_MIN = 60;
 const int CYMBAL_MAX = 90;	
 const int CYMBAL_DELAY = 100;
 
-
 // Timers for asynchronous release of drum hits:
 
 Timer *bass_drum_timer = new Timer(BASS_DRUM_DELAY, &bass_drum_release, 1);
@@ -40,6 +39,7 @@ Timer *cymbal_timer = new Timer(CYMBAL_DELAY, &cymbal_release, 1);
 void bass_drum_hit() {
 	bass_drum_servo.write(BASS_DRUM_MAX);
 	bass_drum_timer->Start();
+	digitalWrite(MOSFET_PWM_PIN, HIGH);
 }
 void snare_drum_hit() {
 	snare_drum_servo.write(SNARE_DRUM_MAX);
@@ -50,7 +50,7 @@ void cymbal_hit() {
 	cymbal_timer->Start();
 }
 
-void bass_drum_release() {bass_drum_servo.write(BASS_DRUM_MIN);}
+void bass_drum_release() {bass_drum_servo.write(BASS_DRUM_MIN); digitalWrite(MOSFET_PWM_PIN, LOW);}
 void snare_drum_release() {snare_drum_servo.write(SNARE_DRUM_MIN);}
 void cymbal_release() {cymbal_servo.write(CYMBAL_MIN);}
 
