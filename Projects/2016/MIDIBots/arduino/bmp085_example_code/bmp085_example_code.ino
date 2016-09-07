@@ -47,6 +47,7 @@ float altitude;
 
 void setup()
 {
+  pinMode(12, OUTPUT); digitalWrite(12, LOW);
   Serial.begin(9600);
   Wire.begin();
   bmp085Calibration();
