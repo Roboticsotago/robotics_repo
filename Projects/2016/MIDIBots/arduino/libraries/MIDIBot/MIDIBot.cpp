@@ -6,8 +6,12 @@
 #include "Arduino.h"
 #include "MIDIBot.h"
 
-// Constructor:
-// At least some of the setup routine will be standard, but some firmware-specific setup code will also be likely.  That can be done in the usual setup().
+// Constructor method:
+// This performs most of the low-level setup.  Much of this will be standard, but some firmware-specific setup code will also be likely.  That can be done in the usual setup() in the main sketch.
+// Some setup functions cannot be done in the constructor (notably Serial.begin() and anything that uses delay()).  Thus there is a separate begin() method that should be called from the main sketch during setup().
+// self_test() will need to be implemented by the sketch using this library.
+// Ditto note_on(), note_off().
+
 MIDIBot::MIDIBot()
 {
 
@@ -34,24 +38,10 @@ MIDIBot::MIDIBot()
 	read_MIDI_channel();
 //	flash_number(_MIDI_channel + 1);	// This seems to be the cause of the problems with using this as a library!  I suspect it's because it uses delay() internally.
 	
-	// Set up MIDI communication:
-	// TODO: might be a good idea to introduce a delay here before opening Serial to make reprogramming a bit less unreliable.
-//	delay(6000);	// No, that also causes things to fail!  Maybe anything calling delay() in the constructor will cause the sketch to hang.
-
-	// NOTE: Do not call Serial.begin() in the constructor either! It doesn't hang, but serial communication will not work subsequently.
-	//Serial.begin(31250);
-//	Serial.begin(9600);
+	// NOTE: MIDI serial communication must be set up elsewhere, in the ::begin() method.  If it's done here, the program won't hang, but serial communication will not work!
+	// Also note that use of the delay() function in this constructor will cause the program to hang!
 
 	clearData();
-	
-	// Attach interrupt for self-test button and function:
-//	attachInterrupt(digitalPinToInterrupt(SELF_TEST_PIN), self_test, FALLING);
-	// Only available on certain pins?  Just poll in main loop instead.
-	
-	// Flash to indicate startup/ready:
-//	flash(50, 200); flash(50, 400); flash(50, 200); flash(400, 0);
-	// Don't bother if flashing MIDI channel - it's confusing!
-
 }
 
 void MIDIBot::begin(){
@@ -63,6 +53,7 @@ void MIDIBot::begin(){
 	Serial.begin(SERIAL_SPEED);
 }
 
+// erase the MIDI data buffer
 void MIDIBot::clearData(){
 	_dataByte[0] = 0;
 	_dataByte[1] = 0;
@@ -110,11 +101,7 @@ void MIDIBot::read_MIDI_channel() {
 }
 
 
-// self_test() will need to be implemented by the sketch using this library.
-// Ditto note_on(), note_off().
-
-
-// The process_MIDI() function performs receiving incoming MIDI data via serial, recognising note-on and note-off messages (and, perhaps later on, things like Control Change messages), and calls the note_on(pitch, velocity), note_off(pitch, velocity) functions defined by the calling sketch.
+// The process_MIDI() function performs receiving incoming MIDI data via serial, recognising note-on and note-off messages (and, perhaps later on, things like Control Change messages), and calls the note_on(pitch, velocity), note_off(pitch, velocity) functions defined by the calling sketch.  It should be called repeatedly by the loop() function in the main sketch.
 // It also handles calling the self_test() function (defined by the sketch using this library) if the self-test button is pressed.  That's done here so that no extra code is required in the calling sketch for this to work.
 // TODO: Perhaps define constants, such as NOTE_ON=0x90 (or 0x9)?
 // TODO: copy _dataByte[0..1] to meaningfully-named variables (pitch/note, velocity) for better readability? Though it's not really necessary, and possibly inefficient.
@@ -125,7 +112,7 @@ void MIDIBot::process_MIDI() {
 	}
 
 	if (Serial.available() > 0) {
-		// flash(20,0); // Warning: blocks!
+		// flash(20,0); // Consider enabling this for debugging. Warning: blocks!
 		int data = Serial.read();
 		if (data > 127) {
 			// It's a status byte. Store it for future reference.
@@ -172,12 +159,6 @@ void MIDIBot::test_button() {
 void MIDIBot::test_MIDI_channel() {
 	read_MIDI_channel();
 	flash_number(_MIDI_channel + 1);
-/*
-	Serial.print(_MIDI_channel);
-	Serial.print(" (");
-	Serial.print(_MIDI_channel + 1);
-	Serial.println(")");
-*/
 }
 
 
@@ -197,9 +178,9 @@ void test_MOSFETs() {
 
 
 void test_MOSFETs_cycle() {
-	digitalWrite(MOSFET_PWM_PIN, HIGH);
+	analogWrite(MOSFET_PWM_PIN, 64);
 	delay(250);
-	digitalWrite(MOSFET_PWM_PIN, LOW);
+	analogWrite(MOSFET_PWM_PIN, 0);
 	
 	digitalWrite(MOSFET_2_PIN, HIGH);
 	delay(250);

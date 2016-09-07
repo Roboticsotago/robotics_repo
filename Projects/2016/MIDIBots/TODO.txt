@@ -3,6 +3,7 @@
 National event is in Auckland on Saturday, September 10 (entries close Friday, August 26).  Some things to work on between now and then:
 
 [ ] Test the spare PSUs (power supply units) in case they're needed
+[ ] Make custom Molex power wiring?  See Power.txt
 
 [ ] Double-check latency settings for the bots that need it
 
@@ -11,7 +12,7 @@ National event is in Auckland on Saturday, September 10 (entries close Friday, A
 
 [ ] Sequence the music and lighting in Rosegarden!
 	See Music.txt for suggestions for the medley
-	[ ] Check latency (delay) setting for each track. Parts for one channel might need to be split across multiple tracks, e.g. for PercussionBot's shaker, which has more delay I think.
+	[ ] Check latency (delay) setting for each segment. Parts for one channel might need to be split across multiple tracks or segments, e.g. for PercussionBot's shaker, which has more delay I think.
 
 [Y] Refactor the firmware programs to use our MIDIBot library:
 	[Y] UkeBot
@@ -21,22 +22,26 @@ National event is in Auckland on Saturday, September 10 (entries close Friday, A
 	[Y] SynthBot
 
 [ ] Tweak lighting on individual bots (placement, colour, fading)
-	Maybe balloon idea? Especially if we can get some more of those 12 V LED modules from Jaycar
+	Maybe illuminated balloon idea? They look great using the 12 V LED modules from Jaycar
+	SynthBot
+	PercussionBot
+	LightingBot?
 
 [ ] Fix bug in conditionally-compiled code for the ATmega1280/2560 in programs that use custom PWM control (comma should be semicolon)
 	We're only using one Mega (for FanBot) but just in case...
 [ ] Also, the custom PWM code doesn't correctly handle a duty cycle of 0, it seems - on the oscilloscope on the FanBot firmware test, a setting of 0 still gives a narrow pulse.
-
+	Try phase-correct PWM. See:
+	http://stackoverflow.com/questions/23853066/how-to-achieve-zero-duty-cycle-pwm-in-avr-without-glitches
 
 UkeBot:
 	[Y] Cut off excess board behind tuning pegs for easier access.
-	[ ] Upgrade tuners to geared ones?
+	[N] Upgrade tuners to geared ones?  Maybe not worth the expense.  Also, with some force, they're more stable now.
 	[Y] Reduce friction in slide guideway: reshape a little, rub wax into wood.
 	[Y] Slide mechanism for UkeBot (stepper motor)
 		In the end we used a servo motor and a linkage
 
 DrumBot:
-	[ ] Get a proper snare drum for DrumBot (or adapt existing one)
+	[ ] Get a proper snare drum for DrumBot (or adapt existing one)?
 
 PercussionBot:
 	[Y] Troubleshoot PercussionBot
@@ -44,24 +49,22 @@ PercussionBot:
 		I think the old board is more fried than just those two pins - it's been getting very hot, both in the power circuits and the main microcontroller chip it seems. Better not use it!
 	[ ] Fix backlash in triangle striker
 	[ ] Fix resonance in triangle mount
-	[ ] PercussionBot: add rattle (DC motor - fan with blade striker?)
-	[ ] Tweak latencies
-	[Y] PercussionBot: use alternating note numbers for shaker movement
+	[ ] add rattle (DC motor - fan with blade striker?)
+	[ ] Tweak latencies per instrument
+	[Y] use alternating note numbers for shaker movement
 
 LightingBot:
 	[Y] Finalise firmware for LightingBot to include driving the RGB lighting strip(s), maybe look at MIDI CC messages
 		Works fine with MIDI note messages; don't bother with MIDI CC for now.
-	[ ] Laser-cut logo
+	[Y] Laser-cut logo (Henry)
 
 FanBot:
-	[ ] Solder a wire onto the shield for 3.3 V supply for the BMP085 pressure sensor
-	[ ] Add break-out headers to the stripboard for the pressure sensor (already have ground, but will need 3.3 V supply, and SDA and SCL for I2C.  These will go to pins 20 and 21 on the Mega.
+	[Y] Solder a wire onto the shield for 3.3 V supply for the BMP085 pressure sensor
+	[N] Add break-out headers to the stripboard for the pressure sensor (already have ground, but will need 3.3 V supply, and SDA and SCL for I2C.  These will go to pins 20 and 21 on the Mega.
 	[Y] Wire up stripboard breakout for the fan. There's no connection yet between the tach output and the Mega, but everything else (including pull-up resistor) is there.
 	[Y] Solder on a wire from pin 12 on the shield, since that's the pin that's used for custom PWM on the Mega.  This is for fan speed control, which is supposed to be ~25 kHz.
 
-[ ] Make custom Molex power wiring?  See Power.txt
-
-[ ] Air reservoir system for woodwind instruments (learn about control systems in the process)
+[Y] Air reservoir system for woodwind instruments (learn about control systems in the process)
 [ ] WhistleBot (slide whistle)
 [ ] RecorderBot. With a taped-over thumb-hole and solenoid finger-hole valves on the first four holes, we can play the important bits of the melody from "We Will Rock You".
 [ ] Harmonica? Bird Whistle? Pan Pipes?
@@ -71,5 +74,5 @@ FanBot:
 	Percussion section solo (funky beats, with lighting show)
 
 Chris:
-[ ] Buy a set of Chinese Arduino clones
+[N] Buy a set of Chinese Arduino clones
 	No, we have enough if we use Paul Campbell's and use a Mega for the FanBot (in order to get access to the I2C pins).

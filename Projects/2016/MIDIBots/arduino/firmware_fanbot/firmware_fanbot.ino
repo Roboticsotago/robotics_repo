@@ -114,24 +114,26 @@ void loop() {
 	//altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
 	fanBot.process_MIDI();
 
+	// Proportional:
 	long error = target_pressure - pressure;
 	Serial.print("Proportional: ");
 	Serial.println(error * Kp);
 	
 	if (control <= 1 && control >= 0)
 	{
-		integral += error; //integral
+		integral += error;
 	}
 	
+	// Integral:
 	Serial.print("Integral: ");
 	Serial.println(integral * Ki);
 	
-	
+	// Derivative:
 	long derivative = (error - prev_error);
 	Serial.print("Derivative: ");
 	Serial.println(derivative * Kd);
 	
-	
+	// Combined control:
 	control = error * Kp + integral * Ki + derivative * Kd;
 	set_fan_speed(control);
 	Serial.print("Combined control: ");
@@ -141,6 +143,7 @@ void loop() {
 	
 	prev_error = error;
 	
+	// Original, simple "bang-bang" control logic:
 	/*
 	if (control_enabled = 1){
 		if (pressure < target_pressure){
@@ -156,9 +159,7 @@ void loop() {
 		set_fan_speed(0);
 	}
 	*/
-	delay(300);	
-	//TODO: Calculate the pressure error and adjust fan speed
-
+	delay(300);
 
  // Serial.print("Temperature: ");
   //Serial.print(temperature, DEC);
@@ -186,6 +187,8 @@ void loop() {
 
 
 // Tricky low-level code from Chris for programming the PWM output for precise frequencies...
+// Delta fan speed control requires a PWM signal with a base frequency of about 25 kHz.
+// The standard Arduino PWM runs much lower than this, so we have to program it directly using the AVR control registers.
 
 // On the Mega, we have timer1 attached to pins D11 and D12, D12 being the primary one.
 // On "ordinary" Arduinos, it's on pins 9 and 10.  On the MIDIBot shield, pin 10 is Servo 2 (middle pin).
@@ -295,6 +298,9 @@ void note_on(int note, int velocity) {
 void note_off(int note, int velocity) {
 	// Just leave fan running at current speed
 }
+
+
+// Code below taken from example demo code from the Sparkfun
 
 void bmp085Calibration()
 {

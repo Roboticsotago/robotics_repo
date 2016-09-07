@@ -16,7 +16,7 @@ const int serial_speed = 9600;
 // On the Mega, we have timer1 attached to pins D11 and D12, D12 being the primary one.
 // On "ordinary" Arduinos, it's on pins 9 and 10.
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-const int OUTPUT_PIN     = 12,
+const int OUTPUT_PIN     = 12;
 const int OUTPUT_PIN_AUX = 11;
 #else
 const int OUTPUT_PIN     = 10;

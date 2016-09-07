@@ -42,11 +42,9 @@ void loop() {
 */
 
 
-// NOTE:
-//  - Due to apparent problems with calling delay() inside a constructor, you can't flash the MIDI channel number on the LED automatically at startup (though you can read the MIDI channel DIP switches).  Therefore, call yourMIDIBot.test_MIDI_channel() it your setup() function if you want this to happen.
+// NOTE: Due to apparent problems with calling delay() inside a constructor, you can't flash the MIDI channel number on the LED automatically at startup (though you can read the MIDI channel DIP switches).  Therefore, call yourMIDIBot.test_MIDI_channel() it your setup() function if you want this to happen.
 
 // TODO:
-// [ ] Have the use of Serial be generic?  Or maybe it's OK to hardcode to use the hardware serial always, since we're dealing with hardware shields.
 // [ ] Convert to camelCase throughout for function names?  It's recommended in the Arduino API style guide.  Also member variables?
 // [ ] Rename _i to something more meaningful, e.g. _dataByteIndex or _MIDIBufferIndex
 // [ ] #define constants?  That seems to be the norm with .h files, and they'd only be defined if the header were included, and might save on processor registers?
@@ -60,7 +58,6 @@ void loop() {
 // Define pin mappings for the MIDIBot shield:
 // For a library, should these be global symbols or defined within the class?
 // Also, how do we make the class a singleton?
-
 // Should these be consts or #defines?
 const int
 	MIDI_1x_PIN = 2,
@@ -81,7 +78,7 @@ const int
 	
 ;
 
-// Empty prototypes for additional functions that the sketch using this library should define (bot-specific functionality):
+// Empty prototypes for additional functions that the sketch using this library should define (for bot-specific functionality):
 // (Do these need to be declared "extern" as well?)
 void note_on(int note, int velocity);
 void note_off(int note, int velocity);
