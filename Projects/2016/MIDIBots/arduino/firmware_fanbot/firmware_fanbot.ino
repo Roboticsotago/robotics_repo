@@ -21,17 +21,27 @@ Servo partyPopperServo;
 
 #define BMP085_ADDRESS 0x77  // I2C address of BMP085
 
+//#define DEBUG 1
+#define NO_PID 1
+	
 const unsigned char OSS = 0;  // Oversampling Setting
 
-long target_pressure = 150; // Pa relative to initial reference reading
-int control_enabled = 1;	// TODO: final version control_enabled set to 0, to be enabled by MIDI messgge
+long target_pressure = 250; // Pa relative to initial reference reading
+
+#ifdef DEBUG 
+int control_enabled = 1;
+#else
+int control_enabled = 0;
+#endif
+
+unsigned long last_micros = 0;
 
 const float Kp = 0.001,
-	Ki = 0.0003,
-	Kd = 0.0001;
+	Ki = 0.0003 * 300000, //original constant were for 300ms sampling period //0.0003
+	Kd = 0.0001 * 300000; //0.0001
 
 long ref_pressure = 0;
-long integral = 0;
+float integral = 0;
 long prev_error = 0;
 float control = 0;
 
@@ -51,8 +61,16 @@ int mb;
 int mc;
 int md;
 
+
+// MIDI note mapping:
 const int FAN_NOTE_ON = 1;
 const int FAN_NOTE_OFF = 0;
+const int FAN_UP_NOTE = 5;
+const int FAN_DOWN_NOTE = 6;
+
+const int PARTY_POPPER_FIRE_NOTE =  3;
+const int PART_POPPER_RELEASE_NOTE= 4;
+
 
 // b5 is calculated in bmp085GetTemperature(...), this variable is also used in bmp085GetPressure(...)
 // so ...Temperature(...) must be called before ...Pressure(...).
@@ -68,17 +86,30 @@ float altitude;
 const int PWM_FREQUENCY = 25000; // Intel 4-wire fan spec. The Delta fan datasheet indicates 30 kHz .. 300 kHz, however.
 
 void setup() {
-//	fan_speed(0);	// Bit dodgy setting this before the setup routine, but the fan spools up for some seconds otherwise.
+#ifdef DEBUG 
+	Serial.begin(115200);
+#else
 	fanBot.begin();
+#endif
+
+//	fan_speed(0);	// Bit dodgy setting this before the setup routine, but the fan spools up for some seconds otherwise.
 	Wire.begin();
 	bmp085Calibration();
-	partyPopperServo.attach(SERVO_2_PIN);
+	partyPopperServo.attach(SERVO_3_PIN);
 	partyPopperServo.write(PARTY_POPPER_MIN);
+#ifdef NOPID
+	// Start up immediately
+#else
 	// NOTE: the Mega tends to output HIGH on pin 12 during programming, so we need to wait a bit for the fan to stop completely and the pressure to return to ambient before taking our initial reading.
 	digitalWrite(LED_PIN, HIGH); // Light the LED to indicate we're busy
 	delay(13000);
 	digitalWrite(LED_PIN, LOW);
+#endif
+
 	calibrate();
+	// Gah, can't get fan speed control to work when using MIDI input. Works OK using plain serial?! Dunno....
+//	set_fan_speed(0.5);
+	party_popper_fire();
 }
 
 int control_byte = 0;
@@ -113,88 +144,79 @@ int rel_pressure(){
 	return bmp085GetPressure(bmp085ReadUP()) - ref_pressure;
 } 
 
-void loop() {
-//	Serial.print("Target pressure: ");
-//	Serial.println(target_pressure);
+unsigned long elapsed_micros(){
+	unsigned long current_micros =  micros();
+	unsigned long micros_difference = current_micros - last_micros;
+	last_micros = current_micros;
+	return micros_difference;
+}
 
+void loop() {
+#ifdef NOPID
+	// Fan speed controlled directly by MIDI note-on velocity
+#else
+	unsigned long delta_t = elapsed_micros();
+	
 	long pressure = rel_pressure();
-	//Serial.print("pressure: ");
-	//Serial.println(pressure);
+
 	//altitude = (float)44330 * (1 - pow(((float) pressure/p0), 0.190295));
-	fanBot.process_MIDI();
-//	fanBot.test_blink();
+	//fanBot.test_blink();
 
 	// Proportional:
 	long error = target_pressure - pressure;
-	//Serial.print("Proportional: ");
-	//Serial.println(error * Kp);
-	
-	if (control <= 1 && control >= 0)
-	{
-		integral += error;
-	}
 	
 	// Integral:
-	//Serial.print("Integral: ");
-	//Serial.println(integral * Ki);
+	if (control <= 1 && control >= 0)
+	{
+		integral += error / float(delta_t) ;
+	}
 	
 	// Derivative:
-	long derivative = (error - prev_error);
-//	Serial.print("Derivative: ");
-//	Serial.println(derivative * Kd);
+	float derivative = (error - prev_error ) / float(delta_t);
 	
 	// Combined control:
-	control = error * Kp + integral * Ki + derivative * Kd;
-	set_fan_speed(control);
-	//Serial.print("Combined control: ");
-	//Serial.println(control);
-	//Serial.println();
+	if(control_enabled){ 
+		
+		control = error * Kp + integral * Ki + derivative * Kd;
+		set_fan_speed(control); //control
+	} else{
+		set_fan_speed(0);
+	}
 	
 	
 	prev_error = error;
-	
-	// Original, simple "bang-bang" control logic:
-	/*
-	if (control_enabled = 1){
-		if (pressure < target_pressure){
-			set_fan_speed(1.5);
-		}	
-		if (pressure > target_pressure){
-			set_fan_speed(0.9);
-		}	
-		if (target_pressure == 0){
-			set_fan_speed(0.0);
-		}
-	}else{
-		set_fan_speed(0);
-	}
-	*/
-	
-	// TODO: replace fixed delay with a measurement of elapsed time since the last reading, so as not to hold up MIDI or other processing.
-//	delay(300);
+#endif
 
- // Serial.print("Temperature: ");
-  //Serial.print(temperature, DEC);
-  //Serial.println(" *0.1 deg C");
-  
-  //Serial.print("Altitude: ");
- // Serial.print(altitude, 2);
- // Serial.println(" m");
- // Serial.println();
-/*
-	// For testing:
+#ifdef DEBUG 
 	if (Serial.available()) {
-		control_byte = Serial.read();
+		int control_byte = Serial.read();
 		// TODO: error-checking?
 		switch (control_byte) {
-			case '+': speed_increase(); break;
-			case '-': speed_decrease(); break;
+			case '+': target_pressure_increase(); break;
+			case '=': target_pressure_increase(); break;
+			case '-': target_pressure_decrease(); break;
+			case '_': target_pressure_decrease(); break;
 		}
-		Serial.println(fan_speed);
-
 	}
-*/ 
-
+	Serial.print("Target pressure: ");
+	Serial.println(target_pressure);
+	Serial.print("pressure: ");
+	Serial.println(pressure);
+	Serial.print("Proportional: ");
+	Serial.println(error * Kp, 6);
+	Serial.print("Integral: ");
+	Serial.println(integral * Ki, 6);
+	Serial.print("Derivative: ");
+	Serial.println(derivative * Kd, 6);
+	Serial.print("Combined control: ");
+	Serial.println(control, 6);
+	Serial.println("Elapsed Micros:");
+	Serial.println(elapsed_micros());
+	Serial.println();
+	delay(300);
+#else
+	fanBot.process_MIDI();
+#endif
 }
 
 
@@ -275,6 +297,7 @@ void pwm_off() {
 	TCNT1 = 0;
 	digitalWrite(OUTPUT_PIN, LOW); // This seems to be necessary to silence it properly (sometimes gets stuck high otherwise!)
 }
+
 void set_fan_speed(float target) {
 	pwm(PWM_FREQUENCY, target);
 }
@@ -292,8 +315,16 @@ void self_test() {
 	delay(6000);
 */
 }
-const int PARTY_POPPER_FIRE_NOTE =  3;
-const int PART_POPPER_RELEASE_NOTE= 4;
+
+void target_pressure_increase() {
+	target_pressure++;
+	if (target_pressure > 1000) {target_pressure = 1000;}
+}
+
+void target_pressure_decrease() {
+	target_pressure--;
+	if (target_pressure < 0) {target_pressure = 0;}
+}
 
 void party_popper_fire() {
 	partyPopperServo.write(PARTY_POPPER_MAX);
@@ -303,20 +334,28 @@ void party_popper_fire() {
 	partyPopperServo.write(PARTY_POPPER_MIN);
 } 
 
+
 void note_on(int note, int velocity) {
+	digitalWrite(LED_PIN, HIGH);
 	switch (note) {
-			case FAN_NOTE_ON: control_enabled = 1; break;
+//			case FAN_NOTE_ON: control_enabled = 1; set_fan_speed(velocity / 127.0);  break;
+//			case FAN_NOTE_ON: control_enabled = 1; set_fan_speed(0.4);  break;
 			case FAN_NOTE_OFF: control_enabled = 0; break;
+			case FAN_UP_NOTE: target_pressure_increase(); break;
+			case FAN_DOWN_NOTE: target_pressure_decrease(); break;
 			case PARTY_POPPER_FIRE_NOTE: party_popper_fire(); break;
 		// Could also derive fan speed or target pressure (TODO!) from note velocity
 	}
 }
 
 void note_off(int note, int velocity) {
+	digitalWrite(LED_PIN, LOW);
 }
 
 
 // Code below taken from example demo code from the Sparkfun
+
+#ifdef NOPID
 
 void bmp085Calibration()
 {
@@ -471,3 +510,5 @@ unsigned long bmp085ReadUP()
   
   return up;
 }
+
+#endif
