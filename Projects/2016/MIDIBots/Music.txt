@@ -25,9 +25,12 @@ Smoke on the Water (Deep Purple, 1972), 112 BPM, about 0:35
 	A in the original has to map to open uke note
 	Slide positions are programmed with C being the lowest note, so transpose up 3 semitones from the original.
 
+"Trololo" song:
+	Original mostly C,G; truck-driver gear change up a semitone every so often
+	Actions: try to imitate the inimitable Eduard Khil?
+
 A percussion solo?  Could also showcase LightingBot in sync.
 	Actions: air drums
 
 A finale?  Some sort of punchline might be nice, like the single cymbal crash at the end of the regional performance.
-
-Trololo song?
+	Party popper idea is great!  Hopefully it will work on the day. :)

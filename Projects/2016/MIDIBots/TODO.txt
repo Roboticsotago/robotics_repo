@@ -3,7 +3,8 @@
 National event is in Auckland on Saturday, September 10 (entries close Friday, August 26).  Some things to work on between now and then:
 
 [ ] Test the spare PSUs (power supply units) in case they're needed
-[ ] Make custom Molex power wiring?  See Power.txt
+	Oh dear. One shuts down, the other blows up! :(
+[Y] Make custom Molex power wiring?  See Power.txt
 
 [ ] Double-check latency settings for the bots that need it
 
@@ -12,7 +13,11 @@ National event is in Auckland on Saturday, September 10 (entries close Friday, A
 
 [ ] Sequence the music and lighting in Rosegarden!
 	See Music.txt for suggestions for the medley
+	[ ] Add triangle hit between We Will Rock You and Smoke on the Water, to mark the transition.
+	[ ] Change chords at end of Trololo - maybe should be 
+	[ ] Occasional percussion during Fuer Elise?
 	[ ] Check latency (delay) setting for each segment. Parts for one channel might need to be split across multiple tracks or segments, e.g. for PercussionBot's shaker, which has more delay I think.
+	[ ] Check which system timer is being used for Rosegarden's sequencer. The default 250 Hz one might be a bit coarse.
 
 [Y] Refactor the firmware programs to use our MIDIBot library:
 	[Y] UkeBot
