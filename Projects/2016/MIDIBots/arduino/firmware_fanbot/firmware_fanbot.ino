@@ -105,7 +105,7 @@ void speed_decrease() {
 void calibrate(){
 	temperature = bmp085GetTemperature(bmp085ReadUT());
 	ref_pressure = bmp085GetPressure(bmp085ReadUP());
-	Serial.println(ref_pressure);
+//	Serial.println(ref_pressure);
 }
 
 int rel_pressure(){
