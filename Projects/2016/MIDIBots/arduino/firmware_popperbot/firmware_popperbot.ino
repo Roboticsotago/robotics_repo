@@ -11,11 +11,6 @@ const int PARTY_POPPER_MIN = 40;
 
 
 // MIDI note mapping:
-const int FAN_NOTE_ON = 1;
-const int FAN_NOTE_OFF = 0;
-const int FAN_UP_NOTE = 5;
-const int FAN_DOWN_NOTE = 6;
-
 const int PARTY_POPPER_FIRE_NOTE =  3;
 const int PART_POPPER_RELEASE_NOTE= 4;
 
