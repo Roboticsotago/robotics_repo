@@ -1,0 +1,61 @@
+Bayes for robotics?
+
+Deals with probabilities involving evidence.
+
+Humans are bad with probabilities, and especially bad at probabilities involving prior likelihoods.  We're also bad with logic.
+
+Imagine a statement like "Most robotics engineers speak English".  This means that if you choose a robotics engineer at random, the probability that they speak English is greater than 0.5.
+
+However, this statement certainly does not mean that most English speakers are robotics engineers!  If you chose a random person who speaks English, they almost certainly won't be!  This is because robotics engineers make up only a small proportion of any population.
+
+This is analogous to the inverse proposition in logic:
+A -> B does not mean that B -> A
+
+The problem is that many people will hear or read a statistic such as the one above and wrongly conclude that the converse (B->A) is true.
+
+Bayesian statistics and probability allows you to deal with these "conditional probabilities".  Bayesian probability is a nice combination of logic and statistics.
+
+We can write the conditional probability of something as:
+
+p(A|B)
+
+This means "the probability of A, given B".
+
+The Bayes theorem states that:
+
+p(A|B) = p(B|A) x p(A) / p(B)
+
+As you can see, the Bayes theorem lets you "flip around" the conditional probability (like finding B -> A given A -> B), provided you know the independent probabilities of A and B.
+
+Let's work through a example:
+
+
+We'll make it quantitative by saying that 70% of robotics engineers speak English.  We'll use R and E instead of A and B to make it clearer.
+
+R is the condition of being a robotics engineer.
+E is the condition of being an English speaker.
+E|R refers to someone being an English speaker given that they are a robotics engineer.
+R|E means the condition of someone being a robotics engineer given that they speak English (not the same thing at all as E|R!).
+
+"p(E|R) = 0.7" equates to the statement "70% of robotics engineers speak English"
+
+p(R|E) (the probability of any English speaker being a robotics engineer) is what we are trying to determine.
+
+To work out the probability of a random English speaker being a robotics engineer, we need to know the independent probabilities of someone being (a) a robotics engineer, and (b) an English speaker.
+
+Around 940 million people can speak English globally (though not necessarily as their first language), out of a total world population of 7.4 billion, so the probability p(E) is:
+
+p(E) = 940 million / 7.4 billion
+     = 0.13
+
+Let's suppose that 1% of people are robotics engineers (arbitrarily).
+
+p(R) = 0.01
+
+We know already that p(E|R) = 0.7
+
+So, p(R|E) = p(E|R) x p(R) / p(E)
+           = 0.7 x 0.01 / 0.13
+           = 0.05
+
+In other words, the probability of being a random English speaker being a robotics engineer is 5% - only slightly greater than the probability of any random person being a robotics engineer. It makes sense that this probability is so low, because robotics engineers are generally infrequent/a rare breed.
