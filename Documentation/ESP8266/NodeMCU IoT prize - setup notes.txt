@@ -1,0 +1,171 @@
+ESP8266/NodeMCU board testing
+2016-09-12
+
+<<
+[116767.130249] usb 1-1.3: new full-speed USB device number 3 using ehci-pci
+[116767.223936] usb 1-1.3: New USB device found, idVendor=1a86, idProduct=7523
+[116767.223944] usb 1-1.3: New USB device strings: Mfr=0, Product=2, SerialNumber=0
+[116767.223948] usb 1-1.3: Product: USB2.0-Serial
+[116768.541931] usbcore: registered new interface driver ch341
+[116768.541958] usbserial: USB Serial support registered for ch341-uart
+[116768.541975] ch341 1-1.3:1.0: ch341-uart converter detected
+[116768.543817] usb 1-1.3: ch341-uart converter now attached to ttyUSB1
+>>
+
+/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0
+
+Ctrl-M to send Carriage Return
+Ctrl-J to send Line Feed
+
+Requires CR-LF to end each command line.
+
+74880 bits/s for reset log output?!  Not supported by most terminal programs, so install and use anybaud:
+
+http://sensornodeinfo.rockingdlabs.com/blog/2016/01/19/baud74880/
+
+Now we see the startup messages:
+
+<<
+ ets Jan  8 2013,rst cause:2, boot mode:(3,7)
+
+load 0x40100000, len 1856, room 16 
+tail 0
+chksum 0x63
+load 0x3ffe8000, len 776, room 8 
+tail 0
+chksum 0x02
+load 0x3ffe8310, len 552, room 8 
+tail 0
+chksum 0x79
+csum 0x79
+
+2nd boot version : 1.5
+  SPI Speed      : 40MHz
+  SPI Mode       : DIO
+  SPI Flash Size & Map: 8Mbit(512KB+512KB)
+jump to run user1 @ 1000
+>>
+
+Potentially handy to know!  So that's 128 kiB of flash memory.
+
+sudo pip install esptool
+
+esptool.py --port /dev/ttyUSB1 read_mac
+esptool.py v1.1
+Connecting...
+MAC: 60:01:94:03:8b:db
+
+
+esptool.py --port /dev/ttyUSB1 chip_id
+esptool.py v1.1
+Connecting...
+Chip ID: 0x00038bdb
+
+esptool.py --port /dev/ttyUSB1 flash_id
+esptool.py v1.1
+Connecting...
+Manufacturer: ef
+Device: 4016
+
+esptool can trigger a reset on certain boards (including the WeMOS) automatically, so no need for special pin hi/lo jumpering gymnastics.
+
+Dumping out memory:
+
+esptool.py --port /dev/ttyUSB1 dump_mem 0x40000000 65536 iram0.bin
+
+esptool.py --port /dev/ttyUSB1 dump_mem 0x40100000 1856 original_flash_0x40100000.bin
+esptool.py --port /dev/ttyUSB1 dump_mem 0x3ffe8000 776 original_flash_0x3ffe8000.bin
+esptool.py --port /dev/ttyUSB1 dump_mem 0x3ffe8310 552 original_flash_0x3ffe8310.bin
+
+--
+
+Memory Map?
+
+http://espressif.com/products/hardware/esp8266ex/overview/
+https://github.com/esp8266/esp8266-wiki/wiki
+https://github.com/esp8266/esp8266-wiki/wiki/Memory-Map
+https://github.com/esp8266/esp8266-wiki/wiki/Boot-Process
+
+Screenshot at https://www.itead.cc/wiki/ESP8266_Serial_WIFI_Module indicates the following locations:
+blank: 0x7E000
+flash: 0x00000
+irom:  0x40000
+default: 0x7c000
+
+
+--
+
+AT command examples:
+
+AT+RST
+(reset - interestingly, it retains the current baud rate, making the startup messages that are normally 74880 baud visible)
+
+AT+GMR
+AT version:0.60.0.0(Jan 29 2016 15:10:17)
+SDK version:1.5.2(7eee54f4)
+Ai-Thinker Technology Co. Ltd.
+May  5 2016 17:30:30
+OK
+
+AT+CWMODE=3
+(set STA (station) and AP (access point) dual mode)
+
+AT+CWLAP
+(list access points)
+
+AT+CWLAP
++CWLAP:(2,"Flannel",-65,"00:09:5b:c7:11:49",9,-9,0)
++CWLAP:(4,"Jason",-86,"9c:97:26:6b:29:bb",11,-34,0)
+
+You can also check the visibility of the ESP8266's access point on a computer or smartphone, e.g. using Wifi Analyzer for Android, or ?? for Windows.
+
+AT+CWJAP
+(join access point)
+AT+CWJAP="MyAPName","SecretPassword"
+WIFI CONNECTED
+WIFI GOT IP
+
+OK
+
+AT+CWLIF
+
+AT+CIFSR
+(check IP address)
+AT+CIFSR
++CIFSR:APIP,"192.168.4.1"
++CIFSR:APMAC,"62:01:94:03:8b:db"
++CIFSR:STAIP,"192.168.7.173"
++CIFSR:STAMAC,"60:01:94:03:8b:db"
+
+AT+CIPSERVER=1,4321
+ERROR
+
+Initiate client connection:
+On nearby machine:
+ncat -v -l 0.0.0.0 4321
+
+AT+CIPSTART=4,"TCP","192.168.5.24",4321
+Link type ERROR
+
+Hmm...ah:
+
+AT+CIPMUX=1
+AT+CIPSTART=4,"TCP","192.168.5.24",4321
+#AT+CIPMODE=1
+<<
+CIPMUX and CIPSERVER must be 0
+>>
+AT+CIPSEND=4,5
+AT+CIPCLOSE=4
+
+UDP test:
+AT+CIPSTART=0,"UDP","192.168.5.24",4321
+AT+CIPSEND=0,5
+AT+CIPCLOSE=0
+
+AT+CWQAP
+
+Oh, looks like it saves Wi-Fi settings and attempts to reconnect after reset (AT+RST)!
+
+
+http://www.electrodragon.com/w/Category:ESP8266_Basic_Usage
