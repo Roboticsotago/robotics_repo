@@ -84,9 +84,8 @@ abc / (abc + (1-a)(1-b)(1-c))
 In Tcl, this can be generalised like so, using some string manipulation to derive the mathematical expression:
 
 proc combined_probability p_list {
-	llength $p_list
-	set abc "[join $p_list *]"
-	set formula "$abc / ($abc + (1-[join $p_list )*(1-]))"
+	set abc... "[join $p_list *]"
+	set formula "${abc...} / (${abc...} + (1-[join $p_list )*(1-]))"
 	puts $formula
 	expr $formula
 }
@@ -97,4 +96,18 @@ With probabilities all less than 0.5, the result will approach 0 as you add more
 
 With probabilities all greater than 0.5, the result approaches 1 as you add more.
 
-With all probabilities equal to 0.5, the combined probability will also be 0.5.
+With all probabilities equal to 0.5, the combined probability will also be 0.5.  In fact, any 0.5 probabilities don't contribute to the combined probability.
+
+This allows the system to become very confident that its conclusion is correct, and the more evidence the better. It also helps when classifying, as the likely hypotheses tend to be very strongly supported and the unlikely ones become vanishingly unlikely.  That is, there is usually a clear winner.
+
+The formula can be written like so, for easier implementation:
+
+1/p-1 = (1-p1)(1-p2)...(1-pN) / p1 x p2 x ... x pN
+
+Floating-point underflow can be a problem with these calculations, so sometimes the log of the terms is used instead:
+
+p = 1 / (1 + e^h)
+
+where:
+
+h = sum(ln(1-pN) - ln(pN))
