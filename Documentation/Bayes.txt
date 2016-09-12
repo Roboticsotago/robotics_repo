@@ -25,6 +25,10 @@ The Bayes theorem states that:
 
 p(A|B) = p(B|A) x p(A) / p(B)
 
+also written in terms of H (hypothesis) and E (evidence),  like so:
+
+p(H|E) = p(E|H) x p(H) / p(E)
+
 As you can see, the Bayes theorem lets you "flip around" the conditional probability (like finding B -> A given A -> B), provided you know the independent probabilities of A and B.
 
 Let's work through a example:
@@ -43,12 +47,12 @@ p(R|E) (the probability of any English speaker being a robotics engineer) is wha
 
 To work out the probability of a random English speaker being a robotics engineer, we need to know the independent probabilities of someone being (a) a robotics engineer, and (b) an English speaker.
 
-Around 940 million people can speak English globally (though not necessarily as their first language), out of a total world population of 7.4 billion, so the probability p(E) is:
+Around a billion people can speak English globally (though not necessarily as their first language), out of a total world population of approaching 8 billion, so the probability p(E) is:
 
-p(E) = 940 million / 7.4 billion
-     = 0.13
+p(E) = 1 billion / 8 billion
+     = 0.125
 
-Let's suppose that 1% of people are robotics engineers (arbitrarily).
+Let's (arbitrarily) suppose that 1% of people are robotics engineers, so:
 
 p(R) = 0.01
 
@@ -58,4 +62,39 @@ So, p(R|E) = p(E|R) x p(R) / p(E)
            = 0.7 x 0.01 / 0.13
            = 0.05
 
-In other words, the probability of being a random English speaker being a robotics engineer is 5% - only slightly greater than the probability of any random person being a robotics engineer. It makes sense that this probability is so low, because robotics engineers are generally infrequent/a rare breed.
+In other words, the probability of a random English speaker being a robotics engineer is 5% - not much greater than the probability of any random person being a robotics engineer, and certainly far from a majority. It makes sense that this probability is so low, because robotics engineers are generally infrequent/a rare breed.
+
+TODO: other examples, such as forensic evidence...
+
+--
+
+Combining Probabilities (Naive Bayes technique)
+
+Often, you want to combine the probabilities of several independent pieces of evdence to derive an overall probability ("certainty").  This could be useful in robotics for example in determining where on the soccer field a robot is, based on compass reading, downward-pointing colour sensors, and input from the computer vision system.  This approach lets you reason numerically about discrete categories, e.g. ""
+
+If a and b are independent probabilites, they combine like so:
+
+ab / (ab + (1-a)(1-b))
+
+For three terms, the combined probability is:
+
+abc / (abc + (1-a)(1-b)(1-c))
+
+
+In Tcl, this can be generalised like so, using some string manipulation to derive the mathematical expression:
+
+proc combined_probability p_list {
+	llength $p_list
+	set abc "[join $p_list *]"
+	set formula "$abc / ($abc + (1-[join $p_list )*(1-]))"
+	puts $formula
+	expr $formula
+}
+
+Behaviours to note:
+
+With probabilities all less than 0.5, the result will approach 0 as you add more probabilities.
+
+With probabilities all greater than 0.5, the result approaches 1 as you add more.
+
+With all probabilities equal to 0.5, the combined probability will also be 0.5.
