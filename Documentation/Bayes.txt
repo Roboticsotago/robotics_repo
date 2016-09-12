@@ -8,7 +8,7 @@ Imagine a statement like "Most robotics engineers speak English".  This means th
 
 However, this statement certainly does not mean that most English speakers are robotics engineers!  If you chose a random person who speaks English, they almost certainly won't be!  This is because robotics engineers make up only a small proportion of any population.
 
-This is analogous to the inverse proposition in logic:
+This is analogous to the converse proposition in logic:
 A -> B does not mean that B -> A
 
 The problem is that many people will hear or read a statistic such as the one above and wrongly conclude that the converse (B->A) is true.
@@ -21,6 +21,12 @@ p(A|B)
 
 This means "the probability of A, given B".
 
+These sorts of conditional probabilities crop up everywhere:
+
+ - The probability of a banana being ripe given its colour.
+ - The probability of a phone call being from a friend, given the time of day.
+ - The probability that it will rain, given the atmospheric pressure trend.
+
 The Bayes theorem states that:
 
 p(A|B) = p(B|A) x p(A) / p(B)
@@ -29,10 +35,10 @@ also written in terms of H (hypothesis) and E (evidence),  like so:
 
 p(H|E) = p(E|H) x p(H) / p(E)
 
-As you can see, the Bayes theorem lets you "flip around" the conditional probability (like finding B -> A given A -> B), provided you know the independent probabilities of A and B.
+As you can see, the Bayes theorem lets you "flip around" the conditional probability (a bit like finding the converse B -> A given A -> B), provided you know the independent probabilities of H and E.
+
 
 Let's work through a example:
-
 
 We'll make it quantitative by saying that 70% of robotics engineers speak English.  We'll use R and E instead of A and B to make it clearer.
 
@@ -86,19 +92,25 @@ In Tcl, this can be generalised like so, using some string manipulation to deriv
 proc combined_probability p_list {
 	set abc... "[join $p_list *]"
 	set formula "${abc...} / (${abc...} + (1-[join $p_list )*(1-]))"
-	puts $formula
 	expr $formula
 }
 
 Behaviours to note:
 
-With probabilities all less than 0.5, the result will approach 0 as you add more probabilities.
+ - With probabilities all less than 0.5, the result will approach 0 as you add more probabilities.
 
-With probabilities all greater than 0.5, the result approaches 1 as you add more.
+ - With probabilities all greater than 0.5, the result approaches 1 as you add more.
 
-With all probabilities equal to 0.5, the combined probability will also be 0.5.  In fact, any 0.5 probabilities don't contribute to the combined probability.
+ - With all probabilities equal to 0.5, the combined probability will also be 0.5.  In fact, any 0.5 probabilities don't contribute to the combined probability.
 
 This allows the system to become very confident that its conclusion is correct, and the more evidence the better. It also helps when classifying, as the likely hypotheses tend to be very strongly supported and the unlikely ones become vanishingly unlikely.  That is, there is usually a clear winner.
+
+Further behaviours to note:
+
+ - If any probability is 1 (certainty), the result will be 1.
+
+ - If any probability is 0, the result will be 0.
+
 
 The formula can be written like so, for easier implementation:
 
