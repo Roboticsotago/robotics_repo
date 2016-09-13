@@ -189,3 +189,6 @@ cd esp_iot_sdk_v1.5.2/bin
 esptool.py --port /dev/ttyUSBn write_flash 0x0 boot_v1.5.bin 0x1000 at/512+512/user1.1024.new.2.bin 0x0fc000 esp_init_data_default.bin 0x07e000 blank.bin 0x0fe000 blank.bin
 
 Chris has confirmed that this restores the firmware - the version numbers and checksums match the original output messages.  The only difference is that the Ai-Thinker line in the reply to AT+GMR is missing - perhaps the AI extensions to the AT command set are not present.
+
+Latest firmware releases from Espressif are announced here:
+http://bbs.espressif.com/viewforum.php?f=46&sid=539dbf71e95016252aaa2f7bc8b5e3e4
