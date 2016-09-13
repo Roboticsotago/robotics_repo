@@ -173,3 +173,19 @@ Oh, looks like it saves Wi-Fi settings and attempts to reconnect after reset (AT
 
 
 http://www.electrodragon.com/w/Category:ESP8266_Basic_Usage
+
+--
+
+How to restore the original firmware (containing the AT command interpreter):
+
+Download
+ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip
+from
+http://bbs.espressif.com/viewtopic.php?f=46&t=1702
+and unzip.
+
+cd esp_iot_sdk_v1.5.2/bin
+
+esptool.py --port /dev/ttyUSBn write_flash 0x0 boot_v1.5.bin 0x1000 at/512+512/user1.1024.new.2.bin 0x0fc000 esp_init_data_default.bin 0x07e000 blank.bin 0x0fe000 blank.bin
+
+Chris has confirmed that this restores the firmware - the version numbers and checksums match the original output messages.  The only difference is that the Ai-Thinker line in the reply to AT+GMR is missing - perhaps the AI extensions to the AT command set are not present.
