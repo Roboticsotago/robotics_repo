@@ -9,3 +9,4 @@ Search and Rescue bot
 3D printer
 UAV (aeroplane style)
 Solar photovoltaic system
+Internet of Things devices (thermostat, datalogger, etc.)
