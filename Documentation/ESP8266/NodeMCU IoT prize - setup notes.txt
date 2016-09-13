@@ -119,7 +119,7 @@ AT+CWLAP
 +CWLAP:(2,"Flannel",-65,"00:09:5b:c7:11:49",9,-9,0)
 +CWLAP:(4,"Jason",-86,"9c:97:26:6b:29:bb",11,-34,0)
 
-You can also check the visibility of the ESP8266's access point on a computer or smartphone, e.g. using Wifi Analyzer for Android, or ?? for Windows.
+You can also check the visibility of the ESP8266's access point on a computer or smartphone, e.g. using Wifi Analyzer for Android, or Network Stumbler <http://www.netstumbler.com/downloads/> for Windows.
 
 AT+CWJAP
 (join access point)
@@ -142,7 +142,9 @@ AT+CIFSR
 AT+CIPSERVER=1,4321
 ERROR
 
-Initiate client connection:
+Initiate client connection...
+It looks like you can have up to 5 connections active at a time, identified by their ID number (0..4).  This number appears in many of the TCP/IP or UDP/IP commands.
+
 On nearby machine:
 ncat -v -l 0.0.0.0 4321
 
