@@ -37,6 +37,49 @@
 #X text 646 57 Cleaner attempt:;
 #X text 1004 74 Floating-point underflow can be a problem \, so perhaps
 work in the log domain:;
+#X obj 682 426 expr~ 1-$v1;
+#X obj 682 386 sig~;
+#X floatatom 682 368 5 0 0 0 - - -, f 5;
+#X obj 682 406 clip~ 0 1;
+#X obj 683 488 *~;
+#X obj 753 551 /~;
+#X obj 753 571 +~ 1;
+#X obj 753 591 expr~ 1/$v1;
+#X obj 772 426 expr~ 1-$v1;
+#X obj 772 386 sig~;
+#X floatatom 772 368 5 0 0 0 - - -, f 5;
+#X obj 772 406 clip~ 0 1;
+#X obj 876 488 *~;
+#X obj 464 527 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 464 567 snapshot~;
+#X floatatom 464 587 5 0 0 0 - - -, f 5;
+#X obj 464 547 metro 100;
+#X obj 464 506 loadbang;
+#X text 635 340 Signal-processing version:;
+#X obj 852 426 expr~ 1-$v1;
+#X obj 852 386 sig~;
+#X floatatom 852 368 5 0 0 0 - - -, f 5;
+#X obj 852 406 clip~ 0 1;
+#X obj 683 509 *~;
+#X obj 876 513 *~;
+#X text 906 501 Product of inputs;
+#X text 551 497 Product of 1-inputs;
+#X text 955 294 Can have inhibitory inputs by subtracting from 1:;
+#X floatatom 956 314 5 0 1 0 - - -, f 5;
+#X obj 956 331 expr 1-$f1;
+#X text 954 354 Can also have absolute override by using p=0 or p=1
+\, e.g. for safety features like not continuing to drive when up against
+an obstacle.;
+#X obj 1085 510 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
+1 1;
+#X obj 1085 550 snapshot~;
+#X floatatom 1085 570 5 0 0 0 - - -, f 5;
+#X obj 1085 530 metro 100;
+#X obj 1085 489 loadbang;
+#X text 961 396 TODO: fix so that a 0 input actually gives a 0 output!
+Currently there seems to be a bug that causes the output to jump to
+1 (div-by-0).;
 #X connect 0 0 3 0;
 #X connect 0 0 2 0;
 #X connect 0 0 10 0;
@@ -77,3 +120,36 @@ work in the log domain:;
 #X connect 29 0 30 0;
 #X connect 30 0 31 0;
 #X connect 31 0 32 0;
+#X connect 36 0 40 0;
+#X connect 37 0 39 0;
+#X connect 38 0 37 0;
+#X connect 39 0 36 0;
+#X connect 39 0 48 0;
+#X connect 40 0 59 0;
+#X connect 41 0 42 0;
+#X connect 42 0 43 0;
+#X connect 43 0 50 0;
+#X connect 44 0 40 1;
+#X connect 45 0 47 0;
+#X connect 46 0 45 0;
+#X connect 47 0 44 0;
+#X connect 47 0 48 1;
+#X connect 48 0 60 0;
+#X connect 49 0 52 0;
+#X connect 50 0 51 0;
+#X connect 52 0 50 0;
+#X connect 53 0 49 0;
+#X connect 55 0 59 1;
+#X connect 56 0 58 0;
+#X connect 57 0 56 0;
+#X connect 58 0 55 0;
+#X connect 58 0 60 1;
+#X connect 59 0 41 0;
+#X connect 60 0 41 1;
+#X connect 60 0 68 0;
+#X connect 64 0 65 0;
+#X connect 65 0 57 0;
+#X connect 67 0 70 0;
+#X connect 68 0 69 0;
+#X connect 70 0 68 0;
+#X connect 71 0 67 0;
