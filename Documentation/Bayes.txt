@@ -72,6 +72,9 @@ In other words, the probability of a random English speaker being a robotics eng
 
 TODO: other examples, such as forensic evidence...
 
+http://bayesian-intelligence.com/bwb/2012-03/sally-clark-is-wrongly-convicted-of-murdering-her-children/
+https://en.wikipedia.org/wiki/Base_rate_fallacy
+
 --
 
 Combining Probabilities (Naive Bayes technique)
@@ -86,6 +89,7 @@ For three terms, the combined probability is:
 
 abc / (abc + (1-a)(1-b)(1-c))
 
+and so on for greater numbers of terms.
 
 In Tcl, this can be generalised like so, using some string manipulation to derive the mathematical expression:
 
@@ -95,24 +99,31 @@ proc combined_probability p_list {
 	expr $formula
 }
 
+# example usage:
+
+combined_probability {0.7 0.8 0.85}
+
+
 Behaviours to note:
 
- - With probabilities all less than 0.5, the result will approach 0 as you add more probabilities.
+ - With probabilities all greater than 0.5, the result approaches 1 as you add more probabilities.
 
- - With probabilities all greater than 0.5, the result approaches 1 as you add more.
+ - With probabilities all less than 0.5, the result will approach 0 as you add more.
 
- - With all probabilities equal to 0.5, the combined probability will also be 0.5.  In fact, any 0.5 probabilities don't contribute to the combined probability.
+This allows the system to become very confident about its conclusion, and the more evidence the better. It also helps when classifying, as the likely hypotheses tend to be very strongly supported and the unlikely ones become vanishingly unlikely.  That is, there is usually a clear winner.
 
-This allows the system to become very confident that its conclusion is correct, and the more evidence the better. It also helps when classifying, as the likely hypotheses tend to be very strongly supported and the unlikely ones become vanishingly unlikely.  That is, there is usually a clear winner.
 
 Further behaviours to note:
+
+ - With all probabilities equal to 0.5, the combined probability will also be 0.5.  In fact, any 0.5 probabilities don't contribute to the combined probability.
 
  - If any probability is 1 (certainty), the result will be 1.
 
  - If any probability is 0, the result will be 0.
 
+These last two could be very useful if you wanted an "absolute override", e.g. if you're hitting an obstacle, stop driving forward.  They could also be positive (excitatory) rather than inhibitory absolutes, e.g. if you're facing the goal with the ball, shoot!
 
-The formula can be written like so, for easier implementation:
+The formula can be written like so, for easier implementat`ion:
 
 1/p-1 = (1-p1)(1-p2)...(1-pN) / p1 x p2 x ... x pN
 
