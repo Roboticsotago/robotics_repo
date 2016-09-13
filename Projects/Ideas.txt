@@ -1,0 +1,11 @@
+Ideas for future projects:
+
+Hovercraft
+Dalek "mass production"
+Robot Soccer bot
+Search and Rescue bot
+2D pen plotter (or a whiteboard BoardBot like Ian Rees built)
+2D CNC hot wire cutter (for polystyrene)
+3D printer
+UAV (aeroplane style)
+Solar photovoltaic system
