@@ -192,3 +192,11 @@ Chris has confirmed that this restores the firmware - the version numbers and ch
 
 Latest firmware releases from Espressif are announced here:
 http://bbs.espressif.com/viewforum.php?f=46&sid=539dbf71e95016252aaa2f7bc8b5e3e4
+
+--
+
+Arduino IDE extension to allow programming the ESP8266 as if it were an Arduino:
+https://github.com/esp8266/Arduino
+
+An Arduino sketch implementing a Web server on an ESP8266 in AP (Access Point) mode:
+https://learn.sparkfun.com/tutorials/esp8266-thing-hookup-guide/example-sketch-ap-web-server
