@@ -96,3 +96,20 @@ rcnz.com have a decent variety of brushless motors and electronic speed controll
 --
 
 Example motor: Alpha 370
+
+--
+
+Further information:
+
+
+Rotary encoder or: How to build a digital servo using an Arduino and photo sensors
+HomoFaciens
+https://www.youtube.com/watch?v=XIUrnR8bLAI
+
+
+Teaching Old Motors New Tricks - Part 1
+Texas Instruments
+https://www.youtube.com/watch?v=fpTvZlnrsP0
+
+
+
