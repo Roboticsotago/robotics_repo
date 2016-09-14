@@ -1,25 +1,29 @@
-Bayes for robotics?
+Bayesian/conditional probabilities and their use in robotics
 
-Deals with probabilities involving evidence.
+Bayesian techniques (named after Rev. Thomas Bayes (1701–1761)) deal with probabilities involving evidence.  These are also referred to as conditional probabilities: the probability of some event 
+given some condition that might be related.
 
-Humans are bad with probabilities, and especially bad at probabilities involving prior likelihoods.  We're also bad with logic.
+Humans are bad with probabilities, and especially bad at probabilities involving prior likelihoods.  We're also bad with logic.  We sometimes confuse something like "A implies B" with its logical converse, "B implies A".
+
+	A -> B does NOT mean that B -> A
 
 Imagine a statement like "Most robotics engineers speak English".  This means that if you choose a robotics engineer at random, the probability that they speak English is greater than 0.5.
 
-However, this statement certainly does not mean that most English speakers are robotics engineers!  If you chose a random person who speaks English, they almost certainly won't be!  This is because robotics engineers make up only a small proportion of any population.
+However, this statement certainly does not mean that most English speakers are robotics engineers!  If you chose a random person who speaks English, they almost certainly won't be: robotics engineers make up only a small proportion of any population, English-speaking or otherwise.
 
-This is analogous to the converse proposition in logic:
-A -> B does not mean that B -> A
-
-The problem is that many people will hear or read a statistic such as the one above and wrongly conclude that the converse (B->A) is true.
+The problem is that many people will hear or read a statistic such as the one above and wrongly conclude that the converse (B->A) has the same probability.
 
 Bayesian statistics and probability allows you to deal with these "conditional probabilities".  Bayesian probability is a nice combination of logic and statistics.
 
 We can write the conditional probability of something as:
 
-p(A|B)
+	p(A|B)
 
 This means "the probability of A, given B".
+
+The symbols H (Hypothesis) and E (Evidence) are often used instead of A and B:
+
+	p(H|E)
 
 These sorts of conditional probabilities crop up everywhere:
 
@@ -27,51 +31,57 @@ These sorts of conditional probabilities crop up everywhere:
  - The probability of a phone call being from a friend, given the time of day.
  - The probability that it will rain, given the atmospheric pressure trend.
 
-The Bayes theorem states that:
+The Bayes theorem relates the conditional probablity of A given B to the probability of B given A, and the independent probabilities of A and B in isolation:
 
-p(A|B) = p(B|A) x p(A) / p(B)
+	p(A|B) = p(B|A) x p(A) / p(B)
 
-also written in terms of H (hypothesis) and E (evidence),  like so:
+Written in terms of H (hypothesis) and E (evidence):
 
-p(H|E) = p(E|H) x p(H) / p(E)
+	p(H|E) = p(E|H) x p(H) / p(E)
 
 As you can see, the Bayes theorem lets you "flip around" the conditional probability (a bit like finding the converse B -> A given A -> B), provided you know the independent probabilities of H and E.
 
 
 Let's work through a example:
 
-We'll make it quantitative by saying that 70% of robotics engineers speak English.  We'll use R and E instead of A and B to make it clearer.
+We'll make it quantitative by saying that (hypothetically) 70% of robotics engineers speak English.  We'll use R and E instead of A and B to make it clearer.
 
-R is the condition of being a robotics engineer.
-E is the condition of being an English speaker.
-E|R refers to someone being an English speaker given that they are a robotics engineer.
-R|E means the condition of someone being a robotics engineer given that they speak English (not the same thing at all as E|R!).
+	R is the condition of being a robotics engineer.
 
-"p(E|R) = 0.7" equates to the statement "70% of robotics engineers speak English"
+	E is the condition of being an English speaker.
 
-p(R|E) (the probability of any English speaker being a robotics engineer) is what we are trying to determine.
+	E|R refers to someone being an English speaker given that they are a robotics engineer.
+
+	R|E means the condition of someone being a robotics engineer given that they speak English (not the same thing at all as E|R!).
+
+	"p(E|R) = 0.7" equates to the statement "70% of robotics engineers speak English"
+
+	p(R|E) (the probability of any English speaker being a robotics engineer) is what we are trying to determine.
 
 To work out the probability of a random English speaker being a robotics engineer, we need to know the independent probabilities of someone being (a) a robotics engineer, and (b) an English speaker.
 
 Around a billion people can speak English globally (though not necessarily as their first language), out of a total world population of approaching 8 billion, so the probability p(E) is:
 
-p(E) = 1 billion / 8 billion
-     = 0.125
+	p(E) = 1 billion / 8 billion
+	     = 0.125
 
 Let's (arbitrarily) suppose that 1% of people are robotics engineers, so:
 
-p(R) = 0.01
+	p(R) = 0.01
 
 We know already that p(E|R) = 0.7
 
-So, p(R|E) = p(E|R) x p(R) / p(E)
-           = 0.7 x 0.01 / 0.13
-           = 0.05
+So,
+
+	p(R|E) = p(E|R) x p(R) / p(E)
+	       = 0.7 x 0.01 / 0.13
+	       = 0.05
 
 In other words, the probability of a random English speaker being a robotics engineer is 5% - not much greater than the probability of any random person being a robotics engineer, and certainly far from a majority. It makes sense that this probability is so low, because robotics engineers are generally infrequent/a rare breed.
 
 TODO: other examples, such as forensic evidence...
 
+Further Reading:
 http://bayesian-intelligence.com/bwb/2012-03/sally-clark-is-wrongly-convicted-of-murdering-her-children/
 https://en.wikipedia.org/wiki/Base_rate_fallacy
 
@@ -79,19 +89,21 @@ https://en.wikipedia.org/wiki/Base_rate_fallacy
 
 Combining Probabilities (Naive Bayes technique)
 
-Often, you want to combine the probabilities of several independent pieces of evdence to derive an overall probability ("certainty").  This could be useful in robotics for example in determining where on the soccer field a robot is, based on compass reading, downward-pointing colour sensors, and input from the computer vision system.  This approach lets you reason numerically about discrete categories, e.g. ""
+Often, you want to combine the probabilities of several independent pieces of evdence to derive an overall probability ("certainty").  This could be useful in robotics for example in determining where on the soccer field a robot is, based on compass reading, downward-pointing colour sensors, and input from the computer vision system.  This approach lets you reason numerically about discrete categories, e.g. what is the probability of an e-mail being spam based on the words it contains.
 
 If a and b are independent probabilites, they combine like so:
 
-ab / (ab + (1-a)(1-b))
+	ab / (ab + (1-a)(1-b))
 
 For three terms, the combined probability is:
 
-abc / (abc + (1-a)(1-b)(1-c))
+	abc / (abc + (1-a)(1-b)(1-c))
 
 and so on for greater numbers of terms.
 
-In Tcl, this can be generalised like so, using some string manipulation to derive the mathematical expression:
+(See <http://www.mathpages.com/home/kmath267/kmath267.htm> for more detailed explanation; also http://www.paulgraham.com/naivebayes.html and http://www.paulgraham.com/spam.html which got me started on this)
+
+Here is a generalised implementation In Tcl, which uses some string manipulation to derive the mathematical expression from a given list of probabilities:
 
 proc combined_probability p_list {
 	set abc... "[join $p_list *]"
@@ -119,18 +131,18 @@ Further behaviours to note:
 
  - If any probability is 1 (certainty), the result will be 1.
 
- - If any probability is 0, the result will be 0.
+ - If any probability is 0, the result will be 0 (or it can/should be if you handle division-by-zero as a special case).
 
-These last two could be very useful if you wanted an "absolute override", e.g. if you're hitting an obstacle, stop driving forward.  They could also be positive (excitatory) rather than inhibitory absolutes, e.g. if you're facing the goal with the ball, shoot!
+These last two could be very useful if you wanted an "absolute override", e.g. if you're hitting an obstacle, stop driving forward, no matter what else is going on.  They could also be positive (excitatory) rather than inhibitory absolutes, e.g. if you're facing the goal with the ball, shoot!
 
-The formula can be written like so, for easier implementat`ion:
+The formula can be written like so, for easier implementation:
 
-1/p-1 = (1-p1)(1-p2)...(1-pN) / p1 x p2 x ... x pN
+	1/p-1 = (1-p1)(1-p2)...(1-pN) / p1 x p2 x ... x pN
 
 Floating-point underflow can be a problem with these calculations, so sometimes the log of the terms is used instead:
 
-p = 1 / (1 + e^h)
+	p = 1 / (1 + e^h)
 
 where:
 
-h = sum(ln(1-pN) - ln(pN))
+	h = sum(ln(1-pN) - ln(pN))
