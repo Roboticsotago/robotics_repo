@@ -1,0 +1,92 @@
+One of the firmware types that can be flashed to the ESP8266 is a stripped-down version of Python called MicroPython.  This implements a Python REPL interpreter that can be accessed via the ESP8266 board's serial interface.
+
+Included is an "esp" Python module that provides access to special functionality of the ESP8266 board.
+
+http://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html
+
+Adafruit have this guide to getting started:
+
+https://learn.adafruit.com/micropython-basics-how-to-load-micropython-on-a-board/esp8266
+
+
+To get started quickly, download one of the pre-built firmware binary images from <http://micropython.org/download/#esp8266>:
+
+wget http://micropython.org/resources/firmware/esp8266-20160909-v1.8.4.bin
+
+# Use esptool.py to program the firmware image to the board's flash memory:
+
+esptool.py --port /dev/ttyUSB0 erase_flash
+
+# Then upload the binary image:
+# Example from docs:
+#esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=8m 0 esp8266-2016-05-03-v1.8.bin
+
+# Test one that Chris used:
+esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash --flash_size=8m 0 esp8266-20160909-v1.8.4.bin
+# Higher baud rates might work reliably.
+# The flash memory on our boards is apparently actually 32 Mbit (--flash-size=32m)
+
+# Connect to the board:
+gtkterm -p /dev/ttyUSB0 -s 115200
+
+I found I also had to press the Reset button to get into the Python REPL.  Then it works!  Looks awesome...
+
+Run "help()" at the command prompt to get some guidance on how to get set up with a network connection.
+
+The MicroPython REPL doesn't require CR-LF pairs to be sent for end-of-line - just press Enter/Return.  It also has line-editing, tab-completion, and a command history...luxury!
+
+By default, MicroPython will bring up the ESP8266 in WiFi Access Point mode, named something of the form "MicroPython-06abd1", password "micropythoN".  Its default IP address is 192.168.4.1/24.  You can check this by connecting to this AP from a nearby computer and using ping:
+
+ping 192.168.4.1
+
+There is also a Web-based REPL server that you can connect to using this custom client:
+
+http://www.micropython.org/webrepl
+
+--
+
+MicroPython Sanity Check:
+
+import esp
+esp.check_fw()
+
+print('Hello, World!')
+
+import sys
+# sys.float_info.epsilon
+# not available
+
+sys.version
+sys.platform
+sys.modules
+
+
+# Soft reboot:
+sys.reset()
+
+--
+
+Quick Example Program:
+
+# Set up ESP8266 as WiFi Access Point:
+ap_if = network.WLAN(network.AP_IF)
+ap_if.config(essid="ESP8266", authmode=network.AUTH_WPA_WPA2_PSK, password="ESP8266")
+# TODO: network access code
+# ...
+
+--
+
+Building MicroPython
+
+The ESP SDK is required to build MicroPython:
+
+https://github.com/pfalcon/esp-open-sdk
+
+
+sudo apt-get install make unrar autoconf automake libtool gcc g++ gperf flex bison texinfo gawk ncurses-dev libexpat-dev python-dev python python-serial     sed git unzip bash help2man wget bzip2 libtool-bin
+
+cd /usr/local/src
+git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
+cd esp-open-sdk
+make
+# Takes a while...!
