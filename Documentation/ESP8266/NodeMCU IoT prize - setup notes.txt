@@ -4,6 +4,10 @@ ESP8266/NodeMCU board testing
 Overview of the board:
 https://github.com/nodemcu/nodemcu-devkit-v1.0
 
+Note that the board is 3.3 V, so driving things like hobby servo motors will require extra circuitry for shifting the logic levels.
+
+The analog input pin has a usable range of only 0..1.4 V, and a maximum voltage limit of only 1.8 V!
+
 <<
 [116767.130249] usb 1-1.3: new full-speed USB device number 3 using ehci-pci
 [116767.223936] usb 1-1.3: New USB device found, idVendor=1a86, idProduct=7523
