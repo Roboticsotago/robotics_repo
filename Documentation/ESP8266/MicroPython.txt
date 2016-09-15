@@ -45,7 +45,7 @@ http://www.micropython.org/webrepl
 
 --
 
-MicroPython Sanity Check:
+# MicroPython basic sanity checks:
 
 import esp
 esp.check_fw()
@@ -60,13 +60,47 @@ sys.version
 sys.platform
 sys.modules
 
-
 # Soft reboot:
 sys.reset()
 
 --
 
-Quick Example Program:
+# Example GPIO Use:
+
+import machine
+pin = machine.Pin(2, machine.Pin.OUT)
+pin.high()
+pin.low()
+# Note that the onboard LED is active-low!
+
+# Flash the LED:
+
+import time
+
+def toggle(p):
+	p.value(not p.value())
+
+while True:
+	toggle(pin)
+	time.sleep_ms(250)
+
+# The infinite loop will block indefinitely...but you can interrupt using Ctrl-C, just as on a normal Python interpreter. :)
+
+# Next, we'll define a function for flashing the LED continuously, parameterised for control over the flashing speed:
+
+def flasher(period):
+	while True:
+		toggle(pin)
+		time.sleep_ms(period)
+
+flasher(50)
+# Ctrl-C
+
+# You can see how much easier iterative, interactive development will be using this style of programming!
+	
+--
+
+# Example: WiFi + IP server
 
 # Set up ESP8266 as WiFi Access Point:
 ap_if = network.WLAN(network.AP_IF)
