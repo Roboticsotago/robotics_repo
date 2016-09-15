@@ -1,6 +1,8 @@
+MicroPython on the ESP8266
+
 One of the firmware types that can be flashed to the ESP8266 is a stripped-down version of Python called MicroPython.  This implements a Python REPL interpreter that can be accessed via the ESP8266 board's serial interface.
 
-Included is an "esp" Python module that provides access to special functionality of the ESP8266 board.
+Included is an "esp" Python module that provides access to special functionality of the ESP8266 board.  There is also a "machine" module that gives access to the analog and digital I/O pins.
 
 http://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html
 
@@ -18,18 +20,24 @@ wget http://micropython.org/resources/firmware/esp8266-20160909-v1.8.4.bin
 esptool.py --port /dev/ttyUSB0 erase_flash
 
 # Then upload the binary image:
-# Example from docs:
+
+# Example command line from docs:
+
 #esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=8m 0 esp8266-2016-05-03-v1.8.bin
 
 # Test one that Chris used:
+
 esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash --flash_size=8m 0 esp8266-20160909-v1.8.4.bin
-# Higher baud rates might work reliably.
-# The flash memory on our boards is apparently actually 32 Mbit (--flash-size=32m)
+# I haven't tried higher baud rates yet, but at 115200 it doesn't take long (less than a minute).  It didn't seem to need the "-fm dio" argument.  Note that the flash memory on our boards (Winbond W25Q32) is apparently actually 32 Mbit (--flash-size=32m).
+
+# Now also tested to work at 460800 baud. :)  You can also verify the data while writing (although the protocol checksums should normally be sufficient):
+
+esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --verify --flash_size=32m 0 esp8266-20160909-v1.8.4.bin
 
 # Connect to the board:
 gtkterm -p /dev/ttyUSB0 -s 115200
 
-I found I also had to press the Reset button to get into the Python REPL.  Then it works!  Looks awesome...
+NOTE: I found I also have to press the Reset button to get into the Python REPL after flashing.  Then it works!  Looks awesome...
 
 Run "help()" at the command prompt to get some guidance on how to get set up with a network connection.
 
@@ -49,26 +57,31 @@ http://192.168.4.1:8266/
 
 --
 
-# MicroPython basic sanity checks:
+# MicroPython basic sanity checks, diagnostics:
 
 import esp
 esp.check_fw()
+esp.info()
 
 print('Hello, World!')
 
 import sys
-# sys.float_info.epsilon
-# not available
-
+# sys.float_info.epsilon; #not available
 sys.version
 sys.platform
 sys.modules
 
+import machine
+machine.freq()
+
 import port_diag
 port_diag.main()
 
-# Soft reboot:
+# Soft reboot of MicroPython only:
 sys.reset()
+
+# Harder reboot of the board:
+machine.reset()
 
 --
 
@@ -106,12 +119,57 @@ flasher(50)
 # Ctrl-C
 
 # You can see how much easier iterative, interactive development will be using this style of programming!
-	
+
+--
+
+# Analog read example:
+
+import machine
+adc=machine.ADC(0)
+adc.read()
+
+--
+
+import esp
+esp.info()
+
+--
+
+# Simple network server:
+
+import socket
+s = socket.socket()
+s.bind(('', 4321))
+s.listen(1)
+while True:
+	print('Awaiting connection on port 4321...')
+	(c, a) = skt.accept()
+	print('Got client connection:', a, c)
+	c.send('Hello from ESP8266\n')
+	#c.shutdown(); # Not supported :(
+	c.close()
+
+# Then, on nearby computer:
+ncat -v 192.168.4.1 4321
+
+--
+
+# UDP example
+
+# On nearby computer:
+# ncat -v -l -u 0.0.0.0 4321
+
+import socket
+s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+s.connect(('192.168.4.2',4321))
+s.send('Hello\n')
+
 --
 
 # Example: WiFi + IP server
 
 # Set up ESP8266 as WiFi Access Point:
+import network
 ap_if = network.WLAN(network.AP_IF)
 ap_if.config(essid="ESP8266", authmode=network.AUTH_WPA_WPA2_PSK, password="ESP8266")
 # TODO: network access code
@@ -119,7 +177,24 @@ ap_if.config(essid="ESP8266", authmode=network.AUTH_WPA_WPA2_PSK, password="ESP8
 
 --
 
+# Power saving options
+
+import machine
+# CPU clock speed can be set to 80 or 160 MHz
+# For higher performance:
+machine.freq(160e6)
+# For normal operation:
+machine.freq(80e6)
+
+machine.idle()
+machine.sleep()
+machine.deepsleep()
+
+
+--
+
 Building MicroPython
+(NOTE: probably don't bother, given that pre-built binaries are readily available)
 
 The ESP SDK is required to build MicroPython:
 
