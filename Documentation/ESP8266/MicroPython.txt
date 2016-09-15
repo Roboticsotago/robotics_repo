@@ -80,6 +80,8 @@ import time
 def toggle(p):
 	p.value(not p.value())
 
+# NOTE: you may have to press Enter a few times to indicate the end of the function.
+
 while True:
 	toggle(pin)
 	time.sleep_ms(250)
