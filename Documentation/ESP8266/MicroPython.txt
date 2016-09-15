@@ -43,6 +43,10 @@ There is also a Web-based REPL server that you can connect to using this custom 
 
 http://www.micropython.org/webrepl
 
+Install and point your browser to:
+
+http://192.168.4.1:8266/
+
 --
 
 # MicroPython basic sanity checks:
@@ -59,6 +63,9 @@ import sys
 sys.version
 sys.platform
 sys.modules
+
+import port_diag
+port_diag.main()
 
 # Soft reboot:
 sys.reset()
