@@ -1,0 +1,9 @@
+The "standard" scripting language for the ESP8266 NodeMCU boards is a cut-down variant of Lua.
+
+https://github.com/nodemcu/nodemcu-firmware
+
+NodeLua
+https://nodelua.org/
+
+eLua (Embedded Lua)
+http://www.eluaproject.net/
