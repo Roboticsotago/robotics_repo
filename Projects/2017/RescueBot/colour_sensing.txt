@@ -1,0 +1,24 @@
+Basic line-following only requires distinguishing light from dark.  It might be useful to use an analog sensor and have support for calibration for the conditions before each run, or at least an adjustable threshold.
+
+Short-cut markers are green.  This means we must be able to distinguish between at least three different colours:
+
+	R:	G:	B:
+white	1	1	1
+black	0	0	0
+green	0	1	0
+
+We would need at least 2 bits to distinguish among 3 colours (a green sensor plus either red or blue).
+
+In that case, we just about might as well go with a full RGB sensor.
+
+Here's one:
+
+https://www.adafruit.com/products/1334
+
+It's 5 V and 3.3 V compatible, so we could use it with an Arduino or a Raspberry Pi, ESP8266, BeagleBone.
+
+Communication is via I2C.
+
+We would probably want two of these for RescueBot (to spot the left and right markers).  The main line sensing could be a small array of infrared reflectance sensors.
+
+For the SoccerBot(s), we might want more than just two sensors.  Also, I think the soccer field has more like 4 colours (black in front of goal, white outside the playing field, and two shades of green for the centre and side).

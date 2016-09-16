@@ -1,0 +1,14 @@
+The Robocup GEN II League Rules specify a HiTechnic IRB1005 pulse IR ball. This will be set in Mode A - RCJ-pulse.
+
+Ball modes available:
+	un-modulated mode (continuous)
+	"trapezoidal" mode (Robocup Jr, apparently)..not sure what this means
+	1200Hz and 600Hz "HiTechnic" modes, for up to 5 m range
+
+Chris will try to borrow a ball for testing...
+
+HiTechnic ball specs:
+https://www.hitechnic.com/cgi-bin/commerce.cgi?preadd=action&key=IRB1005
+
+HiTechnic sensor specs:
+https://www.hitechnic.com/cgi-bin/commerce.cgi?preadd=action&key=NSK1042
