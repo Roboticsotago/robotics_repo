@@ -1,5 +1,3 @@
-Computer Vision for Info Sci Mechatronics club
-
 Lens Distortion Removal
 
 It might be important to perform lens undistortion to the images captured, especially to be able to reliably identify planes by looking for parallel and perpendicular edges.  Here are some links:
@@ -14,15 +12,3 @@ https://github.com/jetpacapp/DeepBeliefSDK
 http://marcodiiga.github.io/radial-lens-undistortion-filtering
 
 http://www.geeks3d.com/20140213/glsl-shader-library-fish-eye-and-dome-and-barrel-distortion-post-processing-filters/2/
-
---
-
-General Image Processing/Computer Vision
-
-http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf
-
---
-
-Stereoscopic Image Processing
-
-...
