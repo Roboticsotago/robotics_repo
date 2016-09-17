@@ -17,3 +17,9 @@ Terminology: displacement map?
 It looks like cross-correlation could be an important method for identifying common features in the L and R images. Could be treated scanline by scanline, i.e. a series of 1D analyses. Not sure if this technique lends itself to speeding up by limiting the search range.  Efficient implementation will probably use Fourier and inverse Fourier transforms.  Nice intro video here:
 
 https://www.youtube.com/watch?v=MQm6ZP1F6ms
+
+In fact, the whole of Part 2 (on Fourier Transforms) looks very useful and incredibly clear:
+
+https://www.youtube.com/watch?v=-EAQm8wgLbc&list=PL8_xPU5epJdctoHdQjpfHmd_z9WvGxK8-&index=13
+
+(These are from a larger series on electron microscopy from CalTech)

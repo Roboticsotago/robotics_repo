@@ -1,12 +1,13 @@
 Computer Vision for Info Sci Mechatronics club
 
-There are a variety of image processing and analysis methods that could be useful for projects such as our soccer and rescue robots for 2017.  I'll record a plain list of things here, and explore/explain in seperate files...
+There are a variety of image processing and analysis methods that could be useful for projects such as our soccer and rescue robots for 2017.  I'll record a plain list of things here, and explore/explain in separate files...
 
  - Object recognition (ball, goal, rescue can, features of the playing field, other robots)
 
  - Lens distortion removal (image warping), for easier recognition of straight (and parallel, perpendicular) lines.
 
  - Stereoscopic imaging: identifying depth (distance) by comparing two images taken from slightly different vantage points (left and right)
+	It might be possible, given the limited features and locations in the soccer field, to use a single camera and infer position and orientation just from 2D analysis of the perspective.
 
 
 General Image Processing/Computer Vision
