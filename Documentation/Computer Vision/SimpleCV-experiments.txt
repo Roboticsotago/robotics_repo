@@ -326,7 +326,8 @@ def sat_from_percent(percent): return percent / 100.0 * 255
 
 while True:
 	original = camera.getImage().scale(0.25)
-	original.save('/tmp/test.png')
+	#original = camera.getImage()
+	#original.save('/tmp/test.png')
 	black_mask = (find_black(original) / 255) * solid(original, (150,0,0))
 	#
 	#target_hue = 194 / 360.0 * 255
