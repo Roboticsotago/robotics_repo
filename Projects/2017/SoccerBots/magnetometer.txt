@@ -1,0 +1,30 @@
+The typical "electronic compass" is really a three-axis magnetometer - a device that can measure magnetic field strength (and orientation?) in multiple axes.
+
+Here's an example, based around the HMC5883L:
+https://www.adafruit.com/products/1746
+
+Magnetism generally, south and north conventions, the Earth's magnetic field
+
+	https://www.youtube.com/watch?v=bht9AJ1eNYc
+
+	Red = North
+	White = South
+
+	Earth's "north" pole is actually magnetically the south pole!  The north-pointing pole on a compass is truly a north magnetic pole.
+
+	Experiment: determining polarity of an unknown magnet, given that we know which way (roughly) is north.
+
+Magnetic North vs True North
+	Not important for robot soccer
+
+Orientation based on magnetic field
+	Will need initial calibration..might be handy to have a straight edge on the robot so it can be placed against the wall of the soccer field.
+	Recalibrate when changing sides!
+	Note: limit of accuracy about 2 degrees with the HMC5883L. Might be good to combine readings probabilistically with input from the vision system.
+
+
+https://cdn-shop.adafruit.com/datasheets/AN203_Compass_Heading_Using_Magnetometers.pdf
+
+Isogonic chart of the world:
+https://upload.wikimedia.org/wikipedia/commons/1/11/World_Magnetic_Declination_2015.pdf
+
