@@ -1,0 +1,344 @@
+http://libretro.com/forums/showthread.php?t=4937
+CRT simulation shader impl for RPi
+
+--
+
+sudo pip install svgwrite
+
+git clone git://github.com/sightmachine/SimpleCV.git
+cd SimpleCV
+sudo python setup.py install
+
+
+--
+
+
+udav for graphing?
+
+--
+
+image.toHSV()
+
+
+image.
+	binarize(threshold)
+	blit(...)
+	colorDistance(Color.Blue)
+		also hueDistance()
+	convolve(...)
+	crop(...)
+	edges()
+	findBlobs()
+	findCorners()
+	findLines()
+	grayscale()
+	invert()
+
+	getHorizScanlineGray(row)
+
+	show()
+
+	toHSV/RGB/HLS/XYZ/BGR/Gray
+	splitChannels()
+
+	warp()
+
+Camera.undistort()
+FrameSource.calibrate()
+
+--
+
+import SimpleCV
+camera = SimpleCV.Camera()
+image = camera.getImage()
+
+d = image.show()
+d.quit()
+
+# Save image to file for further analysis (e.g. in GIMP)
+image.save('/tmp/test.png')
+
+hsl = image.toHLS()
+hsl_channels = hsl.splitChannels()
+
+d = hsl_channels[2].show()
+d.quit()
+
+# 2 looks like hue, 0 saturation, and 1 lightness. Weird order.
+
+d = hsl_channels[2].colorDistance(SimpleCV.Color.WHITE).invert().show()
+
+d = hsl_channels[2].colorDistance((75,75,75)).invert().show()
+
+
+d = image.colorDistance((100,90,50)).show()
+
+d = image.colorDistance((100,90,50)).show()
+
+
+# Find red regions:
+d = hsl_channels[2].colorDistance((0,0,0)).invert().show()
+
+# 200 would be purplish
+# ~10 for red
+# Try 50 (yellowish?)
+
+# Might be better to combine with lightness channel...and/or saturation?...multiplicatively?
+d = (hsl_channels[0] * hsl_channels[2].colorDistance((0,0,0)).invert()).show()
+
+# 
+yellow = hsl_channels[2].colorDistance((50,50,50)).invert()
+red = hsl_channels[2].colorDistance((10,10,10)).invert()
+purple = hsl_channels[2].colorDistance((200,200,200)).invert()
+
+saturated = hsl_channels[0]
+
+d = ((yellow/16.0) * (saturated/16.0)).show()
+d = ((red/16.0) * (saturated/16.0)).show()
+
+# Apply threshold as well:
+d = ((red/16.0) * (saturated/16.0)).binarize(120).invert().show()
+
+d = ((red/16.0) * (saturated/16.0)).binarize(120).invert().show()
+
+
+
+# Let's try looping:
+while True:
+	image = camera.getImage()
+	hsl = image.toHLS()
+	hsl_channels = hsl.splitChannels()
+	red = hsl_channels[2].colorDistance((10,10,10)).invert()
+	((red/16.0) * (hsl_channels[0]/16.0)).binarize(120).invert().show()
+
+# If multiplying three channels, divide them by 40 to normalise (256 / (256 ^ 1/3) ~= 40).
+
+
+# Let's try with an azure book cover...
+# Hue = 191 degrees (135/255)
+# Saturation = 60% (153)
+azure_hue = (135,135,135)
+azure_sat = (153,153,153)
+azure_threshold = 120
+
+# A test yellow:
+# Hue = 75 degrees = 53/255
+# Saturation = 67% = 171/255
+yellow_hue = (53,53,53)
+yellow_sat = (171,171,171)
+yellow_threshold = 120
+
+# A test green:
+# Hue: 135-155 degrees -> (135+155)/2 / 360 * 255 = 103/255
+# Saturation: 40-80%, typ. 70% -> 179
+green_hue = (103,103,103)
+green_sat = (179,179,179)
+green_threshold = 160
+
+# In HSV, 0=value, 1=saturation, 2=hue
+
+while True:
+	hsv_channels = camera.getImage().toHSV().splitChannels()
+	hue_proximity = hsv_channels[2].colorDistance((135,135,135)).invert()
+	sat_proximity = hsv_channels[1].colorDistance((153,153,153)).invert()
+	((hue_proximity/16.0) * (sat_proximity/16.0)).binarize(120).invert().show()
+
+
+# Is it worth factoring in the value as well?  Excluding it might be good in terms of robustness in the face of variable/unknown lighting conditions...
+
+# If multiplying three channels, divide them by 40 to normalise (256 / (256 ^ 1/3) ~= 40).
+
+def capture_test():
+	while True:
+		camera.getImage().scale(0.25).show()
+
+def value_test(threshold):
+	while True:
+		image = camera.getImage().scale(0.25)
+		hsv_channels = image.toHSV().splitChannels()
+		hsv_channels[0].binarize(threshold).invert().show()
+
+# The behaviour of binarize() seems strange: it seems to map dark colours to maxv and light colours to black, hence the invert() above.  The threshold behaves normally, though, if you invert the image afterwards, i.e. raising the threshold results in less stuff being mapped to white.  However, it does of course make a difference which one you do first!  Probably makes sense to binarize first.
+
+def saturation_threshold_test(threshold):
+	while True:
+		hsv_channels = camera.getImage().scale(0.25).toHSV().splitChannels()
+		hsv_channels[1].binarize(threshold).invert().show()
+
+
+# Probably don't need very high resolution, either, so let's scale() it...
+def colour_test(colour_hue, colour_sat, threshold):
+	while True:
+		hsv_channels = camera.getImage().scale(0.25).toHSV().splitChannels()
+		hue_proximity = hsv_channels[2].colorDistance(colour_hue).invert()
+		sat_proximity = hsv_channels[1].colorDistance(colour_sat).invert()
+		((hue_proximity/16.0) * (sat_proximity/16.0)).binarize(threshold).invert().show()
+
+# Probably don't want motion blur - set camera exposure short, even if it requires some extra gain.
+# In fact, fixed gain, exposure, white balance, etc., are probably all desirable for consistency.
+
+colour_test(azure_hue, azure_sat, azure_threshold)
+colour_test(green_hue, green_sat, 190)
+
+# Cool, now can we get the centroid of the white region? Do we need to do blob detection first?
+
+# For goal shooting, we probably only care about the horizontal..can we sum the columns in the image, and then calculate the mean for the resulting scanline?   SimpleCV uses NumPy internally - might we use some NumPy capabilities for this perhaps?
+
+d = SimpleCV.Image(camera.getImage().getNumpy()).show()
+# Yep, that works.
+d.quit()
+
+--
+
+# For identifying black objects:
+# Hue: any
+# Saturation: <35% (89/255)
+# Value: <20% (51/255)
+# dilate()? or not?
+
+while True:
+	hsv_channels = camera.getImage().scale(0.25).toHSV().splitChannels()
+	dark = hsv_channels[0].binarize(90)
+	grey = hsv_channels[1].binarize(90)
+	#black = (dark * grey).dilate()
+	#black = (dark * grey).erode().dilate()
+	black = (dark/16) * (grey/16)
+	blobs = black.findBlobs()
+	if blobs: blobs.draw()
+	black.show()
+
+# Maybe this would be better as a function...
+def find_black(image):
+	v,s,h = image.toHSV().splitChannels()
+	dark = v.binarize(90)
+	grey = s.binarize(90)
+	#black = (dark * grey).dilate()
+	#black = (dark * grey).erode().dilate()
+	return (dark/16) * (grey/16)
+
+# Nice. Let's do likewise for colour matching:
+# TODO: refine saturation matching. I suspect we want to match any saturation below the threshold, not just within a range, because of specular highlights.
+def find_colour(image, hue, hue_thresh, sat, sat_thresh):
+	colour_hue = (hue,hue,hue)
+	colour_sat = (sat,sat,sat)
+	v,s,h = image.toHSV().splitChannels()
+	hue_proximity = h.colorDistance(colour_hue).binarize(hue_thresh)
+	sat_proximity = s.colorDistance(colour_sat).binarize(sat_thresh)
+	return ((hue_proximity/16.0) * (sat_proximity/16.0))
+
+# Test for yellow:
+while True:
+	find_colour(camera.getImage().scale(0.25), 28, 4, 218, 35).show()
+
+# Azure: hue=95, h-thresh=15, sat=118, s-thresh=55
+while True:
+	find_colour(camera.getImage().scale(0.25), 95, 15, 118, 55).show()
+
+# Green:
+image = camera.getImage().scale(0.25)
+v,s,h = image.toHSV().splitChannels()
+# Trial hue distances:
+h.colorDistance((54,54,54)).show()
+# Trial hue threshold:
+h.colorDistance((54,54,54)).binarize(48).show()
+# Likewise for saturation:
+s.colorDistance((150,150,150)).show()
+s.colorDistance((150,150,150)).binarize(160).show()
+# Saturation is tricky1
+while True:
+	find_colour(camera.getImage().scale(0.25), 54, 48, 150, 160).show()
+
+# TODO: can probably refine this further by examining the values and saturations across the appearance of real objects due to highlights and shadows. I'm imagining approximately a cylinder in HSV or HLS space that equate to the same colour.  Might even end up working in RGB space..?
+
+
+
+# For debugging, we probably want to see the original image with the classified regions overlaid:
+# Not sure if we can use getDrawingLayer() and blit() to actually create composites...the drawing functions seem to be mainly rectangles, lines, and fonts, not image-based.
+# Might be effective to darken the original image and just use addition.
+# Or we could multiply, to mask out the irrelevant areas completely.
+
+# Perhaps we can adapt the greenscreen example:
+# or...we already have a mask - can we just multiply the original image by the mask?
+
+# Here's a test one, hard mask, with the black detector:
+
+while True:
+	image = camera.getImage().scale(0.25)
+	hsv_channels = image.toHSV().splitChannels()
+	dark = hsv_channels[0].binarize(60)
+	grey = hsv_channels[1].binarize(90)
+	#black = (dark * grey).dilate(2)
+	black = (dark * grey)
+	blobs = black.findBlobs()
+	if blobs: blobs.draw()
+	((black/16.0) * (image/16.0)).show()
+
+# Now with a hue detector:
+
+azure_hue = 
+
+yellow_hue = 54	# degrees
+
+yellow_threshold=180
+azure_threshold=160
+
+def mask_test(colour_hue, colour_sat, colour_threshold):
+	while True:
+		image = camera.getImage().scale(0.25)
+		hsv_channels = image.toHSV().splitChannels()
+		hue_proximity = hsv_channels[2].colorDistance(colour_hue).invert()
+		sat_proximity = hsv_channels[1].colorDistance(colour_sat).invert()
+		mask = ((hue_proximity/16.0) * (sat_proximity/16.0)).binarize(colour_threshold).invert()
+		((mask/16.0) * (image/16.0)).show()
+		image.save('/tmp/test.png')
+
+mask_test(green_hue, green_sat, green_threshold)
+
+
+# Hmm, having problems distinguishing green from azure..
+# Can we take the linear result from colorDistance() and stretch it?  Would be so much easier if we were working with 0..1 values...
+# I guess the easiest way would be to binarise that result...we binarise anyway after multiplying the hue and saturation components
+
+
+
+# How to create a blank image of solid colour?
+# Maybe copy existing grab:
+
+solid = image.copy() * 0
+
+# How to set the colour?  Can't just add a colour tuple.
+# Here's one way:
+
+green = 0,255,0
+solid[0:solid.width, 0:solid.height] = green
+
+def solid(image, colour):
+	solid = image.copy()
+	solid[0:solid.width, 0:solid.height] = colour
+	return solid
+
+solid(image, (200,0,200))
+
+# OK, now we're in a position to colourise regions according to matches, superimposed on the original image...
+
+def hue_from_angle(degrees): return degrees / 360.0 * 255
+def sat_from_percent(percent): return percent / 100.0 * 255
+
+while True:
+	original = camera.getImage().scale(0.25)
+	original.save('/tmp/test.png')
+	black_mask = (find_black(original) / 255) * solid(original, (150,0,0))
+	#
+	#target_hue = 194 / 360.0 * 255
+	#target_sat = 45 / 100.0 * 255
+	azure_mask = find_colour(original, 95, 15, 118, 55) / 255 * solid(original, (0,0,200))
+	#
+	#target_hue = hue_from_angle(540)
+	#target_sat = sat_from_percent(84)
+	yellow_mask = find_colour(original, 28, 4, 218, 35) / 255 * solid(original, (100,100,0))
+	#
+	green_mask = find_colour(original, 54, 48, 150, 160) / 255 * solid(original, (0,70,0))
+	result = (original * 0.1) + black_mask + azure_mask + green_mask + yellow_mask
+	result.show()
+
+# Need a better way to adjust colour matching parameters, though...
