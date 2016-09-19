@@ -12,7 +12,11 @@ the visible spectrum (the colours of the rainbow)
 Nice introductory video:
 https://www.youtube.com/watch?v=iDsrzKDB_tA
 
-actually a spectral phenomenon (consider incandescent light bulb vs LED or CFL), but our vision system has three main colour sensing elements, each of which cover different regions of the visible spectrum.
+actually a spectral phenomenon
+	consider incandescent light bulb vs LED or CFL)
+	our vision system has three main colour sensing elements, each of which cover different regions of the visible spectrum.
+	white light has all frequencies in equal amounts, but we could perceive many different spectra as white due to our limited sense
+	We use red, green and blue as the additive primaries, but there's nothing "magical" or universal/fundamental about them - they happen to roughly match the sensitivity peaks of our cone types. We often perceive different spectra as the same, e.g. equal intensities of green and red look yellow to us, just as a pure monochromatic yellow (e.g. sodium lamp) would. They stimulate the cones in the same way, so we perceive them identically.
 
 CIE chromaticity diagram explained, plus lighting technology spectra:
 https://www.youtube.com/watch?v=C4gaJrFDPXw
@@ -25,7 +29,11 @@ Whole series:
 	https://www.youtube.com/watch?v=C4gaJrFDPXw
 	https://www.youtube.com/watch?v=ZFLglHMN6DY
 
+primary, secondary, inverse colours
+
 Colour of physical objects (selective reflection)
+
+Filters
 
 Additive and subtractive colour
 	RGB vs CMYK
@@ -33,6 +41,5 @@ Additive and subtractive colour
 Short but effective video explaining the RGB colour space, and how it compares to the extent of human vision:
 https://www.youtube.com/watch?v=x0-qoXOCOow
 
-RGB, HSV, HLS, XYZ, etc.
-
-
+Other colour models/spaces:
+	RGB, HSV, HLS, XYZ, CMYK, etc.
