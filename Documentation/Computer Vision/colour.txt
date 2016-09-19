@@ -2,12 +2,26 @@ Light and colour
 
 colour as perception of wavelength of EM waves
 
+Wikipedia EM spectrum chart:
 https://upload.wikimedia.org/wikipedia/commons/c/cf/EM_Spectrum_Properties_edit.svg
 
 the visible spectrum (the colours of the rainbow)
 	wavelength and frequency
-	red is lower frequency (IR/heat is just beyond - harmless)
-	blue is higher frequency (UV is just beyond - harmful)
+	red is lower frequency (IR/heat is just beyond - long wavelength - harmless)
+	blue is higher frequency (UV is just beyond - short wavelength - harmful)
+
+	rainbow redesign might be:
+		brown
+		red
+		orange
+		yellow
+		green
+		cyan
+		blue
+		purple
+	based on http://www.physics.umd.edu/deptinfo/facilities/lecdem/services/avmats/slides/N1.%20CONTINUOUS%20SPECTRA/N1%20White%20Light%20Spectrum%20-%20Wikipedia%20(2008)%20(Violet%20Incorrect).jpg
+	but apparently that's got problems with the violet
+	http://www.physics.umd.edu/deptinfo/facilities/lecdem/services/avmats/slides/N1.%20CONTINUOUS%20SPECTRA/N1%20White%20Light%20Spectrum%20-%20UM%20Point%20Source%20(Correct).jpg
 
 Nice introductory video:
 https://www.youtube.com/watch?v=iDsrzKDB_tA
