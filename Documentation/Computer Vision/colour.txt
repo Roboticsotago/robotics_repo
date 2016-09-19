@@ -1,0 +1,38 @@
+Light and colour
+
+colour as perception of wavelength of EM waves
+
+https://upload.wikimedia.org/wikipedia/commons/c/cf/EM_Spectrum_Properties_edit.svg
+
+the visible spectrum (the colours of the rainbow)
+	wavelength and frequency
+	red is lower frequency (IR/heat is just beyond - harmless)
+	blue is higher frequency (UV is just beyond - harmful)
+
+Nice introductory video:
+https://www.youtube.com/watch?v=iDsrzKDB_tA
+
+actually a spectral phenomenon (consider incandescent light bulb vs LED or CFL), but our vision system has three main colour sensing elements, each of which cover different regions of the visible spectrum.
+
+CIE chromaticity diagram explained, plus lighting technology spectra:
+https://www.youtube.com/watch?v=C4gaJrFDPXw
+
+Whole series:
+	https://www.youtube.com/watch?v=nynoX0rA10E
+	https://www.youtube.com/watch?v=_PkVtkEI3-k
+	https://www.youtube.com/watch?v=jXUUm7LEDM8
+	https://www.youtube.com/watch?v=RUbRKUwV6Gc
+	https://www.youtube.com/watch?v=C4gaJrFDPXw
+	https://www.youtube.com/watch?v=ZFLglHMN6DY
+
+Colour of physical objects (selective reflection)
+
+Additive and subtractive colour
+	RGB vs CMYK
+
+Short but effective video explaining the RGB colour space, and how it compares to the extent of human vision:
+https://www.youtube.com/watch?v=x0-qoXOCOow
+
+RGB, HSV, HLS, XYZ, etc.
+
+
