@@ -143,7 +143,7 @@ s.bind(('', 4321))
 s.listen(1)
 while True:
 	print('Awaiting connection on port 4321...')
-	(c, a) = skt.accept()
+	(c, a) = s.accept()
 	print('Got client connection:', a, c)
 	c.send('Hello from ESP8266\n')
 	#c.shutdown(); # Not supported :(
