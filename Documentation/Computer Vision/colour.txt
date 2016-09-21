@@ -57,3 +57,33 @@ https://www.youtube.com/watch?v=x0-qoXOCOow
 
 Other colour models/spaces:
 	RGB, HSV, HLS, XYZ, CMYK, etc.
+
+--
+
+Selecting colour (hue?) independently of other elements in an image...
+
+My initial naive attempt was based on splitting out the H, S and V channels from the image and looking, calculating the difference from the target hue and saturation, thresholding that result, and then combining the images multiplicatively (i.e. AND).  Even this seems to work reasonably well, but notable limitations are:
+ - hue variability across the light/dark illumination continuum
+ - specular highlights (the saturation goes down as the value goes up)
+
+The specular highlights problem means that, for shiny objects, their colour will become ambiguous as you approach the highlight.
+
+A more rigorous approach might be to consider the range of measured colours that result from a real object's surfaces at various angles with respect to the light.
+
+To this end, I took a photograph of a glossy red curved surface, extracted the palette for the relevant region, and plotted the H, S, and V points for each pixel in a 3D scatter plot.
+
+I probably shouldn't have used a red object, as red in the hue channel is used by default when there is a very low saturation.  Thus, the confidence in a classification involving bright, unsaturated regions should be very low.
+
+	However, you could imagine using nearby pixels and smoothness to interpret the region as being part of the same surface and therefore the same colour. Would this require some fancy algoriths or could a filter-based approach work?
+
+Inspired by optical illusions involving colour, I also did some initial experiments using low-pass filtering on the V channel, to try to make local brightness effects disappear.
+
+Interesting things to look up:
+
+ - Inverse Phong shading: taking an image and using the Phong (or similar) model to infer surface normals, and therefore get some idea of the shape. This would be great in conjunction with stereo depth data: the stereoscopic element gives you information for sharp features, and the inverse Phong gives you information for the missing "soft" surfaces in between.
+
+ - SUV colour space (can't access UCSD CV page ATM)
+
+Oh wow, this pretty much covers everything I've just been thinking about!:
+www.cs.columbia.edu/~belhumeur/journal/colorsubspace-ijcv08.pdf
+
