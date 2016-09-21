@@ -1,0 +1,89 @@
+Light and colour
+
+colour as perception of wavelength of EM waves
+
+Wikipedia EM spectrum chart:
+https://upload.wikimedia.org/wikipedia/commons/c/cf/EM_Spectrum_Properties_edit.svg
+
+the visible spectrum (the colours of the rainbow)
+	wavelength and frequency
+	red is lower frequency (IR/heat is just beyond - long wavelength - harmless)
+	blue is higher frequency (UV is just beyond - short wavelength - harmful)
+
+	rainbow redesign might be:
+		brown
+		red
+		orange
+		yellow
+		green
+		cyan
+		blue
+		purple
+	based on http://www.physics.umd.edu/deptinfo/facilities/lecdem/services/avmats/slides/N1.%20CONTINUOUS%20SPECTRA/N1%20White%20Light%20Spectrum%20-%20Wikipedia%20(2008)%20(Violet%20Incorrect).jpg
+	but apparently that's got problems with the violet
+	http://www.physics.umd.edu/deptinfo/facilities/lecdem/services/avmats/slides/N1.%20CONTINUOUS%20SPECTRA/N1%20White%20Light%20Spectrum%20-%20UM%20Point%20Source%20(Correct).jpg
+
+Nice introductory video:
+https://www.youtube.com/watch?v=iDsrzKDB_tA
+
+actually a spectral phenomenon
+	consider incandescent light bulb vs LED or CFL)
+	our vision system has three main colour sensing elements, each of which cover different regions of the visible spectrum.
+	white light has all frequencies in equal amounts, but we could perceive many different spectra as white due to our limited sense
+	We use red, green and blue as the additive primaries, but there's nothing "magical" or universal/fundamental about them - they happen to roughly match the sensitivity peaks of our cone types. We often perceive different spectra as the same, e.g. equal intensities of green and red look yellow to us, just as a pure monochromatic yellow (e.g. sodium lamp) would. They stimulate the cones in the same way, so we perceive them identically.
+
+CIE chromaticity diagram explained, plus lighting technology spectra:
+https://www.youtube.com/watch?v=C4gaJrFDPXw
+
+Whole series:
+	https://www.youtube.com/watch?v=nynoX0rA10E
+	https://www.youtube.com/watch?v=_PkVtkEI3-k
+	https://www.youtube.com/watch?v=jXUUm7LEDM8
+	https://www.youtube.com/watch?v=RUbRKUwV6Gc
+	https://www.youtube.com/watch?v=C4gaJrFDPXw
+	https://www.youtube.com/watch?v=ZFLglHMN6DY
+
+primary, secondary, inverse colours
+
+Colour of physical objects (selective reflection)
+
+Filters
+
+Additive and subtractive colour
+	RGB vs CMYK
+
+Short but effective video explaining the RGB colour space, and how it compares to the extent of human vision:
+https://www.youtube.com/watch?v=x0-qoXOCOow
+
+Other colour models/spaces:
+	RGB, HSV, HLS, XYZ, CMYK, etc.
+
+--
+
+Selecting colour (hue?) independently of other elements in an image...
+
+My initial naive attempt was based on splitting out the H, S and V channels from the image and looking, calculating the difference from the target hue and saturation, thresholding that result, and then combining the images multiplicatively (i.e. AND).  Even this seems to work reasonably well, but notable limitations are:
+ - hue variability across the light/dark illumination continuum
+ - specular highlights (the saturation goes down as the value goes up)
+
+The specular highlights problem means that, for shiny objects, their colour will become ambiguous as you approach the highlight.
+
+A more rigorous approach might be to consider the range of measured colours that result from a real object's surfaces at various angles with respect to the light.
+
+To this end, I took a photograph of a glossy red curved surface, extracted the palette for the relevant region, and plotted the H, S, and V points for each pixel in a 3D scatter plot.
+
+I probably shouldn't have used a red object, as red in the hue channel is used by default when there is a very low saturation.  Thus, the confidence in a classification involving bright, unsaturated regions should be very low.
+
+	However, you could imagine using nearby pixels and smoothness to interpret the region as being part of the same surface and therefore the same colour. Would this require some fancy algoriths or could a filter-based approach work?
+
+Inspired by optical illusions involving colour, I also did some initial experiments using low-pass filtering on the V channel, to try to make local brightness effects disappear.
+
+Interesting things to look up:
+
+ - Inverse Phong shading: taking an image and using the Phong (or similar) model to infer surface normals, and therefore get some idea of the shape. This would be great in conjunction with stereo depth data: the stereoscopic element gives you information for sharp features, and the inverse Phong gives you information for the missing "soft" surfaces in between.
+
+ - SUV colour space (can't access UCSD CV page ATM)
+
+Oh wow, this pretty much covers everything I've just been thinking about!:
+www.cs.columbia.edu/~belhumeur/journal/colorsubspace-ijcv08.pdf
+
