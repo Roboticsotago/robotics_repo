@@ -96,6 +96,9 @@ I know that you can use a polarising filter to reduce specular reflections in ph
 See example here:
 https://en.wikipedia.org/wiki/Brewster%27s_angle
 
+Another:
+http://filmicgames.com/archives/233
+
 Doc Schuster has some great videos; here's one on polarising filters:
 https://www.youtube.com/watch?v=e8aYoLj2rO8
 
