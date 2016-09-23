@@ -87,3 +87,26 @@ Interesting things to look up:
 Oh wow, this pretty much covers everything I've just been thinking about!:
 www.cs.columbia.edu/~belhumeur/journal/colorsubspace-ijcv08.pdf
 
+--
+
+Polarisation
+
+I know that you can use a polarising filter to reduce specular reflections in photography, so perhaps a polarising filter over the robot's camera could help give an impression of the scene with just the diffuse reflections from objects.  I'm not sure if this can be done globally for a scene, since there may be many light sources and reflecting surfaces at many different angles...
+
+See example here:
+https://en.wikipedia.org/wiki/Brewster%27s_angle
+
+Doc Schuster has some great videos; here's one on polarising filters:
+https://www.youtube.com/watch?v=e8aYoLj2rO8
+
+Might it be possible to have a polarising light source as well on the robot?  Monochromatic polarised light?  At what wavelength?  Ideally not visible or IR so as to avoid confusing the other robots.
+
+--
+
+Structured Light, Lidar
+
+Rather than using the available light and taking images from which the geometry of the scene can be determined, structured light attempts to make the shape of the world more explicit by selectively illuminating it in a controlled fashion.
+
+A simple example would be to use a laser pointer in a dark room, with a camera offset but nearby.  By knowing the geometry of the camera and laser mounts, and controlling the pointing direction of the laser, the angle and distance to the point being illuminated can be determined from an image.  This is essentially laser range-finding.
+
+Lidar (light radar) uses a scanning laser to sample a great number of points in the scene in a short time (up to some millions per second). The rangefinding can be done either by time-of-flight (divide the speed of light by half the round-trip time delay to calculate the distance) or by examining the interference between coherent light sources.
