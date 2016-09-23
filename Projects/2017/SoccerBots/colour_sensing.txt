@@ -1,0 +1,16 @@
+On the soccer field, up to three different colours might be underneath the robot at any time, so possibly three downward-pointing colour sensors would make sense.
+
+I think the soccer field has 5 colours that we might want to detect:
+	black in front of goals
+	white outside the playing field
+	dark green down the middle
+	a paler pure green for one side
+	a yellow/brown pale green for the other side
+
+It would be worth considering what inferences about the robot's location and orientation could be made from just 2-3 colour sensors, provided we can reliably distinguish between the 3 shades of green:
+
+Would built-in illumination be a good idea?  Ah, the Adafruit TCS34725 board has an LED built in!
+
+https://www.adafruit.com/products/1334
+
+

@@ -1,0 +1,25 @@
+Stereoscopic Image Processing
+
+Some naive thoughts:
+
+We're basically looking for similar features in the L and R images, and identifying how much they deviate.  This is basically a pattern-recognition problem, but this could be quite hard if you search the entire image for any matching features.
+
+However, I think the search for matching features can be greatly reduced, because (a) only shifts in the horizontal axis (on which the L and R cameras lie) need to be considered, and (b) only small shifts need to be considered (the system will have range limits within which it can perceive depth).
+
+Regions with no detail could simply be subject to interpolation from surrounding features, perhaps with reduced confidence about the depth.
+
+I suspect that a lot of visual processing in the brain actually involves many many different aspects and features (points and edges and shared vanishing points, regions of similar colour, stereo correlation, recognition of familiar objects, toe-in and focus of the eyes, vestibular system, etc.) and combining them in some way.
+
+Is it important to be able to adjust the camera toe-in dynamically to "focus" on certain planes?  So that regions that don't stereocorrelate can be marked less important?  This would enable narrower windows in the correlation system.  You can also generally assume that anything providing colour that doesn't correlate at the current toe-in is "background" (i.e., literally behind, not just unimportant).
+
+Terminology: displacement map?
+
+It looks like cross-correlation could be an important method for identifying common features in the L and R images. Could be treated scanline by scanline, i.e. a series of 1D analyses. Not sure if this technique lends itself to speeding up by limiting the search range.  Efficient implementation will probably use Fourier and inverse Fourier transforms.  Nice intro video here:
+
+https://www.youtube.com/watch?v=MQm6ZP1F6ms
+
+In fact, the whole of Part 2 (on Fourier Transforms) looks very useful and incredibly clear:
+
+https://www.youtube.com/watch?v=-EAQm8wgLbc&list=PL8_xPU5epJdctoHdQjpfHmd_z9WvGxK8-&index=13
+
+(These are from a larger series on electron microscopy from CalTech)

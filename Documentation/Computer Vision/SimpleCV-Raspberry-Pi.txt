@@ -1,0 +1,245 @@
+Installing SimpleCV on Raspberry Pi
+following the instructions at
+http://simplecv.readthedocs.io/en/latest/HOWTO-Install%20on%20RaspberryPi.html
+
+# Check that mirrors etc. are up-to-date:
+sudo apt-get update
+
+# Some additional handy things to have:
+sudo apt-get install guvcview gimp imagemagick
+
+# Install various required Python libraries:
+sudo apt-get install ipython python-opencv python-scipy python-numpy python-setuptools python-pip
+sudo pip install svgwrite
+
+# Download and install SimpleCV (latest binary - 54 MB download plus about a minute install time):
+sudo pip install https://github.com/sightmachine/SimpleCV/zipball/master
+
+# Remote login with X11 forwarding to check things out...
+ssh -Y soccer
+
+--
+
+TODO: tidy up some of the following and move into the appropriate file...
+
+--
+
+Thinking about modelling the appearance of coloured objects under real lighting conditions, to try to identify candidate regions.
+
+Might be nice to use Naive Bayesian Classifier approach..?
+
+
+lscpu
+
+nproc
+
+
+RPi under-voltage warning (rainbow square on screen):
+This occurs when the 5 V power line drops below 4.65 V, usually due to excessive current draw in the Pi or inadequate source power supply or cable (e.g. too high resistance due to length).
+
+https://learn.adafruit.com/introducing-the-raspberry-pi-2-model-b?view=all
+
+https://www.raspberrypi.org/documentation/usage/gpio-plus-and-raspi2/
+
+With a USB camera plugged in, and Ethernet, I've seen it drop to 4.542 V. :(  The power light actually goes out around that point.
+
+
+--
+
+
+# Ah, here are some potentially useful functions!  Looks like help(Image) etc. within the simplecv shell is the best documentation.
+
+applyPixelFunction(self, theFunc)
+
+drawPaletteColors()
+	with hue=True
+
+image.drawRectangle()
+
+image.findLines()
+	Hough transform
+
+--
+
+Colour Recognition...
+
+My first basic attempt worked OK:
+ - find regions matching the target hue, and binarise with suitable threshold
+ - ditto for saturation
+ - Combine the two multiplicatively
+
+However, it's clear that many surfaces have predictable patterns of value and saturation depending on whether it's in shadow or brightly illuminated.  It would be good to have a function that would handle the whole range (it'll likely get ambiguous at extremes of brightness, as the saturation gets so low that the hue is basically meaningless).
+
+	Could it be something as simple as a ramp in value up from black to the target colour, then a ramp down in saturation and ramp up in value towards white for the spectral highlights?
+	
+	Could we use PCA?
+	
+	Is there a colour space in which a linear slice would give the whole gamut for a single colour/hue from black to white?
+
+
+Let's start by getting the palette from a sample red object:
+
+convert red.png -format %c -depth 8  histogram:info:-
+convert red.png -format %c -depth 8  histogram:info:- | grep --only-match '([0-9]*,[0-9]*,[0-9]*)' > red-histogram.txt 
+convert red.png -format %c -depth 8  histogram:info:- | grep --only-match '([0-9]*,[0-9]*,[0-9]*)' | grep --only-match  '[0-9,]*' > red-histogram.txt 
+
+convert red.png -colorspace HSV -format %c -depth 8  histogram:info:- | grep --only-match 'hsv([0-9.]*%,[0-9.]*%,[0-9.]*%)' | grep --only-match  '[0-9.,%]*' > red-histogram.txt
+
+# Also, add "R,G,B" header before analysing with R's CSV importer...
+
+# as image:
+convert test.png -unique-colors -scale 1000%  red-table.png
+
+
+OK, I think we want a 3D polynomial regression.  The 3D scatter plot looks reasonably "together" (thanks, plot.ly!)
+
+Looks like R's Loess might be the one to go with...
+
+data = read.csv("red-histogram.txt", header = TRUE)
+lw1 <- loess(R ~ G,data=data)
+plot(R ~ G, data=data,pch=19,cex=0.1)
+j <- order(data$G)
+lines(data$G[j],lw1$fitted[j],col="red",lwd=3)
+
+How to do it in 3D, though?  Note that there's also a predictor (which presumably could be used for classification based on how far a measurement deviates).
+
+--
+
+
+def solid(image, colour):
+	solid = image.copy()
+	solid[0:solid.width, 0:solid.height] = colour
+	return solid
+
+# Or, now that I now about this:
+#def solid(image, colour):
+#	solid=image.copy()
+#	solid.drawRectangle(0,0,solid.width,solid.height, color=colour)
+#	return solid
+# No! drawRectangle draws only the border, not a solid area!
+
+# Maybe this would be better as a function...
+def find_black(image):
+	v,s,h = image.toHSV().splitChannels()
+	dark = v.binarize(75)	# had 90 on ProBook cam
+	grey = s.binarize(90)
+	return (dark/16) * (grey/16)
+
+# Nice. Let's do likewise for colour matching:
+# TODO: refine saturation matching. I suspect we want to match any saturation below the threshold, not just within a range, because of specular highlights.
+def find_colour(image, hue, hue_thresh, sat, sat_thresh):
+	colour_hue = (hue,hue,hue)
+	colour_sat = (sat,sat,sat)
+	v,s,h = image.toHSV().splitChannels()
+	hue_proximity = h.colorDistance(colour_hue).binarize(hue_thresh)
+	sat_proximity = s.colorDistance(colour_sat).binarize(sat_thresh)
+	return ((hue_proximity/16.0) * (sat_proximity/16.0))
+
+def hue_from_angle(degrees): return degrees / 360.0 * 255
+def sat_from_percent(percent): return percent / 100.0 * 255
+# Actually doesn't give the right numbers?!
+
+while True:
+	original = camera.getImage().scale(0.25)
+	#original.save('/tmp/test.png')
+	#black_mask = (find_black(original) / 255) * solid(original, (100,0,0))
+	#azure_mask = find_colour(original, 95, 15, 118, 55) / 255 * solid(original, (0,0,127))
+	r2d2_blue_mask = find_colour(original, 114, 20, 125, 110) / 255 * solid(original, (0,0,127))
+	#yellow_mask = find_colour(original, 28, 4, 218, 35) / 255 * solid(original, (100,100,0))
+	#green_mask = find_colour(original, 54, 48, 150, 160) / 255 * solid(original, (0,70,0))
+	green_mask = find_colour(original, 36, 15, 140, 80) / 255 * solid(original, (0,70,0))	# green plastic folder
+	purple_mask = find_colour(original, 14, 9, 95, 40) / 255 * solid(original, (127,0,127))
+	result = (original * 0.2) + green_mask + r2d2_blue_mask
+	# + black_mask + r2d2_blue_mask + green_mask + yellow_mask + azure_mask
+	result.scale(4).show()
+
+# So, how next to proceed...for recognising the goal, probably check how much of the target colour is currently visible. If that's above some threshold, find the centroid, and from there determine the change in angle to face the goal.  I'll use my green folder for testing here...
+
+while True:
+	original = camera.getImage().scale(0.25)
+	#original.save('/tmp/test.png')
+	green_mask = find_colour(original, 54, 40, 150, 140) / 255 * solid(original, (0,70,0))
+	result = (original * 0.2) + green_mask
+	result.scale(4).show()
+
+
+
+
+--
+
+Might be nice to have a calibration helper function or several for tuning hue and thresholds interactively.
+
+def highlight(pixels):
+	r=pixels[0]
+	g=pixels[1]
+	b=pixels[2]
+	return (int(255*pow(r/255.0, 0.25)), int(255*pow(g/255.0, 0.25)), int(255*pow(b/255.0, 0.25)))
+
+image.applyPixelFunction(highlight).show()
+# Well, yeah, but it's exceptionally slow to apply.
+# Also, scaling the image first seems to bork things.  Maybe different pixel format?  Oh, well..
+# TODO: would be extra-nice to be able to click on the image to get an initial target hue and saturation, huh?
+# Also, to change the highlighting hue to match the target.
+
+def calibrate_colour_finder():
+	image = camera.getImage()
+	image.show()
+	highlight=solid(image, (255,0,255))
+	v,s,h = image.toHSV().splitChannels()
+	target_hue = 0
+	target_sat = 0
+	hue_threshold=0
+	sat_threshold=0
+	# Hue:
+	response = raw_input('\nTarget Hue (or Enter when found) => ')
+	while response != '':
+		# TODO: handle bogus response robustly...
+		target_hue = int(response)
+		match = h.colorDistance((target_hue,target_hue,target_hue)).invert()
+		((image * 0.1) + (match * 0.1) + (match.binarize(250).invert()/255 * highlight)).show()
+		response = raw_input('\nTarget Hue => ')
+	response = raw_input('\nHue Threshold => ')
+	while response != '':
+		# TODO: handle bogus response robustly...
+		hue_threshold=int(response)
+		#print(type(hue_threshold))
+		# Gah, binarize() and it's built-in invert behaviour!! >:^p
+		match = h.colorDistance((target_hue,target_hue,target_hue)).binarize(hue_threshold)
+		((image * 0.1) + (match/255 * highlight)).show()
+		response = raw_input('\nHue Threshold => ')
+	response = raw_input('\nTarget Saturation (or Enter when found) => ')
+	while response != '':
+		# TODO: handle bogus response robustly...
+		target_sat = int(response)
+		match = s.colorDistance((target_sat,target_sat,target_sat)).invert()
+		((image * 0.1) + (match * 0.1) + (match.binarize(250).invert()/255 * highlight)).show()
+		response = raw_input('\nTarget Saturation => ')
+	response = raw_input('\nSaturation Threshold => ')
+	while response != '':
+		# TODO: handle bogus response robustly...
+		sat_threshold=int(response)
+		match = s.colorDistance((target_sat,target_sat,target_sat)).binarize(sat_threshold)
+		((image * 0.1) + (match/255 * highlight)).show()
+		response = raw_input('\nSaturation Threshold => ')
+	print('Target hue:', target_hue)
+	print('Hue threshold:', hue_threshold)
+	print('Target saturation:', target_sat)
+	print('Saturation threshold:', sat_threshold)
+	return (target_hue, hue_threshold, target_sat, sat_threshold)
+
+# Try it out:
+calibrate_colour_finder()
+
+
+# Trial hue distances:
+h.colorDistance((54,54,54)).show()
+# Trial hue threshold:
+h.colorDistance((54,54,54)).binarize(48).show()
+# Likewise for saturation:
+s.colorDistance((150,150,150)).show()
+s.colorDistance((150,150,150)).binarize(160).show()
+
+
+--
+
+http://zschuessler.github.io/DeltaE/learn/

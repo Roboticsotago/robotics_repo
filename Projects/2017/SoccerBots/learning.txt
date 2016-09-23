@@ -1,0 +1,19 @@
+Some building blocks for Robot Soccer for Robocup 2017
+
+
+IR Sensing
+Control Systems Theory
+	Plants, Feedback
+	PID Control
+Computer Vision
+	Parallel line detection (common vanishing point)
+		for orientation, etc.
+		need for lens distortion correction?
+	Stereoscopic vision and depth perception?
+Basic Probability
+Bayesian Methods (esp. Naive Bayes/Combined Probability)
+State Machines
+Signal Processing
+	Maybe use Pd for control system?
+Neural Networks and other machine learning methods?
+Scratch-build a servo motor?

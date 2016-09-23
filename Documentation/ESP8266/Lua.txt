@@ -1,5 +1,14 @@
 The "standard" scripting language for the ESP8266 NodeMCU boards is a cut-down variant of Lua.
 
+"NodeMCU" can refer the NodeMCU hardware boards, or to the firmware running on the hardware.  The NodeMCU firmware is a modularised set of packages based on eLua (Lua for embedded systems).
+
+You can build customised firmware images based on your required packages here:
+https://nodemcu-build.com/
+(Cloud build service)
+
+NodeMCU firmware documentation is here:
+http://nodemcu.readthedocs.io/en/master/
+
 https://github.com/nodemcu/nodemcu-firmware
 
 NodeLua
@@ -7,3 +16,45 @@ https://nodelua.org/
 
 eLua (Embedded Lua)
 http://www.eluaproject.net/
+
+
+In NodeMCU, it is particularly important to avoid using calls that block for any significant time (even 10 ms may be enough to disrupt WiFi communications).  Lua offers an event-based style of programming that is encouraged (possibly mandatory in some cases) for NodeMCU.  Code to be run when an operation completes is registered as a callback function, which will be run asynchronously by the runtime environment.  Other code can run in the meantime.
+
+The reason for this behaviour is that the underlying real-time operating system ("SDK") is non-preemptive and task-driven, and Lua operations are generally implemented as seperate OS-level tasks. The ESP documentation states that if a task runs (not blocks?) for more than 10 ms, system services such as WiFi can fail.
+
+See here for details:
+https://nodemcu.readthedocs.io/en/master/en/lua-developer-faq/
+
+Lua is a dynamic scripting language, in which statements are run immediately and interactively, like in Python or Tcl.
+
+The main data structure is the table.
+
+
+Noteworthy Modules:
+
+GPIO pins:
+http://nodemcu.readthedocs.io/en/master/en/modules/gpio/
+
+Analog input:
+http://nodemcu.readthedocs.io/en/master/en/modules/adc/
+
+DHT temperature and humidity sensor:
+http://nodemcu.readthedocs.io/en/master/en/modules/dht/
+
+PWM:
+http://nodemcu.readthedocs.io/en/master/en/modules/pwm/
+
+I2C:
+http://nodemcu.readthedocs.io/en/master/en/modules/i2c/
+
+WiFi configuration:
+http://nodemcu.readthedocs.io/en/master/en/modules/wifi/
+
+Low-level networking:
+http://nodemcu.readthedocs.io/en/master/en/modules/net/
+
+MQTT telemetry protocol:
+http://nodemcu.readthedocs.io/en/master/en/modules/mqtt/
+
+System-level facilities (e.g. power management, system information and diagnostics):
+https://nodemcu.readthedocs.io/en/master/en/modules/node/
