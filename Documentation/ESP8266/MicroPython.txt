@@ -55,6 +55,9 @@ Install and point your browser to:
 
 http://192.168.4.1:8266/
 
+Getting started:
+https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html
+
 --
 
 # MicroPython basic sanity checks, diagnostics:
@@ -135,6 +138,83 @@ esp.info()
 
 --
 
+# Network setup:
+
+# The ESP8266 can operate as a WiFi station, an access point (AP), or both (hybrid mode).
+
+# https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/network_basics.html
+
+# In hybrid mode, the device presents two network interfaces. These can be configured separately like so:
+
+import network
+sta_if = network.WLAN(network.STA_IF)
+ap_if = network.WLAN(network.AP_IF)
+
+# You can query the current IP (Internet Protocol) settings for the interface like so:
+ap_if.ifconfig()
+# ('192.168.4.1', '255.255.255.0', '192.168.4.1', '208.67.222.222')
+
+# The items in the list are the IP address of the interface, the network mask (netmask) which tells how many bits are in the network address (with the remainder being the host address), the gateway (where to send packets not bound for the local network), and the address of the domain name system (DNS) server for resolving symbolic domains names (e.g. "www.otago.ac.nz") to IP addresses (139.80.123.160).
+
+# If you wish to connect to an existing access point, use the station interface on the ESP8266:
+
+sta_if.active(True)
+
+# List available access points:
+sta_if.scan()
+
+sta_if.connect('MyAPName', 'S3cr3tP@ssw0rd')
+
+# Connecting may take a few seconds.  To check your connection:
+
+sta_if.isconnected()
+sta_if.ifconfig()
+# ('192.168.43.73', '255.255.255.0', '192.168.43.1', '192.168.43.1')
+
+
+# You can also configure the ESP8266 as an access point, using the separate interface that is provided for that purpose.  To configure the ESP8266 as an access point (which might be more useful if operating out in the wild, away from any other WiFi network infrastructure):
+
+ap_if.active(True)
+ap_if.config(essid='Tobias_ESP8266', channel=9, authmode=network.AUTH_WPA2_PSK, password='micropythoN')
+
+# When choosing a channel, try to use one that isn't already in use in your vicinity.  On Linux, you can check which channels are in use by nearby APs like so:
+# iwlist wlan1 scan | grep Channel: | grep --only-matching '[0-9]*'| sort -n | uniq -c
+# The first column shows how many APs are using the channel, and the second is the channel number.
+
+# Hmm, I'm not sure if the channel parameter is actually honoured...
+
+# You can see if any stations are connected like so:
+ap_if.isconnected()
+
+
+# TODO: can the ESP8266 operate as a router, forwarding packets between the STA and AP interfaces???
+
+# Network configuration is stored in a .py file which 
+
+# From a nearby computer, you should be able to see the ESSID (AP name) in the list of Wi-Fi networks, and connect to it.  You should then be able to ping the ESP8266 AP interface, to check for basic connectivity at the IP layer:
+# ping 192.168.4.1
+
+--
+
+# ESP8266 filesystem
+
+# You can query the files currently stored on the flash-based filesystem like so:
+
+import os
+os.listdir()
+
+# Initially, "boot.py" will be the only file (this is the startup file that launches the Web-REPL at boot time).
+
+# If you want to add your own program to be run at startup, call it "main.py".  The system will run "boot.py" first, then "main.py".
+
+# You can upload files to the filesystem using the WebREPL client.
+
+--
+
+# To make connections using the network, use the socket library.
+# In MicroPython for ESP8266, there is a cut-down socket library named usocket that is actually the one being used.
+# https://docs.micropython.org/en/latest/esp8266/library/usocket.html
+
 # Simple network server:
 
 import socket
@@ -143,7 +223,7 @@ s.bind(('', 4321))
 s.listen(1)
 while True:
 	print('Awaiting connection on port 4321...')
-	(c, a) = skt.accept()
+	(c, a) = s.accept()
 	print('Got client connection:', a, c)
 	c.send('Hello from ESP8266\n')
 	#c.shutdown(); # Not supported :(
@@ -163,6 +243,32 @@ import socket
 s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 s.connect(('192.168.4.2',4321))
 s.send('Hello\n')
+
+--
+
+# Using UDP to stream to Pure Data
+# Pure Data generally assumes the use of the "FUDI" message protocol, which is basically plain text, space-separated values, with a terminating semicolon (and usually line break).
+
+# On Pd, use either the built-in [netreceive] object or the [udpreceive] object from the "mrpeach" library by Martin R. Peach.  [netreceive] assumes FUDI messages, whereas [udpreceive] assumes binary (it outputs a list of decimal numbers corresponding to the bytes received in each message).
+
+# Hmm, we can't send a plain integer via socket.send(), apparently ("object with buffer protocol required"). Wrapping it using chr() seems to work, but that only works up to 127 (beyond that, it breaks it into two bytes).  Hmm.  Maybe just use FUDI text messages and [netreceive] for now...
+
+import time
+import socket
+client_socket=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+client_socket.connect(('192.168.4.2',5432))
+i = 0
+while True:
+	i = (i + 1) % 256
+	client_socket.send(str(i) + ';\n')
+	time.sleep_ms(50)
+client_socket.close()
+
+# Note that UDP messages are not guaranteed to be received and have a limited payload size!
+
+# You can send multiple values in a single FUDI message like so:
+a = 10; b = 20; c = 30
+client_socket.send(str(a) + ' ' + str(b) + ' ' + str(c) + ';\n')
 
 --
 
