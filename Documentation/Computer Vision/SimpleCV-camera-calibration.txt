@@ -68,7 +68,7 @@ Suggested capture settings:
 	Resolution: 320 x 240 or even 160 x 120
 	Frame rate: 5 or maybe 10 FPS (SimpleCV on the Pi probably can't do more than about 5 FPS when processing)
 	Image format: RGB3
-	White balance: fixed at ~5200/6000/6500? Do WB correction in software?
+	White balance: fixed at ~5200/6000/6500? Do WB correction in software? Under indoor night-time lighting, a WB of about 3000 looks reasonable.
 	Sharpness: 0
 	Exposure: manual, 100
 	Gain: 200 (adjust according to conditions)
@@ -95,7 +95,11 @@ camera = Camera(prop_set={'width':320, 'height':240})
 
 --
 
-Manual (sample point based) white balance correction...
+# Colour correction (white balance)
+
+# http://www.cambridgeincolour.com/tutorials/white-balance.htm
+
+# Manual (sample point based) white balance correction...
 
 Image.applyHLSCurve()
 Image.applyIntensityCurve()
@@ -183,18 +187,23 @@ while True:
 
 
 # And now, how to sample a bunch of pixels to assist in setting the white balance.
-To get the pixel colour at clicked position:
+# To get the pixel colour at clicked position:
 # Probably output in the same format as Camera.live():
 # coord: (225,264), color: (158.0, 164.0, 184.0)
 
 # NOTE: Display.mouseLeft returns the current state of the button, whereas Display.leftButtonDownPosition() returns None unless the button was only JUST pressed. We want Display.mouseX and Display.mouseY instead, I think.
 
-display = Display(resolution = (640, 480))
-camera=Camera()
+# TODO: make this a function...
+
+display = Display(resolution = (160, 120))
+camera = Camera(prop_set={'width':320, 'height':240})
+#camera=Camera()
+camera.loadCalibration('default')
+camera.getCameraMatrix()
 prev_mouse_state = False
 sample_pixels = []
 while display.isNotDone():
-	image = camera.getImage().scale(0.25).flipHorizontal()
+	image = camera.getImage().scale(0.5)
 	image.save(display)
 	if display.mouseLeft:
 		x = display.mouseX
@@ -202,8 +211,11 @@ while display.isNotDone():
 		if not prev_mouse_state:
 			# Button just pressed - initialise new list:
 			sample_pixels = []
-			print(sample_pixels)
+			#print(sample_pixels)
 		colour_sample = image.getPixel(x,y)
+		# Indicate the point being sampled:
+		image.drawCircle((x,y),rad=5,color=Color.VIOLET,thickness=1)
+		image.save(display)
 		print(str(x) + ', ' + str(y) + ': ' + str(colour_sample))
 		sample_pixels.append(colour_sample)
 		prev_mouse_state = True
@@ -217,6 +229,13 @@ while display.isNotDone():
 
 
 
+grey_sample = (97.62295081967213, 61.47540983606557, 34.90163934426229)
+grey_sample = (170.66666666666666, 145.76666666666668, 97.23333333333333)
+
+# Now we can grab corrected images...
+
+while True:
+	wb(camera.getImageUndistort().scale(0.25), grey_sample).show()
 
 
 drawPaletteColors()
