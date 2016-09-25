@@ -85,6 +85,12 @@ convert red.png -format %c -depth 8  histogram:info:- | grep --only-match '([0-9
 
 convert red.png -colorspace HSV -format %c -depth 8  histogram:info:- | grep --only-match 'hsv([0-9.]*%,[0-9.]*%,[0-9.]*%)' | grep --only-match  '[0-9.,%]*' > red-histogram.txt
 
+COLOUR=blue
+convert $COLOUR.png -colorspace HSV -format %c -depth 8  histogram:info:- | grep --only-match 'hsv([0-9.]*%,[0-9.]*%,[0-9.]*%)' | grep --only-match  '[0-9.,%]*' > $COLOUR-histogram_initial.txt
+
+sed 's/%//g' $COLOUR-histogram_initial.txt > $COLOUR-histogram.txt 
+
+
 # Also, add "R,G,B" header before analysing with R's CSV importer...
 
 # as image:
@@ -96,9 +102,9 @@ OK, I think we want a 3D polynomial regression.  The 3D scatter plot looks reaso
 Looks like R's Loess might be the one to go with...
 
 data = read.csv("red-histogram.txt", header = TRUE)
-lw1 <- loess(R ~ G,data=data)
-plot(R ~ G, data=data,pch=19,cex=0.1)
-j <- order(data$G)
+lw1 <- loess(S ~ V,data=data)
+plot(S ~ V, data=data,pch=19,cex=0.1)
+j <- order(data$V)
 lines(data$G[j],lw1$fitted[j],col="red",lwd=3)
 
 How to do it in 3D, though?  Note that there's also a predictor (which presumably could be used for classification based on how far a measurement deviates).
@@ -106,12 +112,14 @@ How to do it in 3D, though?  Note that there's also a predictor (which presumabl
 --
 
 
+camera = SimpleCV.Camera()
+
 def solid(image, colour):
 	solid = image.copy()
 	solid[0:solid.width, 0:solid.height] = colour
 	return solid
 
-# Or, now that I now about this:
+# Or, now that I know about this:
 #def solid(image, colour):
 #	solid=image.copy()
 #	solid.drawRectangle(0,0,solid.width,solid.height, color=colour)
@@ -243,3 +251,68 @@ s.colorDistance((150,150,150)).binarize(160).show()
 --
 
 http://zschuessler.github.io/DeltaE/learn/
+
+
+--
+
+# OK, here's a hunch: that human vision uses local contrast when "reasoning" about what colours are actually there. Take the Lotto and Purves colour cube, where the same colour looks brown on the illuminated face and bright orange on the shadowed one. Or the grey bar against a grey gradient, which makes the two ends look completely different, in contrast to the background.
+
+# So, a low-pass filter of the brightness/value/lightness/luminance/luma/whatever channel might make for a more "realistic" (useful) colour recognition experience.  Merge that back with the full-res hue and saturation channels, and then try using absolute colour values. SimpleCV has a DFT class which provides various types of spatial image filter.  Let's try it...
+
+# Oh, do they only operate on one (1st?) channel of the image by default?  There's stull about creating/stacking them to get a 3-channel filter...
+
+# Cutoff frequencies are normalised with respect to "DC" (0) and the Nyquist limit (1).
+
+simplecv
+camera = SimpleCV.Camera()
+image = camera.getImage()
+lpf = SimpleCV.DFT.createGaussianFilter(dia=1024, size=(128,128), highpass=False)
+#lpf = SimpleCV.DFT.createLowpassFilter(xCutoff=100, yCutoff=10, size=(128,128))
+#lpf = SimpleCV.DFT.createHighpassFilter(xCutoff=100, yCutoff=10, size=(128,128))
+lpf = SimpleCV.DFT.createButterworthFilter(dia=1024, size=(128,128), highpass=False)
+v,s,h = image.toHSV().splitChannels()
+lpf.applyFilter(v).show()
+
+# Hmm, createLowpassFilter gives yucky ringing artifacts...
+# Also, seems like the highpass/lowpass terminology is the wrong way round?!
+# And the Gaussian doesn't seem to give proper passband behaviour.
+# Butterworth looking more like it might work...
+# But we have to use some very big numbers in the diameter and size to get it even close to the kind of LPF I'm imagining...
+
+# Maybe a plain old blur would work...
+
+v.smooth().show()
+
+v.blur(window=(128,128)).show()
+# Ah, that's more like it!
+
+# TODO: also look into raw DFT filter construction...
+
+v_lpf = v.blur(window=(64,64))
+
+# How do we merge HSV channels and tell SimpleCV that it's HSV, not (A?)RGB?!
+
+Image.mergeChannels(v,v,v,v).show()
+# Do we have to resort to using cv calls directly?
+
+# Also smooth the hue and saturation channels?:
+h_smoothed = h.medianFilter(window=(15,15))
+s_smoothed = s.medianFilter(window=(15,15))
+
+rebuilt = Image.mergeChannels(v,v_lpf,s_smoothed,h_smoothed)
+result = cv2.cvtColor(rebuilt.getNumpyCv2(), cv2.cv.CV_HSV2RGB)
+Image(result).show()
+# Bah,  it's rotated!
+
+# OK, but now not too terrible - it looks like a watercolour-y world of blurry colour blobs.
+
+while True:
+	image = camera.getImage().scale(0.25)
+	v,s,h = image.toHSV().splitChannels()
+	v_lpf = v.blur(window=(8,8))
+	#v_lpf = v.blur(window=(32,32)) / 2 + 64
+	h_smoothed = h.medianFilter(window=(5,5))
+	s_smoothed = s.medianFilter(window=(5,5))
+	rebuilt = Image.mergeChannels(v,v_lpf,s_smoothed,h_smoothed)
+	result = cv2.cvtColor(rebuilt.getNumpyCv2(), cv2.cv.CV_HSV2RGB)
+	Image(result).transpose().scale(4).show()
