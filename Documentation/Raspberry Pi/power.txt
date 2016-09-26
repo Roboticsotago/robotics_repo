@@ -1,0 +1,36 @@
+Jaycar
+
+Wanting to power my test RPi from a decent 5 V power supply
+
+I have a 3 A one that probably came with my TI DSP dev kit.
+
+I wonder if we want something with an adjustable output...
+
+Maybe a barrel socket with screw terminals, then onto a hacked USB A socket cable, then an ordinary USB A-to-micro-B cable to the Pi.
+
+Might be useful to have a barrel plug with screw terminals as well, in case we need to hack our own power supply.
+
+--
+
+The rainbow square on the screen is used to indicate low (<4.6 V) voltage.
+
+You can also use the `vcgencmd` to monitor system attributes:
+
+vcgencmd measure_volts core
+
+
+for id in core sdram_c sdram_i sdram_p ; do
+	echo -e "$id:\t$(vcgencmd measure_volts $id)" ;
+done
+
+None of these show the input voltage, however.
+
+
+
+vcgencmd measure_temp
+
+# Useful for power-saving when roving:
+
+vcgencmd display_power 0
+
+http://www.elinux.org/RPI_vcgencmd_usage
