@@ -11,55 +11,9 @@ How to rediscover the line if we lose it?
 
 --
 
-Motors and drive train:
- - 7.2 V friendly
- - Suitable gear ratio for sufficient speed and torque for obstacles
- - Brushless?  These are quiet and offer high performance.
- - Speed control?  BLDC motors usually need an ESC (electronic speed control) circuit.
- - Two main motors plus castor(s)?
- - Wheel dimensions?
+Line sensors:
 
-RC540 size is standard for 1/10 scale R/C cars, which would probably be rather big..
-
-http://www.area52.cc/how-tos/403-pick-the-right-brushless-motor.html
-
-Perhaps 280, 360, or 380 size for ours.
-
-	Note that the common Mabuchi FA-130 brushed DC motor has the following specs:
-		1.5-3 V
-		no-load speed: 12300 RPM @ 3 V (Kv = 4100 RPM/V)
-		Stall torque @ 3 V: about 36 g cm (~3.5 mNm)
-
-	For 6-12 V operation, the Pololu #1117 is a much better option! We have a few of these already.
-
-Do we even need servo feedback for drive motors?  Given that the line-following mechanism should be self-correcting, it might not matter too much if the robot veers to one side. Once in the open green space, the vision system could be used to find the can.
-	Might be useful to be able to detect current speed, stalling, tipping over, etc., though...
-
-Target speed:
-
-Wheel diameter = say 60 mm (radius = 30 mm)
-C = pi * d
-  = ~190 mm per revolution
-
-Pololu 100:1 motor runs at about 300 RPM no-load. Stall torque 30 oz-in. 6 V nominal.
-
-300 min^-1 * 190 mm -> m/s
-19/20 (exactly 0.95)
-
-So about 1 m/s. Probably fast enough?
-
-Resulting force:
-
-30 ounce * gravity * inch  / (30 mm) -> N
-1129848290276167/160000000000000 (approx. 7.061551814226044)
-
-Acceleration (though note that the torque will decrease as speed increases):
-
-F = ma <=> a = F / m
-
-a = 7 N / 400 g (say) = 17.5 m s^-2
-
-Sounds pretty decent...
+We have an 8-unit reflectance sensor already, which uses infrared.  I don't believe it's pulsed IR, however, so it might be somewhat susceptible to interference by sunlight.  Also, the IR LED on the end seems to be broken (you can generally see IR faintly using low-end digital cameras such as on a phone).
 
 --
 
