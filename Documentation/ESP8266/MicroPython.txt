@@ -187,7 +187,8 @@ ap_if.config(essid='Tobias_ESP8266', channel=9, authmode=network.AUTH_WPA2_PSK, 
 ap_if.isconnected()
 
 
-# TODO: can the ESP8266 operate as a router, forwarding packets between the STA and AP interfaces???
+# TODO: can the ESP8266 operate as a router (ahem, bridge), forwarding packets (no, frames) between the STA and AP interfaces???
+# Looks like no: http://bbs.espressif.com/viewtopic.php?t=960
 
 # Network configuration is stored in a .py file which 
 
