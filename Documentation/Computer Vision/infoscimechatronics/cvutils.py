@@ -142,6 +142,10 @@ def calibrate_white_balance():
 #while True:
 #	wb(camera.getImage(), grey_sample).show()
 
+# TODO: might be nice to calculate the correct colour temperature so at least the camera could be set to that in a fixed way...might give better colour resolution than doing it in SimpleCV, which seems to have only 8-bit colour depth per channel.
+
+
+
 
 # Function for calibrating the colour matcher, which will be quite similar to the white-balance sampler.
 # Hmm, this should really use WB-corrected images! But how does it know what correction to apply? Might have to add a grey-sample parameter.
@@ -204,3 +208,42 @@ def calibrate_colour_match(grey_point):
 				return ((hue_midpoint,hue_tolerance),(sat_midpoint,sat_tolerance),(val_midpoint,val_tolerance))
 				#return mean_sample # or rinse and repeat?
 			prev_mouse_state = False
+
+
+# Hmm, those .5s are suspicious - is something being quantised to integers somewhere?
+# Oh, no, it's OK - the min and max will always be integers, therefore the precision of the midpoints will be 0.5.
+
+#h,s,v=sample
+#hue_midpoint,hue_tolerance=h
+#sat_midpoint,sat_tolerance=s
+#v_midpoint,v_tolerance=v
+
+# Can we simply write:
+
+
+# Nice. Let's do likewise for colour matching:
+# TODO: refine saturation matching. I suspect we want to match any saturation below the threshold, not just within a range, because of specular highlights.
+def find_colour_1(image, hue, hue_thresh, sat, sat_thresh):
+	colour_hue = (hue,hue,hue)
+	colour_sat = (sat,sat,sat)
+	v,s,h = image.toHSV().splitChannels()
+	hue_proximity = h.colorDistance(colour_hue).binarize(hue_thresh)
+	sat_proximity = s.colorDistance(colour_sat).binarize(sat_thresh)
+	return ((hue_proximity/16.0) * (sat_proximity/16.0))
+
+
+# Now that we have a function that returns an HSV triple of midpoints and tolerances, let's use those.
+# Also, probably more efficient to convert to greyscale somewhere along the line...
+def find_colour(image, hsv_midpoints_and_tolerances):
+	# Unpack HSV target midpoints and tolerances:
+	h,s,v=hsv_midpoints_and_tolerances
+	hue_midpoint,hue_tolerance=h
+	sat_midpoint,sat_tolerance=s
+	#v_midpoint,v_tolerance=v
+	# (we ignore value for now)
+	colour_hue = (hue_midpoint,hue_midpoint,hue_midpoint)
+	colour_sat = (sat_midpoint,sat_midpoint,sat_midpoint)
+	v,s,h = image.toHSV().splitChannels()
+	hue_proximity = h.colorDistance(colour_hue).binarize(hue_tolerance*2)
+	sat_proximity = s.colorDistance(colour_sat).binarize(sat_tolerance*2)
+	return ((hue_proximity/16.0) * (sat_proximity/16.0))
