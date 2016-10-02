@@ -5,14 +5,14 @@ import SimpleCV
 import numpy
 
 # Some colour space conversion functions:
-
+# These might be handy when converting from an HSV colour reported by GIMP to one that SimpleCV can use directly.
 def hue_from_angle(degrees): return degrees / 360.0 * 255
 def sat_from_percent(percent): return percent / 100.0 * 255
-# Actually doesn't give the right numbers?!
+# Actually doesn't give the right numbers?!  TODO: test!
 
 
 # Generate a solid colour image, matching the resolution and format of the supplied image:
-# (I couldn't see any way to create a new blank image using Image)
+# (I couldn't see any way to create a new blank image using Image - supposedly you can call the constructor with a width and height, but not sure about setting the default colour)
 
 def solid(image, colour):
 	solid = image.copy()
@@ -61,7 +61,7 @@ def highlight(pixels):
 
 
 # Correct an image for white balance based on a sample grey point:
-
+# NOTE: assumes RGB - should probably check for that and warn/convert if necessary.
 def wb(image,grey_sample):
 	grey=numpy.mean(grey_sample)
 	r_corr = grey / grey_sample[0]
@@ -133,7 +133,7 @@ def calibrate_white_balance():
 				# Um, how to take the mean of a list of tuples?
 				mean_sample = tuple(map(lambda y: sum(y) / float(len(y)), zip(*sample_pixels)))
 				print('mean grey sample: ' + str(mean_sample))
-				return mean_sample # or rinse and repeat?
+				return mean_sample # or rinse and repeat?  Maybe not - fn can just be called again if needed.
 			prev_mouse_state = False
 
 # Usage:
@@ -141,3 +141,66 @@ def calibrate_white_balance():
 #grey_sample = calibrate_white_balance()
 #while True:
 #	wb(camera.getImage(), grey_sample).show()
+
+
+# Function for calibrating the colour matcher, which will be quite similar to the white-balance sampler.
+# Hmm, this should really use WB-corrected images! But how does it know what correction to apply? Might have to add a grey-sample parameter.
+
+def calibrate_colour_match(grey_point):
+	display=SimpleCV.Display()
+	camera=SimpleCV.Camera()
+	prev_mouse_state = False
+	sample_pixels = []
+	print('Press and hold left mouse button over the region whose colour you wish to match...')
+	while display.isNotDone():
+		image = wb(camera.getImage(), grey_point).toHSV()
+		image.save(display)
+		if display.mouseLeft:
+			x = display.mouseX
+			y = display.mouseY
+			if not prev_mouse_state:
+				# Button just pressed - initialise new list:
+				sample_pixels = []
+				#print(sample_pixels)
+			colour_sample = image.getPixel(x,y)
+			# Indicate the point being sampled:
+			image.drawCircle((x,y),rad=5,color=SimpleCV.Color.VIOLET,thickness=1)
+			image.save(display)
+			print(str(x) + ', ' + str(y) + ': ' + str(colour_sample))
+			sample_pixels.append(colour_sample)
+			prev_mouse_state = True
+		else:
+			if prev_mouse_state:
+				# Button just released:
+				# Find the mean hue, saturation, and value...
+				sample_pixels_transposed = zip(*sample_pixels)
+				mean_sample = tuple(map(lambda y: sum(y) / float(len(y)), zip(*sample_pixels)))
+				print('mean sample (HSV): ' + str(mean_sample))
+				# ...and also the max and min in order to determine the range to match within each (probably ignore value, ultimately).
+				# Could perhaps just take the smaller of the ranges symmetrically around the mean...or the larger...
+				# Of course, the min and max are not necessarily equidistant from the mean...maybe better to use the midpoint of the min and max only...though I think it would be nice to recognise the mean somehow...
+				# We could get super-fancy and build a probability distribution function, I guess...
+				# ...but note that we are kind of assuming that the hue and saturation dimensions are completely independent, which is probably not realistic (even for diffuse reflections?).
+				sample_min = tuple(map(min, sample_pixels_transposed))
+				sample_max = tuple(map(max, sample_pixels_transposed))
+				# Ugh, you can't just subtract two tuples in Python?!
+				hue_midpoint = (sample_max[0] + sample_min[0]) / 2.0
+				sat_midpoint = (sample_max[1] + sample_min[1]) / 2.0
+				val_midpoint = (sample_max[2] + sample_min[2]) / 2.0
+				hue_tolerance = sample_max[0] - hue_midpoint
+				sat_tolerance = sample_max[1] - sat_midpoint
+				val_tolerance = sample_max[2] - val_midpoint
+				# Alternatively, mean-based tolerance:
+				#hue_tolerance=min(sample_max[0]-mean_sample[0], mean_sample[0]-sample_min[0])
+				#sat_tolerance=min(sample_max[1]-mean_sample[1], mean_sample[1]-sample_min[1])
+				print('hue midpoint:' + str(hue_midpoint))
+				print('hue tolerance:' + str(hue_tolerance))
+				print('saturation midpoint:' + str(sat_midpoint))
+				print('saturation tolerance:' + str(sat_tolerance))
+				print('value midpoint:' + str(val_midpoint))
+				print('value tolerance:' + str(val_tolerance))
+				# What structure to return? Perhaps a pair of triples, each having the HSV means and thresholds?
+				# Or a triple of pairs?
+				return ((hue_midpoint,hue_tolerance),(sat_midpoint,sat_tolerance),(val_midpoint,val_tolerance))
+				#return mean_sample # or rinse and repeat?
+			prev_mouse_state = False
