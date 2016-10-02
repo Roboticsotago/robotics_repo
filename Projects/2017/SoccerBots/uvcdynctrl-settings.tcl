@@ -1,10 +1,13 @@
 #!/usr/bin/env tclsh8.5
 
+# NOTE: probably don't go below Exposure=100 because power line frequency artifacts become visible (even with Power Line Frequency = 1 (50 Hz)).
+
 set settings {
 	"Sharpness" 0
-	"Gain" 255
+	"Gain" 192
 	"Exposure, Auto" 1
-	"Exposure (Absolute)" 200
+	"Exposure (Absolute)" 100
+	"Power Line Frequency" 1
 	"White Balance Temperature, Auto" 0
 	"White Balance Temperature" 2900
 }
