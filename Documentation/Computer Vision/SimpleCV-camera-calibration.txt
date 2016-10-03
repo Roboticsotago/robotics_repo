@@ -64,6 +64,22 @@ while True:
 
 OK, so how do we control the camera exposure setting?  We want to minimise blurring for easier image analysis.
 
+Oh, don't forget that the Logitech C920 cameras capture 16:9 natively!
+	1920 x 1080
+	1024 x 576
+	960 x 540	1/2
+	800 x 450
+	640 x 360
+	480 x 270	1/4
+	320 x 180
+	240 x 135	1/8
+	160 x 90
+
+camera = Camera(prop_map={'width':240, 'height':135})
+# Is it prop_set or prop_map?  Either way it doesn't work (prop_map gives an error, prop_set just does nothing).
+
+camera.prop_map gives weird numbers too...
+
 Suggested capture settings:
 	Resolution: 320 x 240 or even 160 x 120
 	Frame rate: 5 or maybe 10 FPS (SimpleCV on the Pi probably can't do more than about 5 FPS when processing)
