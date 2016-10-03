@@ -1,0 +1,5 @@
+[ ] Obtain colour sensors, test, and integrate
+[ ] Range sensing (for water tower, rescue target)
+[ ] Develop and test lifter designs
+[ ] Wireless communication for programming and debugging?
+[ ] Test motors and drive trains (Tamiya planetary gear sets? Brushless motors?  Maybe make our own brushless motor controller?!)

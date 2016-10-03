@@ -7,15 +7,25 @@
 
 // Will need light/dark thresholds for each sensor for calibration...
 // ...or just one for all, if they read consistently enough
+
 const int SENSOR_THRESHOLD=450;
+#define DEBUGGING 1
+
+// Don't go too high with these on the Dalek as it will draw too much current and cause resets!
+const int MOTOR_L_DUTY=235;
+const int MOTOR_R_DUTY=215;
+//const int MOTOR_L_DUTY=0;	// 180
+//const int MOTOR_R_DUTY=0;	// 150
+
+const int CYCLE_TIME=2;
+
+#define WHITE_ON_BLACK 1
 
 #define L_PIN A0
 #define M_PIN A1
 #define R_PIN A2
-#define DEBUGGING 1
 
-//#define WHITE_ON_BLACK 1
-
+// TODO: factor out these and the motor-related functions below into a library.
 
 #define MOTOR_R_ENABLE 11
 #define MOTOR_L_ENABLE 5
@@ -26,25 +36,16 @@ const int SENSOR_THRESHOLD=450;
 #define MOTOR_L_1_PIN 9
 #define MOTOR_L_2_PIN 10
 
+// Unused?
 #define LEFT_MOTOR 0
 #define RIGHT_MOTOR 1
 
-// Don't go too high with these on the Dalek as it will draw too much current and reset!
-const int MOTOR_L_DUTY=185;
-const int MOTOR_R_DUTY=165;
-//const int MOTOR_L_DUTY=0;	// 180
-//const int MOTOR_R_DUTY=0;	// 150
-
-
-const int CYCLE_TIME=2;
 
 //const int Kp = 1;
 //const int Ki = 1;
 //const int Kd = 1;
 
 int backtrack[5][10];
-
-// TODO: a #define flag for black line on white background or vice versa.
 
 void setup() {
 	pinMode(A0, INPUT); digitalWrite(A0, LOW);
@@ -129,6 +130,7 @@ void R_Brake() {
 //	digitalWrite(MOTOR_R_ENABLE, HIGH);
 }
 
+
 void R_Drive(float speed){
 	if (speed < 0){
 		digitalWrite(MOTOR_R_1_PIN, HIGH);
@@ -154,12 +156,14 @@ void L_Drive(float speed){
 	analogWrite(MOTOR_L_ENABLE, speed * MOTOR_L_DUTY);
 }
 
+
 // High-level functions for driving both motors at once:
 
 void Veer(float left_speed, float right_speed){
 	L_Drive(left_speed); R_Drive(right_speed);
 	
 }
+
 void Fwd() {
 	L_Fwd(); R_Fwd();
 }
@@ -255,13 +259,23 @@ void retrace()
 	}
 }
 
+// For detecting the line, we'll have a function to read an analog value for each sensor and compare with a light/dark threshold.
 
-// Read and compare with threshold:
+// Here's a nice compact black line detector one-liner:
+// bool isBlack(int pin) { return analogRead(pin) > SENSOR_THRESHOLD;}
 
-bool line_detected(int analogPin) {
-	int raw_reading = analogRead(analogPin);
-	// TODO: if debugging, print raw reading to serial output
-	// If you need to flip the light/dark sense, do it here
+// For debugging, we might want to be able to see what's going on at the analogRead() level:
+
+bool isBlack(int pin) {
+	int raw_reading = analogRead(pin);
+#ifdef DEBUGGING
+	Serial.print("pin=");
+	Serial.print(pin);
+	Serial.print(" val=");
+	Serial.print(raw_reading);
+	Serial.print("	");
+//	Serial.println();
+#endif
 #ifdef WHITE_ON_BLACK
 	return (raw_reading < SENSOR_THRESHOLD);	// White line, black background
 #else
@@ -269,6 +283,8 @@ bool line_detected(int analogPin) {
 #endif
 }
 
+
+// TODO: implement some sort of memory of recent moves, so we can do more meaningful corrections if we get lost, etc.
 
 void control() {
 	bool l_line = isBlack(L_PIN);
@@ -325,28 +341,9 @@ void debug() {
 	Serial.print(line_detected(A2)); Serial.print("	");
 	Serial.println();
 
-	delay(100);
+	delay(CYCLE_TIME);
 }
 
-// Nice compact black line detector:
-// bool isBlack(int pin) { return analogRead(pin) > SENSOR_THRESHOLD;}
-
-bool isBlack(int pin) {
-	int raw_reading = analogRead(pin);
-#ifdef DEBUGGING
-	Serial.print("pin=");
-	Serial.print(pin);
-	Serial.print(" val=");
-	Serial.print(raw_reading);
-	Serial.print("	");
-//	Serial.println();
-#endif
-#ifdef WHITE_ON_BLACK
-	return (raw_reading < SENSOR_THRESHOLD);	// White line, black background
-#else
-	return (raw_reading > SENSOR_THRESHOLD);	// Black line, white background
-#endif
-}
 
 void loop() {
 	control();
@@ -372,7 +369,8 @@ void loop() {
 	
 	//delay(CYCLE_TIME);
 }
-void test_loop(){
+
+void test_loop() {
 	Veer(0.7, 1);
 	delay(2000);
 	Veer(1, 0.7);
