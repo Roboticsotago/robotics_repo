@@ -1,8 +1,11 @@
 # A collection of handy functions built on SimpleCV for our robotics projects
 
+# TODO: sort out image.show() vs image.save(display) pros/cons and scaling weirdness.
+
 # We need this, obviously:
 import SimpleCV
 import numpy
+import time
 
 # Some colour space conversion functions:
 # These might be handy when converting from an HSV colour reported by GIMP to one that SimpleCV can use directly.
@@ -109,9 +112,13 @@ def calibrate_white_balance():
 	camera=SimpleCV.Camera()
 	prev_mouse_state = False
 	sample_pixels = []
+	image = camera.getImage().scale(0.5)
+	image.drawText("Hold mouse button over white/grey", 8,8,color=SimpleCV.Color.YELLOW,fontsize=14)
+	image.save(display)
+	time.sleep(2)
 	print('Press and hold left mouse button over a region that should be white/grey...')
 	while display.isNotDone():
-		image = camera.getImage()
+		image = camera.getImage().scale(0.5)
 		image.save(display)
 		if display.mouseLeft:
 			x = display.mouseX
@@ -145,6 +152,14 @@ def calibrate_white_balance():
 # TODO: might be nice to calculate the correct colour temperature so at least the camera could be set to that in a fixed way...might give better colour resolution than doing it in SimpleCV, which seems to have only 8-bit colour depth per channel.
 
 
+# Function for identifying black regions in the image:
+def find_black(image,value_threshold=75,saturation_threshold=90):
+	v,s,h = image.toHSV().splitChannels()
+	dark = v.binarize(value_threshold)   # had 90 on ProBook cam
+	grey = s.binarize(saturation_threshold)
+	return (dark/16) * (grey/16)
+
+
 
 
 # Function for calibrating the colour matcher, which will be quite similar to the white-balance sampler.
@@ -155,9 +170,13 @@ def calibrate_colour_match(grey_point):
 	camera=SimpleCV.Camera()
 	prev_mouse_state = False
 	sample_pixels = []
+	image = wb(camera.getImage().scale(0.5), grey_point).toHSV()
+	image.drawText("Hold mouse button over target", 8,8,color=SimpleCV.Color.YELLOW,fontsize=14)
+	image.save(display)
+	time.sleep(2)
 	print('Press and hold left mouse button over the region whose colour you wish to match...')
 	while display.isNotDone():
-		image = wb(camera.getImage(), grey_point).toHSV()
+		image = wb(camera.getImage().scale(0.5), grey_point).toHSV()
 		image.save(display)
 		if display.mouseLeft:
 			x = display.mouseX
@@ -249,11 +268,12 @@ def find_colour(image, hsv_midpoints_and_tolerances):
 	s = s.toGray()
 	#v = v.toGray()
 	# Not sure why the tolerances are coming out too small, but I'm having to multiply them by a minimum of about 3 to get good matching overall.
-	hue_proximity = h.colorDistance(colour_hue).binarize(hue_tolerance*5)
-	sat_proximity = s.colorDistance(colour_sat).binarize(sat_tolerance*5)
+	hue_proximity = h.colorDistance(colour_hue).binarize(hue_tolerance*3)
+	sat_proximity = s.colorDistance(colour_sat).binarize(sat_tolerance*3)
 	return ((hue_proximity/16.0) * (sat_proximity/16.0))
 
 
 # Next we need a way to find the centroid of the matching (white) pixels in an image, e.g. for targeting.
 
 # Also, how much of the horizontal field of vision is occupied by a particular colour, since when the goal is near, the angle is not critical.
+# Could probably just use blobs for that, using the bounding box.
