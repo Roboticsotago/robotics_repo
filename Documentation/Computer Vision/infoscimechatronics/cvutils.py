@@ -236,14 +236,24 @@ def find_colour_1(image, hue, hue_thresh, sat, sat_thresh):
 # Also, probably more efficient to convert to greyscale somewhere along the line...
 def find_colour(image, hsv_midpoints_and_tolerances):
 	# Unpack HSV target midpoints and tolerances:
-	h,s,v=hsv_midpoints_and_tolerances
-	hue_midpoint,hue_tolerance=h
-	sat_midpoint,sat_tolerance=s
+	h,s,v = hsv_midpoints_and_tolerances
+	hue_midpoint,hue_tolerance = h
+	sat_midpoint,sat_tolerance = s
 	#v_midpoint,v_tolerance=v
 	# (we ignore value for now)
 	colour_hue = (hue_midpoint,hue_midpoint,hue_midpoint)
 	colour_sat = (sat_midpoint,sat_midpoint,sat_midpoint)
-	v,s,h = image.toHSV().splitChannels()
-	hue_proximity = h.colorDistance(colour_hue).binarize(hue_tolerance*2)
-	sat_proximity = s.colorDistance(colour_sat).binarize(sat_tolerance*2)
+	v,s,h = image.toHSV().splitChannels(grayscale=True)
+	# NOTE: v,s,h at this point are each BGR images..why? Supposedly, Image.splitChannels() has a grayscale parameter, which is True by default.  But even with that explicitly set to true, the resulting images are BGR.
+	h = h.toGray()
+	s = s.toGray()
+	#v = v.toGray()
+	# Not sure why the tolerances are coming out too small, but I'm having to multiply them by a minimum of about 3 to get good matching overall.
+	hue_proximity = h.colorDistance(colour_hue).binarize(hue_tolerance*5)
+	sat_proximity = s.colorDistance(colour_sat).binarize(sat_tolerance*5)
 	return ((hue_proximity/16.0) * (sat_proximity/16.0))
+
+
+# Next we need a way to find the centroid of the matching (white) pixels in an image, e.g. for targeting.
+
+# Also, how much of the horizontal field of vision is occupied by a particular colour, since when the goal is near, the angle is not critical.
