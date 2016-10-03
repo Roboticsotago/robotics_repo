@@ -7,14 +7,14 @@
 
 // Will need light/dark thresholds for each sensor for calibration...
 // ...or just one for all, if they read consistently enough
-const int SENSOR_THRESHOLD=600;
+const int SENSOR_THRESHOLD=450;
 
 #define L_PIN A0
 #define M_PIN A1
 #define R_PIN A2
 #define DEBUGGING 1
 
-#define WHITE_ON_BLACK 1
+//#define WHITE_ON_BLACK 1
 
 
 #define MOTOR_R_ENABLE 11
@@ -30,15 +30,19 @@ const int SENSOR_THRESHOLD=600;
 #define RIGHT_MOTOR 1
 
 // Don't go too high with these on the Dalek as it will draw too much current and reset!
-const int MOTOR_L_DUTY=235;
+const int MOTOR_L_DUTY=185;
+const int MOTOR_R_DUTY=165;
 //const int MOTOR_L_DUTY=0;	// 180
 //const int MOTOR_R_DUTY=0;	// 150
-const int MOTOR_R_DUTY=215;
 
 
 const int CYCLE_TIME=2;
 
+//const int Kp = 1;
+//const int Ki = 1;
+//const int Kd = 1;
 
+int backtrack[5][10];
 
 // TODO: a #define flag for black line on white background or vice versa.
 
@@ -188,6 +192,68 @@ void spinR() {
 	L_Fwd(); R_Rev();
 }
 
+void calc_track(int move)
+{
+
+
+	if (backtrack[move][0] > 0)
+	{
+		backtrack[move][0]++;
+	}
+	else
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 9; j > 0; j--)
+			{
+				backtrack[i][j] = backtrack[i][j-1];
+			}
+		}
+		for (int i = 0; i < 5; i++)
+		{
+			backtrack[i][0] = 0;
+		}
+		backtrack[move][0] = 1;
+	}
+}
+
+
+void retrace()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		if (backtrack[i][0] > 0)
+		{
+			//spin right, so spin left
+			for (int j = 0; j < backtrack[i][0]; j++)
+				spinL();
+		}
+		if (backtrack[i][1] > 0)
+		{
+			//veer right, so veer left
+			for (int j = 0; j < backtrack[i][1]; j++)
+				Veer(0.7,1);
+		}
+		if (backtrack[i][2] > 0)
+		{
+			//forward, so move back
+			for (int j = 0; j < backtrack[i][2]; j++)
+				Rev();
+		}
+		if (backtrack[i][3] > 0)
+		{
+			//veer left, so veer right
+			for (int j = 0; j < backtrack[i][3]; j++)
+				Veer(1,0.7);
+		}
+		if (backtrack[i][4] > 0)
+		{
+			//spin left, so spin right
+			for (int j = 0; j < backtrack[i][4]; j++)
+				spinR();
+		}
+	}
+}
 
 
 // Read and compare with threshold:
@@ -212,14 +278,45 @@ void control() {
 	// TODO: could shift and combine the boolean values for more readable code
 	// e.g. switch bits ... 0b000 -> lost ... 0b010 -> fwd ...
 	
-	if (!l_line && !m_line && !r_line) {Serial.println("Lost!"); Rev();}
-	if (!l_line && !m_line &&  r_line) {Serial.println("spin right"); spinR();}
-	if (!l_line &&  m_line && !r_line) {Serial.println("fwd"); Fwd();}
-	if (!l_line &&  m_line &&  r_line) {Serial.println("veer right"); Veer(1,0.7);}
-	if ( l_line && !m_line && !r_line) {Serial.println("spin left"); spinL();}
-	if ( l_line && !m_line &&  r_line) {Serial.println("?!"); veerR();}
-	if ( l_line &&  m_line && !r_line) {Serial.println("veer left"); Veer(0.7,1);}
-	if ( l_line &&  m_line &&  r_line) {Serial.println("perpendicular?!"); Fwd();}
+	if (!l_line && !m_line && !r_line) {
+		Serial.println("Lost!"); 
+		retrace();
+	}
+	if (!l_line && !m_line &&  r_line) {
+		Serial.println("spin right"); 
+		spinR();
+		calc_track(0);
+	}
+	if (!l_line &&  m_line && !r_line) {
+		Serial.println("fwd"); 
+		Fwd();
+		calc_track(2);
+	}
+	if (!l_line &&  m_line &&  r_line) {
+		Serial.println("veer right"); 
+		Veer(1,0.7);
+		calc_track(1);
+		}
+	if ( l_line && !m_line && !r_line) {
+		Serial.println("spin left"); 
+		spinL();
+		calc_track(4);
+	}
+	if ( l_line && !m_line &&  r_line) {
+		Serial.println("?!"); 
+		veerR();
+		calc_track(1);
+	}
+	if ( l_line &&  m_line && !r_line) {
+		Serial.println("veer left"); 
+		Veer(0.7,1);
+		calc_track(3);
+	}
+	if ( l_line &&  m_line &&  r_line) {
+		Serial.println("perpendicular?!"); 
+		Fwd();
+		calc_track(2);
+	}
 }
 
 void debug() {
@@ -253,7 +350,16 @@ bool isBlack(int pin) {
 
 void loop() {
 	control();
-	//delay(100);
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			Serial.print(backtrack[i][j]);
+			Serial.print(" ");
+		}
+		Serial.println();
+	}
+	//delay(300);
 	
 	//Serial.print("A0:"); Serial.print(analogRead(A0)); Serial.print("   ");
 	//Serial.print("A1:"); Serial.print(analogRead(A1)); Serial.print("   ");
