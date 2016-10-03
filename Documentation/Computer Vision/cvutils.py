@@ -7,7 +7,7 @@ import SimpleCV
 
 def hue_from_angle(degrees): return degrees / 360.0 * 255
 def sat_from_percent(percent): return percent / 100.0 * 255
-# Actually doesn't give the right numbers?!
+# Actually doesn't give the right numbers?!  TODO: test and correct...
 
 
 # Generate a solid colour image, matching the resolution and format of the supplied image:
@@ -141,4 +141,112 @@ def calibrate_white_balance():
 grey_sample = calibrate_white_balance()
 while True:
 	wb(camera.getImage(), grey_sample).show()
+
+
+
+# Some functions for identifying which regions of the image match a certain colour.  Let's try with black first:
+
+def find_black(image):
+	v,s,h = image.toHSV().splitChannels()
+	dark = v.binarize(75)	# had 90 on ProBook cam
+	grey = s.binarize(90)
+	return (dark/16) * (grey/16)
+
+# The same, but with parameters for value and saturation thresholds:
+
+def find_black(image,v_thresh,s_thresh):
+	v,s,h = image.toHSV().splitChannels()
+	dark = v.binarize(v_thresh)	# had 90 on ProBook cam
+	grey = s.binarize(s_thresh)
+	return (dark/16) * (grey/16)
+
+# It wouldn't be too hard to identify which regions of the image are (close enough to) grey as well, using just the saturation channel...
+# ...although consider that specular highlights will basically appear white/light grey no matter what the actual hue of the surface
+
+def find_grey(image,s_thresh):
+	v,s,h = image.toHSV().splitChannels()
+	return(s.binarize(s_thresh))
+
+
+# For finding colours, we might be able to do reasonably well just by examining the hue channel, and perhaps the saturation as well.
+# TODO: refine saturation matching. I suspect we want to match any saturation below the threshold, not just within a range, because of specular highlights.
+# Specular reflections will likely cause problems, though, as parts of the image will have a very low saturation, high value, and likely completely wrong hue (the hue for greys defaults to red).
+
+# TODO: might be able to speed this up a little by converting things to greyscale images..?
+# Image.toGrey() or Image.greyscale()?!
+
+# Note that we don't have to invert() here, when going from the colour distance to proximity to the target hue/saturation, because, bizarrely, binarize() seems to do that as well.
+
+def find_colour(image, hue, hue_thresh, sat, sat_thresh):
+	colour_hue = (hue,hue,hue)
+	colour_sat = (sat,sat,sat)
+	v,s,h = image.toHSV().splitChannels()
+	hue_proximity = h.colorDistance(colour_hue).binarize(hue_thresh)
+	sat_proximity = s.colorDistance(colour_sat).binarize(sat_thresh)
+	return ((hue_proximity/16.0) * (sat_proximity/16.0))
+
+# Also, note that there is a hueDistance() function as well, which might be more efficient than using colorDistance() in these sorts of situations.
+# Presumably there is also a saturationDistance() and valueDistance()...?
+
+
+# Here's a helper function for finding the target hue, hue threshold, saturation, and saturation threshold for matching a colour.
+# TODO: implement a clickable colour picker using Display, similar to calibrate_white_balance() above.  Could infer the target centre and thresholds automatically, based on the range of colours selected.
+
+def calibrate_colour_finder():
+	image = camera.getImage()
+	image.show()
+	highlight=solid(image, (255,0,255))
+	v,s,h = image.toHSV().splitChannels()
+	target_hue = 0
+	target_sat = 0
+	hue_threshold=0
+	sat_threshold=0
+	# Hue:
+	response = raw_input('\nTarget Hue (or Enter when found) => ')
+	while response != '':
+		# TODO: handle bogus response robustly...
+		target_hue = int(response)
+		match = h.colorDistance((target_hue,target_hue,target_hue)).invert()
+		((image * 0.1) + (match * 0.1) + (match.binarize(250).invert()/255 * highlight)).show()
+		response = raw_input('\nTarget Hue => ')
+	response = raw_input('\nHue Threshold => ')
+	while response != '':
+		# TODO: handle bogus response robustly...
+		hue_threshold=int(response)
+		#print(type(hue_threshold))
+		# Gah, binarize() and it's built-in invert behaviour!! >:^p
+		match = h.colorDistance((target_hue,target_hue,target_hue)).binarize(hue_threshold)
+		((image * 0.1) + (match/255 * highlight)).show()
+		response = raw_input('\nHue Threshold => ')
+	response = raw_input('\nTarget Saturation (or Enter when found) => ')
+	while response != '':
+		# TODO: handle bogus response robustly...
+		target_sat = int(response)
+		match = s.colorDistance((target_sat,target_sat,target_sat)).invert()
+		((image * 0.1) + (match * 0.1) + (match.binarize(250).invert()/255 * highlight)).show()
+		response = raw_input('\nTarget Saturation => ')
+	response = raw_input('\nSaturation Threshold => ')
+	while response != '':
+		# TODO: handle bogus response robustly...
+		sat_threshold=int(response)
+		match = s.colorDistance((target_sat,target_sat,target_sat)).binarize(sat_threshold)
+		((image * 0.1) + (match/255 * highlight)).show()
+		response = raw_input('\nSaturation Threshold => ')
+	print('Target hue:', target_hue)
+	print('Hue threshold:', hue_threshold)
+	print('Target saturation:', target_sat)
+	print('Saturation threshold:', sat_threshold)
+	return (target_hue, hue_threshold, target_sat, sat_threshold)
+
+# Try it out:
+calibrate_colour_finder()
+
+
+# Trial hue distances:
+h.colorDistance((54,54,54)).show()
+# Trial hue threshold:
+h.colorDistance((54,54,54)).binarize(48).show()
+# Likewise for saturation:
+s.colorDistance((150,150,150)).show()
+s.colorDistance((150,150,150)).binarize(160).show()
 
