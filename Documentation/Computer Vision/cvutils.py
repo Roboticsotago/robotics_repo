@@ -1,5 +1,8 @@
 # A collection of handy functions built on SimpleCV for our robotics projects
 
+# Do we need to import SimpleCV?  I assume the import statement will ignore/fail gracefully if asked to import something that's already been imported...
+import SimpleCV
+
 # Some colour space conversion functions:
 
 def hue_from_angle(degrees): return degrees / 360.0 * 255
@@ -15,7 +18,8 @@ def solid(image, colour):
 	solid[0:solid.width, 0:solid.height] = colour
 	return solid
 
-# Or, now that I know about this:
+# Various also-rans follow...
+
 #def solid(image, colour):
 #	solid=image.copy()
 #	solid.drawRectangle(0,0,solid.width,solid.height, color=colour)
@@ -23,18 +27,16 @@ def solid(image, colour):
 # No! drawRectangle draws only the border, not a solid area!
 
 # Oh, wait, you pass Image() an (x,y) dimension tuple when creating it.
-
-def solid_(template_image, colour):
-	solid = Image(template_image.width,template_image.height)
-	solid[0:solid.width, 0:solid.height] = colour
-	return solid
+#def solid_(template_image, colour):
+#	solid = Image(template_image.width,template_image.height)
+#	solid[0:solid.width, 0:solid.height] = colour
+#	return solid
 # Bah, problems with numpy array format...
 
-def solid__(width, height, colour):
-	solid = Image(width,height)
-	solid[0:width, 0:height] = colour
-	return solid
-
+#def solid__(width, height, colour):
+#	solid = Image(width,height)
+#	solid[0:width, 0:height] = colour
+#	return solid
 
 # or would it be better to pass (width,height) as a tuple in our function too?
 
@@ -56,7 +58,10 @@ def highlight(pixels):
 
 
 
-# Correct an image for white balance based on a sample grey point:
+# The following code relates to white balance correction (it will often be preferable to set the camera to a fixed white-balance, and correct for it in software in a more controlled and uniform fashion).
+
+# This function corrects an image's white balance based on a sample "grey" point:
+# (The calibrate_white_balance() function below can be used to sample a "supposed-to-be-grey" pixel by clicking with the mouse)
 
 def wb(image,grey_sample):
 	grey=np.mean(grey_sample)
