@@ -8,19 +8,19 @@
 // Will need light/dark thresholds for each sensor for calibration...
 // ...or just one for all, if they read consistently enough
 
-const int SENSOR_THRESHOLD=450;
+const int SENSOR_THRESHOLD=500;
 #define DEBUGGING 1
+//#define DEBUG_BACKTRACKING 1
 
 // Don't go too high with these on the Dalek as it will draw too much current and cause resets!
 const int MOTOR_L_DUTY=225;
-const int MOTOR_R_DUTY=205;
+const int MOTOR_R_DUTY=210;
 //const int MOTOR_L_DUTY=0;	// 180
 //const int MOTOR_R_DUTY=0;	// 150
 
 const int CYCLE_TIME=2;
 
-int led_state;
-#define WHITE_ON_BLACK 1
+//#define WHITE_ON_BLACK 1
 
 #define L_PIN A0
 #define M_PIN A1
@@ -45,6 +45,7 @@ int led_state;
 //const int Ki = 1;
 //const int Kd = 1;
 
+// Unfortunately, there is some sharing of LED pins with motor drive still.
 #define R_LED 11
 #define O_LED 2
 #define Y_LED 12
@@ -52,6 +53,10 @@ int led_state;
 #define BUZZER 3
 #define L_BUTTON 19
 #define R_BUTTON 8
+
+int led_state;
+
+int motors_enabled = 0;
 
 int backtrack[5][10];
 
@@ -65,8 +70,8 @@ void setup() {
 	pinMode(Y_LED, OUTPUT); digitalWrite(Y_LED, LOW);
 	pinMode(G_LED, OUTPUT); digitalWrite(G_LED, LOW);
 	pinMode(BUZZER, OUTPUT);
-	pinMode(L_BUTTON, INPUT);
-	pinMode(R_BUTTON, INPUT);
+	pinMode(L_BUTTON, INPUT); digitalWrite(L_BUTTON, HIGH); // or INPUT_PULLUP on newer Arduino
+	pinMode(R_BUTTON, INPUT); digitalWrite(R_BUTTON, HIGH);	// NOTE: hardware problem with Sensor 0 Pin 1 on the Dalek board?  It's stuck at only about 1.7 V when pulled high.  Oh, hardwired onboard LED!  Have now removed resistor R4 to open that circuit. :)
 
 	pinMode(MOTOR_L_ENABLE, OUTPUT); digitalWrite(MOTOR_L_ENABLE, LOW);
 	pinMode(MOTOR_R_ENABLE, OUTPUT); digitalWrite(MOTOR_R_ENABLE, LOW);
@@ -79,6 +84,7 @@ void setup() {
 
 #ifdef DEBUGGING
 	Serial.begin(9600);
+	Serial.println("\n\nDalek Prototype Line Follower v0.01");
 	Serial.print("SENSOR_THRESHOLD=");
 	Serial.println(SENSOR_THRESHOLD);
 #endif
@@ -93,6 +99,7 @@ void setup() {
 // Low-level functions for driving the L and R motors independently...
 
 void L_Fwd() {
+	if (!motors_enabled) return;
 	digitalWrite(MOTOR_L_1_PIN, LOW);
 	digitalWrite(MOTOR_L_2_PIN, HIGH);
 	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
@@ -100,6 +107,7 @@ void L_Fwd() {
 }
 
 void L_Rev() {
+	if (!motors_enabled) return;
 	digitalWrite(MOTOR_L_1_PIN, HIGH);
 	digitalWrite(MOTOR_L_2_PIN, LOW);
 	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
@@ -114,6 +122,7 @@ void L_Stop() {
 }
 
 void L_Brake() {
+	if (!motors_enabled) return;
 	digitalWrite(MOTOR_L_1_PIN, HIGH);
 	digitalWrite(MOTOR_L_2_PIN, HIGH);
 	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
@@ -122,6 +131,7 @@ void L_Brake() {
 
 
 void R_Fwd() {
+	if (!motors_enabled) return;
 	digitalWrite(MOTOR_R_1_PIN, LOW);
 	digitalWrite(MOTOR_R_2_PIN, HIGH);
 	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
@@ -129,6 +139,7 @@ void R_Fwd() {
 }
 
 void R_Rev() {
+	if (!motors_enabled) return;
 	digitalWrite(MOTOR_R_1_PIN, HIGH);
 	digitalWrite(MOTOR_R_2_PIN, LOW);
 	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
@@ -143,6 +154,7 @@ void R_Stop() {
 }
 
 void R_Brake() {
+	if (!motors_enabled) return;
 	digitalWrite(MOTOR_R_1_PIN, HIGH);
 	digitalWrite(MOTOR_R_2_PIN, HIGH);
 	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
@@ -151,6 +163,7 @@ void R_Brake() {
 
 
 void R_Drive(float speed){
+	if (!motors_enabled) return;
 	if (speed < 0){
 		digitalWrite(MOTOR_R_1_PIN, HIGH);
 		digitalWrite(MOTOR_R_2_PIN, LOW);
@@ -164,6 +177,7 @@ void R_Drive(float speed){
 
 
 void L_Drive(float speed){
+	if (!motors_enabled) return;
 	if (speed < 0){
 		digitalWrite(MOTOR_L_1_PIN, HIGH);
 		digitalWrite(MOTOR_L_2_PIN, LOW);
@@ -217,8 +231,6 @@ void spinR() {
 
 void calc_track(int move)
 {
-
-
 	if (backtrack[move][0] > 0)
 	{
 		backtrack[move][0]++;
@@ -306,6 +318,8 @@ bool isBlack(int pin) {
 // TODO: implement some sort of memory of recent moves, so we can do more meaningful corrections if we get lost, etc.
 
 void control() {
+	digitalWrite(Y_LED, LOW);
+	
 	bool l_line = isBlack(L_PIN);
 	bool m_line = isBlack(M_PIN);
 	bool r_line = isBlack(R_PIN);
@@ -314,18 +328,20 @@ void control() {
 	// e.g. switch bits ... 0b000 -> lost ... 0b010 -> fwd ...
 	
 	if (!l_line && !m_line && !r_line) {
-		Serial.println("Lost!"); 
-		retrace();
+		Serial.println("Lost!");
+		digitalWrite(Y_LED, HIGH);
+		Fwd();
+//		retrace();
 	}
 	if (!l_line && !m_line &&  r_line) {
 		Serial.println("spin right"); 
 		spinR();
-		calc_track(0);
+//		calc_track(0);
 	}
 	if (!l_line &&  m_line && !r_line) {
 		Serial.println("fwd"); 
 		Fwd();
-		calc_track(2);
+//		calc_track(2);
 	}
 	if (!l_line &&  m_line &&  r_line) {
 		Serial.println("veer right"); 
@@ -335,22 +351,24 @@ void control() {
 	if ( l_line && !m_line && !r_line) {
 		Serial.println("spin left"); 
 		spinL();
-		calc_track(4);
+//		calc_track(4);
 	}
 	if ( l_line && !m_line &&  r_line) {
 		Serial.println("?!"); 
+		digitalWrite(Y_LED, HIGH);
 		veerR();
-		calc_track(1);
+//		calc_track(1);
 	}
 	if ( l_line &&  m_line && !r_line) {
 		Serial.println("veer left"); 
 		Veer(0.7,1);
-		calc_track(3);
+//		calc_track(3);
 	}
 	if ( l_line &&  m_line &&  r_line) {
 		Serial.println("perpendicular?!"); 
+		digitalWrite(Y_LED, HIGH);
 		Fwd();
-		calc_track(2);
+//		calc_track(2);
 	}
 }
 
@@ -364,17 +382,18 @@ void debug() {
 }
 
 void toggleLED(){
-	if (led_state == 0){
-		digitalWrite(O_LED, HIGH);
-	}
-	else{
-		digitalWrite(O_LED,LOW);
-	}
+	led_state = !led_state;
+	digitalWrite(G_LED, led_state);
 }
 
 void loop() {
-	toggleLED();
+	if (!digitalRead(R_BUTTON)) {motors_enabled = 1;}
+	if (!digitalRead(L_BUTTON)) {motors_enabled = 0;}
+	if (!motors_enabled) {Stop();}
+	
 	control();
+	
+#ifdef DEBUG_BACKTRACKING
 	for (int i = 0; i < 5; i++)
 	{
 		for (int j = 0; j < 10; j++)
@@ -385,6 +404,10 @@ void loop() {
 		Serial.println();
 	}
 	//delay(300);
+#endif
+
+	toggleLED();
+
 	
 	//Serial.print("A0:"); Serial.print(analogRead(A0)); Serial.print("   ");
 	//Serial.print("A1:"); Serial.print(analogRead(A1)); Serial.print("   ");
