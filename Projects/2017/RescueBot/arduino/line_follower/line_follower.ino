@@ -12,13 +12,14 @@ const int SENSOR_THRESHOLD=450;
 #define DEBUGGING 1
 
 // Don't go too high with these on the Dalek as it will draw too much current and cause resets!
-const int MOTOR_L_DUTY=235;
-const int MOTOR_R_DUTY=215;
+const int MOTOR_L_DUTY=225;
+const int MOTOR_R_DUTY=205;
 //const int MOTOR_L_DUTY=0;	// 180
 //const int MOTOR_R_DUTY=0;	// 150
 
 const int CYCLE_TIME=2;
 
+int led_state;
 #define WHITE_ON_BLACK 1
 
 #define L_PIN A0
@@ -82,7 +83,10 @@ void setup() {
 	Serial.println(SENSOR_THRESHOLD);
 #endif
 	
-	delay(4000);
+	analogWrite(BUZZER, 191);
+	delay(1000);
+	analogWrite(BUZZER, 0);
+	delay(3000);
 }
 
 
@@ -351,16 +355,25 @@ void control() {
 }
 
 void debug() {
-	Serial.print(line_detected(A0)); Serial.print("	");
-	Serial.print(line_detected(A1)); Serial.print("	");
-	Serial.print(line_detected(A2)); Serial.print("	");
+	Serial.print(isBlack(A0)); Serial.print("	");
+	Serial.print(isBlack(A1)); Serial.print("	");
+	Serial.print(isBlack(A2)); Serial.print("	");
 	Serial.println();
 
 	delay(CYCLE_TIME);
 }
 
+void toggleLED(){
+	if (led_state == 0){
+		digitalWrite(O_LED, HIGH);
+	}
+	else{
+		digitalWrite(O_LED,LOW);
+	}
+}
 
 void loop() {
+	toggleLED();
 	control();
 	for (int i = 0; i < 5; i++)
 	{
@@ -385,9 +398,23 @@ void loop() {
 	//delay(CYCLE_TIME);
 }
 
-void test_loop() {
-	Veer(0.7, 1);
+void loop_test() {
+	digitalWrite(O_LED, HIGH);
+	delay(200);
+	digitalWrite(O_LED, LOW);
+	delay(200);
+	digitalWrite(Y_LED, HIGH);
+	delay(200);
+	digitalWrite(Y_LED, LOW);
+	delay(200);
+	digitalWrite(R_LED, HIGH);
+	delay(200);
+	digitalWrite(R_LED, LOW);
+	delay(200);
+	digitalWrite(G_LED, HIGH);
+	delay(200);
+	digitalWrite(G_LED, LOW);
+	delay(200);
 	delay(2000);
-	Veer(1, 0.7);
-	delay(2000);
+	
 }
