@@ -40,10 +40,17 @@ const int CYCLE_TIME=2;
 #define LEFT_MOTOR 0
 #define RIGHT_MOTOR 1
 
-
 //const int Kp = 1;
 //const int Ki = 1;
 //const int Kd = 1;
+
+#define R_LED 11
+#define O_LED 2
+#define Y_LED 12
+#define G_LED 13
+#define BUZZER 3
+#define L_BUTTON 19
+#define R_BUTTON 8
 
 int backtrack[5][10];
 
@@ -52,6 +59,14 @@ void setup() {
 	pinMode(A1, INPUT); digitalWrite(A1, LOW);
 	pinMode(A2, INPUT); digitalWrite(A2, LOW);
 	
+	pinMode(R_LED, OUTPUT); digitalWrite(R_LED, LOW);
+	pinMode(O_LED, OUTPUT); digitalWrite(O_LED, LOW);
+	pinMode(Y_LED, OUTPUT); digitalWrite(Y_LED, LOW);
+	pinMode(G_LED, OUTPUT); digitalWrite(G_LED, LOW);
+	pinMode(BUZZER, OUTPUT);
+	pinMode(L_BUTTON, INPUT);
+	pinMode(R_BUTTON, INPUT);
+
 	pinMode(MOTOR_L_ENABLE, OUTPUT); digitalWrite(MOTOR_L_ENABLE, LOW);
 	pinMode(MOTOR_R_ENABLE, OUTPUT); digitalWrite(MOTOR_R_ENABLE, LOW);
 
