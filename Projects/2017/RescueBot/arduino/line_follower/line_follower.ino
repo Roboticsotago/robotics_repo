@@ -18,7 +18,7 @@ const int MOTOR_R_DUTY=210;
 //const int MOTOR_L_DUTY=0;	// 180
 //const int MOTOR_R_DUTY=0;	// 150
 
-const int CYCLE_TIME=2;
+const int CYCLE_TIME=5;
 
 //#define WHITE_ON_BLACK 1
 
@@ -88,11 +88,14 @@ void setup() {
 	Serial.print("SENSOR_THRESHOLD=");
 	Serial.println(SENSOR_THRESHOLD);
 #endif
-	
-	analogWrite(BUZZER, 191);
-	delay(1000);
-	analogWrite(BUZZER, 0);
-	delay(3000);
+
+	// Around 2100-2500 Hz sounds good on the piezo buzzer we have, with 2100 Hz being quite loud (near resonant frequency).
+	digitalWrite(G_LED, HIGH); tone(BUZZER, 2100, 100); delay(200);
+	digitalWrite(G_LED, LOW);  tone(BUZZER, 2200, 100); delay(200);
+	digitalWrite(G_LED, HIGH); tone(BUZZER, 2300, 100); delay(200);
+	digitalWrite(G_LED, LOW);  tone(BUZZER, 2400, 100); delay(200);
+	digitalWrite(G_LED, HIGH); tone(BUZZER, 2500, 100); delay(200);
+	delay(200); digitalWrite(G_LED, LOW);
 }
 
 
@@ -162,20 +165,6 @@ void R_Brake() {
 }
 
 
-void R_Drive(float speed){
-	if (!motors_enabled) return;
-	if (speed < 0){
-		digitalWrite(MOTOR_R_1_PIN, HIGH);
-		digitalWrite(MOTOR_R_2_PIN, LOW);
-	}else{
-		digitalWrite(MOTOR_R_1_PIN, LOW);
-		digitalWrite(MOTOR_R_2_PIN, HIGH);
-	}
-	
-	analogWrite(MOTOR_R_ENABLE, speed * MOTOR_R_DUTY);
-}
-
-
 void L_Drive(float speed){
 	if (!motors_enabled) return;
 	if (speed < 0){
@@ -187,6 +176,20 @@ void L_Drive(float speed){
 	}
 	
 	analogWrite(MOTOR_L_ENABLE, speed * MOTOR_L_DUTY);
+}
+
+
+void R_Drive(float speed){
+	if (!motors_enabled) return;
+	if (speed < 0){
+		digitalWrite(MOTOR_R_1_PIN, HIGH);
+		digitalWrite(MOTOR_R_2_PIN, LOW);
+	}else{
+		digitalWrite(MOTOR_R_1_PIN, LOW);
+		digitalWrite(MOTOR_R_2_PIN, HIGH);
+	}
+	
+	analogWrite(MOTOR_R_ENABLE, speed * MOTOR_R_DUTY);
 }
 
 
@@ -317,58 +320,73 @@ bool isBlack(int pin) {
 
 // TODO: implement some sort of memory of recent moves, so we can do more meaningful corrections if we get lost, etc.
 
+// We'll store the line detection readings globally for easier debugging:
+bool l_line;
+bool m_line;
+bool r_line;
+
+void debug_line_sensors_with_LEDs() {
+	// TODO: invert when in white-on-black mode?
+	digitalWrite(O_LED, l_line);
+	digitalWrite(Y_LED, m_line);
+	digitalWrite(G_LED, r_line);
+}
+
 void control() {
-	digitalWrite(Y_LED, LOW);
+//	digitalWrite(Y_LED, LOW);
 	
-	bool l_line = isBlack(L_PIN);
-	bool m_line = isBlack(M_PIN);
-	bool r_line = isBlack(R_PIN);
+	l_line = isBlack(L_PIN);
+	m_line = isBlack(M_PIN);
+	r_line = isBlack(R_PIN);
+	
+	debug_line_sensors_with_LEDs();
 	
 	// TODO: could shift and combine the boolean values for more readable code
 	// e.g. switch bits ... 0b000 -> lost ... 0b010 -> fwd ...
 	
 	if (!l_line && !m_line && !r_line) {
 		Serial.println("Lost!");
-		digitalWrite(Y_LED, HIGH);
+		// Would be nice to light red LED if lost.
+	//	digitalWrite(Y_LED, HIGH);
 		Fwd();
-//		retrace();
+	//	retrace();
 	}
 	if (!l_line && !m_line &&  r_line) {
 		Serial.println("spin right"); 
 		spinR();
-//		calc_track(0);
+	//	calc_track(0);
 	}
 	if (!l_line &&  m_line && !r_line) {
 		Serial.println("fwd"); 
 		Fwd();
-//		calc_track(2);
+	//	calc_track(2);
 	}
 	if (!l_line &&  m_line &&  r_line) {
-		Serial.println("veer right"); 
+-		Serial.println("veer right"); 
 		Veer(1,0.7);
-		calc_track(1);
+	//	calc_track(1);
 		}
 	if ( l_line && !m_line && !r_line) {
 		Serial.println("spin left"); 
 		spinL();
-//		calc_track(4);
+	//	calc_track(4);
 	}
 	if ( l_line && !m_line &&  r_line) {
 		Serial.println("?!"); 
-		digitalWrite(Y_LED, HIGH);
+	//	digitalWrite(Y_LED, HIGH);
 		veerR();
-//		calc_track(1);
+	//	calc_track(1);
 	}
 	if ( l_line &&  m_line && !r_line) {
 		Serial.println("veer left"); 
 		Veer(0.7,1);
-//		calc_track(3);
+	//	calc_track(3);
 	}
 	if ( l_line &&  m_line &&  r_line) {
 		Serial.println("perpendicular?!"); 
-		digitalWrite(Y_LED, HIGH);
+	//	digitalWrite(Y_LED, HIGH);
 		Fwd();
-//		calc_track(2);
+	//	calc_track(2);
 	}
 }
 
@@ -406,7 +424,9 @@ void loop() {
 	//delay(300);
 #endif
 
-	toggleLED();
+//	toggleLED();
+
+	delay(CYCLE_TIME);
 
 	
 	//Serial.print("A0:"); Serial.print(analogRead(A0)); Serial.print("   ");
