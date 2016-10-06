@@ -8,9 +8,19 @@
 // Will need light/dark thresholds for each sensor for calibration...
 // ...or just one for all, if they read consistently enough
 
-const int SENSOR_THRESHOLD=500;
-#define DEBUGGING 1
+const int SENSOR_THRESHOLD=250;
+//#define DEBUGGING
 //#define DEBUG_BACKTRACKING 1
+
+/*
+#define debug(message) \
+	do { if (DEBUGGING) Serial.println(message); } while (0)
+*/
+#ifdef DEBUGGING
+	#define DEBUG(x) Serial.println (x)
+#else
+	#define DEBUG(x)
+#endif
 
 // Don't go too high with these on the Dalek as it will draw too much current and cause resets!
 const int MOTOR_L_DUTY=225;
@@ -98,6 +108,23 @@ void setup() {
 	delay(200); digitalWrite(G_LED, LOW);
 }
 
+// Audible click for debugging
+// WARNING: using click() as defined below makes the right motor not work at all.  Shared pins, maybe?  Perhaps it needs a delay() of at least the duration of the click?
+/*
+void click() {
+	tone(BUZZER, 2100, 2);
+}
+*/
+
+void beep_bad() {
+	tone(BUZZER, 2500, 100); delay(200);
+	tone(BUZZER, 2100, 200); delay(200);
+}
+
+void beep_good() {
+	tone(BUZZER, 2100, 100); delay(100);
+	tone(BUZZER, 2500, 100); delay(100);
+}
 
 // Low-level functions for driving the L and R motors independently...
 
@@ -345,47 +372,51 @@ void control() {
 	// e.g. switch bits ... 0b000 -> lost ... 0b010 -> fwd ...
 	
 	if (!l_line && !m_line && !r_line) {
-		Serial.println("Lost!");
+		DEBUG("Lost!");
 		// Would be nice to light red LED if lost.
 	//	digitalWrite(Y_LED, HIGH);
-		Fwd();
+		beep_bad();
+	//	Fwd();
+		Veer(-1.0,-0.7);
 	//	retrace();
 	}
 	if (!l_line && !m_line &&  r_line) {
-		Serial.println("spin right"); 
+		DEBUG("spin right");
 		spinR();
 	//	calc_track(0);
 	}
 	if (!l_line &&  m_line && !r_line) {
-		Serial.println("fwd"); 
+		DEBUG("fwd");
+	//	beep_good();
 		Fwd();
 	//	calc_track(2);
 	}
 	if (!l_line &&  m_line &&  r_line) {
--		Serial.println("veer right"); 
-		Veer(1,0.7);
+		DEBUG("veer right");
+		Veer(1.0,0.7);
 	//	calc_track(1);
 		}
 	if ( l_line && !m_line && !r_line) {
-		Serial.println("spin left"); 
+		DEBUG("spin left");
 		spinL();
 	//	calc_track(4);
 	}
 	if ( l_line && !m_line &&  r_line) {
-		Serial.println("?!"); 
+		DEBUG("?!");
 	//	digitalWrite(Y_LED, HIGH);
-		veerR();
+		Stop();
 	//	calc_track(1);
 	}
 	if ( l_line &&  m_line && !r_line) {
-		Serial.println("veer left"); 
-		Veer(0.7,1);
+		DEBUG("veer left");
+		Veer(0.7,1.0);
 	//	calc_track(3);
 	}
 	if ( l_line &&  m_line &&  r_line) {
-		Serial.println("perpendicular?!"); 
+		DEBUG("perpendicular?!");
 	//	digitalWrite(Y_LED, HIGH);
-		Fwd();
+	//	Fwd();
+		Veer(1.0,0.6);
 	//	calc_track(2);
 	}
 }
@@ -425,6 +456,7 @@ void loop() {
 #endif
 
 //	toggleLED();
+//	click();	// NO! Don't use this - it makes the right motor not work.
 
 	delay(CYCLE_TIME);
 
