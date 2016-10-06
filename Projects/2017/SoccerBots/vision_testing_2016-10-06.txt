@@ -1,7 +1,14 @@
-Fix camera settings:
+Before doing anything else, set up the camera with suitable fixed settings:
 
 ~/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl
 
+NOTE: might have to tweak gain and perhaps exposure for the venue.
+
+Would also be nice to determine the colour temperature to set the camera to in order to get greys coming out pure.  Mind you, if we can calibrate all the colour sensing on the day, white balance error might not matter.
+
+--
+
+Setting up the Python search path so it can find our cvutils.py module...
 
 PYTHONPATH
 sys.path
@@ -13,15 +20,21 @@ from cvutils import cvutils / import cvutils
 
 Bingo. :)
 
-
 --
 
+Testing white-balance correction...
+
+#simplecv
+import cvutils
 camera=SimpleCV.Camera()
+camera.live()
+# Go and run uvcdynctl script...
 grey_sample = cvutils.calibrate_white_balance()
 while True:
 	cvutils.wb(camera.getImage().scale(0.25), grey_sample).show()
 
 mean grey sample: (196.34285714285716, 216.62857142857143, 237.77142857142857)
+
 # TODO: might be nice to calculate the correct colour temperature so at least the camera could be set to that in a fixed way...might give better colour resolution than doing it in SimpleCV, which seems to have only 8-bit colour depth per channel.
 
 --
@@ -33,6 +46,8 @@ mean sample (HSV): (107.69444444444444, 194.30555555555554, 121.61111111111111)
 Ah, zip(*sample_pixels) transposes rows and columns. :)
 
 --
+
+# Calibrating for matching a particular colour from the scene..
 
 camera=SimpleCV.Camera()
 colour_sample = cvutils.calibrate_colour_match(grey_sample)
@@ -58,15 +73,27 @@ hue_midpoint,hue_tolerance=h
 
 --
 
-
-Let's try it...
-
-# Don't forget to correct for WB first!
+# Testing out the black matcher
+# TODO: implement calibration for that too...
 
 while True:
 	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
 	image.show()
-	find_colour(image,colour_sample).show()
+	# cvutils.
+	find_black(image,105,40).show()
+	
+--
+
+Let's try out the colour matcher...
+
+# Don't forget to correct for WB first!
+
+colour_sample = cvutils.calibrate_colour_match(grey_sample)
+
+while True:
+	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
+	image.show()
+	cvutils.find_colour(image,colour_sample).show()
 
 # Nice!
 # Hmm, I don't think the thresholds are big enough. Do we need to double them? Quadruple?
@@ -84,7 +111,7 @@ sat: 8 -> 40 (5.0x)
 
 TODO: add text overlays for calibration functions rather than (or in addition to) outputting the text to the console...
 
-img.drawText("xamox smells like cool ranch doritos.", 50,50,color=Color.BLACK,fontsize=48)
+image.drawText("Hold mouse button over target", 8,8,color=Color.YELLOW,fontsize=12)
 
 
 
@@ -136,7 +163,11 @@ while True:
 			# Found a viable candidate...
 			(x,y) = blobs[0].centroid()
 			# Round x and y to integer pixel positions?
-			#x = int(round(x))
+		while True:
+	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
+	image.show()
+	cvutils.find_colour(image,colour_sample).show()
+	#x = int(round(x))
 			#y = int(round(y))
 			print('Found target at x=' + str(x) + ' (' + str(x / float(image.width)) + ')')
 			image.drawLine((x,0), (x,image.height), (255,0,0), 1)
@@ -183,13 +214,16 @@ matching_pixels / float(sum)
 
 # Here's a test in a loop:
 
+colour_sample = cvutils.calibrate_colour_match(grey_sample)
+
 while True:
 	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
 	image.show()
-	match = find_colour(image,colour_sample)
+	match = cvutils.find_colour(image,colour_sample)
 	match.show()
 	match_np = match.getGrayNumpy() / 255
 	# Compute centroid:
+	columns,rows = match_np.shape
 	weight = []
 	matching_pixels = 0
 	sum = 0
@@ -199,16 +233,18 @@ while True:
 		column_weight = match_np[x].sum()
 		sum = sum + column_weight
 		matching_pixels = matching_pixels + x * column_weight
-	if sum / float(image.area()) < 0.05:
-		print('Matching area too small!')
+	if sum / float(image.area()) < 0.01:
+		print('Matching area too small! ' + str(sum) + ' pixels out of ' + str(image.area) + ' total.')
 	else:
 		x_centroid = matching_pixels / float(sum)
 		print('Found target at x=' + str(x_centroid) + ' (' + str(x_centroid / float(image.width)) + ')')
 		image.drawLine((x_centroid,0), (x_centroid,image.height), (255,0,0), 1)
 		image.show()
 
-# TODO: and if we don't find any?
+# Yay, this seems to work fairly nicely. :)
 
 # TODO: still need to figure out mapping between image pixel columns and real-world angles...
 
-# TODO: also, for useful shooting at unobstructed goal, probably want to ensure that at least a certain number of pixels are matched in the area, e.g. to avoid shooting at the goalie if it is blocking the goal symmetrically!
+# TODO: also, for useful shooting at unobstructed goal, probably want to ensure that at least a certain number or proportion of pixels are matched in the area, e.g. to avoid shooting at the goalie if it is blocking the goal symmetrically!
+
+# TODO: tweak matching area threshold.  With a large goalie in front, 0.05 is too high.  0.01 might be reasonable.
