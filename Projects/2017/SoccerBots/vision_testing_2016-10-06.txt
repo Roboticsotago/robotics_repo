@@ -114,9 +114,10 @@ TODO: add text overlays for calibration functions rather than (or in addition to
 image.drawText("Hold mouse button over target", 8,8,color=Color.YELLOW,fontsize=12)
 
 
-
-
 --
+
+# Blob-based approach to finding the goal...
+
 blobs = find_colour(image,colour_sample).findBlobs()
 if blobs is not None:
 	#blobs.draw()
@@ -144,30 +145,33 @@ image.drawLine((x,0), (x,image.height), (255,0,0), 1)
 image.show()
 
 # Putting it all together:
-# TODO: handle no blobs found!
+# Refinements (that this implements) to note: no blobs found, blobs too small to be considered viable targets, finding the largest blob (by area, although by width might be sensible).
 # Also, think about what the goal might look like when occluded by the goalie - it probably won't appear as a single blob.  Probably better not to use SimpleCV's blob-finding and just calculate the centroid of all pixels matching the target colour...
+# Then again, the centroid might end up being right where the goalie is, in which case it would be wiser to target the largest visible extent of the target colour. 
+
+# Some Python list basics:
+# list[index]
+# list[-1] # last element
+# len(list)
+# list.insert(index, element)
 
 while True:
 	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
 	image.show()
-	find_colour(image,colour_sample).show()
-	blobs = find_colour(image,colour_sample).findBlobs()
+	cvutils.find_colour(image,colour_sample).show() # Could remove this for speed
+	blobs = cvutils.find_colour(image,colour_sample).findBlobs()
 	if blobs is not None:
 		# TODO: find the biggest blob and use only that...
 		# I would hope they'd be returned in descending order of size from findBlobs anyway...
 		# Cull if the area is too small (TODO: tweak area threshold):
 		for blob in blobs: print(blob)
-		if blobs[0].area() / float(image.area()) < 0.05:
+		if blobs[-1].area() / float(image.area()) < 0.001:
 			print('Blob area too small!')
 		else:
 			# Found a viable candidate...
-			(x,y) = blobs[0].centroid()
+			(x,y) = blobs[-1].centroid()
 			# Round x and y to integer pixel positions?
-		while True:
-	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
-	image.show()
-	cvutils.find_colour(image,colour_sample).show()
-	#x = int(round(x))
+			#x = int(round(x))
 			#y = int(round(y))
 			print('Found target at x=' + str(x) + ' (' + str(x / float(image.width)) + ')')
 			image.drawLine((x,0), (x,image.height), (255,0,0), 1)
@@ -233,8 +237,8 @@ while True:
 		column_weight = match_np[x].sum()
 		sum = sum + column_weight
 		matching_pixels = matching_pixels + x * column_weight
-	if sum / float(image.area()) < 0.01:
-		print('Matching area too small! ' + str(sum) + ' pixels out of ' + str(image.area) + ' total.')
+	if sum / float(image.area()) < 0.005:
+		print('Matching area too small! ' + str(sum) + ' pixels out of ' + str(image.area()) + ' total (' + str(sum / float(image.area())) + ').')
 	else:
 		x_centroid = matching_pixels / float(sum)
 		print('Found target at x=' + str(x_centroid) + ' (' + str(x_centroid / float(image.width)) + ')')
