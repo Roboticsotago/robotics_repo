@@ -12,23 +12,14 @@ const int SENSOR_THRESHOLD=250;
 //#define DEBUGGING
 //#define DEBUG_BACKTRACKING 1
 
-/*
-#define debug(message) \
-	do { if (DEBUGGING) Serial.println(message); } while (0)
-*/
-#ifdef DEBUGGING
-	#define DEBUG(x) Serial.println (x)
-#else
-	#define DEBUG(x)
-#endif
-
+// Right Dalek motor is considerably more powerful, so we need to be able to regulate each separately...
 // Don't go too high with these on the Dalek as it will draw too much current and cause resets!
 const int MOTOR_L_DUTY=225;
-const int MOTOR_R_DUTY=210;
+const int MOTOR_R_DUTY=195;
 //const int MOTOR_L_DUTY=0;	// 180
 //const int MOTOR_R_DUTY=0;	// 150
 
-const int CYCLE_TIME=5;
+const int CYCLE_TIME=2;
 
 //#define WHITE_ON_BLACK 1
 
@@ -63,6 +54,18 @@ const int CYCLE_TIME=5;
 #define BUZZER 3
 #define L_BUTTON 19
 #define R_BUTTON 8
+
+
+/*
+#define debug(message) \
+	do { if (DEBUGGING) Serial.println(message); } while (0)
+*/
+#ifdef DEBUGGING
+	#define DEBUG(x) Serial.println (x)
+#else
+	#define DEBUG(x)
+#endif
+
 
 int led_state;
 
@@ -202,7 +205,7 @@ void L_Drive(float speed){
 		digitalWrite(MOTOR_L_2_PIN, HIGH);
 	}
 	
-	analogWrite(MOTOR_L_ENABLE, speed * MOTOR_L_DUTY);
+	analogWrite(MOTOR_L_ENABLE, (int) round(speed * MOTOR_L_DUTY));
 }
 
 
@@ -216,7 +219,7 @@ void R_Drive(float speed){
 		digitalWrite(MOTOR_R_2_PIN, HIGH);
 	}
 	
-	analogWrite(MOTOR_R_ENABLE, speed * MOTOR_R_DUTY);
+	analogWrite(MOTOR_R_ENABLE, (int) round(speed * MOTOR_R_DUTY));
 }
 
 
@@ -375,9 +378,10 @@ void control() {
 		DEBUG("Lost!");
 		// Would be nice to light red LED if lost.
 	//	digitalWrite(Y_LED, HIGH);
-		beep_bad();
+	//	beep_bad();
 	//	Fwd();
-		Veer(-1.0,-0.7);
+		Rev();
+	//	Veer(-0.9,-0.7);	// TODO: figure out why the left motor doesn't work here.
 	//	retrace();
 	}
 	if (!l_line && !m_line &&  r_line) {
@@ -393,7 +397,7 @@ void control() {
 	}
 	if (!l_line &&  m_line &&  r_line) {
 		DEBUG("veer right");
-		Veer(1.0,0.7);
+		Veer(1.0,0.8);
 	//	calc_track(1);
 		}
 	if ( l_line && !m_line && !r_line) {
@@ -409,7 +413,7 @@ void control() {
 	}
 	if ( l_line &&  m_line && !r_line) {
 		DEBUG("veer left");
-		Veer(0.7,1.0);
+		Veer(0.8,1.0);
 	//	calc_track(3);
 	}
 	if ( l_line &&  m_line &&  r_line) {
