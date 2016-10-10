@@ -12,7 +12,7 @@ set settings {
 	"Exposure, Auto" 1
 	"Exposure (Absolute)" 100
 	"Focus, Auto" 0
-	"Focus (absolute)" 10
+	"Focus (absolute)" 15
 	"Power Line Frequency" 1
 	"White Balance Temperature, Auto" 0
 	"White Balance Temperature" 3900
