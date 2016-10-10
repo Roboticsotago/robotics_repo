@@ -1,0 +1,254 @@
+Before doing anything else, set up the camera with suitable fixed settings:
+
+~/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl
+
+NOTE: might have to tweak gain and perhaps exposure for the venue.
+
+Would also be nice to determine the colour temperature to set the camera to in order to get greys coming out pure.  Mind you, if we can calibrate all the colour sensing on the day, white balance error might not matter.
+
+--
+
+Setting up the Python search path so it can find our cvutils.py module...
+
+PYTHONPATH
+sys.path
+
+export PYTHONPATH=$PYTHONPATH:.
+sys.path.append('.')
+
+from cvutils import cvutils / import cvutils
+
+Bingo. :)
+
+--
+
+Testing white-balance correction...
+
+#simplecv
+import cvutils
+camera=SimpleCV.Camera()
+camera.live()
+# Go and run uvcdynctl script...
+grey_sample = cvutils.calibrate_white_balance()
+while True:
+	cvutils.wb(camera.getImage().scale(0.25), grey_sample).show()
+
+mean grey sample: (196.34285714285716, 216.62857142857143, 237.77142857142857)
+
+# TODO: might be nice to calculate the correct colour temperature so at least the camera could be set to that in a fixed way...might give better colour resolution than doing it in SimpleCV, which seems to have only 8-bit colour depth per channel.
+
+--
+
+
+soccer_goal_azure_hsv=(110.0, 197.6818181818182, 114.1590909090909)
+mean sample (HSV): (107.69444444444444, 194.30555555555554, 121.61111111111111)
+
+Ah, zip(*sample_pixels) transposes rows and columns. :)
+
+--
+
+# Calibrating for matching a particular colour from the scene..
+
+camera=SimpleCV.Camera()
+colour_sample = cvutils.calibrate_colour_match(grey_sample)
+
+
+mean sample (HSV): (108.52631578947368, 194.3684210526316, 109.89473684210526)
+hue midpoint:109.0
+hue tolerance:3.0
+saturation midpoint:193.5
+saturation tolerance:20.5
+value midpoint:106.0
+value tolerance:31.0
+
+# Hmm, those .5s are suspicious - is something being quantised to integers somewhere?
+# Oh, no, it's OK - the min and max will always be integers, therefore the precision of the midpoints will be 0.5.
+
+h,s,v=sample
+
+hue_midpoint,hue_tolerance=h
+...
+
+
+
+--
+
+# Testing out the black matcher
+# TODO: implement calibration for that too...
+
+while True:
+	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
+	image.show()
+	# cvutils.
+	find_black(image,105,40).show()
+	
+--
+
+Let's try out the colour matcher...
+
+# Don't forget to correct for WB first!
+
+colour_sample = cvutils.calibrate_colour_match(grey_sample)
+
+while True:
+	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
+	image.show()
+	cvutils.find_colour(image,colour_sample).show()
+
+# Nice!
+# Hmm, I don't think the thresholds are big enough. Do we need to double them? Quadruple?
+# Hmm, even then, not really sloppy enough...will try again with more thorough sampling...
+
+Goal azure:
+hue: 3 -> 14 (4.6x)
+sat: 8 -> 40 (5.0x)
+
+# Well, it seems to work really well on fairly saturated (pure, bright) colours like blue, red, yellow, but not so well on skin tones.  Green not great either.
+# Black?
+
+
+--
+
+TODO: add text overlays for calibration functions rather than (or in addition to) outputting the text to the console...
+
+image.drawText("Hold mouse button over target", 8,8,color=Color.YELLOW,fontsize=12)
+
+
+--
+
+# Blob-based approach to finding the goal...
+
+blobs = find_colour(image,colour_sample).findBlobs()
+if blobs is not None:
+	#blobs.draw()
+
+blobs[0].centroid()
+# Returns an (x,y) tuple.  Should divide by image dimensions to get normalised position.
+# Really should convert to an angle to feed into the motion control system.
+blobs[0].area()
+
+fs = img.findBlobs()
+if fs is not None:
+	fs.draw()
+
+Blob.area()
+Blob.centroid()
+Blob.drawMinRect()
+Blob.drawRect()
+
+
+# Draw a vertical line showing where the horizontal centroid axis lies...
+(x,y) = blobs[0].centroid()
+x / float(image.width)
+# x will often be a float already, but just in case...
+image.drawLine((x,0), (x,image.height), (255,0,0), 1)
+image.show()
+
+# Putting it all together:
+# Refinements (that this implements) to note: no blobs found, blobs too small to be considered viable targets, finding the largest blob (by area, although by width might be sensible).
+# Also, think about what the goal might look like when occluded by the goalie - it probably won't appear as a single blob.  Probably better not to use SimpleCV's blob-finding and just calculate the centroid of all pixels matching the target colour...
+# Then again, the centroid might end up being right where the goalie is, in which case it would be wiser to target the largest visible extent of the target colour. 
+
+# Some Python list basics:
+# list[index]
+# list[-1] # last element
+# len(list)
+# list.insert(index, element)
+
+while True:
+	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
+	image.show()
+	cvutils.find_colour(image,colour_sample).show() # Could remove this for speed
+	blobs = cvutils.find_colour(image,colour_sample).findBlobs()
+	if blobs is not None:
+		# TODO: find the biggest blob and use only that...
+		# I would hope they'd be returned in descending order of size from findBlobs anyway...
+		# Cull if the area is too small (TODO: tweak area threshold):
+		for blob in blobs: print(blob)
+		if blobs[-1].area() / float(image.area()) < 0.001:
+			print('Blob area too small!')
+		else:
+			# Found a viable candidate...
+			(x,y) = blobs[-1].centroid()
+			# Round x and y to integer pixel positions?
+			#x = int(round(x))
+			#y = int(round(y))
+			print('Found target at x=' + str(x) + ' (' + str(x / float(image.width)) + ')')
+			image.drawLine((x,0), (x,image.height), (255,0,0), 1)
+			image.show()
+	else:
+		print('No blobs found!')
+
+
+# Non-blob centroid approach:
+# Count the number of white pixels in each column
+# multiply those by the x value of the column
+# Calculate the mean of those
+
+# As a starting point, would it be sensible to extract the data as a numpy array?
+
+image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
+image.show()
+match=find_colour(image,colour_sample)
+
+#match.getNumpy()
+# Would make sense to divide the entire array by 255, since we're really just dealing with a bitmap.
+match_np = match.getGrayNumpy() / 255
+# match_np.shape gives dimensions
+columns,rows = match_np.shape
+
+# Can get a slice of the array like so:
+match_np[157]
+# and easily sum it:
+match_np[157].sum()
+
+# Iterate through the columns, computing the sums...
+# I think this would involve multiplying the number of white pixels by the column position, and then dividing by the total number of white pixels.
+
+weight = []
+matching_pixels = 0
+sum = 0
+for x in range(0,columns):
+	weight.insert(x, match_np[x].sum())
+	sum = sum + weight[x]
+	matching_pixels = matching_pixels + x * weight[x]
+matching_pixels / float(sum)
+
+# I'm sure there's a more Numpythonic way to do all this...
+
+# Here's a test in a loop:
+
+colour_sample = cvutils.calibrate_colour_match(grey_sample)
+
+while True:
+	image=cvutils.wb(camera.getImage(),grey_sample).scale(0.25)
+	image.show()
+	match = cvutils.find_colour(image,colour_sample)
+	match.show()
+	match_np = match.getGrayNumpy() / 255
+	# Compute centroid:
+	columns,rows = match_np.shape
+	weight = []
+	matching_pixels = 0
+	sum = 0
+	for x in range(0,columns):
+		#weight.insert(x, match_np[x].sum())
+		# Hmm, don't really need to store it in an array now..
+		column_weight = match_np[x].sum()
+		sum = sum + column_weight
+		matching_pixels = matching_pixels + x * column_weight
+	if sum / float(image.area()) < 0.005:
+		print('Matching area too small! ' + str(sum) + ' pixels out of ' + str(image.area()) + ' total (' + str(sum / float(image.area())) + ').')
+	else:
+		x_centroid = matching_pixels / float(sum)
+		print('Found target at x=' + str(x_centroid) + ' (' + str(x_centroid / float(image.width)) + ')')
+		image.drawLine((x_centroid,0), (x_centroid,image.height), (255,0,0), 1)
+		image.show()
+
+# Yay, this seems to work fairly nicely. :)
+
+# TODO: still need to figure out mapping between image pixel columns and real-world angles...
+
+# TODO: also, for useful shooting at unobstructed goal, probably want to ensure that at least a certain number or proportion of pixels are matched in the area, e.g. to avoid shooting at the goalie if it is blocking the goal symmetrically!
+
+# TODO: tweak matching area threshold.  With a large goalie in front, 0.05 is too high.  0.01 might be reasonable.

@@ -1,0 +1,46 @@
+Things to buy:
+
+[ ] Colour sensors
+	https://www.adafruit.com/products/1334
+		NOTE: fixed I2C address
+		
+[ ] Compass sensors (magnetometers)
+	Adafruit again?
+	
+[ ] Reflectance sensors
+	https://www.adafruit.com/products/2349
+
+
+[ ] Brushless motors + ESCs
+	Preferably not TOO expensive!
+	380 size? http://www.hobbyking.com/hobbyking/store/__692__691__Cars_Parts-Micro_to_1_18th_Scale_380_Type_.html
+	Novak Mongoose Crawler? 18.5T (#3055). ESC has a Servo/Robotic Mode!
+		http://teamnovak.com/products/motor_compatibility/mongoose.html
+		https://data2.manualslib.com/pdf2/41/4018/401767-novak/mongoose_crawler_esc__adjustements_12009.pdf?fdc08bc47fd448df5be5cd4037601fc8&take=binary
+	https://www.thehobbywarehouse.co.nz/collections/turnigy-trackstar/products/trackstar-1-18th-scale-14t-brushless-power-system-4300kv
+	http://www.hobbyking.com/hobbyking/store/__21970__HobbyKing_174_8482_Donkey_ST380L_3000kv_Brushless_Inrunner_Car_Motor_15T_.html
+	
+[ ] Tamiya 72001 planetary gearbox kit
+	Nice modular design with coaxial output and input shafts, 25:1 ratio available.
+		4:1 5:1 16:1 20:1 25:1 80:1 100:1 400:1
+	Mabuchi RC-260 motor as standard
+	Brushed DC motor power band peak tends to be around half the no-load speed. For many motors, it's around 8000 RPM.
+	If our target wheel speed is around 250 RPM, that means a gear ratio of about 30:1.
+
+[ ] Tamiya 70145 narrow tyre (pair)
+	58 mm diameter
+
+[ ] Some higher-voltage 180?-size motors (perhaps a pair from Adafruit and a pair from Pololu initially)
+	Pololu #1117 model has been pretty good
+
+[ ] Tamiya connectors
+	https://www.pololu.com/product/2173 <- Female (device to be powered)
+	https://www.pololu.com/product/2172 <- Male (battery)
+	
+[ ] Du Pont style connectors
+	https://www.pololu.com/product/1900
+	
+[ ] Soccer field (MTA?)
+	Sandy may have a spare one at the moment that Columba was borrowing
+
+Funding?  Might have to pass a hat around if we want a set of nice brushless motors, controllers, and geartrains.
