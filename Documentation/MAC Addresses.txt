@@ -6,6 +6,8 @@ Toktam's old Dell Latitude D800:
 Asus Eee PCs:
 f4:6d:04:83:69:d0 (Master)
 f4:6d:04:b6:c2:68
+[ ] Others?
+
 
 Machines belonging to the after-school mechatronics class:
 
@@ -21,3 +23,16 @@ Henry
 Sebastian
 68:5b:35:ba:65:2a
 
+
+Kids' Raspberry Pi units:
+
+[ ] Henry
+[ ] Tobias
+[ ] Sebastian
+[ ] others?
+
+
+Robocup Raspberry Pi units:
+
+b8:27:eb:31:29:fc	soccer
+b8:27:eb:86:7d:65
