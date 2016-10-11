@@ -1,4 +1,4 @@
-#!/usr/bin/env tclsh8.5
+#!/usr/bin/env tclsh
 
 # NOTE: probably don't go below Exposure=100 because power line frequency artifacts become visible (even with Power Line Frequency = 1 (50 Hz)).
 
@@ -17,18 +17,22 @@ set settings {
 	"White Balance Temperature, Auto" 0
 	"White Balance Temperature" 3900
 }
-
 # Ugh, uvcdynctrl doesn't seem to allow multiple -s arguments per invocation!
 
+if {$argc == 0} {
+	set devicename video0
+} else {
+	set devicename [lindex $argv 0]
+}
 #set command uvcdynctrl
 foreach {name value} $settings {
 	puts "$name = $value"
 	set command "uvcdynctrl -s \"$name\" $value"
 	#puts $command
-	exec {*}$command
-#	if {[catch {exec uvcdynctrl -s '$name' $value} result]} {
-#		puts $result
-#	}
+	#exec {*}$command
+	if {[catch {exec {*}$command} result]} {
+		puts $result
+	}
 
 	#set command [concat $command " -s '$name' $value"]
 }
