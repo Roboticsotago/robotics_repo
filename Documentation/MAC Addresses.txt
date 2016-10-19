@@ -26,8 +26,12 @@ Sebastian
 
 Kids' Raspberry Pi units:
 
-[ ] Henry
-[ ] Tobias
+Henry
+b8:27:eb:db:e3:b0
+
+Tobias
+b8:27:eb:8e:2f:26
+
 [ ] Sebastian
 [ ] others?
 
@@ -36,3 +40,4 @@ Robocup Raspberry Pi units:
 
 b8:27:eb:31:29:fc	soccer
 b8:27:eb:86:7d:65
+[ ] ...and the others, too?
