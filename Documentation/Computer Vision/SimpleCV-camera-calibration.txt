@@ -1,5 +1,17 @@
 # SimpleCV camera calibration
 
+# For easier image processing, we will want to correct for certain camera and lighting characteristics:
+#  - lens distortion (so that straight lines appear straight on the image)
+#  - white balance (variations in lighting, and probably want to fix the camera WB setting as well so it doesn't vary)
+
+# Some of these apparently can't be set via SimpleCV, so will have to be set using an external command, possibly while SimpleCV is running, e.g.
+# guvcview
+# or
+# uvcdynctrl -c -v
+
+
+# SimpleCV provides a fairly easy way to determine camera lens distortion using a printed checkerboard pattern.
+
 Camera.calibrate()
 	# or run calibrate.py
 Camera.getCameraMatrix()
@@ -54,7 +66,7 @@ camera.live()
 image_raw = camera.getImage()
 image_cal = camera.getImageUndistort()
 
-# Well, it seems to work, but doesn't look too far off the raw image.
+# Well, it seems to work...and actually look too far off the raw image. Perhaps these Logitech cameras are pretty good already (or do some correction internally).
 
 while True:
 	camera.getImageUndistort().show()
@@ -142,7 +154,7 @@ b = b * b_corr
 
 #image=Image.mergeChannels(r,g,b)
 
-# FFS, mergChannels() expects four arguments?  What's the first one even used for?
+# FFS, mergeChannels() expects four arguments?  What's the first one even used for?
 
 Image.mergeChannels(r,b,g,r).show()
 
