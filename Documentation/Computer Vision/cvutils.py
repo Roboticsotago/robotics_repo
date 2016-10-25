@@ -3,6 +3,15 @@
 # Do we need to import SimpleCV?  I assume the import statement will ignore/fail gracefully if asked to import something that's already been imported...
 import SimpleCV
 
+# Basic setup and check:
+#camera = SimpleCV.Camera(prop_set={'width':320, 'height':240})
+#camera.loadCalibration('default')
+#camera.getCameraMatrix()
+#camera.live()
+
+# NOTE: it may be necessary to set many of the camera's capture settings externally, using guvcview or uvcdynctrl
+# uvcdynctrl -c -v
+
 # Some colour space conversion functions:
 
 def hue_from_angle(degrees): return degrees / 360.0 * 255
@@ -105,9 +114,9 @@ def wb(image,grey_sample):
 
 # NOTE: Display.mouseLeft returns the current state of the button, whereas Display.leftButtonDownPosition() returns None unless the button was only JUST pressed. We want Display.mouseX and Display.mouseY instead, I think.
 
-def calibrate_white_balance():
+def calibrate_white_balance(camera):
 	display=Display()
-	camera=Camera()
+	#camera=Camera()
 	prev_mouse_state = False
 	sample_pixels = []
 	print('Press and hold left mouse button over a region that should be white/grey...')
@@ -138,7 +147,8 @@ def calibrate_white_balance():
 			prev_mouse_state = False
 
 # Usage:
-grey_sample = calibrate_white_balance()
+grey_sample = calibrate_white_balance(camera)
+
 while True:
 	wb(camera.getImage(), grey_sample).show()
 

@@ -1,0 +1,30 @@
+# Feature detection in SimpleCV
+
+# Is our colour pre-processing going to be helpful here?
+
+Blob.meanColor()
+Blob.area()
+Blob.centroid()
+Blob.draw(layer=?)
+Blob.drawMinRect()
+Blob.minRect()
+
+
+
+original = camera.getImageUndistort()
+blobs = original.findBlobs()
+blobs[-1].draw()
+original.show()
+
+
+for blob in blobs:
+	print('area = ' + str(blob.area()))
+	print('centroid = ' + str(blob.centroid()))
+	print('meanColor = ' + str(blob.meanColor()))
+	blob.draw(color=Color.getRandom())
+	original.show()
+
+
+# Hmm, by default, findBlobs() pretty much finds all of the _uninteresting_ features of the image. :(
+#	Note that findBlobs() returns them with the smallest ones first!  blobs[-1] should give you the biggest one.
+#	Also, beware that binarize() also performs an inversion!

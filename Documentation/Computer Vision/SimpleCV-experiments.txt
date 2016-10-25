@@ -343,3 +343,7 @@ while True:
 	result.show()
 
 # Need a better way to adjust colour matching parameters, though...
+
+--
+
+# Differences between colour channels?  Opponent colour model?  Useful for vision?  V-S?
