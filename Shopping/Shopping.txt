@@ -1,15 +1,90 @@
 Things to buy:
 
+Adafruit:
+
 [ ] Colour sensors
 	https://www.adafruit.com/products/1334
+		TCS34725
+		3/5 V compatible
 		NOTE: fixed I2C address
-		
+		Integrated IR-blocking filter (should reduce interference from line-following reflectance sensors?)
+	How many?  At least 2 for RescueBot, and possibly 3 each for the SoccerBots, so 8 total.  There's a price break at 10, however, so maybe 10 then.
+	7.95 USD * 10
+
 [ ] Compass sensors (magnetometers)
 	Adafruit again?
-	
+	https://www.adafruit.com/products/1746
+		HMC5883L
+		I2C
+		3/5 V compatible
+		10 USD each
+	How many?  One for each SoccerBot, and maybe one for RescueBot too, and perhaps a spare.  4 in total.
+	There's also https://www.adafruit.com/products/1120
+		same magnetometer, plus accelerometer
+		maybe useful for RescueBot tilt sensing, SoccerBot fall detection, hovercraft?
+		15 USD each
+
+[ ] Accelerometer(s) for Peter's balance project
+	Maybe use the mag/accel combo for prototyping, since it'll likely be spare
+
+[ ] Adafruit LED display modules with controller backpack?  Henry?
+
+
+SparkFun:
+
 [ ] Reflectance sensors
+	Individual or a bank?  I quite like the 8-way array we have already.
 	https://www.adafruit.com/products/2349
 
+[ ] For Music sEMG project: EMG amplifier, battery pack (SparkFun)
+	EMG board:
+		https://www.sparkfun.com/products/13723
+		38 USD
+	Power shield looks handy:
+		https://www.sparkfun.com/products/13684
+		4 USD
+		Maybe get several, for powering other projects too.
+	SEN-11776 is retired
+	Get one set for prototyping initially
+	One battery pack per EMG board? Each with its own ESP8266?  Or have a wearable harness that shares a (probably bigger) battery pack?  Maybe get one and test, check current draw, etc.
+	Get pads elsewhere (cheaper)!
+
+
+Pololu:
+	
+[ ] Tamiya 72001 planetary gearbox kit
+	https://www.pololu.com/product/70
+		16 USD each (need at least a pair)
+	http://www.rcjaz.co.nz/tamiya-72001-planetary-gear-box-set-p-5811.html
+		20 NZD each
+	Nice modular design with coaxial output and input shafts, 25:1 ratio available.
+		4:1 5:1 16:1 20:1 25:1 80:1 100:1 400:1
+	Mabuchi RC-260 motor as standard (NOTE: 3 V nominal!) -> probably want substitutes
+		http://www.rctech.net/forum/electric-off-road/238188-380-540-550-720-motor-sizes.html
+	Brushed DC motor power band peak tends to be around half the no-load speed. For many motors, it's around 8000 RPM.
+	If our target wheel speed is around 250 RPM, that means a gear ratio of about 30:1.
+	Lego integration: https://www.youtube.com/watch?v=ieF7mHdcZkc
+
+[ ] Tamiya 70145 narrow tyre (pair)
+	58 mm diameter
+	https://www.pololu.com/product/63
+		7.25 USD/pair
+	https://www.surplustronics.co.nz/products/5756-tamiya-70145-narrow-tire-set-2-tires
+		15 NZD/pair
+
+[ ] Some higher-voltage 180?-size motors (perhaps a pair from Adafruit and a pair from Pololu initially)
+	Pololu #1117 model has been pretty good
+
+[ ] Tamiya connectors
+	https://www.pololu.com/product/2172 <- Female metal part (device to be powered), need more of these!  At least 5.
+		1.5 USD each
+	https://www.pololu.com/product/2173 <- Male metal part (battery), have some already
+	
+[ ] Du Pont style connectors (various)
+	https://www.pololu.com/product/1900
+
+
+Elsewhere:
 
 [ ] Brushless motors + ESCs
 	Preferably not TOO expensive!
@@ -20,27 +95,8 @@ Things to buy:
 	https://www.thehobbywarehouse.co.nz/collections/turnigy-trackstar/products/trackstar-1-18th-scale-14t-brushless-power-system-4300kv
 	http://www.hobbyking.com/hobbyking/store/__21970__HobbyKing_174_8482_Donkey_ST380L_3000kv_Brushless_Inrunner_Car_Motor_15T_.html
 	
-[ ] Tamiya 72001 planetary gearbox kit
-	Nice modular design with coaxial output and input shafts, 25:1 ratio available.
-		4:1 5:1 16:1 20:1 25:1 80:1 100:1 400:1
-	Mabuchi RC-260 motor as standard
-	Brushed DC motor power band peak tends to be around half the no-load speed. For many motors, it's around 8000 RPM.
-	If our target wheel speed is around 250 RPM, that means a gear ratio of about 30:1.
-
-[ ] Tamiya 70145 narrow tyre (pair)
-	58 mm diameter
-
-[ ] Some higher-voltage 180?-size motors (perhaps a pair from Adafruit and a pair from Pololu initially)
-	Pololu #1117 model has been pretty good
-
-[ ] Tamiya connectors
-	https://www.pololu.com/product/2173 <- Female (device to be powered)
-	https://www.pololu.com/product/2172 <- Male (battery)
-	
-[ ] Du Pont style connectors
-	https://www.pololu.com/product/1900
-	
-[ ] Soccer field (MTA?)
-	Sandy may have a spare one at the moment that Columba was borrowing
+[X] Soccer field (MTA?)
+	Borrowing one from Sandy
 
 Funding?  Might have to pass a hat around if we want a set of nice brushless motors, controllers, and geartrains.
+

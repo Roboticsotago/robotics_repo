@@ -1,5 +1,11 @@
+[ ] Test how frequently an Arduino sketch can read from a digital port and react.
 [ ] Obtain colour sensors, test, and integrate
-[ ] Range sensing (for water tower, rescue target)
+[ ] Range sensing (for water tower, rescue target): ultrasonic or IR?
 [ ] Develop and test lifter designs
+[ ] Develop a sensor "trolley" design, to keep the sensor distance and orientation consistent with the terrain. Should also provide shielding from ambient light.
 [ ] Wireless communication for programming and debugging?
 [ ] Test motors and drive trains (Tamiya planetary gear sets? Brushless motors?  Maybe make our own brushless motor controller?!)
+[ ] Implement a proportional (and possibly integral/derivative) control system?  Ideally would be able to adapt turning to the curvature of the line.
+[ ] Make the system adaptible to different tile surfaces and printing characteristics?
+[ ] How to do high-level control?  Subroutines for specialised actions for certain tiles?  Include magnetometer so we can have some sense of direction?
+[ ] Computer vision system??? Would need a Raspberry Pi or comparable computer onboard.
