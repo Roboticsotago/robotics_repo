@@ -1,43 +1,76 @@
 General-use machines in the lab:
 
-Toktam's old Dell Latitude D800:
-00:11:43:5C:F9:59
+	Toktam's old Dell Latitude D800 (IS 3026):
+		Ethernet: 00:11:43:5C:F9:59
+		Wi-Fi:    00:0b:7d:10:ff:a3
+	
+	Dell Latitude D800 (IS 2395), Windows 7
+		Ethernet: 00:0d:56:aa:7d:34
+		Wi-Fi:    interface exists but won't enable
+	
+	Dell Precision M60 (IS 2390):
+		Need login
+		Security log full
 
-Asus Eee PCs:
-f4:6d:04:83:69:d0 (Master)
-f4:6d:04:b6:c2:68
-[ ] Others?
+	Asus Eee PCs:
+		Master ("Thinking with precision" sticker):
+			Ethernet: f4:6d:04:83:69:d0
+			Wi-Fi:    48:5d:60:f6:bd:2f
+		#2:
+			Ethernet: f4:6d:04:b6:c2:68
+			Wi-Fi:    48:5d:60:f7:0f:1c
+		#3:
+			Ethernet: f4:6d:04:b6:c0:ec
+			Wi-Fi:    48:5d:60:f7:0f:01
+		#4:
+			Ethernet: f4:6d:04b6:b9:c9
+			Wi-Fi:    e0:b9:a5:2f:ab:9e
+		#5:
+			Ethernet: f4:6d:04:b6:bd:b6
+			Wi-Fi:    e0:b9:a5:2f:ad:41
+
+Machines belonging to the after-school mechatronics class (as of 2016):
+
+	Alex Haszard:
+		Wi-Fi: E0-94-67-8A-FD-22
+
+	Annabelle Ritchie:
+		MacBook:
+			Ethernet: 98:5a:eb:c9:e2:43
+			Wi-Fi:    c0:ce:cd:ea:52:39
+
+	Beldon Holt:
+		Windows laptop:
+			Ethernet: F8:A9:63:DA:0C:EA
+			Wi-Fi:    18:CF:5E:74:6E:92
+
+	Henry Eden-Mann:
+		HP laptop:
+			Ethernet: 28:92:4a:5a:52:d3
+			Wi-Fi:    20:16:d8:13:b0:a3
+		Raspberry Pi:
+			Ethernet: b8:27:eb:db:e3:b0
+
+	Sebastian Sole:
+		MacBook:
+			Ethernet: 68:5b:35:ba:65:2a
+			Wi-Fi:    b0:34:95:f1:7a:66
+
+	Tobias Devereux:
+		Surface:
+			Wi-Fi:    B4:AE:2B:37:9D:8F
+		Raspberry Pi:
+			Ethernet: b8:27:eb:8e:2f:26
 
 
-Machines belonging to the after-school mechatronics class:
-
-Beldon
-F8:A9:63:DA:0C:EA
-
-Annabelle
-98:5a:eb:c9:e2:43
-
-Henry
-28:92:4a:5a:52:d3
-
-Sebastian
-68:5b:35:ba:65:2a
-
-
-Kids' Raspberry Pi units:
-
-Henry
-b8:27:eb:db:e3:b0
-
-Tobias
-b8:27:eb:8e:2f:26
-
-[ ] Sebastian
-[ ] others?
-
-
-Robocup Raspberry Pi units:
+Robotics Education NZ's Raspberry Pi units (all Ethernet):
 
 b8:27:eb:31:29:fc	soccer
-b8:27:eb:86:7d:65
-[ ] ...and the others, too?
+b8:27:eb:86:7d:65	rescue
+b8:27:eb:96:8a:3d	theatre
+[ ] ?				projector
+
+--
+
+Google doc is here:
+https://docs.google.com/document/d/1TlhN5x08ttFe7yUacmRS5j5iKh1T0xcN76Wk-5RQ-mI/edit?ts=5795a4c1
