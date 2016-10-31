@@ -29,6 +29,7 @@ General-use machines in the lab:
 			Ethernet: f4:6d:04:b6:bd:b6
 			Wi-Fi:    e0:b9:a5:2f:ad:41
 
+
 Machines belonging to the after-school mechatronics class (as of 2016):
 
 	Alex Haszard:
@@ -68,9 +69,25 @@ Robotics Education NZ's Raspberry Pi units (all Ethernet):
 b8:27:eb:31:29:fc	soccer
 b8:27:eb:86:7d:65	rescue
 b8:27:eb:96:8a:3d	theatre
-[ ] ?				projector
+b8:27:eb:1c:04:af	projector
 
 --
 
-Google doc is here:
+Network ports in the joint lab at the annexe:
+
+	South-East corner:
+		AK 87	Occupied
+		AK 88	Occupied
+		AK 89	Free
+		AK 90	Free
+		AK 91	Free
+		AK 92	Free
+	
+	North-West corner (under the long desk):
+		AK 03	Free
+		AK 04	Telephone?
+
+--
+
+Google doc for the kids to list their MAC addresses is here:
 https://docs.google.com/document/d/1TlhN5x08ttFe7yUacmRS5j5iKh1T0xcN76Wk-5RQ-mI/edit?ts=5795a4c1
