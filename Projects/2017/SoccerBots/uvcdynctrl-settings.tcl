@@ -8,7 +8,7 @@
 
 set settings {
 	"Sharpness" 0
-	"Gain" 192
+	"Gain" 20
 	"Exposure, Auto" 1
 	"Exposure (Absolute)" 100
 	"Focus, Auto" 0
