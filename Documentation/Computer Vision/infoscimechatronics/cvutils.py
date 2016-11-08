@@ -107,9 +107,9 @@ def wb(image,grey_sample):
 
 # NOTE: Display.mouseLeft returns the current state of the button, whereas Display.leftButtonDownPosition() returns None unless the button was only JUST pressed. We want Display.mouseX and Display.mouseY instead, I think.
 
-def calibrate_white_balance():
+def calibrate_white_balance(camera):
 	display=SimpleCV.Display()
-	camera=SimpleCV.Camera()
+	#camera=SimpleCV.Camera()
 	prev_mouse_state = False
 	sample_pixels = []
 	image = camera.getImage().scale(0.5)
@@ -165,9 +165,9 @@ def find_black(image,value_threshold=75,saturation_threshold=90):
 # Function for calibrating the colour matcher, which will be quite similar to the white-balance sampler.
 # Hmm, this should really use WB-corrected images! But how does it know what correction to apply? Might have to add a grey-sample parameter.
 
-def calibrate_colour_match(grey_point):
+def calibrate_colour_match(camera, grey_point):
 	display=SimpleCV.Display()
-	camera=SimpleCV.Camera()
+	#camera=SimpleCV.Camera()
 	prev_mouse_state = False
 	sample_pixels = []
 	image = wb(camera.getImage().scale(0.5), grey_point).toHSV()
