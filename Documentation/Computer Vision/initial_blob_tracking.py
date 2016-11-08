@@ -4,11 +4,11 @@ sys.path.append('/home/pi/robotics_repo/Documentation/Computer Vision/infoscimec
 import cvutils
 import time
 
-camera = SimpleCV.Camera()
+camera = SimpleCV.Camera(0, {"width":960,"height":540})
 os.system('/home/pi/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
 
-lab_grey_sample = cvutils.calibrate_white_balance()
-lab_goal_blue = cvutils.calibrate_colour_match(lab_grey_sample)
+lab_grey_sample = cvutils.calibrate_white_balance(camera)
+lab_goal_blue = cvutils.calibrate_colour_match(camera, lab_grey_sample)
 
 times = []
 
@@ -16,8 +16,11 @@ def average(numbers):
         x = 0
         for num in numbers:
                 x += num
-        x = x/len(numbers)
+        x = float(x) / len(numbers)
         return x
+
+def x_coordinate_to_angle(coord):
+        return coord*35.543
 
 while True:
         start_time = time.clock()
@@ -29,13 +32,20 @@ while True:
 	matched.show()
 	blobs = matched.findBlobs(100, 1)
 	if blobs is not None:
-		(x,y) = blobs[-1].centroid()
-		image.dl().line((x,0), (x,image.height), (255,0,0), antialias=False)
-		image.dl().line((0,y), (image.width,y), (0,255,0), antialias=False)
-		image.show()
-		blob_size = blobs[-1].area()
+                blob_size = blobs[-1].area()
                 image_size = image.area()
-                print blob_size / image_size
+                #print blob_size / image_size
+                if blob_size / image_size < 0.0075:
+                        print "Blobs too small!"
+                else:
+                        (x,y) = blobs[-1].centroid()
+                        image.dl().line((x,0), (x,image.height), (255,0,0), antialias=False)
+                        image.dl().line((0,y), (image.width,y), (0,255,0), antialias=False)
+                        image.show()
+                        #print float(x) / image.width
+                        converted_coord = float(x) / image.width
+                        print x_coordinate_to_angle(converted_coord*2-1)
+		
 	else:
 		print "No blobs found!"
 	end_time = time.clock()
@@ -44,6 +54,3 @@ while True:
 	frame_rate = 1 / average(times)
 	image.drawText(('Frame rate:' + str(frame_rate)), 0, 0)
 	image.show()
-
-
-        
