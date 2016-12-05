@@ -1,6 +1,7 @@
 import SimpleCV
+import os
 import sys
-sys.path.append('/home/pi/robotics_repo/Documentation/Computer Vision/infoscimechatronics')
+sys.path.append(os.environ['HOME'] + '/robotics_repo/Documentation/Computer Vision/infoscimechatronics')
 import cvutils
 import time
 import serial
@@ -8,7 +9,7 @@ import serial
 ser = serial.Serial('/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_85431303736351D070E0-if00')
 
 camera = SimpleCV.Camera(0, {"width":960,"height":540})
-os.system('/home/pi/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
+os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
 
 lab_grey_sample = cvutils.calibrate_white_balance(camera)
 lab_goal_blue = cvutils.calibrate_colour_match(camera, lab_grey_sample)
