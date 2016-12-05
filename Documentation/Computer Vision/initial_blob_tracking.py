@@ -20,6 +20,7 @@ current_angle = 0
 prev_error = 0
 integral = 0
 derivative = 0
+hunt_dir = 1
 
 times = []
 
@@ -37,20 +38,22 @@ def plant(control): #control input from -1...1 so -90...90 deg / sec
 	current_angle += speed
 	speed = control * 90
 	return current_angle
-
+	
+#Sends serial data to connected Arduino, input data between -90 to 90, output data to servo is 0 to 180 deg
 def servo(target_angle, ser):
-	target_angle += 90
 	ser.write('?')
 	current_angle = int(ser.readline().strip())
-	angle_dif = target_angle - current_angle
-	sys.stderr.write(str(current_angle))
-	sys.stderr.write(str(angle_dif))
-	for i in range(abs(int(angle_dif))):
-		if angle_dif > 0:
-			ser.write('+')
-		if angle_dif < 0:
-			ser.write('-')
-
+	sys.stderr.write("current angle: " + str(current_angle) + ' ')
+	sys.stderr.write("target angle: " + str(target_angle) + '\n')
+	for i in range(abs(int(target_angle))):
+		if target_angle > 0:
+			if current_angle < 180:
+				ser.write('+')
+		if target_angle < 0:
+			if current_angle > 0:
+				ser.write('-')
+	time.sleep(0.2)
+	
 def control(target):
 	kp = 1
 	ki = 1
@@ -90,7 +93,7 @@ while True:
 			#print float(x) / image.width
 			converted_coord = float(x) / image.width
 			converted_coord = x_coordinate_to_angle(converted_coord*2-1)
-			#print converted_coord
+			sys.stderr.write("converted_coord: " + str(converted_coord) + ' ')
 			servo(converted_coord, ser)
 	else:
 		print "No blobs found!"
