@@ -15,14 +15,16 @@ lab_grey_sample = cvutils.calibrate_white_balance(camera)
 lab_goal_blue = cvutils.calibrate_colour_match(camera, lab_grey_sample)
 
 speed = 0
-global current_angle
-current_angle = 0
+#global current_angle
+#current_angle = 0
 prev_error = 0
 integral = 0
 derivative = 0
-hunt_dir = 1
-
+#global hunt_dir
+hunt_dir = 1 
+hunt_step = 15
 times = []
+	
 
 def average(numbers):
 	x = 0
@@ -40,11 +42,10 @@ def plant(control): #control input from -1...1 so -90...90 deg / sec
 	return current_angle
 	
 #Sends serial data to connected Arduino, input data between -90 to 90, output data to servo is 0 to 180 deg
-def servo(target_angle, ser):
-	ser.write('?')
-	current_angle = int(ser.readline().strip())
+def servo(target_angle):
+	current_angle = get_current_angle() + 90
 	sys.stderr.write("current angle: " + str(current_angle) + ' ')
-	sys.stderr.write("target angle: " + str(target_angle) + '\n')
+	sys.stderr.write("target angle:: " + str(target_angle) + '\n')
 	for i in range(abs(int(target_angle))):
 		if target_angle > 0:
 			if current_angle < 180:
@@ -52,7 +53,33 @@ def servo(target_angle, ser):
 		if target_angle < 0:
 			if current_angle > 0:
 				ser.write('-')
-	time.sleep(0.2)
+	#time.sleep(0.2)
+	
+def get_current_angle():
+	global ser
+	ser.write("?")
+	return int(ser.readline().strip()) - 90
+	
+def clip_angle(angle):
+	if angle < -90:
+		return -90
+	if angle > 90:
+		return 90
+	else:
+		return angle
+	
+def servo_abs(target_angle):
+	servo(target_angle - get_current_angle())
+	
+def seek():
+	sys.stderr.write("Seek called & hunt_dir = " + str(hunt_dir) + "\n")
+	global hunt_step
+	global hunt_dir
+	current_angle = get_current_angle()
+	if current_angle >= 90 or current_angle <= -90:
+		hunt_dir *= -1	
+	servo_abs(clip_angle(current_angle + hunt_dir * hunt_step))
+	time.sleep(0.05)
 	
 def control(target):
 	kp = 1
@@ -85,6 +112,7 @@ while True:
 		#print blob_size / image_size
 		if blob_size / image_size < 0.0075:
 			print "Blobs too small!"
+			seek()
 		else:
 			(x,y) = blobs[-1].centroid()
 			image.dl().line((x,0), (x,image.height), (255,0,0), antialias=False)
@@ -94,9 +122,10 @@ while True:
 			converted_coord = float(x) / image.width
 			converted_coord = x_coordinate_to_angle(converted_coord*2-1)
 			sys.stderr.write("converted_coord: " + str(converted_coord) + ' ')
-			servo(converted_coord, ser)
+			servo(converted_coord*0.3)
 	else:
 		print "No blobs found!"
+		seek()
 	end_time = time.clock()
 	elapsed_time = end_time - start_time
 	#times.append(elapsed_time)
