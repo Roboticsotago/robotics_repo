@@ -23,6 +23,8 @@ derivative = 0
 #global hunt_dir
 hunt_dir = 1 
 hunt_step = 15
+#blobs_threshold = 0.0075
+blobs_threshold = 0.0005
 times = []
 	
 
@@ -70,7 +72,7 @@ def clip_angle(angle):
 	
 def servo_abs(target_angle):
 	servo(target_angle - get_current_angle())
-	
+
 def seek():
 	sys.stderr.write("Seek called & hunt_dir = " + str(hunt_dir) + "\n")
 	global hunt_step
@@ -99,7 +101,7 @@ def control(target):
 
 while True:
 	start_time = time.clock()
-	image = cvutils.wb(camera.getImage().scale(0.25), lab_grey_sample)
+	image = cvutils.wb(camera.getImage().scale(0.075), lab_grey_sample)
 	v,s,h = image.toHSV().splitChannels()
 	hue_match = h.colorDistance((lab_goal_blue[0][0],lab_goal_blue[0][0],lab_goal_blue[0][0])).binarize(lab_goal_blue[0][1]*3)
 	sat_match = s.colorDistance((lab_goal_blue[1][0],lab_goal_blue[1][0],lab_goal_blue[1][0])).binarize(lab_goal_blue[1][1]*3)
@@ -110,7 +112,7 @@ while True:
 		blob_size = blobs[-1].area()
 		image_size = image.area()
 		#print blob_size / image_size
-		if blob_size / image_size < 0.0075:
+		if blob_size / image_size < blobs_threshold:
 			print "Blobs too small!"
 			seek()
 		else:
