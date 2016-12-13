@@ -26,7 +26,7 @@ hunt_step = 15
 #blobs_threshold = 0.0075
 blobs_threshold = 0.0005
 times = []
-bool output = False
+output = False
 	
 
 def average(numbers):

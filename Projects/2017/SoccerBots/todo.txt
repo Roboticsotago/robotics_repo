@@ -1,0 +1,2 @@
+refine debug function for debug levels []
+fix white balance bug when click off image []
