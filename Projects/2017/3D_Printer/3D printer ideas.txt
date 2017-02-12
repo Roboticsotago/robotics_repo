@@ -1,0 +1,66 @@
+I've been tinkering with my 3D printer over the last few days and have been having some design ideas and wondering about building one with the Mechatronics group this year.  There was also talk last year about making a plotter, which would be a good starting point (only two axes). We could even try to make it convertible between 2D plotter and 3D printer!  My design thoughts:
+
+Problems I've experienced with my own printer:
+ - Extruder reliability: grip, strength, damage to filament, skipped steps, ...
+ - Extruder hysteresis (Bowden tube slack, connector backlash)
+ - Hot-end jams (broken filament, heat migration, retraction)
+ - Belt/pulley failures (fouling with foreign objects, pulley breakage)
+ - Resolution limits (steppers generally move only a fraction of a revolution)
+ - Delta calibration complications (many critical dimensions that are hard to measure)
+ - Bed-levelling difficulties
+ - Thermal problems with printed material: warping (ABS), adhesion, flexibility, heat-buildup and overextrusion
+ - Home switch reliability (electrical and mechanical)
+ - Ease of disassembly/disconnection of wiring for servicing
+ - Poor bed adhesion (various causes: bed level, bed temp, extruder temp, extruder reliability, type of hairspray, ...)
+ 
+Design Ideas:
+ - 24 V power supply (linear or switchmode?)
+ - Cartesian (X-Y-Z) design for simplicity of construction, control, troubleshooting, dual-mode as X-Y plotter, etc.
+ - Fixed X-Y plane with lowering Z
+	- Allows for direct extruder/hot-end mounting
+	- Good rigidity
+	- Minimal moving of part during printing
+ - Ballscrews for all 3 axes (gear the motors down for better positioning accuracy, run above stepper resonance where possible)
+ - Servo motors for all the axes (faster and more reliable positioning - necessary with ballscrew gearing)
+ - Heated bed
+ - Semi-automatic Z probing capability (for measuring/checking bed levelness and flatness)
+	- and/or mechanically adjustable bed height and angle
+
+	Hot-end:
+		Ceramic block/heat break?
+		Clampable metal mounting for heater cartridge (not grub screw - better contact area)
+		
+ - Print head position sensing? Laser?
+ - Layer quality control (scan to detect lumps): laser?
+
+ - Multi-grip rubber roller extruder
+ - Optical sensor for jam detection/avoidance
+ 
+Convertible to X-Y plotter? Removable X-Y module so you can place it on paper or on a drawing table?  Router? Lathe?
+
+Supoprt A3 paper size?
+	A0 is defined as having an area of 1 m^2
+		xy = 1 m ^2
+		y/x = sqrt[2]
+		so:
+		y = sqrt[2] x
+		1 m^2 = x * x * sqrt[2]
+		1 m^2 / sqrt[2] = x^2
+		x = sqrt[1 m^2/sqrt[2]]
+		  = 840.8964152537145 mm
+		  
+		x = y / sqrt[2]
+		1 m^2 = y x y/sqrt[2]
+		y^2 = 1 m^2 sqrt[2]
+		y = sqrt[1 m^2 sqrt[2]]
+		  = 1189.207115002721 mm
+
+LinuxCNC/MachineKit to drive it?  Will want good customisation.
+https://www.youtube.com/watch?v=X1ZYwggkjlA
+https://www.youtube.com/watch?v=FgnxBaFFDi8
+
+Parallel SCARA:
+https://www.youtube.com/watch?v=R_AIzCTYBNs
+
+--
+
