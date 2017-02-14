@@ -56,7 +56,7 @@ Pololu:
 	
 [ ] Tamiya 72001 planetary gearbox kit
 	https://www.pololu.com/product/70
-		16 USD each (need at least a pair)
+		16 USD each (need at least a pair, but maybe get one and test it out)
 	http://www.rcjaz.co.nz/tamiya-72001-planetary-gear-box-set-p-5811.html
 		20 NZD each
 	Nice modular design with coaxial output and input shafts, 25:1 ratio available.
@@ -87,6 +87,9 @@ Pololu:
 
 
 Elsewhere:
+
+[ ] Vishay TSOP38240 or TSOP39240 (40 kHz IR receivers - different pin-outs only)
+	Adafruit stock the 38 kHz version. At 40 kHz that would probably have about 0.6x sensitivity due to the filter bandwidth.
 
 [ ] Brushless motors + ESCs
 	Preferably not TOO expensive!
