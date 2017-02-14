@@ -61,6 +61,15 @@ Supoprt A3 paper size?
 		y = sqrt[1 m^2 sqrt[2]]
 		  = 1189.207115002721 mm
 
+	For A3, therefore:
+		x = sqrt[1/8 m^2/sqrt[2]] -> mm
+		  = 297.30177875068026
+		y = sqrt[1/8 m^2 sqrt[2]] -> mm
+		  = 420.4482076268573
+		
+		Or, very roughly, about 500 mm x 300 mm build envelope.
+		What about the Z height? Maybe big enough to model a human head?  About 300 mm?
+
 LinuxCNC/MachineKit to drive it?  Will want good customisation.
 https://www.youtube.com/watch?v=X1ZYwggkjlA
 https://www.youtube.com/watch?v=FgnxBaFFDi8
