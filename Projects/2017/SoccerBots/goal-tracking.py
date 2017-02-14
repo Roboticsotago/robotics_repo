@@ -11,9 +11,6 @@ ser = serial.Serial('/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_8543130
 camera = SimpleCV.Camera(0, {"width":960,"height":540})
 os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
 
-lab_grey_sample = cvutils.calibrate_white_balance(camera)
-lab_goal_blue = cvutils.calibrate_colour_match(camera, lab_grey_sample)
-
 speed = 0
 #global current_angle
 #current_angle = 0
@@ -26,8 +23,27 @@ hunt_step = 15
 #blobs_threshold = 0.0075
 blobs_threshold = 0.0005
 times = []
-output = False
-	
+output = True
+image_output = True
+calibrating = False
+scale_factor = 1/64.0
+
+def debug(msg):
+	global output
+	if output == True:
+		sys.stderr.write(str(msg) + '\n')
+
+lab_grey_sample = (155.40740740740742, 150.55555555555554, 160.07407407407408)
+lab_goal_blue = ((104, 2), (218.5, 6.5), (127.5, 14.5))
+
+if calibrating:
+	grey_sample = cvutils.calibrate_white_balance(camera)
+	target_colour = cvutils.calibrate_colour_match(camera, grey_sample)
+else:
+	grey_sample = lab_grey_sample
+	target_colour = lab_goal_blue
+
+debug(target_colour)
 
 def average(numbers):
 	x = 0
@@ -38,17 +54,16 @@ def average(numbers):
 
 def x_coordinate_to_angle(coord):
 	return coord*35.543
-
-def plant(control): #control input from -1...1 so -90...90 deg / sec
-	current_angle += speed
-	speed = control * 90
-	return current_angle
+		
+def image_debug(img):
+	global image_output
+	if image_output:
+		img.show()
 	
 #Sends serial data to connected Arduino, input data between -90 to 90, output data to servo is 0 to 180 deg
 def servo(target_angle):
 	current_angle = get_current_angle() + 90
-	sys.stderr.write("current angle: " + str(current_angle) + ' ')
-	sys.stderr.write("target angle:: " + str(target_angle) + '\n')
+	debug("current angle: " + str(current_angle) + ' ' + "target angle: " + str(target_angle))
 	for i in range(abs(int(target_angle))):
 		if target_angle > 0:
 			if current_angle < 180:
@@ -75,7 +90,7 @@ def servo_abs(target_angle):
 	servo(target_angle - get_current_angle())
 
 def seek():
-	sys.stderr.write("Seek called & hunt_dir = " + str(hunt_dir) + "\n")
+	debug('Seek called & hunt_dir = ' + str(hunt_dir))
 	global hunt_step
 	global hunt_dir
 	current_angle = get_current_angle()
@@ -83,55 +98,39 @@ def seek():
 		hunt_dir *= -1	
 	servo_abs(clip_angle(current_angle + hunt_dir * hunt_step))
 	time.sleep(0.05)
-	
-def control(target):
-	kp = 1
-	ki = 1
-	kd = 1
-	error = target - current_angle
-	integral += error
-	derivative = error - prev_error
-	prev_error = error
-	control = kp * error + ki * integral + kd * derivative
-	sys.stderr.write(control)
-	sys.stderr.write(error * kp)
-	sys.stderr.write(integral * ki)
-	sys.stderr.write(derivative * kd)
-	sys.stderr.write(plant(control))
-	return plant(control)
 
 while True:
 	start_time = time.clock()
-	image = cvutils.wb(camera.getImage().scale(0.075), lab_grey_sample)
+	image = cvutils.wb(camera.getImage().scale(scale_factor), grey_sample)
 	v,s,h = image.toHSV().splitChannels()
-	hue_match = h.colorDistance((lab_goal_blue[0][0],lab_goal_blue[0][0],lab_goal_blue[0][0])).binarize(lab_goal_blue[0][1]*3)
-	sat_match = s.colorDistance((lab_goal_blue[1][0],lab_goal_blue[1][0],lab_goal_blue[1][0])).binarize(lab_goal_blue[1][1]*3)
+	hue_match = h.colorDistance((target_colour[0][0],target_colour[0][0],target_colour[0][0])).binarize(target_colour[0][1]*3)
+	sat_match = s.colorDistance((target_colour[1][0],target_colour[1][0],target_colour[1][0])).binarize(target_colour[1][1]*3)
 	matched = ((hue_match / 16) * (sat_match / 16))
-	matched.show()
+	image_debug(matched)
 	blobs = matched.findBlobs(100, 1)
 	if blobs is not None:
 		blob_size = blobs[-1].area()
 		image_size = image.area()
 		#print blob_size / image_size
 		if blob_size / image_size < blobs_threshold:
-			print "Blobs too small!"
+			print 'Blobs too small!'
 			seek()
 		else:
 			(x,y) = blobs[-1].centroid()
 			image.dl().line((x,0), (x,image.height), (255,0,0), antialias=False)
 			image.dl().line((0,y), (image.width,y), (0,255,0), antialias=False)
-			image.show()
+			image_debug(image)
 			#print float(x) / image.width
 			converted_coord = float(x) / image.width
 			converted_coord = x_coordinate_to_angle(converted_coord*2-1)
-			sys.stderr.write("converted_coord: " + str(converted_coord) + ' ' + '\n')
+			debug('converted_coord: ' + str(converted_coord) + ' ')
 			servo(converted_coord*0.3)
 	else:
-		print "No blobs found!"
+		print 'No blobs found!'
 		seek()
 	end_time = time.clock()
 	elapsed_time = end_time - start_time
 	times.append(elapsed_time)
 	frame_rate = 1 / average(times)
 	sys.stderr.write('Frame rate:' + str(frame_rate) + '\n')
-	#image.show()
+	#image_debug(image)

@@ -5,12 +5,13 @@
 # For Focus, larger values focus closer to the lens.
 # White Balance Temperature: 2900 was from my testing at home
 # but in the lab, under mostly fluorescent lighting, 3900 is pretty much spot on.
+# Higher exposure value = brighter image
 
 set settings {
 	"Sharpness" 0
-	"Gain" 192
+	"Gain" 20
 	"Exposure, Auto" 1
-	"Exposure (Absolute)" 100
+	"Exposure (Absolute)" 300 
 	"Focus, Auto" 0
 	"Focus (absolute)" 15
 	"Power Line Frequency" 1
