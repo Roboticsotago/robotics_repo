@@ -74,6 +74,9 @@ LinuxCNC/MachineKit to drive it?  Will want good customisation.
 https://www.youtube.com/watch?v=X1ZYwggkjlA
 https://www.youtube.com/watch?v=FgnxBaFFDi8
 
+Notes on using MachineKit for 3D printer control:
+http://blog.machinekit.io/2013/07/slicing-for-linuxcnc.html
+
 Parallel SCARA:
 https://www.youtube.com/watch?v=R_AIzCTYBNs
 
