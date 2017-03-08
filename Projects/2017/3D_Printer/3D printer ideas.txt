@@ -1,0 +1,168 @@
+I've been tinkering with my 3D printer over the last few days and have been having some design ideas and wondering about building one with the Mechatronics group this year.  There was also talk last year about making a plotter, which would be a good starting point (only two axes). We could even try to make it convertible between 2D plotter and 3D printer!  My design thoughts:
+
+Problems I've experienced with my own printer:
+ - Extruder reliability: grip, strength, damage to filament, skipped steps, ...
+ - Extruder hysteresis (Bowden tube slack, connector backlash)
+ - Hot-end jams (broken filament, heat migration, retraction)
+ - Filament kinking and misfeeding in extruder feeder
+ - Belt/pulley failures (fouling with foreign objects, pulley breakage)
+ - Resolution limits, rough surface finish (steppers generally move only a fraction of a revolution)
+ - Delta calibration complications (many critical dimensions that are hard to measure)
+ - Bed-levelling difficulties
+ - Thermal problems with printed material: warping (ABS), adhesion, flexibility, heat-buildup and overextrusion
+ - Home switch reliability (electrical and mechanical)
+ - Blown fuses due to excessive heater current
+ - Unreliable electrical connections in temperature sensing wiring, danger of short-circuit in all-metal hot-end
+ - Difficult disassembly/disconnection of wiring for servicing
+ - Poor bed adhesion (various causes: bed level, bed temp, extruder temp, extruder reliability, type of hairspray, ...)
+ - Nuisance changing filament (sprung clamp not finger friendly)
+ - Stepper motors skipping under load (both X-Y-Z and E, often due to root cause relating to filament feed or blobby extrusion)
+ 
+Design Ideas:
+ - 24 V power supply (linear or switchmode?) for motors, heaters, fans, electronics
+ - Cartesian (X-Y-Z) design for simplicity of construction, control, troubleshooting, dual-mode as X-Y plotter, etc.
+ - Fixed X-Y plane with lowering Z
+	- Allows for direct extruder/hot-end mounting
+	- Good rigidity
+	- Minimal moving of part during printing
+ - Ballscrews for all 3 axes (gear the motors down for better positioning accuracy, run above stepper resonance where possible, sufficient strength to support non-bowden extruder feeder on moving print-head)
+ - Possibly servo motors for all the axes (faster and more reliable positioning - necessary with ballscrew gearing)
+	although stepper motors might still be very convenient, cheap, and effective, especially at 24 V
+ - Heated bed
+ - Semi-automatic Z probing capability (for measuring/checking bed levelness and flatness)
+	- and/or mechanically adjustable bed height and angle
+
+	Hot-end:
+		Ceramic block/heat break?
+		Clampable metal mounting for heater cartridge (not grub screw - better contact area)
+		
+ - Print head position sensing? Laser?
+ - Layer quality control (scan to detect lumps): laser?
+
+ - Multi-grip rubber roller extruder
+ - Optical sensor for jam detection/avoidance
+ 
+Convertible to X-Y plotter? Removable X-Y module so you can place it on paper or on a drawing table?  Router? Lathe?
+
+Supoprt A3 paper size?
+	A0 is defined as having an area of 1 m^2
+		xy = 1 m ^2
+		y/x = sqrt[2]
+		so:
+		y = sqrt[2] x
+		1 m^2 = x * x * sqrt[2]
+		1 m^2 / sqrt[2] = x^2
+		x = sqrt[1 m^2/sqrt[2]]
+		  = 840.8964152537145 mm
+		  
+		x = y / sqrt[2]
+		1 m^2 = y x y/sqrt[2]
+		y^2 = 1 m^2 sqrt[2]
+		y = sqrt[1 m^2 sqrt[2]]
+		  = 1189.207115002721 mm
+
+	For A3, therefore:
+		x = sqrt[1/8 m^2/sqrt[2]] -> mm
+		  = 297.30177875068026
+		y = sqrt[1/8 m^2 sqrt[2]] -> mm
+		  = 420.4482076268573
+		
+		Or, very roughly, about 500 mm x 300 mm build envelope.
+		What about the Z height? Maybe big enough to model a human head?  About 300 mm?
+
+LinuxCNC/MachineKit to drive it?  Will want good customisation.
+https://www.youtube.com/watch?v=X1ZYwggkjlA
+https://www.youtube.com/watch?v=FgnxBaFFDi8
+
+Notes on using MachineKit for 3D printer control:
+http://blog.machinekit.io/2013/07/slicing-for-linuxcnc.html
+
+Parallel SCARA:
+https://www.youtube.com/watch?v=R_AIzCTYBNs
+
+--
+
+Might get some construction ideas from the Mendel Max 2:
+https://www.youtube.com/watch?v=PMS00ll8lnw
+
+--
+
+Extruder hot-end
+	I've ordered an E3D V6 1.75 mm
+	
+	On my home printer, I'm using a 24 V supply for the heaters, and this seems to be OK provided the maximum PWM duty is suitably limited.  I have it limited to about 60/255, and warmup times seem quite acceptable, and I've not had any blown fuses.  It would probably be sensible to measure the actual current drawn to ensure it's within a safe limit.
+	
+		Apparently such a low-impedance load might cause excessive ripple on the power supply rails, however.
+	
+	Good info here:
+	http://wiki.e3d-online.com/wiki/E3D-v6_Assembly#Heater_Cartridge
+
+--
+
+Heated bed
+
+	These are extremely useful. Our bed will be quite large, but at least it's rectangular. Glass should be ?? type.
+	
+	I think an aluminium heat-spreader would be a good idea, since we probably won't find a single heating pad that is big enough.
+	
+	Do we have a target temperature/time?
+		PLA: ~60 degC
+		PET-G: ~75 degC
+		ABS: ~100 degC
+	
+	How to assemble the pad, spreader, and glass bed together?  Especially if we want the base to be somewhat adjustable!  Thermally-insulate underneath?
+	
+	http://www.makershop.co.nz/Heaters?product_id=291
+	200 W (8.3 A @ 24 V), effective resistance: (24 V)^2 / (200 W) -> ohm = 72/25 (exactly 2.88)
+
+--
+
+BeBoPr++ board?
+	12..24 V supply voltage
+	16 A input current
+	
+	Bed heater: max 8 A at 24 V (200 W)
+	
+	19 V laptop PSU might work, or 24 V switching PSU like my delta's.
+
+	https://github.com/modmaker/BeBoPr-plus-plus/blob/master/BeBoPr%2B%2B%20User%20Manual.pdf
+
+--
+
+Stepper drivers:
+
+	TI DRV8825 might be a nice advance over the traditional Allegro
+		8.2..45 V operating voltage
+		1.5 A per phase (no heat sink/fan)
+		2.2 A per phase (with heat sink and airflow)
+		1, 1/2, 1/4, 1/8, 1/16, 1/32 stepping
+		fancy waveform stuff
+
+	http://reprap.org/wiki/A4988_vs_DRV8825_Chinese_Stepper_Driver_Boards
+	
+		Note caution about the value of the sense resistors!  Check on the actual board!
+		
+		Note issue with using DRV8825 with 1/32 stepping, 24 V supply, and low current limit (<1.5 A)!
+	
+	Use heatsinks! Drivers will shut down when the die reaches around 150 degC. DO NOT WANT. Note that heat sinks stuck on top may not have much effect - the IC package is designed for heat-sinking through the soldered base!
+	
+	Sense resistor value Rs is usually 0.1 ohms, and I_TripMax= Vref/(5*Rs)
+	Solving for Vref:
+		Vref = 5 * Rs * I_TripMax
+	So:
+		2.5 A -> 1.5 V (max theoretical limit)
+		2.2 A -> 1.1 V (recommended limit with heat sink and airflow)
+		2.0 A -> 1.0 V
+		1.8 A -> 0.9 V (MAKERshop 74 oz-in NEMA17 motor)
+		1.5 A -> 0.75 V (Recommended limit without heat sink and airflow)
+		1.2 A -> 0.6 V (MAKERshop 35 oz-in NEMA17 motor)
+		
+--
+
+Power:
+	+24 V
+		Control/Power Board
+			Bed heater: max 200 W (8 A @ 24 V)
+			Hot-end: 40 W / (24 V) ~= 1.7 A
+			Stepper motors: 4 x 1.8 A = 7.2 A worst-case
+		Hot-end cooling fan (run at all times! Power directly from PSU?)
