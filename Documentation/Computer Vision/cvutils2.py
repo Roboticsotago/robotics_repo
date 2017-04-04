@@ -2,6 +2,16 @@
 
 # Do we need to import SimpleCV?  I assume the import statement will ignore/fail gracefully if asked to import something that's already been imported...
 import SimpleCV
+import numpy
+
+# Basic setup and check:
+#camera = SimpleCV.Camera(prop_set={'width':320, 'height':240})
+#camera.loadCalibration('default')
+#camera.getCameraMatrix()
+#camera.live()
+
+# NOTE: it may be necessary to set many of the camera's capture settings externally, using guvcview or uvcdynctrl
+# uvcdynctrl -c -v
 
 # Some colour space conversion functions:
 
@@ -64,7 +74,7 @@ def highlight(pixels):
 # (The calibrate_white_balance() function below can be used to sample a "supposed-to-be-grey" pixel by clicking with the mouse)
 
 def wb(image,grey_sample):
-	grey=np.mean(grey_sample)
+	grey=numpy.mean(grey_sample)
 	r_corr = grey / grey_sample[0]
 	g_corr = grey / grey_sample[1]
 	b_corr = grey / grey_sample[2]
@@ -73,7 +83,7 @@ def wb(image,grey_sample):
 	r = r * float(r_corr)
 	g = g * float(g_corr)
 	b = b * float(b_corr)
-	return Image.mergeChannels(r,r,g,b)
+	return SimpleCV.ImageClass.Image.mergeChannels(r,r,g,b)
 
 # Test it:
 #camera.live()
@@ -105,9 +115,9 @@ def wb(image,grey_sample):
 
 # NOTE: Display.mouseLeft returns the current state of the button, whereas Display.leftButtonDownPosition() returns None unless the button was only JUST pressed. We want Display.mouseX and Display.mouseY instead, I think.
 
-def calibrate_white_balance():
-	display=Display()
-	camera=Camera()
+def calibrate_white_balance(camera):
+	display=SimpleCV.Display()
+	#camera=Camera()
 	prev_mouse_state = False
 	sample_pixels = []
 	print('Press and hold left mouse button over a region that should be white/grey...')
@@ -123,7 +133,7 @@ def calibrate_white_balance():
 				#print(sample_pixels)
 			colour_sample = image.getPixel(x,y)
 			# Indicate the point being sampled:
-			image.drawCircle((x,y),rad=5,color=Color.VIOLET,thickness=1)
+			image.drawCircle((x,y),rad=5,color=SimpleCV.Color.VIOLET,thickness=1)
 			image.save(display)
 			print(str(x) + ', ' + str(y) + ': ' + str(colour_sample))
 			sample_pixels.append(colour_sample)
@@ -138,9 +148,10 @@ def calibrate_white_balance():
 			prev_mouse_state = False
 
 # Usage:
-grey_sample = calibrate_white_balance()
-while True:
-	wb(camera.getImage(), grey_sample).show()
+#grey_sample = calibrate_white_balance(camera)
+
+#while True:
+#	wb(camera.getImage(), grey_sample).show()
 
 
 
@@ -192,7 +203,7 @@ def find_colour(image, hue, hue_thresh, sat, sat_thresh):
 # Here's a helper function for finding the target hue, hue threshold, saturation, and saturation threshold for matching a colour.
 # TODO: implement a clickable colour picker using Display, similar to calibrate_white_balance() above.  Could infer the target centre and thresholds automatically, based on the range of colours selected.
 
-def calibrate_colour_finder():
+def calibrate_colour_finder(camera):
 	image = camera.getImage()
 	image.show()
 	highlight=solid(image, (255,0,255))
@@ -239,14 +250,13 @@ def calibrate_colour_finder():
 	return (target_hue, hue_threshold, target_sat, sat_threshold)
 
 # Try it out:
-calibrate_colour_finder()
+#calibrate_colour_finder()
 
 
 # Trial hue distances:
-h.colorDistance((54,54,54)).show()
+#h.colorDistance((54,54,54)).show()
 # Trial hue threshold:
-h.colorDistance((54,54,54)).binarize(48).show()
+#h.colorDistance((54,54,54)).binarize(48).show()
 # Likewise for saturation:
-s.colorDistance((150,150,150)).show()
-s.colorDistance((150,150,150)).binarize(160).show()
-
+#s.colorDistance((150,150,150)).show()
+#s.colorDistance((150,150,150)).binarize(160).show()
