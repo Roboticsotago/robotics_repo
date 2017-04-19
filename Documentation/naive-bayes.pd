@@ -76,13 +76,13 @@ an obstacle.;
 #X obj 615 640 metro 100;
 #X obj 615 599 loadbang;
 #X obj 145 457 hsl 50 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 2500 1;
+-1 -1 0 1;
 #X obj 235 457 hsl 50 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 2500 1;
+-1 -1 0 1;
 #X obj 315 457 hsl 50 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 4900 1;
 #X obj 216 779 hsl 50 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 2400 1;
+-1 -1 4900 1;
 #X text 453 214 Floating-point underflow can be a problem \, so perhaps
 work in the log domain: ...;
 #X floatatom 304 302 8 0 0 0 - - -, f 8;
@@ -98,11 +98,13 @@ work in the log domain: ...;
 external that will generalise to <n> inputs...;
 #X obj 294 698 expr~ if($v2==0 \, 0 \, 1 / ($v1 / $v2 + 1));
 #X obj 608 835 hsl 50 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 2400 1;
+-1 -1 0 1;
 #X obj 419 404 hsl 50 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 2600 1;
+-1 -1 4900 1;
 #X text 545 699 <- Better approach that avoidsF division-by-0 that
 would otherwise cause a 0 input to jump to 1 output.;
+#X text 422 507 What if some inputs are 1 and some are 0? Contradiction?!
+;
 #X connect 0 0 3 0;
 #X connect 0 0 2 0;
 #X connect 0 0 10 0;
