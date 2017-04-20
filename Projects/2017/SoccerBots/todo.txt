@@ -1,2 +1,12 @@
 refine debug function for debug levels []
 fix white balance bug when click off image []
+
+[ ] Design and fab main robot platform (3D print? lasercut?)
+
+[ ] Implement servo mechanism for wheels? Optical? Hall sensor?
+
+[ ] Design and test kicker mechanism. Servo? Maybe a high-speed one from Pololu.
+
+[ ] Build second robot as Goalie.
+
+[ ] Apply threadlocker (e.g. Loctite) to fasteners before competition
