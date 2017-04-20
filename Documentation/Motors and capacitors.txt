@@ -1,0 +1,28 @@
+Decoupling and noise suppression capacitors for DC (and other?) motors
+
+Also:
+	Keep wires short
+	Keep wires close together (twist!)
+	Consider shielding?
+	Keep PWM frequency low
+	
+Place an electrolytic capacitor of a few hundred uF across the power supply going into the motor driver.  On an H-bridge, this should be at the input, not the output, as the capacitors are polarised!
+
+Place a small-value ceramic (low-ESR) capacitor across the input leads of the motor, and perhaps additionally between each input lead and the metal body of the motor.  Ground the motor body, too?
+
+"104" means 100000 pF, or 100 nF, or 0.1 uF.
+
+	This might be a bit large for motor spike/noise suppression, according to Hero999 on electro-tech-online.com, who suggests 1 nF ("102") or 470 pF ("471")
+	
+	rew agrees: start out with 1 nF ("102"). Large values will cause excessive current spikes from the power supply/driver.
+	
+	https://forum.pololu.com/t/adding-capacitors-to-dc-motors/6177/4
+	
+	What about PWM compatibility/interactions?
+
+Voltage rating should be 2..4 times the power supply rating (inductive kickback).  50 V is common, and plenty for a 5 V supply; 100 V also obtainable.
+
+
+http://www.x2y.com/publications/dcmotors/feb14-05.pdf
+	Those X2Y filters look pretty magical..
+	
