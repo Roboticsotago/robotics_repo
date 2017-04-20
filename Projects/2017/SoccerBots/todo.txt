@@ -1,5 +1,18 @@
-refine debug function for debug levels []
-fix white balance bug when click off image []
+Things to be done for the 2017 SoccerBots project
+
+Vision system:
+
+[ ] refine debug function for debug levels
+
+[ ] fix white balance bug when click off image
+
+
+General:
+
+[Y] Design and implement serial protocol for motor control
+
+
+Hardware:
 
 [ ] Design and fab main robot platform (3D print? lasercut?)
 
@@ -7,6 +20,20 @@ fix white balance bug when click off image []
 
 [ ] Design and test kicker mechanism. Servo? Maybe a high-speed one from Pololu.
 
+[ ] Trial using a DSpace Robot board for motor and servo control (rather than separate Arduino + H-bridge)
+
+[ ] Build a power+ground bus board (screw terminals for input, header pins for multiple outputs)
+
+[ ] Add buzzer, and use it to warn of low voltage as reported by the DC-DC converter
+
+[ ] Maybe add lights? Just decorative? Must not confuse other robots!
+
 [ ] Build second robot as Goalie.
 
 [ ] Apply threadlocker (e.g. Loctite) to fasteners before competition
+
+[ ] Build IR sensors for ball detection
+
+[ ] Compass sensor
+
+[ ] Colour sensors for approximate location on the field
