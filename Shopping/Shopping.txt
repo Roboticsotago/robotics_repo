@@ -1,4 +1,4 @@
-Things to buy:
+Things to buy, late 2016/early 2017:
 
 Adafruit:
 
@@ -54,37 +54,85 @@ SparkFun:
 
 Pololu:
 	
-[ ] Tamiya 72001 planetary gearbox kit
+[Y] Tamiya 72001 planetary gearbox kit
 	https://www.pololu.com/product/70
 		16 USD each (need at least a pair, but maybe get one and test it out)
 	http://www.rcjaz.co.nz/tamiya-72001-planetary-gear-box-set-p-5811.html
 		20 NZD each
+		Actually based in Hong Kong?
 	Nice modular design with coaxial output and input shafts, 25:1 ratio available.
 		4:1 5:1 16:1 20:1 25:1 80:1 100:1 400:1
 	Mabuchi RC-260 motor as standard (NOTE: 3 V nominal!) -> probably want substitutes
+		https://www.pololu.com/file/download/rc_260rasa.pdf?file_id=0J15
+			Shaft diameter: 2.0 mm
+			Body diameter: 23.8 mm (~24 mm, 2nn size)
+			Mounting bulkhead diameter: 19.0 mm
+			Front hole spacing: 11.5 mm
 		http://www.rctech.net/forum/electric-off-road/238188-380-540-550-720-motor-sizes.html
 	Brushed DC motor power band peak tends to be around half the no-load speed. For many motors, it's around 8000 RPM.
 	If our target wheel speed is around 250 RPM, that means a gear ratio of about 30:1.
 	Lego integration: https://www.youtube.com/watch?v=ieF7mHdcZkc
+	
+	For the Tamiya robot tyres, 8k RPM, 1:25 gearing, we get about 1 m/s speed (ignoring friction losses)
+	8000/min / 25 * 58 mm * pi = 0.97179932751044270828 m s^-1 (velocity)
+	
+	Higher-voltage replacement motors?
+		The planetary gearbox comes with a Mabuchi RC-260 motor, whereas other Tamiya kits using that size have the Mabuchi RE-260
+			RC-260	0.4 W .. 20 W, 4.5 V nominal
+			RE-260	0.4 W .. 4.0 W, 1.5 V or 3 V nominal
 
-[ ] Tamiya 70145 narrow tyre (pair)
+			Limiting current might be very sensible.  Not sure we can do that with the standard L260n chips, but you can use say a DRV8825 to drive DC motors as well, apparently.
+			
+			Maybe we'll end up with an Arduino/RAMPS for the motor control!
+			
+			Apparently it's an RC-260SA-2295 (10k RPM no-load, 13 mN m stall torque, ~2 W)
+			http://www.robotshop.com/forum/help-problem-powering-tamiya-rc-260-motors-t9466
+			
+			R = V / (P / V) = ~10 ohm effective
+			Normal current (peak efficiency): I = P / V = 0.44 A
+			Perhaps limit to 0.5 A
+			0.5 A * 7.2 V = 3.6 W
+			
+
+[Y] Tamiya 70145 narrow tyre (pair)
 	58 mm diameter
 	https://www.pololu.com/product/63
 		7.25 USD/pair
 	https://www.surplustronics.co.nz/products/5756-tamiya-70145-narrow-tire-set-2-tires
 		15 NZD/pair
 
-[ ] Some higher-voltage 180?-size motors (perhaps a pair from Adafruit and a pair from Pololu initially)
+[Y] Some higher-voltage 180?-size motors (perhaps a pair from Adafruit and a pair from Pololu initially)
 	Pololu #1117 model has been pretty good
 
-[ ] Tamiya connectors
+[Y] Tamiya connectors
 	https://www.pololu.com/product/2172 <- Female metal part (device to be powered), need more of these!  At least 5.
 		1.5 USD each
 	https://www.pololu.com/product/2173 <- Male metal part (battery), have some already
 	
-[ ] Du Pont style connectors (various)
+[Y] Du Pont style connectors (various)
 	https://www.pololu.com/product/1900
 
+[ ] Servo motor for kicker mechanism
+	https://www.pololu.com/product/1055/specs
+		out of stock!
+	https://www.pololu.com/product/2142/specs
+		smaller, less powerful
+
+[Y] Step-down DC-DC converter (for the main drive motors, any servos, the Raspberry Pi, Arduino)
+	Total current requirement:
+		3 A for the Pi + camera
+		3 A for the two main motors combined
+		1.5 A for the kicker servo
+		Probably need the 9 A one then!  The 15 A model would be overkill, though.
+				
+[ ] Stepper motor drivers/carriers
+	or get from MAKERshop?
+	DRV8825 (2.5 A per-phase output, 8.2 V .. 45 V supply, 1/32 stepping)
+	DRV8833 (1.2 A continuous, 2 A peak, 2.7 V .. 10.8 V)
+	DRV8835 ()
+	or might we get a BBB break-out board that has onboard drivers?
+
+[ ] Caster/castor/idler wheels?
 
 Elsewhere:
 
@@ -103,7 +151,7 @@ Elsewhere:
 	Castle Creations Mamba:
 		http://www.botmag.com/brushless-revolution/
 		http://www.castlecreations.com/products-search?qs=Mamba
-	
+		
 [X] Soccer field (MTA?)
 	Borrowing one from Sandy
 

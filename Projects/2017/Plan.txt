@@ -1,13 +1,16 @@
 Info Sci Mechatronics 2017 year planner
+NOTE: now on Google Docs:
+https://docs.google.com/spreadsheets/d/1Kc1L27GCWI3a0aXVXY61CSHJVVFTGM2uaABDkIz8OdM/edit#gid=0
+
 
 Feb	14	Welcome back, planning for 2017 (Soccer, 3D printer, hovercraft, Daleks)
-Feb 21	
-Feb 28	
-Mar 7	
-Mar 14	
-Mar 21	
-Mar 28	
-Apr 4	
+Feb 21	SoccerBot motors and gearing
+Feb 28	SoccerBot platform and mobility
+Mar 7	SoccerBot mobility
+Mar 14	SoccerBot kicking mechanism
+Mar 21	...
+Mar 28	SoccerBot sensors: range, ball IR, compass, etc.
+Apr 4	...
 Apr 11	Last class before break
 
 Apr 14-30	holidays

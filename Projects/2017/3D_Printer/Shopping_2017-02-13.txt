@@ -1,0 +1,53 @@
+3D printer shopping, 2017-02-13
+
+[ ] Stepper motors (X, Y, Z, extruder - perhaps heavier-duty for Z and extruder)
+[ ] Stepper drivers (DRV8825 probably), X, Y, Z, E
+[ ] Framing: OpenBeam?
+[ ] Power supply (24 V)
+[ ] Bed heater
+...
+
+Shop at MAKERshop? They have E3D hot-ends. :)
+	Ooh, they stock Mesa cards, too...
+
+Probably a 1.75 mm one. Includes 0.4 mm nozzle.  Might want a larger nozzle as well for faster printing of larger parts.  They go up to 0.8 mm diameter for the 1.75 mm filament.
+http://www.makershop.co.nz/extruder/HotEnds?product_id=272
+
+
+Ideal motor winding inductance for 24 V power supply:
+
+
+Stepper motor drivers?  BeBoPr board support Pololu-style carriers, yes?  Go with the DRVs?
+	Are we intending to use a BeagleBone (Black)?  What break-out board?
+
+MAKERshop have a variety of NEMA17 stepper motors and drivers, notably a 400 step/rev stepper motor.
+	http://www.makershop.co.nz/motors/stepper_42BYGHM809
+		400 steps/rev
+		58 ounce force inch (410 mN m)
+		4 mH -> 63 V max
+		1.7 A max per phase
+	http://www.makershop.co.nz/motors?product_id=54
+		200 steps/rev
+		35 ounce force inch (247 mN m)
+		2.5 mH -> 50 V max
+		1.2 A max per phase
+		+/-5% step angle accuracy
+	http://www.makershop.co.nz/motors/17HS8401:
+		200 steps/rev
+		74 ounce force inch (523 mN m)
+		3.2 mH -> 56.6 V max
+		1.8 A max per phase
+		+/-5% step angle accuracy
+
+
+--
+
+DRV8825 boards:
+http://www.makershop.co.nz/DRV8825
+
+8.2..45 V operating voltage
+1.5 A per phase (no heat sink/fan)
+2.2 A per phase (with heat sink and airflow)
+1, 1/2, 1/4, 1/8, 1/16, 1/32 stepping
+
+
