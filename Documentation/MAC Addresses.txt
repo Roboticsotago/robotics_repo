@@ -28,6 +28,10 @@ General-use machines in the lab:
 		#5:
 			Ethernet: f4:6d:04:b6:bd:b6
 			Wi-Fi:    e0:b9:a5:2f:ad:41
+	
+	Chris's Toshiba netbook:
+			Ethernet: 1c:75:08:77:e2:88
+			Wi-Fi:    1c:65:9d:bf:27:8b
 
 
 Machines belonging to the after-school mechatronics class (as of 2016):
@@ -49,6 +53,9 @@ Machines belonging to the after-school mechatronics class (as of 2016):
 		HP laptop:
 			Ethernet: 28:92:4a:5a:52:d3
 			Wi-Fi:    20:16:d8:13:b0:a3
+		Acer laptop:
+			Ethernet: f8:a9:63:a6:82:6c  
+			Wi-Fi:    18:cf:5e:60:21:8d 
 		Raspberry Pi:
 			Ethernet: b8:27:eb:db:e3:b0
 
