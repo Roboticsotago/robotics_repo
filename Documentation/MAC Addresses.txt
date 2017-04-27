@@ -39,11 +39,6 @@ Machines belonging to the after-school mechatronics class (as of 2016):
 	Alex Haszard:
 		Wi-Fi: E0-94-67-8A-FD-22
 
-	Annabelle Ritchie:
-		MacBook:
-			Ethernet: 98:5a:eb:c9:e2:43
-			Wi-Fi:    c0:ce:cd:ea:52:39
-
 	Beldon Holt:
 		Windows laptop:
 			Ethernet: F8:A9:63:DA:0C:EA
