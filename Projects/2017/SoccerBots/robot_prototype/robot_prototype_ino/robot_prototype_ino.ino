@@ -20,6 +20,9 @@ const int L_MOTOR = 0;
 const int R_MOTOR = 1;
 //const int MOTOR_L_DUTY=0;	// 180
 //const int MOTOR_R_DUTY=0;	// 150
+const int DIR_MASK = 0b01000000;
+const int MOTOR_MASK = 0b10000000;
+const int SPEED_MASK = 0b00111111;
 
 
 const int CYCLE_TIME=2;
@@ -513,16 +516,15 @@ void loop_test() {
 void motor_control(){
 	if(Serial.available() > 0){
 		int data = Serial.read();
-		if(data>>7 == 1){
-			
-			R_Spd(data<<2, 1);
+		if((data&MOTOR_MASK)>>7 == 1){
+			R_Spd((data&SPEED_MASK)<<2, (data&DIR_MASK)>>6);
 			Serial.println("R forward");
-			Serial.println(data<<2);
+			Serial.println((data&SPEED_MASK)<<2);
 		}
 		else{
-			L_Spd(data<<2, 1);
+			L_Spd((data&SPEED_MASK)<<2, (data&DIR_MASK)>>6);
 			Serial.println("L forward");
-			Serial.println(data<<2);
+			Serial.println((data&SPEED_MASK)<<2);
 		}
 			
 	}
