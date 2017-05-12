@@ -6,7 +6,7 @@
 import SimpleCV
 import numpy
 import time
-
+import sys
 # Some colour space conversion functions:
 # These might be handy when converting from an HSV colour reported by GIMP to one that SimpleCV can use directly.
 def hue_from_angle(degrees): return degrees / 360.0 * 255
@@ -116,7 +116,7 @@ def calibrate_white_balance(camera):
 	image.drawText("Hold mouse button over white/grey", 8,8,color=SimpleCV.Color.YELLOW,fontsize=14)
 	image.save(display)
 	time.sleep(2)
-	print('Press and hold left mouse button over a region that should be white/grey...')
+	sys.stderr.write('Press and hold left mouse button over a region that should be white/grey...')
 	while display.isNotDone():
 		image = camera.getImage().scale(0.5)
 		image.save(display)
@@ -131,7 +131,7 @@ def calibrate_white_balance(camera):
 			# Indicate the point being sampled:
 			image.drawCircle((x,y),rad=5,color=SimpleCV.Color.VIOLET,thickness=1)
 			image.save(display)
-			print(str(x) + ', ' + str(y) + ': ' + str(colour_sample))
+			sys.stderr.write(str(x) + ', ' + str(y) + ': ' + str(colour_sample))
 			sample_pixels.append(colour_sample)
 			prev_mouse_state = True
 		else:
@@ -139,7 +139,7 @@ def calibrate_white_balance(camera):
 				# Button just released:
 				# Um, how to take the mean of a list of tuples?
 				mean_sample = tuple(map(lambda y: sum(y) / float(len(y)), zip(*sample_pixels)))
-				print('mean grey sample: ' + str(mean_sample))
+				sys.stderr.write('mean grey sample: ' + str(mean_sample))
 				return mean_sample # or rinse and repeat?  Maybe not - fn can just be called again if needed.
 			prev_mouse_state = False
 
@@ -174,7 +174,7 @@ def calibrate_colour_match(camera, grey_point):
 	image.drawText("Hold mouse button over target", 8,8,color=SimpleCV.Color.YELLOW,fontsize=14)
 	image.save(display)
 	time.sleep(2)
-	print('Press and hold left mouse button over the region whose colour you wish to match...')
+	sys.stderr.write('Press and hold left mouse button over the region whose colour you wish to match...')
 	while display.isNotDone():
 		image = wb(camera.getImage().scale(0.5), grey_point).toHSV()
 		image.save(display)
@@ -189,7 +189,7 @@ def calibrate_colour_match(camera, grey_point):
 			# Indicate the point being sampled:
 			image.drawCircle((x,y),rad=5,color=SimpleCV.Color.VIOLET,thickness=1)
 			image.save(display)
-			print(str(x) + ', ' + str(y) + ': ' + str(colour_sample))
+			sys.stderr.write(str(x) + ', ' + str(y) + ': ' + str(colour_sample))
 			sample_pixels.append(colour_sample)
 			prev_mouse_state = True
 		else:
@@ -198,7 +198,7 @@ def calibrate_colour_match(camera, grey_point):
 				# Find the mean hue, saturation, and value...
 				sample_pixels_transposed = zip(*sample_pixels)
 				mean_sample = tuple(map(lambda y: sum(y) / float(len(y)), zip(*sample_pixels)))
-				print('mean sample (HSV): ' + str(mean_sample))
+				sys.stderr.write('mean sample (HSV): ' + str(mean_sample))
 				# ...and also the max and min in order to determine the range to match within each (probably ignore value, ultimately).
 				# Could perhaps just take the smaller of the ranges symmetrically around the mean...or the larger...
 				# Of course, the min and max are not necessarily equidistant from the mean...maybe better to use the midpoint of the min and max only...though I think it would be nice to recognise the mean somehow...
@@ -216,12 +216,12 @@ def calibrate_colour_match(camera, grey_point):
 				# Alternatively, mean-based tolerance:
 				#hue_tolerance=min(sample_max[0]-mean_sample[0], mean_sample[0]-sample_min[0])
 				#sat_tolerance=min(sample_max[1]-mean_sample[1], mean_sample[1]-sample_min[1])
-				print('hue midpoint:' + str(hue_midpoint))
-				print('hue tolerance:' + str(hue_tolerance))
-				print('saturation midpoint:' + str(sat_midpoint))
-				print('saturation tolerance:' + str(sat_tolerance))
-				print('value midpoint:' + str(val_midpoint))
-				print('value tolerance:' + str(val_tolerance))
+				sys.stderr.write('hue midpoint:' + str(hue_midpoint))
+				sys.stderr.write('hue tolerance:' + str(hue_tolerance))
+				sys.stderr.write('saturation midpoint:' + str(sat_midpoint))
+				sys.stderr.write('saturation tolerance:' + str(sat_tolerance))
+				sys.stderr.write('value midpoint:' + str(val_midpoint))
+				sys.stderr.write('value tolerance:' + str(val_tolerance))
 				# What structure to return? Perhaps a pair of triples, each having the HSV means and thresholds?
 				# Or a triple of pairs?
 				return ((hue_midpoint,hue_tolerance),(sat_midpoint,sat_tolerance),(val_midpoint,val_tolerance))
