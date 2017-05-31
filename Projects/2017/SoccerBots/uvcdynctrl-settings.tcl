@@ -27,12 +27,12 @@ if {$argc == 0} {
 }
 #set command uvcdynctrl
 foreach {name value} $settings {
-	puts "$name = $value"
+	puts stderr "$name = $value"
 	set command "uvcdynctrl -s \"$name\" $value"
 	#puts $command
 	#exec {*}$command
 	if {[catch {exec {*}$command} result]} {
-		puts $result
+		puts stderr $result
 	}
 
 	#set command [concat $command " -s '$name' $value"]
