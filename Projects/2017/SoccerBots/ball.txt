@@ -1,5 +1,7 @@
 The Robocup GEN II League Rules specify a HiTechnic IRB1005 pulse IR ball. This will be set in Mode A - RCJ-pulse.
 
+Specification calls for approximately 70 mm diameter (I think the actual IRB1005s are more like 75 mm).
+
 Ball modes available:
 	un-modulated mode (continuous)
 	"trapezoidal" mode (Robocup Jr, apparently)..not sure what this means
