@@ -29,14 +29,15 @@ void test_loop() {
     Serial.print(analogRead(analog_sensor_pins[n]) + " ");
   }
   Serial.println();
-  delay(50);
+  delay(100);
 }
 
 
 void loop() {
 	readIRsensors();
-	printIRsensors();
-	delay(100);
+	//printIRsensors();
+	ball_angle();
+	delay(5000);
 }
 
 float readIRsensor(int sensor_num){
@@ -83,42 +84,51 @@ float normaliseDegrees(float d){
 	}
 }
 
-//~ float ball_angle() {
- //~ Serial.println("ball angle called!");
-  //~ int x_total; int y_total; int count; 
-  //~ for(int n=0; n<NUM_SENSORS; n++) {
-	 //~ 
-	  //~ x_total += IR_COORDINATES[n][0];
-	  //~ y_total += IR_COORDINATES[n][1];
-	  //~ Serial.print(n);
-	  //~ Serial.print(" (");
-	  //~ Serial.print(IR_COORDINATES[n][0]);
-	  //~ Serial.print(",");
-	  //~ Serial.print(IR_COORDINATES[n][1]);
-	  //~ Serial.println(")");
-	  //~ count += 1;
-    //~ }
-  //~ }
-	//~ float x_average = x_total/count;
-	//~ float y_average = y_total/count;
+float ball_angle() {
+	Serial.println("ball angle called!");
+	
+	float x_total = 0; float y_total = 0; int count = 0; 
+	for(int n=0; n<NUM_SENSORS; n++) {
+		x_total += IR_COORDINATES[n][0]*ir_values[n];
+		y_total += IR_COORDINATES[n][1]*ir_values[n];
+		Serial.print(n);
+		Serial.print(" (");
+		Serial.print(IR_COORDINATES[n][0]*ir_values[n]);
+		Serial.print(",");
+		Serial.print(IR_COORDINATES[n][1]*ir_values[n]);
+		Serial.print(")");
+		count += 1;
+	}
+
+	float x_average = x_total/(float)count;
+	float y_average = y_total/(float)count;
+	
+	
+	Serial.print("  X AVERAGE: ");
+	Serial.print(x_average);
+	Serial.print("  Y AVERAGE: ");
+	Serial.print(y_average);
+	Serial.println(" ");
+	
+}
 	//~ return normaliseDegrees(rad2deg(atan(y_average/x_average)));
 	//~ if(y_average > 0){
 		//~ return atan2(x_average,y_average);
 	//~ }
 	//~ else if(y_average < 0){
 		//~ if (x_average > 0){
-			//~ return PI+atan2(x_average,y_average);
+		//~ return PI+atan2(x_average,y_average);
 		//~ }else{
-			//~ return -PI+atan2(x_average,y_average);
-		//~ }
-	//~ }else if(y_average == 0){
-		//~ if (x_average > 0){
-			//~ return PI/2;
-		//~ }else{
-			//~ return-PI/2;
-		//~ }
+		//~ return -PI+atan2(x_average,y_average);
 	//~ }
-  //~ } 
+	//~ }else if(y_average == 0){
+	//~ if (x_average > 0){
+	//~ return PI/2;
+	//~ }else{
+	//~ return-PI/2;
+	//~ }
+	//~ }
+	//~ } 
 
   //~ if(x_average==0 &&  y_average>0) {
     //~ return 0;
