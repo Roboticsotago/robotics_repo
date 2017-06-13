@@ -10,10 +10,11 @@ const double TAU = asin(1) * 4.0;
 
 double degrees(double radians) {return 360.0 / TAU * radians;}
 
-void main() {
+int main() {
 	for (int x = -1; x < 2; x++) {
 		for (int y = -1; y < 2; y++) {
 			printf("atan2(%i,%i) = %f\n", x, y, degrees(atan2(x,y)));
 		}
 	}
+	return 0;
 }
