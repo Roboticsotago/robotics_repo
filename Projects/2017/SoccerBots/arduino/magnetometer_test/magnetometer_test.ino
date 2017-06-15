@@ -1,9 +1,9 @@
 /*
   Magnetometer Test
   Reads data from the LIS3MDL sensor and calculate a compass heading
+  The y-axis points in the forwards dirrection of the robot
 
 TODO:
-- troubleshoot compass heading when y < 0
 - implement correction for magmetic north
 
 */
@@ -24,6 +24,7 @@ reading of 1292 corresponds to 1292 / 6842 = 0.1888 gauss.
 
 #include <Wire.h>
 #include <LIS3MDL.h>
+#include <math.h>
 
 LIS3MDL mag;
 LIS3MDL::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32768, -32768, -32768};
@@ -31,7 +32,7 @@ LIS3MDL::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32
 char report[80];
 int cal_x, cal_y;
 
-// calibrate the sensor, the sensor must be moved through its full axis while it is calibrating
+// calibrate the magnetometer, the magnetometer must be moved through its full axis of rotation while calibrating
 void calibrateSensor(){
   int i = 0;
   while (i < 200) {
@@ -62,7 +63,7 @@ void calibrateSensor(){
   cal_y = (running_max.y + running_min.y) / 2;
 }
 
-// read raw data from the sensor and adjust from calibration
+// read raw data from magnetometer and adjust from calibration
 void read() {
   mag.read();
 
@@ -76,24 +77,25 @@ void read() {
   Serial.println(report);
 }
 
-// compute compass heading
-float computeHeading(int mX, int mY) {
-  float heading;
+// returns a compass heading from magnetometer, range [0, 360]
+float getHeading() {
+    read();
+    float heading = calcAngle(mag.m.x, mag.m.y) * -1; // compass heading is angle clockwise from North, hence the * -1
+    if (heading < 0) {
+        return heading + 360.0;
+    } else {
+        return heading;
+    }
+} 
 
-  // calculate heading using arc tangent
-  if (mY > 0) {
-    heading = 90 - (atan2(mX, mY) * (180 / PI));
-  } else if (mY < 0) { // currently behaves undesirability
-    float val = mX / mY;
-    heading = 270 - (atan(val) * (180 / PI));
-  } else if (mY == 0 && mX < 0) {
-    heading = 180.0;
-  } else if (mY == 0 && mX > 0) {
-    heading = 0.0;
-  }
+// calculate the angle of point (x, y)
+float calcAngle(int x, int y) {
+  return rad2deg(atan2(x, y));
+}
 
-  // return compass heading, range [0, 360]
-  return heading;
+// convert radians into degrees
+float rad2deg(float rad) {
+  return 180.0 / PI * rad;
 }
 
 void setup() {
@@ -111,11 +113,6 @@ void setup() {
 }
 
 void loop() {
-  read();
-
-  // print compass heading
-  Serial.println(computeHeading(mag.m.x, mag.m.y));
-
-  delay(100);
+  Serial.println(getHeading());
+  delay(1000);
 }
-
