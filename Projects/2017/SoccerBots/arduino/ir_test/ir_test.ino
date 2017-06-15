@@ -11,7 +11,7 @@ const int NUM_SENSORS = 8;
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
 float ir_values[8];
 float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
-const int IR_THRESHOLD = 920; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.
+const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000.
 
 int ir_val;
 const float TAU = 2 * PI;
@@ -39,11 +39,13 @@ void loop() {
 	readIRsensors();
 	//printIRsensors();
 	ball_angle();
-	delay(50);
+	delay(500);
 }
 
 float readIRsensor(int sensor_num){
 	int reading = analogRead(analog_sensor_pins[sensor_num]);
+	// TODO: debugging
+	Serial.print("sensor "); Serial.print(sensor_num); Serial.print(": "); Serial.println(reading);
 	if (reading>IR_THRESHOLD){
 		return 0.0;
 	}else{
@@ -91,17 +93,19 @@ float normaliseDegrees(float d){
 float ball_angle() {
 	//Serial.println("ball angle called!");
 	
+	// Calculate the centroid of the ball detection vectors...
+	
 	float x_total = 0; float y_total = 0; int count = 0; 
 	for(int n=0; n<NUM_SENSORS; n++) {
 		x_total += IR_COORDINATES[n][0]*ir_values[n];
 		y_total += IR_COORDINATES[n][1]*ir_values[n];
 		/*
 		Serial.print(n);
-		Serial.print(" (");
+		Serial.print(": (");
 		Serial.print(IR_COORDINATES[n][0]*ir_values[n]);
 		Serial.print(",");
 		Serial.print(IR_COORDINATES[n][1]*ir_values[n]);
-		Serial.print(")");
+		Serial.print("); ");
 		*/
 		count += 1;
 	}
@@ -119,52 +123,18 @@ float ball_angle() {
 	*/
 	
 	// Calculate angle:
-	//Serial.print("; Angle = ");
-	Serial.print(degrees(atan2(x_average,y_average)));
-	Serial.print(" ");
+	// This will use the atan2() function to determine the angle from the average x and y co-ordinates
+	// You can use the degrees() function to convert for output/debugging.
+	// Serial.print(...); // TODO: your code here
 	
 	// Calculate approximate distance:
-	// First, the length of the vector (this is just the Pythagorean theorem):
-	float vector_length = sqrt(pow(x_average,2) + pow(y_average,2));
-	//Serial.print("; Vector Length = "); Serial.print(vector_length);
-	// Test distances: (vector_length, actual_distance):
-	// (0.2, 0.25 m), (0.1, 0.5 m), (0.09, 1 m), (0.08, 2 m)
-	float distance = exp(0.33/vector_length) * 0.03;
-	Serial.print(distance);
+	// First, determine the length of the vector (use the Pythagorean theorem):
+	float vector_magnitude = 0;	// TODO: your code here
+	// We need to map the raw vector magnitudes to real-world distances. This is probably not linear! Will require some calibration testing...
+	float distance = 0; // TODO: your code here
+	Serial.print(" ");
+	Serial.print(vector_magnitude);
+	//Serial.print(distance);
 	Serial.println(";");
-	//Serial.print("; Distance = "); Serial.print(distance); Serial.print(" m");
-	//Serial.println();
+	// TODO: maybe also check for infinity, and map that to a usable value (e.g. 0).
 }
-	//~ return normaliseDegrees(rad2deg(atan(y_average/x_average)));
-	//~ if(y_average > 0){
-		//~ return atan2(x_average,y_average);
-	//~ }
-	//~ else if(y_average < 0){
-		//~ if (x_average > 0){
-		//~ return PI+atan2(x_average,y_average);
-		//~ }else{
-		//~ return -PI+atan2(x_average,y_average);
-	//~ }
-	//~ }else if(y_average == 0){
-	//~ if (x_average > 0){
-	//~ return PI/2;
-	//~ }else{
-	//~ return-PI/2;
-	//~ }
-	//~ }
-	//~ } 
-
-  //~ if(x_average==0 &&  y_average>0) {
-    //~ return 0;
-  //~ } else if(x_average==0 && y_average<0) {
-    //~ return 180;
-  //~ } else if(x_average>0 && y_average==0) {
-    //~ return 90;
-  //~ } else if(x_average<0 && y_average==0) {
-    //~ return -90;
-  //~ } else if(y_average > 0) {
-    //~ 
-  //~ } else if(y_average < 0) {
-    //~ return 180 + atan(y_average/x_average) * (180/PI);
-  //~ }   
-
