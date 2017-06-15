@@ -1,0 +1,62 @@
+
+Many docs online suggest using the userspace video4linux infrastructure (uv4l)
+
+sudo nano /etc/uv4l/uv4l-raspicam.conf
+sudo service uv4l_raspicam restart
+
+
+Initial testing (using uv4l and default raspicam settings) seemed to work.
+
+Then I tried overriding some defaults for better frame clarity and got this in simplecv:
+
+HIGHGUI ERROR: V4L: Could not SYNC to video stream. Transport endpoint is not connected
+
+
+https://stackoverflow.com/questions/19193011/highgui-error-while-using-opencv-to-stream-video-from-eye-toy-webcam
+
+"I fixed this by installing: libv4l-dev then recompiling opencv. Check your cmake output to make sure that V4L is actually being linked in properly."
+
+--
+
+However, recent versions of Raspbian apparently have a native V4L driver for the pi-cam:
+
+http://www.richardmudhar.com/blog/2015/02/raspberry-pi-camera-and-motion-out-of-the-box-sparrowcam/
+
+# Need to disable the uv4l command at system startup too...
+
+sudo systemctl disable uv4l_raspicam.service
+sudo service uv4l_raspicam stop
+sudo modprobe bcm2835-v4l2
+
+<<
+[14901.094992] Linux video capture interface: v2.00
+[14901.128272] bcm2835-v4l2: scene mode selected 0, was 0
+[14901.128525] bcm2835-v4l2: V4L2 device registered as video0 - stills mode > 1280x720
+[14901.133094] bcm2835-v4l2: Broadcom 2835 MMAL video capture ver 0.0.2 loaded.
+>>
+
+
+It works with simplecv, though the latency is quite poor, and now I have no idea how to set up the camera settings...
+
+This looks promising:
+
+v4l-ctl -l
+v4l-ctl -c iso_sensitivity=0..4
+
+# Sanity check:
+v4l-ctl -c vertical_flip=1
+# OK, that definitely does work then...and changes take effect immediately, even while simplecv is displaying the live feed.
+power_line_frequency=1
+	1 = 50 Hz
+auto_exposure=1
+	1 = Manual(!)
+exposure_time_absolute=100
+	< 100 gives mains power interference
+white_balance_auto_preset=3
+	0 = Manual
+	3,4 = Fluorescent
+iso_sensitivity_auto=0
+iso_sensitivity=4
+scene_mode=0
+	11 = Sports
+	
