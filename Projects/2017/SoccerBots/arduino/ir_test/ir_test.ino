@@ -45,7 +45,7 @@ void loop() {
 float readIRsensor(int sensor_num){
 	int reading = analogRead(analog_sensor_pins[sensor_num]);
 	// TODO: debugging
-	Serial.print("sensor "); Serial.print(sensor_num); Serial.print(": "); Serial.println(reading);
+	//Serial.print("sensor "); Serial.print(sensor_num); Serial.print(": "); Serial.println(reading);
 	if (reading>IR_THRESHOLD){
 		return 0.0;
 	}else{
@@ -89,7 +89,9 @@ float normaliseDegrees(float d){
 		return d;
 	}
 }
-
+float vector2distance(float vector_magnitude){
+       return exp(-27.3408*vector_magnitude + 2.88248);
+}
 float ball_angle() {
 	//Serial.println("ball angle called!");
 	
@@ -125,16 +127,20 @@ float ball_angle() {
 	// Calculate angle:
 	// This will use the atan2() function to determine the angle from the average x and y co-ordinates
 	// You can use the degrees() function to convert for output/debugging.
-	// Serial.print(...); // TODO: your code here
+	float angle = atan2(x_average, y_average);
+        Serial.print("Angle to ball: ");
+        Serial.print(degrees(angle));
 	
 	// Calculate approximate distance:
 	// First, determine the length of the vector (use the Pythagorean theorem):
-	float vector_magnitude = 0;	// TODO: your code here
+	float vector_magnitude = sqrt(pow(x_average, 2)+pow(y_average,2));	// TODO: your code here
+        
 	// We need to map the raw vector magnitudes to real-world distances. This is probably not linear! Will require some calibration testing...
-	float distance = 0; // TODO: your code here
-	Serial.print(" ");
+	float distance = vector2distance(vector_magnitude); // TODO: your code here
+	Serial.print(" Vector magnitude: ");
 	Serial.print(vector_magnitude);
-	//Serial.print(distance);
-	Serial.println(";");
+	Serial.print(" Distance: ");
+	Serial.print(distance);
+	Serial.println("");
 	// TODO: maybe also check for infinity, and map that to a usable value (e.g. 0).
 }
