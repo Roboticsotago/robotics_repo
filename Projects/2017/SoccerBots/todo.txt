@@ -4,8 +4,9 @@ Software:
 
 [ ] Define a DEBUG function or macro for Arduino programs
 [ ] Robot control behaviour (in Pd)
-[ ] Arrange for program to launch when Raspberry Pi boots
+[ ] Arrange for control program to launch when Raspberry Pi boots
 	Pd startup: pd -noaudio -nomidi patch-filename.pd
+
 
 IR system:
 
@@ -22,6 +23,8 @@ IR system:
 	Combining the two using a shell pipeline:
 	cu -l ttyUSB0 -s 9600 | pdsend 7000
 
+[ ] The RCJ IR beacon pattern varies the signal strength! Might be a good idea for our Arduino program to read frequently and calculate the mean signal strength every n samples.
+	NOTE: average the raw co-ordinates, not the angle (the sign flip at 180 degrees will cause problems otherwise)
 
 Vision system:
 
@@ -51,6 +54,8 @@ Hardware:
 
 [ ] Main power switch (to save having to disconnect the battery when not in use!)
 
+[ ] A pushbutton switch to safely shut down the Pi (with accompanying software)
+
 [?] Add buzzer, and use it to warn of low voltage as reported by the DC-DC converter
 
 [?] Maybe add lights? Just decorative? Must not confuse other robots!
@@ -59,8 +64,10 @@ Hardware:
 
 [ ] Apply threadlocker (e.g. Loctite) to fasteners before competition
 
-[ ] Build IR sensors for ball detection
+[.] Build IR sensors for ball detection
 
-[ ] Compass sensor (Sebastian and Tobias have been working on this)
+[.] Compass sensor (Sebastian and Tobias have been working on this)
+
+[ ] Install range sensors front and back for collision avoidance.
 
 [ ] Colour sensors for approximate location on the field
