@@ -1,0 +1,43 @@
+PowerHD DSM44 digital servo motor
+Wow, it's quite tiny!  Specified torque at 4.8 V is:
+
+1.2 kg force cm -> mN m
+117.6798
+
+Suppose this torque acts on a 25 mm radius.  We can vary linkage radii to get a small amount of gearing up or down.  How much force does this exert?
+
+1.2 kg force cm / (20 mm) -> N
+5.88399
+
+The ball's mass is spec'd at 95 g (sans batteries).  12 g/battery * 4 batteries = 60 g
+
+So around 150 g in total.
+
+F = ma <=> a = F/m
+
+a = 1.2 kg force cm / (20 mm) / (150 g)
+39.2266 m s^-2 (acceleration)
+
+Do we need to calculate the impulse as well?  The servo's rated speed is 60 degrees / 0.09 s.  If it's in contact for about 20 degrees, that's about 30 ms contact time.
+
+5.9 N * 30 ms
+0.177 m s^-1 kg (momentum)
+
+Divide by mass to give the final speed, yes?
+
+5.9 N * 30 ms / (150 g) -> m/s
+1.18
+
+That sounds OK...we'll have to see how it works out in practice...
+
+--
+
+Power?  This is just torque x rotational speed:
+
+1.2 kg force cm * (60 degrees/(0.09 s)) -> W
+1.3692666487256153714
+
+Expected current draw:
+
+1.2 kg force cm * (60 degrees/(0.09 s)) / (4.8 V) -> mA
+285.26388515116986907
