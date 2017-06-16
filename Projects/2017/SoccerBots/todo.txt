@@ -15,13 +15,13 @@ IR system:
 	Will probably need to talk about what a vector is and how you can use and combine them. :)
 
 	To pipe input from serial:
-	cu -l ttyUSB0 -s 9600
+	cu -l ttyUSB0 -s 115200
 	
 	To pipe a text stream (in FUDI format) into Pd:
 	pdsend 7000
 	
 	Combining the two using a shell pipeline:
-	cu -l ttyUSB0 -s 9600 | pdsend 7000
+	cu -l ttyUSB0 -s 115200 | pdsend 7000
 
 [ ] The RCJ IR beacon pattern varies the signal strength! Might be a good idea for our Arduino program to read frequently and calculate the mean signal strength every n samples.
 	NOTE: average the raw co-ordinates, not the angle (the sign flip at 180 degrees will cause problems otherwise)
