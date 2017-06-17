@@ -37,7 +37,7 @@ void test_loop() {
 
 void loop() {
 	readIRsensors();
-	//printIRsensors();
+	printIRsensors();
 	ball_angle();
 	delay(500);
 }
@@ -45,7 +45,7 @@ void loop() {
 float readIRsensor(int sensor_num){
 	int reading = analogRead(analog_sensor_pins[sensor_num]);
 	// TODO: debugging
-	//Serial.print("sensor "); Serial.print(sensor_num); Serial.print(": "); Serial.println(reading);
+	Serial.print("sensor "); Serial.print(sensor_num); Serial.print(": "); Serial.println(reading);
 	if (reading>IR_THRESHOLD){
 		return 0.0;
 	}else{
@@ -90,7 +90,7 @@ float normaliseDegrees(float d){
 	}
 }
 float vector2distance(float vector_magnitude){
-       return exp(-27.3408*vector_magnitude + 2.88248);
+       return exp(0.33/vector_magnitude) * 0.03;
 }
 float ball_angle() {
 	//Serial.println("ball angle called!");
