@@ -1,0 +1,38 @@
+#N canvas 636 389 697 614 10;
+#X text 64 27 Testing input via pdsend rather than using comport directly
+(easier to transfer complex messages \, even if it's a little less
+efficient due to ASCII transfer).;
+#X obj 295 217 netreceive 7000;
+#X floatatom 576 335 5 0 0 0 distance - -, f 5;
+#X floatatom 159 343 5 0 0 0 angle - -, f 5;
+#X obj 246 450 hsl 180 15 0 180 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 576 360 vsl 15 200 0 5 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 3562 1;
+#X obj 58 450 hsl 180 15 -180 0 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 4475 1;
+#X text 100 91 TOOD: would be nice to have the Arduino program also
+output an indication of whether the ball was found \, so that the Pd
+control program can know.;
+#X obj 565 255 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 597 201 print;
+#X text 155 146 ...or can we somehow detect the "inf" for distance
+and respond to that?;
+#X obj 569 228 route symbol;
+#X obj 293 263 unpack f f;
+#X obj 161 320 maxlib/average 4;
+#X text 224 343 NOTE: averaging will give odd behaviour crossing the
++/-180 boundary!, f 32;
+#X obj 576 308 maxlib/average 4;
+#X connect 1 0 12 0;
+#X connect 1 0 9 0;
+#X connect 2 0 5 0;
+#X connect 3 0 4 0;
+#X connect 3 0 6 0;
+#X connect 11 0 8 0;
+#X connect 12 0 13 0;
+#X connect 12 1 11 0;
+#X connect 12 1 15 0;
+#X connect 13 0 3 0;
+#X connect 15 0 2 0;

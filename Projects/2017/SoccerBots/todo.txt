@@ -1,5 +1,31 @@
 Things to be done for the 2017 SoccerBots project
 
+Software:
+
+[ ] Define a DEBUG function or macro for Arduino programs
+[ ] Robot control behaviour (in Pd)
+[ ] Arrange for control program to launch when Raspberry Pi boots
+	Pd startup: pd -noaudio -nomidi patch-filename.pd
+
+
+IR system:
+
+[ ] Implement trigonometry stuff for ball direction finding (use atan2() function)
+[ ] Calibrate IR ball distance sensing (want to determine approx. distance based on magnitude of the ball sense vector)
+	Will probably need to talk about what a vector is and how you can use and combine them. :)
+
+	To pipe input from serial:
+	cu -l ttyUSB0 -s 115200
+	
+	To pipe a text stream (in FUDI format) into Pd:
+	pdsend 7000
+	
+	Combining the two using a shell pipeline:
+	cu -l ttyUSB0 -s 115200 | pdsend 7000
+
+[ ] The RCJ IR beacon pattern varies the signal strength! Might be a good idea for our Arduino program to read frequently and calculate the mean signal strength every n samples.
+	NOTE: average the raw co-ordinates, not the angle (the sign flip at 180 degrees will cause problems otherwise)
+
 Vision system:
 
 [ ] refine debug function for debug levels
@@ -14,26 +40,34 @@ General:
 
 Hardware:
 
-[ ] Design and fab main robot platform (3D print? lasercut?)
+[Y] Design and fab main robot platform (3D print? lasercut?)
 
 [ ] Implement servo mechanism for wheels? Optical? Hall sensor?
 
-[ ] Design and test kicker mechanism. Servo? Maybe a high-speed one from Pololu.
+[.] Design and test kicker mechanism. Servo? Maybe a high-speed one from Pololu.
 
 [ ] Trial using a DSpace Robot board for motor and servo control (rather than separate Arduino + H-bridge)
 
+[ ] Motor Enable switch (just a software switch for the DSpace board)
+
 [ ] Build a power+ground bus board (screw terminals for input, header pins for multiple outputs)
 
-[ ] Add buzzer, and use it to warn of low voltage as reported by the DC-DC converter
+[ ] Main power switch (to save having to disconnect the battery when not in use!)
 
-[ ] Maybe add lights? Just decorative? Must not confuse other robots!
+[ ] A pushbutton switch to safely shut down the Pi (with accompanying software)
+
+[?] Add buzzer, and use it to warn of low voltage as reported by the DC-DC converter
+
+[?] Maybe add lights? Just decorative? Must not confuse other robots!
 
 [ ] Build second robot as Goalie.
 
 [ ] Apply threadlocker (e.g. Loctite) to fasteners before competition
 
-[ ] Build IR sensors for ball detection
+[.] Build IR sensors for ball detection
 
-[ ] Compass sensor
+[.] Compass sensor (Sebastian and Tobias have been working on this)
+
+[ ] Install range sensors front and back for collision avoidance.
 
 [ ] Colour sensors for approximate location on the field

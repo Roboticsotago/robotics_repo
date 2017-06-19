@@ -6,7 +6,7 @@ import cvutils
 import time
 import serial
 
-ser = serial.Serial('/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_85431303736351D070E0-if00')
+ser = serial.Serial('/dev/serial/by-id/usb-www.freetronics.com_Eleven_64935343233351909241-if00')
 
 camera = SimpleCV.Camera(0, {"width":960,"height":540})
 os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
@@ -100,6 +100,9 @@ def control(target):
 	sys.stderr.write(plant(control))
 	return plant(control)
 
+def send2pd(message):
+	print(str(message) + ";" + "\r\n")
+
 while True:
 	start_time = time.clock()
 	image = cvutils.wb(camera.getImage().scale(0.075), lab_grey_sample)
@@ -112,23 +115,24 @@ while True:
 	if blobs is not None:
 		blob_size = blobs[-1].area()
 		image_size = image.area()
-		#print blob_size / image_size
+		#sys.stderr.write blob_size / image_size
 		if blob_size / image_size < blobs_threshold:
-			print "Blobs too small!"
-			seek()
+			sys.stderr.write("Blobs too small!")
+			#seek()
 		else:
 			(x,y) = blobs[-1].centroid()
 			image.dl().line((x,0), (x,image.height), (255,0,0), antialias=False)
 			image.dl().line((0,y), (image.width,y), (0,255,0), antialias=False)
 			image.show()
-			#print float(x) / image.width
+			#sys.stderr.write float(x) / image.width
 			converted_coord = float(x) / image.width
 			converted_coord = x_coordinate_to_angle(converted_coord*2-1)
 			sys.stderr.write("converted_coord: " + str(converted_coord) + ' ' + '\n')
-			servo(converted_coord*0.3)
+			#servo(converted_coord*0.3)
+			send2pd(converted_coord)
 	else:
-		print "No blobs found!"
-		seek()
+		sys.stderr.write("No blobs found!")
+		#seek()
 	end_time = time.clock()
 	elapsed_time = end_time - start_time
 	times.append(elapsed_time)

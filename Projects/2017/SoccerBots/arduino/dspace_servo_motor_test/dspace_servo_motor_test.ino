@@ -8,51 +8,35 @@
 // Will need light/dark thresholds for each sensor for calibration...
 // ...or just one for all, if they read consistently enough
 
-const int SENSOR_THRESHOLD=250;
-#define DEBUGGING
-//#define DEBUG_BACKTRACKING 1
 
 // Right Dalek motor is considerably more powerful, so we need to be able to regulate each separately...
 // Don't go too high with these on the Dalek as it will draw too much current and cause resets!
-const int MOTOR_L_DUTY=150;
-const int MOTOR_R_DUTY=150;
-const int L_MOTOR = 0;
-const int R_MOTOR = 1;
-//const int MOTOR_L_DUTY=0;	// 180
-//const int MOTOR_R_DUTY=0;	// 150
-const int DIR_MASK = 0b01000000;
-const int MOTOR_MASK = 0b10000000;
-const int SPEED_MASK = 0b00111111;
+#include <Servo.h> //incldued for kicker
+Servo Kicker;
+const int SERVO_PIN = 13; //Servo 2, Pin 2 SDK.
+const int KICKER_MIN = 120;
+const int KICKER_MAX = 70; //these will need testing.
+const int KICKER_DELAY = 1000;
+const int MOTOR_L_DUTY=128;
+const int MOTOR_R_DUTY=128;
+const int DIR_MASK 		= 0b00100000;
+const int MOTOR_MASK 	= 0b01000000;
+const int SPEED_MASK 	= 0b00011111;
+const int KICKER_MASK 	= 0b10000000;
 
+#define MOTOR_R_ENABLE 11
+#define MOTOR_L_ENABLE 5
 
-const int CYCLE_TIME=2;
+#define MOTOR_R_1_PIN 6
+#define MOTOR_R_2_PIN 7
 
-//#define WHITE_ON_BLACK 1
-
-#define L_PIN A0
-#define M_PIN A1
-#define R_PIN A2
-
-// TODO: factor out these and the motor-related functions below into a library.
-
-#define MOTOR_R_ENABLE 10
-#define MOTOR_L_ENABLE 6
-
-#define MOTOR_R_1_PIN 9
-//define MOTOR_R_2_PIN 7
-
-#define MOTOR_L_1_PIN 5
-//#define MOTOR_L_2_PIN 10
+#define MOTOR_L_1_PIN 9
+#define MOTOR_L_2_PIN 10
 
 // Unused?
 #define LEFT_MOTOR 0
 #define RIGHT_MOTOR 1
 
-//const int Kp = 1;
-//const int Ki = 1;
-//const int Kd = 1;
-
-// Unfortunately, there is some sharing of LED pins with motor drive still.
 #define R_LED 11
 #define O_LED 2
 #define Y_LED 12
@@ -61,7 +45,7 @@ const int CYCLE_TIME=2;
 #define L_BUTTON 19
 #define R_BUTTON 8
 
-
+#define DEBUGGING 1
 /*
 #define debug(message) \
 	do { if (DEBUGGING) Serial.println(message); } while (0)
@@ -73,17 +57,14 @@ const int CYCLE_TIME=2;
 #endif
 
 
-int led_state;
+const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 4.
 
-int motors_enabled = 1;
-
-int backtrack[5][10];
+int motors_enabled = 0;
 
 void setup() {
-	pinMode(A0, INPUT); digitalWrite(A0, LOW);
-	pinMode(A1, INPUT); digitalWrite(A1, LOW);
-	pinMode(A2, INPUT); digitalWrite(A2, LOW);
-	
+	Kicker.attach(SERVO_PIN);
+	Kicker.write(KICKER_MIN);
+	pinMode(MOTOR_TOGGLE_SWITCH, INPUT); digitalWrite(MOTOR_TOGGLE_SWITCH, 1);
 	pinMode(R_LED, OUTPUT); digitalWrite(R_LED, LOW);
 	pinMode(O_LED, OUTPUT); digitalWrite(O_LED, LOW);
 	pinMode(Y_LED, OUTPUT); digitalWrite(Y_LED, LOW);
@@ -96,20 +77,18 @@ void setup() {
 	pinMode(MOTOR_R_ENABLE, OUTPUT); digitalWrite(MOTOR_R_ENABLE, LOW);
 
 	pinMode(MOTOR_L_1_PIN, OUTPUT); digitalWrite(MOTOR_L_1_PIN, LOW);
-	//pinMode(MOTOR_L_2_PIN, OUTPUT); digitalWrite(MOTOR_L_2_PIN, HIGH);
+	pinMode(MOTOR_L_2_PIN, OUTPUT); digitalWrite(MOTOR_L_2_PIN, HIGH);
 
 	pinMode(MOTOR_R_1_PIN, OUTPUT); digitalWrite(MOTOR_R_1_PIN, LOW);
-	//pinMode(MOTOR_R_2_PIN, OUTPUT); digitalWrite(MOTOR_R_2_PIN, HIGH);
+	pinMode(MOTOR_R_2_PIN, OUTPUT); digitalWrite(MOTOR_R_2_PIN, HIGH);
 
 #ifdef DEBUGGING
 	Serial.begin(9600);
-	Serial.println("\n\nDalek Prototype Line Follower v0.01");
-	//Serial.print("SENSOR_THRESHOLD=");
-	//Serial.println(SENSOR_THRESHOLD);
+	Serial.println("\n\nDspace Motor Controller - Info Sci Mechatronics v0.01");
 #endif
-
+}
 	// Around 2100-2500 Hz sounds good on the piezo buzzer we have, with 2100 Hz being quite loud (near resonant frequency).
-	digitalWrite(G_LED, HIGH); tone(BUZZER, 2100, 100); delay(200);
+/*	digitalWrite(G_LED, HIGH); tone(BUZZER, 2100, 100); delay(200);
 	digitalWrite(G_LED, LOW);  tone(BUZZER, 2200, 100); delay(200);
 	digitalWrite(G_LED, HIGH); tone(BUZZER, 2300, 100); delay(200);
 	digitalWrite(G_LED, LOW);  tone(BUZZER, 2400, 100); delay(200);
@@ -123,7 +102,7 @@ void setup() {
 void click() {
 	tone(BUZZER, 2100, 2);
 }
-*/
+
 
 void beep_bad() {
 	tone(BUZZER, 2500, 100); delay(200);
@@ -134,19 +113,13 @@ void beep_good() {
 	tone(BUZZER, 2100, 100); delay(100);
 	tone(BUZZER, 2500, 100); delay(100);
 }
-
+*/
 // Low-level functions for driving the L and R motors independently...
-
-void L_Spd(int speed, bool dir) {
-	digitalWrite(MOTOR_L_1_PIN, dir);
-	analogWrite(MOTOR_L_ENABLE, speed);
-}
-	
 
 void L_Fwd() {
 	if (!motors_enabled) return;
 	digitalWrite(MOTOR_L_1_PIN, LOW);
-	//digitalWrite(MOTOR_L_2_PIN, HIGH);
+	digitalWrite(MOTOR_L_2_PIN, HIGH);
 	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
 //	digitalWrite(MOTOR_L_ENABLE, HIGH);
 }
@@ -154,14 +127,14 @@ void L_Fwd() {
 void L_Rev() {
 	if (!motors_enabled) return;
 	digitalWrite(MOTOR_L_1_PIN, HIGH);
-	//digitalWrite(MOTOR_L_2_PIN, LOW);
+	digitalWrite(MOTOR_L_2_PIN, LOW);
 	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
 //	digitalWrite(MOTOR_L_ENABLE, HIGH);
 }
 
 void L_Stop() {
 	digitalWrite(MOTOR_L_1_PIN, LOW);
-	//digitalWrite(MOTOR_L_2_PIN, HIGH);
+	digitalWrite(MOTOR_L_2_PIN, HIGH);
 	analogWrite(MOTOR_L_ENABLE, 0);
 //	digitalWrite(MOTOR_L_ENABLE, LOW);
 }
@@ -169,20 +142,16 @@ void L_Stop() {
 void L_Brake() {
 	if (!motors_enabled) return;
 	digitalWrite(MOTOR_L_1_PIN, HIGH);
-	//digitalWrite(MOTOR_L_2_PIN, HIGH);
+	digitalWrite(MOTOR_L_2_PIN, HIGH);
 	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
 //	digitalWrite(MOTOR_L_ENABLE, HIGH);
 }
 
-void R_Spd(int speed, bool dir) {
-	digitalWrite(MOTOR_R_1_PIN, dir);
-	analogWrite(MOTOR_R_ENABLE, speed);
-}
 
 void R_Fwd() {
 	if (!motors_enabled) return;
 	digitalWrite(MOTOR_R_1_PIN, LOW);
-	//digitalWrite(MOTOR_R_2_PIN, HIGH);
+	digitalWrite(MOTOR_R_2_PIN, HIGH);
 	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
 //	digitalWrite(MOTOR_R_ENABLE, HIGH);
 }
@@ -190,14 +159,14 @@ void R_Fwd() {
 void R_Rev() {
 	if (!motors_enabled) return;
 	digitalWrite(MOTOR_R_1_PIN, HIGH);
-	//digitalWrite(MOTOR_R_2_PIN, LOW);
+	digitalWrite(MOTOR_R_2_PIN, LOW);
 	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
 //	digitalWrite(MOTOR_R_ENABLE, HIGH);
 }
 
 void R_Stop() {
 	digitalWrite(MOTOR_R_1_PIN, LOW);
-	//digitalWrite(MOTOR_R_2_PIN, HIGH);
+	digitalWrite(MOTOR_R_2_PIN, HIGH);
 	analogWrite(MOTOR_R_ENABLE, 0);
 //	digitalWrite(MOTOR_R_ENABLE, LOW);
 }
@@ -205,7 +174,7 @@ void R_Stop() {
 void R_Brake() {
 	if (!motors_enabled) return;
 	digitalWrite(MOTOR_R_1_PIN, HIGH);
-	//digitalWrite(MOTOR_R_2_PIN, HIGH);
+	digitalWrite(MOTOR_R_2_PIN, HIGH);
 	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
 //	digitalWrite(MOTOR_R_ENABLE, HIGH);
 }
@@ -215,12 +184,12 @@ void L_Drive(float speed){
 	if (!motors_enabled) return;
 	if (speed < 0){
 		digitalWrite(MOTOR_L_1_PIN, HIGH);
-		//digitalWrite(MOTOR_L_2_PIN, LOW);
+		digitalWrite(MOTOR_L_2_PIN, LOW);
 	}else{
 		digitalWrite(MOTOR_L_1_PIN, LOW);
-		//digitalWrite(MOTOR_L_2_PIN, HIGH);
+		digitalWrite(MOTOR_L_2_PIN, HIGH);
 	}
-	
+
 	analogWrite(MOTOR_L_ENABLE, (int) round(speed * MOTOR_L_DUTY));
 }
 
@@ -229,12 +198,12 @@ void R_Drive(float speed){
 	if (!motors_enabled) return;
 	if (speed < 0){
 		digitalWrite(MOTOR_R_1_PIN, HIGH);
-		//digitalWrite(MOTOR_R_2_PIN, LOW);
+		digitalWrite(MOTOR_R_2_PIN, LOW);
 	}else{
 		digitalWrite(MOTOR_R_1_PIN, LOW);
-		//digitalWrite(MOTOR_R_2_PIN, HIGH);
+		digitalWrite(MOTOR_R_2_PIN, HIGH);
 	}
-	
+
 	analogWrite(MOTOR_R_ENABLE, (int) round(speed * MOTOR_R_DUTY));
 }
 
@@ -243,7 +212,7 @@ void R_Drive(float speed){
 
 void Veer(float left_speed, float right_speed){
 	L_Drive(left_speed); R_Drive(right_speed);
-	
+
 }
 
 void Fwd() {
@@ -278,6 +247,29 @@ void spinR() {
 	L_Fwd(); R_Rev();
 }
 
+void L_Spd(int speed, bool dir) {
+	digitalWrite(MOTOR_L_1_PIN, dir);
+	analogWrite(MOTOR_L_ENABLE, speed);
+}
+
+void R_Spd(int speed, bool dir) {
+	digitalWrite(MOTOR_R_1_PIN, dir);
+	analogWrite(MOTOR_R_ENABLE, speed);
+}
+
+void kick(){
+	Kicker.write(KICKER_MAX);
+	delay(KICKER_DELAY);
+	Kicker.write(KICKER_MIN);
+	delay(KICKER_DELAY);
+
+}
+
+void kicker_move(int direction) {
+	Kicker.write(direction? KICKER_MAX: KICKER_MIN);
+}
+
+/*
 void calc_track(int move)
 {
 	if (backtrack[move][0] > 0)
@@ -337,59 +329,27 @@ void retrace()
 				spinR();
 		}
 	}
-}
 
+}
+*/
 // For detecting the line, we'll have a function to read an analog value for each sensor and compare with a light/dark threshold.
 
-// Here's a nice compact black line detector one-liner:
-// bool isBlack(int pin) { return analogRead(pin) > SENSOR_THRESHOLD;}
-
-// For debugging, we might want to be able to see what's going on at the analogRead() level:
-
-bool isBlack(int pin) {
-	int raw_reading = analogRead(pin);
-#ifdef DEBUGGING
-	Serial.print("pin=");
-	Serial.print(pin);
-	Serial.print(" val=");
-	Serial.print(raw_reading);
-	Serial.print("	");
-//	Serial.println();
-#endif
-#ifdef WHITE_ON_BLACK
-	return (raw_reading < SENSOR_THRESHOLD);	// White line, black background
-#else
-	return (raw_reading > SENSOR_THRESHOLD);	// Black line, white background
-#endif
-}
 
 
-// TODO: implement some sort of memory of recent moves, so we can do more meaningful corrections if we get lost, etc.
 
-// We'll store the line detection readings globally for easier debugging:
-bool l_line;
-bool m_line;
-bool r_line;
-
-void debug_line_sensors_with_LEDs() {
-	// TODO: invert when in white-on-black mode?
-	digitalWrite(O_LED, l_line);
-	digitalWrite(Y_LED, m_line);
-	digitalWrite(G_LED, r_line);
-}
-
+/*
 void control() {
 //	digitalWrite(Y_LED, LOW);
-	
+
 	l_line = isBlack(L_PIN);
 	m_line = isBlack(M_PIN);
 	r_line = isBlack(R_PIN);
-	
+
 	debug_line_sensors_with_LEDs();
-	
+
 	// TODO: could shift and combine the boolean values for more readable code
 	// e.g. switch bits ... 0b000 -> lost ... 0b010 -> fwd ...
-	
+
 	if (!l_line && !m_line && !r_line) {
 		DEBUG("Lost!");
 		// Would be nice to light red LED if lost.
@@ -441,79 +401,14 @@ void control() {
 	}
 }
 
-void debug() {
-	Serial.print(isBlack(A0)); Serial.print("	");
-	Serial.print(isBlack(A1)); Serial.print("	");
-	Serial.print(isBlack(A2)); Serial.print("	");
-	Serial.println();
-
-	delay(CYCLE_TIME);
-}
 
 void toggleLED(){
 	led_state = !led_state;
 	digitalWrite(G_LED, led_state);
 }
+*/
 
-void loops() {
-	if (!digitalRead(R_BUTTON)) {motors_enabled = 1;}
-	if (!digitalRead(L_BUTTON)) {motors_enabled = 0;}
-	if (!motors_enabled) {Stop();}
-	
-	control();
-	
-#ifdef DEBUG_BACKTRACKING
-	for (int i = 0; i < 5; i++)
-	{
-		for (int j = 0; j < 10; j++)
-		{
-			Serial.print(backtrack[i][j]);
-			Serial.print(" ");
-		}
-		Serial.println();
-	}
-	//delay(300);
-#endif
-
-//	toggleLED();
-//	click();	// NO! Don't use this - it makes the right motor not work.
-
-	delay(CYCLE_TIME);
-
-	
-	//Serial.print("A0:"); Serial.print(analogRead(A0)); Serial.print("   ");
-	//Serial.print("A1:"); Serial.print(analogRead(A1)); Serial.print("   ");
-	//Serial.print("A2:"); Serial.println(analogRead(A2));
-	
-	//Serial.print(isBlack(A0)); Serial.print("   ");
-	//Serial.print(isBlack(A1)); Serial.print("   ");
-	//Serial.print(i475sBlack(A2)); Serial.print("   ");
-	//Serial.println();
-	
-	//delay(CYCLE_TIME);
-}
-
-void loop_test() {
-	digitalWrite(O_LED, HIGH);
-	delay(200);
-	digitalWrite(O_LED, LOW);
-	delay(200);
-	digitalWrite(Y_LED, HIGH);
-	delay(200);
-	digitalWrite(Y_LED, LOW);
-	delay(200);
-	digitalWrite(R_LED, HIGH);
-	delay(200);
-	digitalWrite(R_LED, LOW);
-	delay(200);
-	digitalWrite(G_LED, HIGH);
-	delay(200);
-	digitalWrite(G_LED, LOW);
-	delay(200);
-	delay(2000);
-	
-}
-void motor_control(){
+/*void motor_control(){
 	if(Serial.available() > 0){
 		int data = Serial.read();
 		if((data&MOTOR_MASK)>>7 == 1){
@@ -526,30 +421,60 @@ void motor_control(){
 			Serial.println("L forward");
 			Serial.println((data&SPEED_MASK)<<2);
 		}
-			
+
 	}
 }
+
+void test_loop() {
+	//TODO: Add servo control code.
+	if (!digitalRead(MOTOR_TOGGLE_SWITCH)) {motors_enabled = 1;}
+	if (digitalRead(MOTOR_TOGGLE_SWITCH)) {motors_enabled = 0;}
+	if (!motors_enabled) {Stop();}else(){motor_control();}
+
+	//delay(CYCLE_TIME);
+
+}
+ */
+
+void motor_control(){
+	if (Serial.available() > 0) {
+		int data = Serial.read();
+		kicker_move((data&KICKER_MASK)>>7);
+		if ((data&MOTOR_MASK)>>6) {
+			R_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
+			Serial.println("R forward");
+			Serial.println((data&SPEED_MASK)<<3);
+		} else {
+			L_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
+			Serial.println("L forward");
+			Serial.println((data&SPEED_MASK)<<3);
+		}
+	}
+}
+
+void servo_midpoint(){
+  Kicker.write(95);
+}
+
 void loop(){
-	motor_control();
+  motors_enabled = !digitalRead(MOTOR_TOGGLE_SWITCH);
+  motor_control();
 }
 
 void _loop() {
+  motors_enabled = !digitalRead(MOTOR_TOGGLE_SWITCH);
+  Serial.println(motors_enabled);
   Fwd();
   delay(1000);
   Stop();
-  
+  kick();
+
   delay(500);
-  
+
   Rev();
   delay(1000);
   Stop();
-  
-  delay(500);
-}
+  kick();
 
-void loop_() {
-  digitalWrite(MOTOR_R_ENABLE, HIGH);
-  delay(1000);
-  digitalWrite(MOTOR_R_ENABLE, LOW);
-  delay(1000);
+  delay(500);
 }
