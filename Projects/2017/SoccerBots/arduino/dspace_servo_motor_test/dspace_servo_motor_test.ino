@@ -18,23 +18,24 @@
 Servo Kicker;
 const int SERVO_PIN = 13; //Servo 2, Pin 2 SDK.
 const int KICKER_MIN = 100;
-const int KICKER_MAX = 70; //these will need testing.
+const int KICKER_MAX = 60; //these will need testing.
 const int KICKER_DELAY = 1000;
 const int MOTOR_L_DUTY=128;
 const int MOTOR_R_DUTY=128;
 const int DIR_MASK 		= 0b00100000;
 const int MOTOR_MASK 	= 0b01000000;
 const int SPEED_MASK 	= 0b00011111;
-const int KICKER_MASK 	= 0b10000000;
+const int MESSAGE_TYPE_MASK = 0b10000000;
+const int KICKER_MASK = 0b00000001;
 
-#define MOTOR_R_ENABLE 11
-#define MOTOR_L_ENABLE 5
+#define MOTOR_R_ENABLE 5
+#define MOTOR_L_ENABLE 11
 
-#define MOTOR_R_1_PIN 6
-#define MOTOR_R_2_PIN 7
+#define MOTOR_R_1_PIN 10
+#define MOTOR_R_2_PIN 9
 
-#define MOTOR_L_1_PIN 9
-#define MOTOR_L_2_PIN 10
+#define MOTOR_L_1_PIN 7
+#define MOTOR_L_2_PIN 6
 
 // Unused?
 #define LEFT_MOTOR 0
@@ -87,9 +88,9 @@ void setup() {
 
 	Serial.begin(BAUD_RATE);
 
-#ifdef DEBUGGING
+	#ifdef DEBUGGING
 	Serial.println("\n\nDspace Motor Controller - Info Sci Mechatronics v0.01");
-#endif
+	#endif
 }
 
 // TODO: we don't have a buzzer on the SoccerBot, so this can go:
@@ -105,7 +106,7 @@ void setup() {
 
 // Audible click for debugging
 // WARNING: using click() as defined below makes the right motor not work at all.  Shared pins, maybe?  Perhaps it needs a delay() of at least the duration of the click?
-/*
+
 void click() {
 	tone(BUZZER, 2100, 2);
 }
@@ -255,12 +256,17 @@ void spinR() {
 }
 
 void L_Spd(int speed, bool dir) {
+	if (!motors_enabled) {speed = 0;}
 	digitalWrite(MOTOR_L_1_PIN, dir);
+	digitalWrite(MOTOR_L_2_PIN, !dir);
 	analogWrite(MOTOR_L_ENABLE, speed);
 }
 
+
 void R_Spd(int speed, bool dir) {
+	if (!motors_enabled) {speed = 0;}
 	digitalWrite(MOTOR_R_1_PIN, dir);
+	digitalWrite(MOTOR_R_2_PIN, !dir);
 	analogWrite(MOTOR_R_ENABLE, speed);
 }
 
@@ -446,20 +452,26 @@ void test_loop() {
 void motor_control(){
 	if (Serial.available() > 0) {
 		int data = Serial.read();
-		kicker_move((data&KICKER_MASK)>>7);
-		if ((data&MOTOR_MASK)>>6) {
-			R_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
-			Serial.println("R forward");
-			Serial.println((data&SPEED_MASK)<<3);
-		} else {
-			L_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
-			Serial.println("L forward");
-			Serial.println((data&SPEED_MASK)<<3);
+		if ((data&MESSAGE_TYPE_MASK)>>7==0){
+			kicker_move(data&KICKER_MASK);
+        }else{
+			if ((data&MOTOR_MASK)>>6) {
+				R_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
+				Serial.println("R forward (DIR, Speed): ");
+				Serial.println((data&DIR_MASK)>>5);
+				Serial.println((data&SPEED_MASK)<<3);
+			} else {
+				L_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
+				Serial.println("L forward (DIR, Speed): ");
+				Serial.println((data&DIR_MASK)>>5);
+				Serial.println((data&SPEED_MASK)<<3);
+			}
 		}
 	} else {
 		if (!motors_enabled) {Stop();}
 	}
 }
+
 
 void servo_midpoint(){
   Kicker.write(95);	// TODO: fix hardcoding
@@ -470,20 +482,21 @@ void loop(){
 	motor_control();
 }
 
+
 void _loop() {
   motors_enabled = !digitalRead(MOTOR_TOGGLE_SWITCH);
   Serial.println(motors_enabled);
   Fwd();
   delay(1000);
   Stop();
-  kick();
+  kicker_move(1);
 
   delay(500);
 
   Rev();
   delay(1000);
   Stop();
-  kick();
+  kicker_move(0);
 
   delay(500);
 }
