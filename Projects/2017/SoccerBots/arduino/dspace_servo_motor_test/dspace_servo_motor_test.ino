@@ -9,12 +9,15 @@
 // ...or just one for all, if they read consistently enough
 
 
+#define BAUD_RATE 115200
+
+// TODO: this was true of the Dalek, but what about the SoccerBot?:
 // Right Dalek motor is considerably more powerful, so we need to be able to regulate each separately...
 // Don't go too high with these on the Dalek as it will draw too much current and cause resets!
 #include <Servo.h> //incldued for kicker
 Servo Kicker;
 const int SERVO_PIN = 13; //Servo 2, Pin 2 SDK.
-const int KICKER_MIN = 120;
+const int KICKER_MIN = 100;
 const int KICKER_MAX = 70; //these will need testing.
 const int KICKER_DELAY = 1000;
 const int MOTOR_L_DUTY=128;
@@ -45,7 +48,7 @@ const int KICKER_MASK 	= 0b10000000;
 #define L_BUTTON 19
 #define R_BUTTON 8
 
-#define DEBUGGING 1
+#define DEBUGGING 0
 /*
 #define debug(message) \
 	do { if (DEBUGGING) Serial.println(message); } while (0)
@@ -82,11 +85,15 @@ void setup() {
 	pinMode(MOTOR_R_1_PIN, OUTPUT); digitalWrite(MOTOR_R_1_PIN, LOW);
 	pinMode(MOTOR_R_2_PIN, OUTPUT); digitalWrite(MOTOR_R_2_PIN, HIGH);
 
+	Serial.begin(BAUD_RATE);
+
 #ifdef DEBUGGING
-	Serial.begin(9600);
 	Serial.println("\n\nDspace Motor Controller - Info Sci Mechatronics v0.01");
 #endif
 }
+
+// TODO: we don't have a buzzer on the SoccerBot, so this can go:
+
 	// Around 2100-2500 Hz sounds good on the piezo buzzer we have, with 2100 Hz being quite loud (near resonant frequency).
 /*	digitalWrite(G_LED, HIGH); tone(BUZZER, 2100, 100); delay(200);
 	digitalWrite(G_LED, LOW);  tone(BUZZER, 2200, 100); delay(200);
@@ -449,16 +456,18 @@ void motor_control(){
 			Serial.println("L forward");
 			Serial.println((data&SPEED_MASK)<<3);
 		}
+	} else {
+		if (!motors_enabled) {Stop();}
 	}
 }
 
 void servo_midpoint(){
-  Kicker.write(95);
+  Kicker.write(95);	// TODO: fix hardcoding
 }
 
 void loop(){
-  motors_enabled = !digitalRead(MOTOR_TOGGLE_SWITCH);
-  motor_control();
+	motors_enabled = !digitalRead(MOTOR_TOGGLE_SWITCH);
+	motor_control();
 }
 
 void _loop() {
