@@ -13,15 +13,23 @@ float ir_values[8];
 float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000.
 
+int ball_detected = 0;
+float ball_angle = 0;
+float ball_distance = 0;
+float front_range = 0;
+float back_range = 0;
+float compass_heading = 0;
+int calibration_mode_switch = 0;
+int light_sensor = 0;
 
-#define DEBUGGING 0
+//#define DEBUGGING 1
 
 /*
 #define debug(message) \
 	do { if (DEBUGGING) DEBUG(message); } while (0)
 */
 
-#ifdef DEBUGGING
+#ifdef DEBUGGING 
 	#define DEBUG(x) Serial.println (x)
 	#define DEBUG_NOEOL(x) Serial.print (x)
 #else
@@ -55,8 +63,11 @@ void test_loop() {
 void loop() {
 	readIRsensors();
 	printIRsensors();
-	ball_angle();
+	get_ball_angle();
+	//TODO: get_compass etc.
+	send_output();
 	delay(500);
+	
 }
 
 float readIRsensor(int sensor_num){
@@ -109,7 +120,19 @@ float normaliseDegrees(float d){
 float vector2distance(float vector_magnitude){
        return exp(0.33/vector_magnitude) * 0.03;
 }
-float ball_angle() {
+void send_output(){
+	Serial.print(ball_detected);Serial.print(" ");
+	Serial.print(ball_angle);Serial.print(" ");
+	Serial.print(ball_distance);Serial.print(" ");
+	Serial.print(front_range);Serial.print(" ");
+	Serial.print(back_range);Serial.print(" ");
+	Serial.print(compass_heading);Serial.print(" ");
+	Serial.print(calibration_mode_switch);Serial.print(" ");
+	Serial.print(light_sensor);Serial.print(" ");
+	Serial.println(";");
+}
+
+float get_ball_angle() {
 	//DEBUG("ball angle called!");
 	
 	// Calculate the centroid of the ball detection vectors...
@@ -144,20 +167,27 @@ float ball_angle() {
 	// Calculate angle:
 	// This will use the atan2() function to determine the angle from the average x and y co-ordinates
 	// You can use the degrees() function to convert for output/debugging.
-	float angle = atan2(x_average, y_average);
+	ball_angle = degrees(atan2(x_average, y_average));
         DEBUG_NOEOL("Angle to ball: ");
         DEBUG_NOEOL(degrees(angle));
 	
 	// Calculate approximate distance:
 	// First, determine the length of the vector (use the Pythagorean theorem):
 	float vector_magnitude = sqrt(pow(x_average, 2)+pow(y_average,2));	// TODO: your code here
-        
+    if (ball_angle == 0 && vector_magnitude == 0){
+		ball_detected = 0;
+	}else{
+		ball_detected = 1;
+	}
 	// We need to map the raw vector magnitudes to real-world distances. This is probably not linear! Will require some calibration testing...
-	float distance = vector2distance(vector_magnitude); // TODO: your code here
+	ball_distance = vector2distance(vector_magnitude); // TODO: your code here
 	DEBUG_NOEOL(" Vector magnitude: ");
 	DEBUG_NOEOL(vector_magnitude);
 	DEBUG_NOEOL(" Distance: ");
 	DEBUG_NOEOL(distance);
 	DEBUG("");
+	
+	
 	// TODO: maybe also check for infinity, and map that to a usable value (e.g. 0).
+	
 }
