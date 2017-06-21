@@ -46,13 +46,13 @@ Hardware:
 
 [.] Design and test kicker mechanism. Servo? Maybe a high-speed one from Pololu.
 
-[ ] Trial using a DSpace Robot board for motor and servo control (rather than separate Arduino + H-bridge)
+[, ] Trial using a DSpace Robot board for motor and servo control (rather than separate Arduino + H-bridge)
 
-[ ] Motor Enable switch (just a software switch for the DSpace board)
+[ ,] Motor Enable switch (just a software switch for the DSpace board)
 
-[ ] Build a power+ground bus board (screw terminals for input, header pins for multiple outputs)
+[ ,] Build a power+ground bus board (screw terminals for input, header pins for multiple outputs)
 
-[ ] Main power switch (to save having to disconnect the battery when not in use!)
+[, ] Main power switch (to save having to disconnect the battery when not in use!)
 
 [ ] A pushbutton switch to safely shut down the Pi (with accompanying software)
 
