@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.7
 import SimpleCV
 import os
 import sys
@@ -5,8 +6,7 @@ sys.path.append(os.environ['HOME'] + '/robotics_repo/Documentation/Computer Visi
 import cvutils
 import time
 import serial
-
-ser = serial.Serial('/dev/serial/by-id/usb-www.freetronics.com_Eleven_64935343233351909241-if00')
+#ser = serial.Serial('/dev/serial/by-id/usb-www.freetronics.com_Eleven_64935343233351909241-if00')
 
 camera = SimpleCV.Camera(0, {"width":960,"height":540})
 os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
@@ -101,7 +101,8 @@ def control(target):
 	return plant(control)
 
 def send2pd(message):
-	print(str(message) + ";" + "\r\n")
+	print(str(message) + ";")
+	sys.stdout.flush()
 
 while True:
 	start_time = time.clock()
