@@ -19,6 +19,7 @@ Servo Kicker;
 const int SERVO_PIN = 13; //Servo 2, Pin 2 SDK.
 const int KICKER_MIN = 100;
 const int KICKER_MAX = 60; //these will need testing.
+const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
 const int MOTOR_L_DUTY=128;
 const int MOTOR_R_DUTY=128;
@@ -279,6 +280,7 @@ void kick(){
 }
 
 void kicker_move(int direction) {
+	if (!motors_enabled) kicker_midpoint();
 	Kicker.write(direction? KICKER_MAX: KICKER_MIN);
 }
 
@@ -473,8 +475,8 @@ void motor_control(){
 }
 
 
-void servo_midpoint(){
-  Kicker.write(95);	// TODO: fix hardcoding
+void kicker_midpoint(){
+  Kicker.write(KICKER_MID);	
 }
 
 void loop(){
