@@ -1,1 +1,1 @@
-Ball detected, Ball angle, Ball distance, front range, back range, compass heading (degrees), compass calibration mode(from switch), light/dark sensor
+Ball detected, Ball angle, Ball distance, front range, back range, compass heading (degrees), compass calibration mode(from switch), light/dark sensor;

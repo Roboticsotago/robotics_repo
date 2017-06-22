@@ -1,6 +1,8 @@
 // TODO: main statement of the purpose of this code!
-
+#include <LIS3MDL.h>
+#include <Wire.h>
 #include <math.h>
+
 
 
 const int NUM_SENSORS = 8;
@@ -8,6 +10,7 @@ const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
 float ir_values[8];
 float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000.
+const int CALIBRATION_MODE_SWITCH_PIN = 2;
 
 int ball_detected = 0;
 float ball_angle = 0;
@@ -18,7 +21,9 @@ float compass_heading = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
 
-//#define DEBUGGING 1
+ 
+
+#define DEBUGGING 1
 
 
 #ifdef DEBUGGING 
@@ -29,6 +34,7 @@ int light_sensor = 0;
 	#define DEBUG_NOEOL(x)
 #endif
 
+#include "magnetometer.h"
 
 //int ir_val;
 const float TAU = 2 * PI;
@@ -38,7 +44,9 @@ void setup() {
 		pinMode(analog_sensor_pins[n], INPUT);
 
 	}
+	pinMode(CALIBRATION_MODE_SWITCH_PIN, INPUT_PULLUP);
 	Serial.begin(115200);
+	magnetometer_setup();
 }
 
 void test_loop() {
@@ -54,9 +62,11 @@ void loop() {
 	readIRsensors();
 	printIRsensors();
 	get_ball_angle();
+	get_calibration_mode_switch();
+	compass_heading = getRelativeAngle(getCompassHeading());
 	//TODO: get_compass etc.
 	send_output();
-	delay(500);
+	delay(500); //TODO: reduce delay for Pd
 	
 }
 
@@ -160,7 +170,7 @@ float get_ball_angle() {
 	// You can use the degrees() function to convert for output/debugging.
 	ball_angle = degrees(atan2(x_average, y_average));
     DEBUG_NOEOL("Angle to ball: ");
-    DEBUG_NOEOL(degrees(angle));
+    DEBUG_NOEOL(degrees(ball_angle));
 	
 	// Calculate approximate distance:
 	// First, determine the length of the vector (use the Pythagorean theorem):
@@ -175,11 +185,17 @@ float get_ball_angle() {
 	DEBUG_NOEOL(" Vector magnitude: ");
 	DEBUG_NOEOL(vector_magnitude);
 	DEBUG_NOEOL(" Distance: ");
-	DEBUG_NOEOL(distance);
+	DEBUG_NOEOL(ball_distance);
 	DEBUG("");
 	
 	
 	// TODO: maybe also check for infinity, and map that to a usable value (e.g. 0).
 	
+}
+int get_calibration_mode_switch(){
+	calibration_mode_switch = digitalRead(CALIBRATION_MODE_SWITCH_PIN); 
+	if (!digitalRead(CALIBRATION_MODE_SWITCH_PIN)){
+		calibrateSensor();
+	}
 }
 //TODO: define other get functions (getCompass etc)

@@ -7,11 +7,27 @@ const int IR_2 = 3;
 const int IR_3 = 4;
 const int IR_4 = 5;
 const int NUM_SENSORS = 8;
+//this is now finished,  go and look at ir_ball_tracker.ino instead
 //const int sensor_pins[] = {2,3,4,5,6,7,8,9};
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
 float ir_values[8];
 float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000.
+
+
+#define DEBUGGING 0
+
+/*
+#define debug(message) \
+	do { if (DEBUGGING) Serial.println(message); } while (0)
+*/
+
+#ifdef DEBUGGING
+	#define DEBUG(x) Serial.println (x)
+#else
+	#define DEBUG(x)
+#endif
+
 
 int ir_val;
 const float TAU = 2 * PI;
