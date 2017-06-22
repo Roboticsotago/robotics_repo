@@ -1,8 +1,8 @@
 /*
-  Magnetometer Test
-  Reads data from the LIS3MDL sensor and calculate a compass heading and can
+  Magnetometer
+  Reads data from the LIS3MDL sensor and calculate a compass heading, aswell as
   return the angle to a specified heading
-  The y-axis points in the forwards direction of the robot
+  The y-axis points in the forwards direction of the robot for a correct heading
 
 TODO:
 - implement correction for magmetic north
@@ -28,22 +28,21 @@ reading of 1292 corresponds to 1292 / 6842 = 0.1888 gauss.
 
 char report[80];
 int cal_x, cal_y;
-float reference_heading;
+float target_heading;
 
 LIS3MDL mag;
 LIS3MDL::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32768, -32768, -32768};
 
-void magnetometer_reset(){ //reset the running max and min values for each axis to allow a complete calibration.
+void magnetometer_reset() { // reset the running max and min values for each axis to allow a complete calibration
 	running_min.x =  32767;
 	running_min.y =  32767;
 	running_min.z =  32767;
 	running_max.x = -32768;
 	running_max.y = -32768;
 	running_max.z = -32768;
-	
 }
-// calibrate the magnetometer, the magnetometer must be moved through its full axis of rotation while calibrating
-void calibrateSensor(){
+
+void calibrateSensor() { // calibrate the magnetometer, the magnetometer must be moved through its full axis of rotation while calibrating
 	DEBUG("starting magnetometer calibration");
 	magnetometer_reset();
 	while(!digitalRead(CALIBRATION_MODE_SWITCH_PIN)){
@@ -60,98 +59,87 @@ void calibrateSensor(){
 		running_max.z = max(running_max.z, mag.m.z);
 
 		// print limits
-		//snprintf(report, sizeof(report), "min: {%+6d, %+6d, %+6d}   max: {%+6d, %+6d, %+6d}",
-		  //running_min.x, running_min.y, running_min.z,
-		  //running_max.x, running_max.y, running_max.z);
+		// snprintf(report, sizeof(report), "min: {%+6d, %+6d, %+6d}   max: {%+6d, %+6d, %+6d}",
+		//   running_min.x, running_min.y, running_min.z,
+		//   running_max.x, running_max.y, running_max.z);
 		// DEBUG(report);
 	}
-	
 
-  // calculate calibrated origin
-	cal_x = (running_max.x + running_min.x) / 2; //if latency rethink placement of these.
+	// calculate new origin
+	cal_x = (running_max.x + running_min.x) / 2; // if latency rethink placement of these
 	cal_y = (running_max.y + running_min.y) / 2;
 	DEBUG("ending magnetometer calibration");
 }
 
-// read raw data from magnetometer and adjust from calibration
-void read() {
-  mag.read();
+void read() { // read raw data from magnetometer and adjust from calibration
+	mag.read();
 
-  // adjust raw data for calibration
-  mag.m.x -= cal_x;
-  mag.m.y -= cal_y;
+	// adjust raw data for calibration
+	mag.m.x -= cal_x;
+	mag.m.y -= cal_y;
 
-  // print adjusted values
-  snprintf(report, sizeof(report), "M: %6d, %6d, %6d",
-    mag.m.x, mag.m.y, mag.m.z);
-  DEBUG(report);
+	// print adjusted values
+	// snprintf(report, sizeof(report), "M: %6d, %6d, %6d", mag.m.x, mag.m.y, mag.m.z);
+	// DEBUG(report);
 }
 
-// calculate the angle of point (x, y)
-float calcAngle(int x, int y) {
-  return degrees(atan2(x, y));
+float calcAngle(int x, int y) { // calculate the angle of point (x, y)
+	return degrees(atan2(x, y));
 }
 
-// returns the compass heading from magnetometer, range [0, 360]
-float getCompassHeading() {
-    read();
-    float heading = calcAngle(mag.m.x, mag.m.y) * -1; // compass heading is angle clockwise from North, hence the * -1
-    if (heading < 0) {
-        return heading + 360.0;
-    } else {
-        return heading;
-    }
+float getCompassHeading() { // returns the compass heading from magnetometer, range [0, 360]
+	read();
+	float heading = calcAngle(mag.m.x, mag.m.y) * -1; // compass heading is angle clockwise from North, hence the * -1
+	if (heading < 0) {
+		return heading + 360.0;
+	} else {
+		return heading;
+	}
 }
 
-// stores the compass angle that is the desired direction
-float saveHeading() {
-  reference_heading = getCompassHeading();
+float saveHeading() { // stores the compass angle that is the desired direction
+	target_heading = getCompassHeading();
 }
 
-// returns the angle that the robot is off the reference_heading, range [-180, 180]
-float getRelativeAngle(float my_heading) {
-  float angle_diff = (my_heading - reference_heading) * -1.0;
+float getRelativeAngle(float actual_heading) { // returns the angle that the robot is off the target heading, range [-180, 180]
+	float angle_diff = (actual_heading - target_heading) * -1.0;
 
-  DEBUG_NOEOL("Actual heading: "); DEBUG_NOEOL(my_heading);
-  DEBUG_NOEOL(" Angle difference: "); DEBUG(angle_diff);
+	DEBUG_NOEOL("Actual heading: "); DEBUG_NOEOL(actual_heading);
+	DEBUG_NOEOL(" Angle difference: "); DEBUG(angle_diff);
 
-  if (angle_diff < -180.0) {
-    return angle_diff + 360.0;
-  } else if (angle_diff > 180.0) {
-    return angle_diff - 360.0;
-  } else {
-    return angle_diff;
-  }
+	if (angle_diff < -180.0) {
+		return angle_diff + 360.0;
+	} else if (angle_diff > 180.0) {
+		return angle_diff - 360.0;
+	} else {
+		return angle_diff;
+	}
 }
 
-// checks to see if facing target dirrection
-int isTargetGoal(float my_heading) {
-  if ((my_heading < 90.0) && (my_heading > -90.0)) {
-    return 1;
-  } else {
-    return 0;
-  }
+int isTargetdirrection(float actual_heading) { // checks to see if facing in the general target dirrection
+	if ((actual_heading < 70.0) && (actual_heading > -70.0)) {
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
-
-void loopTest() {
-  DEBUG_NOEOL("Angle to desired heading is: ");
-  DEBUG(isTargetGoal(getRelativeAngle(getCompassHeading())));
+float getAngleToTarget() { // returns the angle needed to turn towards the target heading
+	return getRelativeAngle(getCompassHeading());
 }
 
-void magnetometer_setup() {
-  //Serial.begin(9600);
-  //DEBUG("Magnetometer Test");
-  Wire.begin();
-
-  if (!mag.init()) {
-    DEBUG("Failed to detect and initialize magnetometer!");
-    while (1);
-  }
-  mag.enableDefault();
+void magnetometerTestLoop() {
+	DEBUG_NOEOL("Angle to desired heading is: ");
+	DEBUG(isTargetdirrection(getAngleToTarget()));
 }
 
-//~ void loop() {
-  //~ loopTest();
-  //~ delay(1000);
-//~ }
+void magnetometerSetup() {
+	// Serial.begin(9600);
+	// DEBUG("Magnetometer Test");
+	Wire.begin();
+	if (!mag.init()) {
+		DEBUG("Failed to detect and initialize magnetometer!");
+		while (1);
+	}
+	mag.enableDefault();
+}
