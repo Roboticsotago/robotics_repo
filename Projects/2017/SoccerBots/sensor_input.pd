@@ -1,0 +1,18 @@
+#N canvas 465 494 536 390 10;
+#X obj 153 98 netreceive 7000;
+#X obj 70 141 print;
+#X obj 161 144 unpack f f f f f f f f;
+#X obj 44 200 s ball_detected;
+#X obj 185 293 s ball_angle;
+#X obj 291 207 s ball_distance;
+#X floatatom 138 180 5 0 0 0 - - -, f 5;
+#X floatatom 135 255 5 0 0 0 - - -, f 5;
+#X obj 179 218 + 18;
+#X connect 0 0 1 0;
+#X connect 0 0 2 0;
+#X connect 2 0 3 0;
+#X connect 2 1 6 0;
+#X connect 2 1 8 0;
+#X connect 2 2 5 0;
+#X connect 8 0 4 0;
+#X connect 8 0 7 0;
