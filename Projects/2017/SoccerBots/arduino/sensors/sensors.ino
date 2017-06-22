@@ -23,7 +23,7 @@ int light_sensor = 0;
 
  
 
-#define DEBUGGING 1
+//#define DEBUGGING 1
 
 
 #ifdef DEBUGGING 
@@ -35,6 +35,7 @@ int light_sensor = 0;
 #endif
 
 #include "magnetometer.h"
+#include "ultrasonic.h"
 
 //int ir_val;
 const float TAU = 2 * PI;
@@ -47,6 +48,7 @@ void setup() {
 	pinMode(CALIBRATION_MODE_SWITCH_PIN, INPUT_PULLUP);
 	Serial.begin(115200);
 	magnetometer_setup();
+	ultrasonic_setup();
 }
 
 void test_loop() {
@@ -60,14 +62,19 @@ void test_loop() {
 
 void loop() {
 	readIRsensors();
-	printIRsensors();
+	//printIRsensors();
 	get_ball_angle();
 	get_calibration_mode_switch();
 	compass_heading = getRelativeAngle(getCompassHeading());
+	front_range = getUSDistance();
 	//TODO: get_compass etc.
 	send_output();
-	delay(500); //TODO: reduce delay for Pd
-	
+#ifdef DEBUGGING 
+	delay(2000);
+#else 
+	delay(20);
+#endif
+
 }
 
 float readIRsensor(int sensor_num){ //takes single reading from one IR sensor
