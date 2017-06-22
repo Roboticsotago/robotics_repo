@@ -12,11 +12,11 @@ const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
 const int MOTOR_L_DUTY=128; //to limit 8.0V to 4.5V
 const int MOTOR_R_DUTY=128;
-const int DIR_MASK 	= 0b00100000;
-const int MOTOR_MASK 	= 0b01000000;
-const int SPEED_MASK 	= 0b00011111;
-const int MESSAGE_TYPE_MASK = 0b10000000;
-const int KICKER_MASK = 0b00000001;
+const int DIR_MASK 		= 0b00100000;
+const int MOTOR_MASK 		= 0b01000000;
+const int SPEED_MASK	 	= 0b00011111;
+const int MESSAGE_TYPE_MASK     = 0b10000000;
+const int KICKER_MASK 		= 0b00000001;
 const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 4.
 int motors_enabled = 0;
 
