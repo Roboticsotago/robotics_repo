@@ -1,11 +1,11 @@
 /*
   Magnetometer Test
-  Reads data from the LIS3MDL sensor and calculate a compass heading
-  The y-axis points in the forwards dirrection of the robot
+  Reads data from the LIS3MDL sensor and calculate a compass heading and can
+  return the angle to a specified heading
+  The y-axis points in the forwards direction of the robot
 
 TODO:
 - implement correction for magmetic north
-
 */
 
 /*
@@ -26,16 +26,16 @@ reading of 1292 corresponds to 1292 / 6842 = 0.1888 gauss.
 #include <LIS3MDL.h>
 #include <math.h>
 
+char report[80];
+int cal_x, cal_y;
+float reference_heading;
+
 LIS3MDL mag;
 LIS3MDL::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32768, -32768, -32768};
 
-char report[80];
-int cal_x, cal_y;
-
 // calibrate the magnetometer, the magnetometer must be moved through its full axis of rotation while calibrating
 void calibrateSensor(){
-  int i = 0;
-  while (i < 200) {
+  for (int i = 0; i < 200; i += 1) {
     mag.read();
 
     // minimum values
@@ -55,7 +55,6 @@ void calibrateSensor(){
     Serial.println(report);
 
     delay(50);
-    i += 1;
   }
 
   // calculate calibrated origin
@@ -77,8 +76,8 @@ void read() {
   Serial.println(report);
 }
 
-// returns a compass heading from magnetometer, range [0, 360]
-float getHeading() {
+// returns the compass heading from magnetometer, range [0, 360]
+float getCompassHeading() {
     read();
     float heading = calcAngle(mag.m.x, mag.m.y) * -1; // compass heading is angle clockwise from North, hence the * -1
     if (heading < 0) {
@@ -86,20 +85,70 @@ float getHeading() {
     } else {
         return heading;
     }
-} 
+}
 
 // calculate the angle of point (x, y)
 float calcAngle(int x, int y) {
-  return rad2deg(atan2(x, y));
+  return degrees(atan2(x, y));
 }
 
-// convert radians into degrees
-float rad2deg(float rad) {
-  return 180.0 / PI * rad;
+// stores the compass angle that is the desired direction
+float saveHeading() {
+  reference_heading = getCompassHeading();
+}
+
+// returns the angle that the robot is off the reference_heading, range [-180, 180]
+float getRelativeAngle(float my_heading) {
+  float angle_diff = (my_heading - reference_heading) * -1.0;
+
+  Serial.print("Actual heading: "); Serial.print(my_heading);
+  Serial.print(" Angle difference: "); Serial.println(angle_diff);
+
+  if (angle_diff < -180.0) {
+    return angle_diff + 360.0;
+  } else if (angle_diff > 180.0) {
+    return angle_diff - 360.0;
+  } else {
+    return angle_diff;
+  }
+}
+
+// checks to see if facing target dirrection
+int isTargetGoal(float my_heading) {
+  if ((my_heading < 90.0) && (my_heading > -90.0)) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+// functions to run at start for testing
+void startFunctionsTest() {
+  // calibrate the sensor
+  Serial.println("Calibration started");
+  calibrateSensor();
+  Serial.println("Calibration finished");
+
+  // store the current direction after short delay
+  Serial.print("Saving direction in: ");
+  for (int n = 4; n > 0; n += 1) {
+    Serial.print(n);
+    delay(1000);
+  }
+  Serial.println();
+  saveHeading();
+  Serial.print("Saved heading is: "); Serial.println(reference_heading);
+  delay(2000);
+}
+
+void loopTest() {
+  Serial.print("Angle to desired heading is: ");
+  Serial.println(isTargetGoal(getRelativeAngle(getCompassHeading())));
 }
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("Magnetometer Test");
   Wire.begin();
 
   if (!mag.init()) {
@@ -108,11 +157,10 @@ void setup() {
   }
   mag.enableDefault();
 
-  // calibrate the sensor before beginning
-  calibrateSensor();
+  startFunctionsTest();
 }
 
 void loop() {
-  Serial.println(getHeading());
+  loopTest();
   delay(1000);
 }
