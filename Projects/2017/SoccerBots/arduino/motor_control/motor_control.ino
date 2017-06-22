@@ -10,12 +10,12 @@ const int KICKER_MIN = 100;
 const int KICKER_MAX = 60; //tested 
 const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
-const int MOTOR_L_DUTY=128; //to limit 8.0V to 4.5V
-const int MOTOR_R_DUTY=128;
-const int DIR_MASK 		= 0b00100000;
+const int MOTOR_L_DUTY=140; //to limit 8.0V to 4.5V
+const int MOTOR_R_DUTY=140;
+const int DIR_MASK 			= 0b00100000;
 const int MOTOR_MASK 		= 0b01000000;
 const int SPEED_MASK	 	= 0b00011111;
-const int MESSAGE_TYPE_MASK     = 0b10000000;
+const int MESSAGE_TYPE_MASK	= 0b10000000;
 const int KICKER_MASK 		= 0b00000001;
 const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 4.
 int motors_enabled = 0;
@@ -85,151 +85,35 @@ void setup() {
 	#endif
 }
 
-// Low-level functions for driving the L and R motors independently...
-void L_Fwd() {
-	if (!motors_enabled) return;
-	digitalWrite(MOTOR_L_1_PIN, LOW);
-	digitalWrite(MOTOR_L_2_PIN, HIGH);
-	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
-//	digitalWrite(MOTOR_L_ENABLE, HIGH);
-}
 
-void L_Rev() {
-	if (!motors_enabled) return;
-	digitalWrite(MOTOR_L_1_PIN, HIGH);
-	digitalWrite(MOTOR_L_2_PIN, LOW);
-	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
-//	digitalWrite(MOTOR_L_ENABLE, HIGH);
-}
-
-void L_Stop() {
+void Stop() {
 	digitalWrite(MOTOR_L_1_PIN, LOW);
 	digitalWrite(MOTOR_L_2_PIN, HIGH);
 	analogWrite(MOTOR_L_ENABLE, 0);
-//	digitalWrite(MOTOR_L_ENABLE, LOW);
-}
-
-void L_Brake() {
-	if (!motors_enabled) return;
-	digitalWrite(MOTOR_L_1_PIN, HIGH);
-	digitalWrite(MOTOR_L_2_PIN, HIGH);
-	analogWrite(MOTOR_L_ENABLE, MOTOR_L_DUTY);
-//	digitalWrite(MOTOR_L_ENABLE, HIGH);
-}
-
-
-void R_Fwd() {
-	if (!motors_enabled) return;
-	digitalWrite(MOTOR_R_1_PIN, LOW);
-	digitalWrite(MOTOR_R_2_PIN, HIGH);
-	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
-//	digitalWrite(MOTOR_R_ENABLE, HIGH);
-}
-
-void R_Rev() {
-	if (!motors_enabled) return;
-	digitalWrite(MOTOR_R_1_PIN, HIGH);
-	digitalWrite(MOTOR_R_2_PIN, LOW);
-	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
-//	digitalWrite(MOTOR_R_ENABLE, HIGH);
-}
-
-void R_Stop() {
 	digitalWrite(MOTOR_R_1_PIN, LOW);
 	digitalWrite(MOTOR_R_2_PIN, HIGH);
 	analogWrite(MOTOR_R_ENABLE, 0);
-//	digitalWrite(MOTOR_R_ENABLE, LOW);
-}
-
-void R_Brake() {
-	if (!motors_enabled) return;
-	digitalWrite(MOTOR_R_1_PIN, HIGH);
-	digitalWrite(MOTOR_R_2_PIN, HIGH);
-	analogWrite(MOTOR_R_ENABLE, MOTOR_R_DUTY);
-//	digitalWrite(MOTOR_R_ENABLE, HIGH);
-}
-
-
-void L_Drive(float speed){
-	if (!motors_enabled) return;
-	if (speed < 0){
-		digitalWrite(MOTOR_L_1_PIN, HIGH);
-		digitalWrite(MOTOR_L_2_PIN, LOW);
-	}else{
-		digitalWrite(MOTOR_L_1_PIN, LOW);
-		digitalWrite(MOTOR_L_2_PIN, HIGH);
-	}
-
-	analogWrite(MOTOR_L_ENABLE, (int) round(speed * MOTOR_L_DUTY));
-}
-
-
-void R_Drive(float speed){
-	if (!motors_enabled) return;
-	if (speed < 0){
-		digitalWrite(MOTOR_R_1_PIN, HIGH);
-		digitalWrite(MOTOR_R_2_PIN, LOW);
-	}else{
-		digitalWrite(MOTOR_R_1_PIN, LOW);
-		digitalWrite(MOTOR_R_2_PIN, HIGH);
-	}
-
-	analogWrite(MOTOR_R_ENABLE, (int) round(speed * MOTOR_R_DUTY));
-}
-
-
-// High-level functions for driving both motors at once:
-
-void Veer(float left_speed, float right_speed){
-	L_Drive(left_speed); R_Drive(right_speed);
 
 }
 
-void Fwd() {
-	L_Fwd(); R_Fwd();
-}
-
-void Rev() {
-	L_Rev(); R_Rev();
-}
-
-void Stop() {
-	L_Stop(); R_Stop();
-}
-
-void Brake() {
-	L_Brake(); R_Brake();
-}
-
-void veerL() {
-	L_Stop(); R_Fwd();
-}
-
-void veerR() {
-	L_Fwd(); R_Stop();
-}
-
-void spinL() {
-	L_Rev(); R_Fwd();
-}
-
-void spinR() {
-	L_Fwd(); R_Rev();
-}
-
+//speed argument expected to be between 0-255
 void L_Spd(int speed, bool dir) {
 	if (!motors_enabled) {speed = 0;}
+	if (speed < 0) {speed = 0;}
+	if (speed > 255) {speed = 255;}
 	digitalWrite(MOTOR_L_1_PIN, dir);
 	digitalWrite(MOTOR_L_2_PIN, !dir);
-	analogWrite(MOTOR_L_ENABLE, speed);
+	analogWrite(MOTOR_L_ENABLE, (int) round(speed/255.0 * MOTOR_L_DUTY));
 }
 
 
 void R_Spd(int speed, bool dir) {
 	if (!motors_enabled) {speed = 0;}
+	if (speed < 0) {speed = 0;}
+	if (speed > 255) {speed = 255;}
 	digitalWrite(MOTOR_R_1_PIN, dir);
 	digitalWrite(MOTOR_R_2_PIN, !dir);
-	analogWrite(MOTOR_R_ENABLE, speed);
+	analogWrite(MOTOR_R_ENABLE, (int) round(speed/255.0 * MOTOR_R_DUTY));
 }
 
 void kick(){ //this is unused, but it could be useful so it can stay. 
@@ -241,8 +125,15 @@ void kick(){ //this is unused, but it could be useful so it can stay.
 }
 
 void kicker_move(int direction) {
-	if (!motors_enabled) {kicker_midpoint();} //will this work better?
-	Kicker.write(direction? KICKER_MAX: KICKER_MIN);
+	if (!motors_enabled) {
+		kicker_midpoint(); 
+	} else{
+		Kicker.write(direction? KICKER_MAX: KICKER_MIN);
+	}
+}
+
+void kicker_midpoint(){
+  Kicker.write(KICKER_MID);	
 }
 
 void motor_control(){
@@ -268,31 +159,8 @@ void motor_control(){
 	}
 }
 
-
-void kicker_midpoint(){
-  Kicker.write(KICKER_MID);	
-}
-
 void loop(){
 	motors_enabled = !digitalRead(MOTOR_TOGGLE_SWITCH);
 	motor_control();
 }
 
-
-void motor_test() {
-  motors_enabled = !digitalRead(MOTOR_TOGGLE_SWITCH);
-  DEBUG(motors_enabled);
-  Fwd();
-  delay(1000);
-  Stop();
-  kicker_move(1);
-
-  delay(500);
-
-  Rev();
-  delay(1000);
-  Stop();
-  kicker_move(0);
-
-  delay(500);
-}
