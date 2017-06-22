@@ -46,7 +46,7 @@ int motors_enabled = 0;
 #define debug(message) \
 	do { if (DEBUGGING) Serial.println(message); } while (0)
 */
-#ifdef DEBUGGING //Do to print some values all the time? Pure data isn't expecting anything in return to the motor driving protocol.
+#ifdef DEBUGGING //Do we need to print some values all the time? Pure data isn't expecting anything in return to the motor driving protocol.
 	#define DEBUG(x) Serial.println (x)
 	#define DEBUG_NOEOL(x) Serial.print (x)
 #else
