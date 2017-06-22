@@ -1,33 +1,24 @@
-// Testing the IR reflectance sensors with the DSpace Robot board
-// Working towards a line-following robot for Robocup 2017
+//Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
-// Current config (on the 2013 Dalek test-bed) uses pin 2 on each of sensor blocks SENSOR0, SENSOR1, SENSOR2, and SENSOR3.
-// These correspond to A0..A3.
-// A4 and A5 are also available
+#define BAUD_RATE 115200 
 
-// Will need light/dark thresholds for each sensor for calibration...
-// ...or just one for all, if they read consistently enough
-
-
-#define BAUD_RATE 115200
-
-// TODO: this was true of the Dalek, but what about the SoccerBot?:
-// Right Dalek motor is considerably more powerful, so we need to be able to regulate each separately...
-// Don't go too high with these on the Dalek as it will draw too much current and cause resets!
+//TODO: Do the duty cycles of the SoccerBot motors need adjusting? 
 #include <Servo.h> //incldued for kicker
 Servo Kicker;
 const int SERVO_PIN = 13; //Servo 2, Pin 2 SDK.
 const int KICKER_MIN = 100;
-const int KICKER_MAX = 60; //these will need testing.
+const int KICKER_MAX = 60; //tested 
 const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
-const int MOTOR_L_DUTY=128;
+const int MOTOR_L_DUTY=128; //to limit 8.0V to 4.5V
 const int MOTOR_R_DUTY=128;
-const int DIR_MASK 		= 0b00100000;
+const int DIR_MASK 	= 0b00100000;
 const int MOTOR_MASK 	= 0b01000000;
 const int SPEED_MASK 	= 0b00011111;
 const int MESSAGE_TYPE_MASK = 0b10000000;
 const int KICKER_MASK = 0b00000001;
+const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 4.
+int motors_enabled = 0;
 
 #define MOTOR_R_ENABLE 5
 #define MOTOR_L_ENABLE 11
@@ -55,16 +46,16 @@ const int KICKER_MASK = 0b00000001;
 #define debug(message) \
 	do { if (DEBUGGING) Serial.println(message); } while (0)
 */
-#ifdef DEBUGGING
+#ifdef DEBUGGING //Do to print some values all the time? Pure data isn't expecting anything in return to the motor driving protocol.
 	#define DEBUG(x) Serial.println (x)
+	#define DEBUG_NOEOL(x) Serial.print (x)
 #else
 	#define DEBUG(x)
+	#define DEBUG_NOEOL(x)
 #endif
 
 
-const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 4.
 
-int motors_enabled = 0;
 
 void setup() {
 	Kicker.attach(SERVO_PIN);
@@ -90,41 +81,11 @@ void setup() {
 	Serial.begin(BAUD_RATE);
 
 	#ifdef DEBUGGING
-	Serial.println("\n\nDspace Motor Controller - Info Sci Mechatronics v0.01");
+	DEBUG("\n\nDspace Motor Controller for SoccerBots - Info Sci Mechatronics v0.01");
 	#endif
 }
 
-// TODO: we don't have a buzzer on the SoccerBot, so this can go:
-
-	// Around 2100-2500 Hz sounds good on the piezo buzzer we have, with 2100 Hz being quite loud (near resonant frequency).
-/*	digitalWrite(G_LED, HIGH); tone(BUZZER, 2100, 100); delay(200);
-	digitalWrite(G_LED, LOW);  tone(BUZZER, 2200, 100); delay(200);
-	digitalWrite(G_LED, HIGH); tone(BUZZER, 2300, 100); delay(200);
-	digitalWrite(G_LED, LOW);  tone(BUZZER, 2400, 100); delay(200);
-	digitalWrite(G_LED, HIGH); tone(BUZZER, 2500, 100); delay(200);
-	delay(200); digitalWrite(G_LED, LOW);
-}
-
-// Audible click for debugging
-// WARNING: using click() as defined below makes the right motor not work at all.  Shared pins, maybe?  Perhaps it needs a delay() of at least the duration of the click?
-
-void click() {
-	tone(BUZZER, 2100, 2);
-}
-
-
-void beep_bad() {
-	tone(BUZZER, 2500, 100); delay(200);
-	tone(BUZZER, 2100, 200); delay(200);
-}
-
-void beep_good() {
-	tone(BUZZER, 2100, 100); delay(100);
-	tone(BUZZER, 2500, 100); delay(100);
-}
-*/
 // Low-level functions for driving the L and R motors independently...
-
 void L_Fwd() {
 	if (!motors_enabled) return;
 	digitalWrite(MOTOR_L_1_PIN, LOW);
@@ -271,7 +232,7 @@ void R_Spd(int speed, bool dir) {
 	analogWrite(MOTOR_R_ENABLE, speed);
 }
 
-void kick(){
+void kick(){ //used with motor_test function
 	Kicker.write(KICKER_MAX);
 	delay(KICKER_DELAY);
 	Kicker.write(KICKER_MIN);
@@ -280,176 +241,9 @@ void kick(){
 }
 
 void kicker_move(int direction) {
-	if (!motors_enabled) kicker_midpoint();
+	if (!motors_enabled) {kicker_midpoint();} //will this work better?
 	Kicker.write(direction? KICKER_MAX: KICKER_MIN);
 }
-
-/*
-void calc_track(int move)
-{
-	if (backtrack[move][0] > 0)
-	{
-		backtrack[move][0]++;
-	}
-	else
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			for (int j = 9; j > 0; j--)
-			{
-				backtrack[i][j] = backtrack[i][j-1];
-			}
-		}
-		for (int i = 0; i < 5; i++)
-		{
-			backtrack[i][0] = 0;
-		}
-		backtrack[move][0] = 1;
-	}
-}
-
-
-void retrace()
-{
-	for (int i = 0; i < 10; i++)
-	{
-		if (backtrack[i][0] > 0)
-		{
-			//spin right, so spin left
-			for (int j = 0; j < backtrack[i][0]; j++)
-				spinL();
-		}
-		if (backtrack[i][1] > 0)
-		{
-			//veer right, so veer left
-			for (int j = 0; j < backtrack[i][1]; j++)
-				Veer(0.7,1);
-		}
-		if (backtrack[i][2] > 0)
-		{
-			//forward, so move back
-			for (int j = 0; j < backtrack[i][2]; j++)
-				Rev();
-		}
-		if (backtrack[i][3] > 0)
-		{
-			//veer left, so veer right
-			for (int j = 0; j < backtrack[i][3]; j++)
-				Veer(1,0.7);
-		}
-		if (backtrack[i][4] > 0)
-		{
-			//spin left, so spin right
-			for (int j = 0; j < backtrack[i][4]; j++)
-				spinR();
-		}
-	}
-
-}
-*/
-// For detecting the line, we'll have a function to read an analog value for each sensor and compare with a light/dark threshold.
-
-
-
-
-/*
-void control() {
-//	digitalWrite(Y_LED, LOW);
-
-	l_line = isBlack(L_PIN);
-	m_line = isBlack(M_PIN);
-	r_line = isBlack(R_PIN);
-
-	debug_line_sensors_with_LEDs();
-
-	// TODO: could shift and combine the boolean values for more readable code
-	// e.g. switch bits ... 0b000 -> lost ... 0b010 -> fwd ...
-
-	if (!l_line && !m_line && !r_line) {
-		DEBUG("Lost!");
-		// Would be nice to light red LED if lost.
-	//	digitalWrite(Y_LED, HIGH);
-	//	beep_bad();
-	//	Fwd();
-		Rev();
-	//	Veer(-0.9,-0.7);	// TODO: figure out why the left motor doesn't work here.
-	//	retrace();
-	}
-	if (!l_line && !m_line &&  r_line) {
-		DEBUG("spin right");
-		spinR();
-	//	calc_track(0);
-	}
-	if (!l_line &&  m_line && !r_line) {
-		DEBUG("fwd");
-	//	beep_good();
-		Fwd();
-	//	calc_track(2);
-	}
-	if (!l_line &&  m_line &&  r_line) {
-		DEBUG("veer right");
-		Veer(1.0,0.8);
-	//	calc_track(1);
-		}
-	if ( l_line && !m_line && !r_line) {
-		DEBUG("spin left");
-		spinL();
-	//	calc_track(4);
-	}
-	if ( l_line && !m_line &&  r_line) {
-		DEBUG("?!");
-	//	digitalWrite(Y_LED, HIGH);
-		Stop();
-	//	calc_track(1);
-	}
-	if ( l_line &&  m_line && !r_line) {
-		DEBUG("veer left");
-		Veer(0.8,1.0);
-	//	calc_track(3);
-	}
-	if ( l_line &&  m_line &&  r_line) {
-		DEBUG("perpendicular?!");
-	//	digitalWrite(Y_LED, HIGH);
-	//	Fwd();
-		Veer(1.0,0.6);
-	//	calc_track(2);
-	}
-}
-
-
-void toggleLED(){
-	led_state = !led_state;
-	digitalWrite(G_LED, led_state);
-}
-*/
-
-/*void motor_control(){
-	if(Serial.available() > 0){
-		int data = Serial.read();
-		if((data&MOTOR_MASK)>>7 == 1){
-			R_Spd((data&SPEED_MASK)<<2, (data&DIR_MASK)>>6);
-			Serial.println("R forward");
-			Serial.println((data&SPEED_MASK)<<2);
-		}
-		else{
-			L_Spd((data&SPEED_MASK)<<2, (data&DIR_MASK)>>6);
-			Serial.println("L forward");
-			Serial.println((data&SPEED_MASK)<<2);
-		}
-
-	}
-}
-
-void test_loop() {
-	//TODO: Add servo control code.
-	if (!digitalRead(MOTOR_TOGGLE_SWITCH)) {motors_enabled = 1;}
-	if (digitalRead(MOTOR_TOGGLE_SWITCH)) {motors_enabled = 0;}
-	if (!motors_enabled) {Stop();}else(){motor_control();}
-
-	//delay(CYCLE_TIME);
-
-}
- */
 
 void motor_control(){
 	if (Serial.available() > 0) {
@@ -459,14 +253,14 @@ void motor_control(){
         }else{
 			if ((data&MOTOR_MASK)>>6) {
 				R_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
-				Serial.println("R forward (DIR, Speed): ");
-				Serial.println((data&DIR_MASK)>>5);
-				Serial.println((data&SPEED_MASK)<<3);
+				DEBUG("R forward (DIR, Speed): ");
+				DEBUG((data&DIR_MASK)>>5);
+				DEBUG((data&SPEED_MASK)<<3);
 			} else {
 				L_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
-				Serial.println("L forward (DIR, Speed): ");
-				Serial.println((data&DIR_MASK)>>5);
-				Serial.println((data&SPEED_MASK)<<3);
+				DEBUG("L forward (DIR, Speed): ");
+				DEBUG((data&DIR_MASK)>>5);
+				DEBUG((data&SPEED_MASK)<<3);
 			}
 		}
 	} else {
@@ -485,9 +279,9 @@ void loop(){
 }
 
 
-void _loop() {
+void motor_test() {
   motors_enabled = !digitalRead(MOTOR_TOGGLE_SWITCH);
-  Serial.println(motors_enabled);
+  DEBUG(motors_enabled);
   Fwd();
   delay(1000);
   Stop();
