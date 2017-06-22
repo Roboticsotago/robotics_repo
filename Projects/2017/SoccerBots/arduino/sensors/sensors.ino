@@ -2,12 +2,8 @@
 
 #include <math.h>
 
-const int IR_1 = 2;
-const int IR_2 = 3;
-const int IR_3 = 4;
-const int IR_4 = 5;
+
 const int NUM_SENSORS = 8;
-//const int sensor_pins[] = {2,3,4,5,6,7,8,9};
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
 float ir_values[8];
 float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
@@ -24,10 +20,6 @@ int light_sensor = 0;
 
 //#define DEBUGGING 1
 
-/*
-#define debug(message) \
-	do { if (DEBUGGING) DEBUG(message); } while (0)
-*/
 
 #ifdef DEBUGGING 
 	#define DEBUG(x) Serial.println (x)
@@ -38,17 +30,15 @@ int light_sensor = 0;
 #endif
 
 
-int ir_val;
+//int ir_val;
 const float TAU = 2 * PI;
 
 void setup() {
 	for(int n=0; n<NUM_SENSORS; n++) {
-		//pinMode(sensor_pins[n], INPUT);
-                pinMode(analog_sensor_pins[n], INPUT);
+		pinMode(analog_sensor_pins[n], INPUT);
 
 	}
 	Serial.begin(115200);
-	//Serial.println("Welcome Uno");
 }
 
 void test_loop() {
@@ -70,9 +60,8 @@ void loop() {
 	
 }
 
-float readIRsensor(int sensor_num){
+float readIRsensor(int sensor_num){ //takes single reading from one IR sensor
 	int reading = analogRead(analog_sensor_pins[sensor_num]);
-	// TODO: debugging
 	DEBUG_NOEOL("sensor "); DEBUG_NOEOL(sensor_num); DEBUG_NOEOL(": "); DEBUG(reading);
 	if (reading>IR_THRESHOLD){
 		return 0.0;
@@ -81,13 +70,13 @@ float readIRsensor(int sensor_num){
 	}
 }
 
-void readIRsensors(){
+void readIRsensors(){ //takes readings from all 8 sensors and stores them in an array.
 	for (int i=0; i<NUM_SENSORS; i++) {
 		ir_values[i] = readIRsensor(i);
 	} 
 }
 
-void printIRsensors(){
+void printIRsensors(){ //used for debugging
 	DEBUG_NOEOL("Raw sensor readings: ");
 	for (int i=0; i<NUM_SENSORS; i++) {
 		DEBUG_NOEOL(ir_values[i]);
@@ -103,7 +92,7 @@ void rad2degTest(){
 	}
 }
 
-float rad2deg(float rad){
+float rad2deg(float rad){ //redundant as math.h provides degrees function
 	return (rad * -1.0 + TAU / 4.0) * (360.0 / TAU);
 }
 
@@ -117,9 +106,11 @@ float normaliseDegrees(float d){
 		return d;
 	}
 }
+
 float vector2distance(float vector_magnitude){
        return exp(0.33/vector_magnitude) * 0.03;
 }
+
 void send_output(){
 	Serial.print(ball_detected);Serial.print(" ");
 	Serial.print(ball_angle);Serial.print(" ");
@@ -133,7 +124,7 @@ void send_output(){
 }
 
 float get_ball_angle() {
-	//DEBUG("ball angle called!");
+	DEBUG("ball angle called!");
 	
 	// Calculate the centroid of the ball detection vectors...
 	
@@ -141,46 +132,46 @@ float get_ball_angle() {
 	for(int n=0; n<NUM_SENSORS; n++) {
 		x_total += IR_COORDINATES[n][0]*ir_values[n];
 		y_total += IR_COORDINATES[n][1]*ir_values[n];
-		/*
+
 		DEBUG_NOEOL(n);
 		DEBUG_NOEOL(": (");
 		DEBUG_NOEOL(IR_COORDINATES[n][0]*ir_values[n]);
 		DEBUG_NOEOL(",");
 		DEBUG_NOEOL(IR_COORDINATES[n][1]*ir_values[n]);
 		DEBUG_NOEOL("); ");
-		*/
+
 		count += 1;
 	}
-	//DEBUG();
+
 	
 	float x_average = x_total/(float)count;
 	float y_average = y_total/(float)count;
 	
-	/*
+	
 	DEBUG_NOEOL("  X AVERAGE: ");
 	DEBUG_NOEOL(x_average);
 	DEBUG_NOEOL("  Y AVERAGE: ");
 	DEBUG_NOEOL(y_average);
 	DEBUG(" ");
-	*/
+	
 	
 	// Calculate angle:
 	// This will use the atan2() function to determine the angle from the average x and y co-ordinates
 	// You can use the degrees() function to convert for output/debugging.
 	ball_angle = degrees(atan2(x_average, y_average));
-        DEBUG_NOEOL("Angle to ball: ");
-        DEBUG_NOEOL(degrees(angle));
+    DEBUG_NOEOL("Angle to ball: ");
+    DEBUG_NOEOL(degrees(angle));
 	
 	// Calculate approximate distance:
 	// First, determine the length of the vector (use the Pythagorean theorem):
-	float vector_magnitude = sqrt(pow(x_average, 2)+pow(y_average,2));	// TODO: your code here
+	float vector_magnitude = sqrt(pow(x_average, 2)+pow(y_average,2));	
     if (ball_angle == 0 && vector_magnitude == 0){
 		ball_detected = 0;
 	}else{
 		ball_detected = 1;
 	}
 	// We need to map the raw vector magnitudes to real-world distances. This is probably not linear! Will require some calibration testing...
-	ball_distance = vector2distance(vector_magnitude); // TODO: your code here
+	ball_distance = vector2distance(vector_magnitude); 
 	DEBUG_NOEOL(" Vector magnitude: ");
 	DEBUG_NOEOL(vector_magnitude);
 	DEBUG_NOEOL(" Distance: ");
@@ -191,3 +182,4 @@ float get_ball_angle() {
 	// TODO: maybe also check for infinity, and map that to a usable value (e.g. 0).
 	
 }
+//TODO: define other get functions (getCompass etc)
