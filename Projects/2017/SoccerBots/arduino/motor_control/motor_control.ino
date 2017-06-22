@@ -232,7 +232,7 @@ void R_Spd(int speed, bool dir) {
 	analogWrite(MOTOR_R_ENABLE, speed);
 }
 
-void kick(){ //used with motor_test function
+void kick(){ //this is unused, but it could be useful so it can stay. 
 	Kicker.write(KICKER_MAX);
 	delay(KICKER_DELAY);
 	Kicker.write(KICKER_MIN);
