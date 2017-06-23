@@ -11,9 +11,13 @@ import cvutils
 #os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
 
 #lab_grey_sample = cvutils.calibrate_white_balance(camera)
-calibrated_grey_sample = (212.8181818181818, 205.9090909090909, 205.0909090909091)
+#print lab_grey_sample
+calibrated_grey_sample = (221.5625, 219.75, 225.8125)
+#calibrated_grey_sample = (212.8181818181818, 205.9090909090909, 205.0909090909091)
 #lab_goal_blue = cvutils.calibrate_colour_match(camera, lab_grey_sample)
-calibrated_goal_sample = ((104.5, 0.5), (170.0, 31.0), (83.0, 37.0))
+#print lab_goal_blue
+#print cvutils.calibrate_colour_match(camera, lab_grey_sample)
+calibrated_goal_sample = ((108.0, 2.0), (159.0, 30.0), (90.5, 26.5))
 
 
 
