@@ -1,7 +1,7 @@
-#N canvas 102 51 893 540 10;
+#N canvas 44 52 1236 726 10;
 #X floatatom 263 149 5 0 0 0 - - -, f 5;
 #X obj 243 69 hsl 260 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 12017 1;
+-1 -1 23300 1;
 #X obj 262 119 >= 0;
 #X floatatom 270 236 5 0 0 0 Direction - -, f 5;
 #X obj 364 244 int;
@@ -14,7 +14,7 @@
 #X obj 1246 844 % 2;
 #X floatatom 1246 866 5 0 0 0 - - -, f 5;
 #X obj 1266 923 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X floatatom 1187 892 5 0 0 0 - - -, f 5;
 #X obj 1208 924 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
 1 1;
@@ -22,12 +22,12 @@
 #X obj 1185 867 >= 2;
 #X floatatom 1121 894 5 0 0 0 - - -, f 5;
 #X obj 1142 926 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 1119 847 % 8;
 #X obj 1119 869 >= 4;
 #X floatatom 1053 893 5 0 0 0 - - -, f 5;
 #X obj 1074 925 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 1051 846 % 16;
 #X obj 1051 868 >= 8;
 #X floatatom 985 890 5 0 0 0 - - -, f 5;
@@ -37,7 +37,7 @@
 #X obj 947 924 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X floatatom 860 894 5 0 0 0 - - -, f 5;
-#X obj 881 926 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 881 926 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X floatatom 792 893 5 0 0 0 - - -, f 5;
 #X obj 813 925 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
@@ -65,7 +65,7 @@
 #X obj 345 29 r Stop;
 #X floatatom 1049 207 5 0 0 0 - - -, f 5;
 #X obj 1044 139 hsl 260 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 13883 1;
+-1 -1 12950 1;
 #X obj 1044 184 >= 0;
 #X floatatom 1056 294 5 0 0 0 Direction - -, f 5;
 #X obj 1150 302 int;
@@ -99,7 +99,7 @@
 #X obj 1147 583 + 128;
 #X obj 361 525 + 128;
 #X obj 59 370 tgl 200 0 empty empty Kicker! 17 7 0 10 -262144 -1 -1
-1 1;
+0 1;
 #X obj 975 665 cyclone/speedlim 50;
 #X obj 832 665 cyclone/speedlim 50;
 #X obj 682 666 cyclone/speedlim 50;
@@ -109,11 +109,11 @@
 -1 -1;
 #X obj 389 677 bng 150 250 50 0 empty empty Disconnect 17 7 0 10 -262144
 -1 -1;
-#X obj 244 25 r left_speed;
+#X obj 136 21 r left_speed;
 #X obj 1041 109 r right_speed;
 #X obj 59 343 r kick;
 #X floatatom 200 90 5 0 0 0 - - -, f 5;
-#N canvas 407 193 450 300 deadzone 1;
+#N canvas 583 236 450 300 deadzone 0;
 #X floatatom 54 154 5 0 0 0 - - -, f 5;
 #X floatatom 53 81 5 0 0 0 - - -, f 5;
 #X obj 27 26 inlet;

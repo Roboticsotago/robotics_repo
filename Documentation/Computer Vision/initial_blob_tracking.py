@@ -6,13 +6,19 @@ sys.path.append(os.environ['HOME'] + '/robotics_repo/Documentation/Computer Visi
 import cvutils
 import time
 import serial
+#sys.path.append(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots')
+import camera_calibration_state
+
 #ser = serial.Serial('/dev/serial/by-id/usb-www.freetronics.com_Eleven_64935343233351909241-if00')
 
 camera = SimpleCV.Camera(0, {"width":320,"height":240})
 os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
 
-lab_grey_sample = cvutils.calibrate_white_balance(camera)
-lab_goal_blue = cvutils.calibrate_colour_match(camera, lab_grey_sample)
+#lab_grey_sample = cvutils.calibrate_white_balance(camera)
+#lab_goal_blue = cvutils.calibrate_colour_match(camera, lab_grey_sample)
+lab_grey_sample = camera_calibration_state.col_grey()
+lab_goal_blue = camera_calibration_state.col_blue()
+#print lab_grey_sample
 
 speed = 0
 #global current_angle
@@ -24,7 +30,7 @@ derivative = 0
 hunt_dir = 1 
 hunt_step = 15
 #blobs_threshold = 0.0075
-blobs_threshold = 0.0005
+blobs_threshold = 0.00005
 times = []
 output = False
 	
@@ -36,8 +42,9 @@ def average(numbers):
 	x = float(x) / len(numbers)
 	return x
 
-def x_coordinate_to_angle(coord):
-	return coord*35.543
+def x_coordinate_to_angle(coord): 
+	#return coord*35.543 #calibrated for LogiTech Camera.
+	return coord*33.0 #calibrated for RPi Camera. 
 
 def plant(control): #control input from -1...1 so -90...90 deg / sec
 	current_angle += speed
@@ -116,9 +123,10 @@ while True:
 	if blobs is not None:
 		blob_size = blobs[-1].area()
 		image_size = image.area()
-		#sys.stderr.write blob_size / image_size
+		sys.stderr.write ("Blob size / image size: " + str(blob_size / image_size) + "\n")
 		if blob_size / image_size < blobs_threshold:
-			sys.stderr.write("Blobs too small!")
+			sys.stderr.write("Blobs too small! \n")
+			send2pd(-180) #404 not found
 			#seek()
 		else:
 			(x,y) = blobs[-1].centroid()
@@ -132,8 +140,9 @@ while True:
 			#servo(converted_coord*0.3)
 			send2pd(converted_coord)
 	else:
-		sys.stderr.write("No blobs found!")
+		sys.stderr.write("No blobs found! \n")
 		#seek()
+		send2pd(-180)
 	end_time = time.clock()
 	elapsed_time = end_time - start_time
 	times.append(elapsed_time)
