@@ -29,7 +29,7 @@ Issues:
 		7.2 V / (12 V) * 12000/min / 50 * (58 mm / 2 * tau)
 		0.43730969737969921873 m s^-1 (velocity)
 		
-		Motors are often specified in terms of no-load RPM per supply voltage, called "KV" (not "kV", note!).  In this case, the motor's KV would be 12000/min/(12 V) -> Hz/V = 50/3 (approx. 16.666666666666668)
+		Motors are often specified in terms of no-load RPM per supply voltage, called "KV" (not "kV", note!).  This assumes that the speed is essentially proportional to the voltage (which is usually close enough).  In this case, the motor's KV would be 12000/min/(12 V) -> Hz/V = 50/3 (approx. 16.666666666666668)
 		
 		You could rewrite the formula for better clarity by using named variables in Frink like so:
 		
