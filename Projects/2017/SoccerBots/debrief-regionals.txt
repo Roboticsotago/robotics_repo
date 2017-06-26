@@ -1,0 +1,67 @@
+Congratulations on a huge effort getting the hardware and software to an operational state before the Otago regional Robocup competition!  Placing third with a brand-new scratch-build robot is no small feat. :)
+
+Issues:
+	Boris, our GoalieBot:
+		It shouldn't take much to get this robot operational.  The biggest part will likely be the programming.
+		
+		We have time to refine the chassis design and print a new one for Boris that will allow it to have a kicker too.
+		
+	Reliability of the Arduino Mega sensor board:
+		The USB serial connection seems to drop out once every few minutes on average while the motors are running.  When stationary, it doesn't seem to happen, which suggests an electrical problem.  It could be the supply voltage dropping due to the motors drawing lots of current, or it could be electromagnetic interference due to sparking and back-EMF in the motors.  It could also be the cabling/connectors.  Testing using the oscilloscope should be helpful in figuring it out.
+		
+		It will be interesting to see if the goalie robot has the same problem.  It has a standard Mega 2560, whereas Shutter (which has the disconnection problem) is using a Chinese board with a CH340 chip.
+		
+		If we can get the `cu` pipeline to restart when it fails, that would also help with reliability.  Or, we could write a Python or Tcl script to perform the same task (including reconnecting on disconnection).
+	
+	USB cables:
+		We might be able to find/buy/adapt some more compact USB cables.  Here's one possibility:
+		https://www.pbtech.co.nz/product/CABSTT690372/StarTech-USB-A-to-B-Right-Angle-USB-Cable---3ft
+
+	Motor gear ratios:
+		Currently (25:1 ratio) the motors can spin faster than we generally need, and they sometimes don't provide enough torque where the rubber meets the road.  The next ratio up on the Tamiya gearboxes is 80:1, which is a bit of a jump, and requires an extra gear module to be inserted, which might make the robot too wide.  Hmm...
+		
+		We could try the Jaycar gearhead motors.  These are quite compact, and are rated for a 12 V supply, so performance will be reduced from the specifications if running off a 7.2 V battery pack.
+			https://www.jaycar.co.nz/12v-dc-reversible-gearhead-motors-55rpm/p/YG2738
+			https://www.jaycar.co.nz/12v-dc-reversible-gearhead-motors-70rpm/p/YG2732
+		
+		Approximate speed calculation for a 7.2 V power supply, a 12 V 12k RPM motor, a 50:1 gear ratio, and a 58 mm diameter driving wheel:
+		
+		7.2 V / (12 V) * 12000/min / 50 * (58 mm / 2 * tau)
+		0.43730969737969921873 m s^-1 (velocity)
+
+	Placement of PCBs:
+		We might be able to improve this for a more compact layout, with better protection and cable routing.
+		
+	Colour sensors:
+		It would be good to have at least one of these underneath each robot to help locate it on the field.  This would probably feed in through the Mega, which could be responsible for classifying the colour and reporting via FUDI.
+	
+	Range sensors:
+		We could possibly add more of these, though one (front for attack, rear for goalie) might be enough.
+
+	Magnetometer:
+		This seems to be working very well, but we might have a chance to improve the modest error at certain angles.
+	
+	Calibration:
+		We can look into storing calibration data for the magnetometer and vision system, so that minimal calibration is needed before each match.  For the Arduino sensors, we can look at using the onboard EEPROM that the AVR chips have, which provides non-volatile storage for modest amounts of data (Arduino-based 3D printers often use the EEPROM for settings like the printer dimensions).
+		
+	Motor positioning feedback:
+		Might not be necessary, since we have several sensors that determine orientation.
+		
+	Combining probabilities (Naive Bayes technique):
+		This could be a useful technique for combining "evidence" about reality from the robot's sensors.  See robotics_repo/Documentation/Bayes.txt
+	
+	Decorative brain cap:
+		This would be a nice cosmetic addition. :)  Perhaps Thingiverse has a model we could use as a basis.
+
+
+Upcoming learning opportunities:
+
+	2D/3D constraint-based CAD using Solvespace
+	
+	Oscilloscope-based troubleshooting
+	
+	Using the Arduino/AVR EEPROM
+	
+	Geared motor physics and engineering: torque, speed, and power; trade-offs
+	
+	Reliability techniques: watchdog timers, monit, exceptions, etc.
