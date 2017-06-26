@@ -24,9 +24,21 @@ Issues:
 			https://www.jaycar.co.nz/12v-dc-reversible-gearhead-motors-55rpm/p/YG2738
 			https://www.jaycar.co.nz/12v-dc-reversible-gearhead-motors-70rpm/p/YG2732
 		
-		Approximate speed calculation for a 7.2 V power supply, a 12 V 12k RPM motor, a 50:1 gear ratio, and a 58 mm diameter driving wheel:
+		Approximate speed calculation for a 7.2 V power supply, a 12 V 12k RPM motor, a 50:1 gear ratio, and a 58 mm diameter driving wheel (Frink syntax):
 		
 		7.2 V / (12 V) * 12000/min / 50 * (58 mm / 2 * tau)
+		0.43730969737969921873 m s^-1 (velocity)
+		
+		Motors are often specified in terms of no-load RPM per supply voltage, called "KV" (not "kV", note!).  In this case, the motor's KV would be 12000/min/(12 V) -> Hz/V = 50/3 (approx. 16.666666666666668)
+		
+		You could rewrite the formula for better clarity by using named variables in Frink like so:
+		
+		KV = 12000/min/(12 V)
+		Vsupply = 7.2 V
+		gear_ratio = 1/50
+		wheel_diameter = 58 mm
+		
+		Vsupply * KV * gear_ratio * (wheel_diameter / 2 * tau)
 		0.43730969737969921873 m s^-1 (velocity)
 
 	Placement of PCBs:
