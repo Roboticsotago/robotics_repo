@@ -10,6 +10,7 @@ float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000
 const int CALIBRATION_MODE_SWITCH_PIN = 2;
 
+const int buzzer = 10;
 int ball_detected = 0;
 float ball_angle = 0;
 float ball_distance = 0;
@@ -40,7 +41,15 @@ void setup() {
 		pinMode(analog_sensor_pins[n], INPUT);
 	}
 	pinMode(CALIBRATION_MODE_SWITCH_PIN, INPUT_PULLUP);
+	pinMode(buzzer,OUTPUT);
 	Serial.begin(115200);
+	while(digitalRead(CALIBRATION_MODE_SWITCH_PIN)){ 
+	tone(buzzer, 3600);
+	delay(100);
+        noTone(buzzer);
+        delay(200);
+	}
+        noTone(buzzer);
 	magnetometerSetup();
 	ultrasonic_setup();
 }
