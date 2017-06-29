@@ -29,9 +29,14 @@ reading of 1292 corresponds to 1292 / 6842 = 0.1888 gauss.
 char report[80];
 int cal_x, cal_y;
 float target_heading;
+float getCompassHeading();
 
 LIS3MDL mag;
 LIS3MDL::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32768, -32768, -32768};
+
+float saveHeading() { // stores the compass angle that is the desired direction
+	target_heading = getCompassHeading();
+}
 
 void magnetometer_reset() { // reset the running max and min values for each axis to allow a complete calibration
 	running_min.x =  32767;
@@ -68,6 +73,7 @@ void calibrateSensor() { // calibrate the magnetometer, the magnetometer must be
 	// calculate new origin
 	cal_x = (running_max.x + running_min.x) / 2; // if latency rethink placement of these
 	cal_y = (running_max.y + running_min.y) / 2;
+	saveHeading();
 	DEBUG("ending magnetometer calibration");
 }
 
@@ -95,10 +101,6 @@ float getCompassHeading() { // returns the compass heading from magnetometer, ra
 	} else {
 		return heading;
 	}
-}
-
-float saveHeading() { // stores the compass angle that is the desired direction
-	target_heading = getCompassHeading();
 }
 
 float getRelativeAngle(float actual_heading) { // returns the angle that the robot is off the target heading, range [-180, 180]

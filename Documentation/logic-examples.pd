@@ -1,0 +1,135 @@
+#N canvas 3 49 1194 1520 10;
+#X obj 287 191 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 4000 1;
+#X floatatom 287 249 5 0 0 0 - - -, f 5;
+#X obj 367 191 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 3700 1;
+#X floatatom 367 249 5 0 0 0 - - -, f 5;
+#N canvas 3 49 1194 1520 * 0;
+#X obj 31 24 inlet;
+#X obj 123 33 inlet;
+#X obj 123 55 t b f;
+#X obj 67 103 *;
+#X obj 67 125 outlet;
+#X connect 0 0 3 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 2 1 3 1;
+#X connect 3 0 4 0;
+#X restore 319 309 pd *;
+#X floatatom 319 331 5 0 0 0 - - -, f 5;
+#X obj 457 191 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X floatatom 457 249 5 0 0 0 - - -, f 5;
+#X obj 537 191 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X floatatom 537 249 5 0 0 0 - - -, f 5;
+#X floatatom 489 331 5 0 0 0 - - -, f 5;
+#X obj 317 351 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 3020 1;
+#X obj 487 351 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#N canvas 3 49 1194 1520 + 0;
+#X obj 31 24 inlet;
+#X obj 123 33 inlet;
+#X obj 123 55 t b f;
+#X obj 67 125 outlet;
+#X obj 67 103 +;
+#X connect 0 0 4 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 2 1 4 1;
+#X connect 4 0 3 0;
+#X restore 489 309 pd +;
+#X obj 737 191 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X floatatom 737 249 5 0 0 0 - - -, f 5;
+#X obj 737 268 expr 1-$f1;
+#X floatatom 737 290 5 0 0 0 - - -, f 5;
+#X text 730 146 Invert (y=1-x), f 11;
+#X obj 847 191 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 4900 1;
+#X floatatom 847 249 5 0 0 0 - - -, f 5;
+#X floatatom 847 290 5 0 0 0 - - -, f 5;
+#X obj 847 268 * -1;
+#X text 855 149 Invert (y=-x, f 8;
+#X text 981 152 Reciprocal (y=1/x), f 14;
+#X obj 987 191 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 900 1;
+#X floatatom 987 249 5 0 0 0 - - -, f 5;
+#X floatatom 987 290 5 0 0 0 - - -, f 5;
+#X obj 987 268 expr 1/$f1;
+#X text 275 153 AND (*);
+#X text 448 147 OR (+);
+#X floatatom 280 510 5 0 0 0 - - -, f 5;
+#X obj 280 529 / 100;
+#X obj 280 551 clip 0 1;
+#X floatatom 280 573 5 0 0 0 - - -, f 5;
+#X obj 527 498 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 2100 1;
+#X floatatom 527 556 5 0 0 0 - - -, f 5;
+#X obj 527 575 > 0.5;
+#X obj 527 597 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 725 494 vsl 15 50 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 4900 1;
+#X floatatom 725 552 5 0 0 0 - - -, f 5;
+#X obj 755 705 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 760 601 moses 0.8;
+#X obj 690 601 moses 0.2;
+#X msg 820 623 1;
+#X msg 690 623 0;
+#X text 529 458 Threshold:;
+#X text 713 456 Hysteresis (separate high/low thresholds):;
+#X text 269 811 Suppressing redundant messages:;
+#X obj 276 892 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X msg 291 865 1;
+#X msg 276 841 0;
+#X obj 276 912 change;
+#X obj 276 934 print;
+#X text 267 460 It's not a bad idea to place a limit on inputs and
+outputs:, f 30;
+#X obj 682 890 speedlim;
+#X text 670 809 Limiting the message rate:;
+#X text 253 75 Some idioms in Pd for doing logic on analog values:
+;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 1;
+#X connect 4 0 5 0;
+#X connect 5 0 11 0;
+#X connect 6 0 7 0;
+#X connect 7 0 13 0;
+#X connect 8 0 9 0;
+#X connect 9 0 13 1;
+#X connect 10 0 12 0;
+#X connect 13 0 10 0;
+#X connect 14 0 15 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 19 0 20 0;
+#X connect 20 0 22 0;
+#X connect 22 0 21 0;
+#X connect 25 0 26 0;
+#X connect 26 0 28 0;
+#X connect 28 0 27 0;
+#X connect 31 0 32 0;
+#X connect 32 0 33 0;
+#X connect 33 0 34 0;
+#X connect 35 0 36 0;
+#X connect 36 0 37 0;
+#X connect 37 0 38 0;
+#X connect 39 0 40 0;
+#X connect 40 0 43 0;
+#X connect 40 0 42 0;
+#X connect 42 1 44 0;
+#X connect 43 0 45 0;
+#X connect 44 0 41 0;
+#X connect 45 0 41 0;
+#X connect 49 0 52 0;
+#X connect 50 0 49 0;
+#X connect 51 0 49 0;
+#X connect 52 0 53 0;

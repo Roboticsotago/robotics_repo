@@ -1,14 +1,14 @@
-#N canvas 3 49 1194 1520 10;
+#N canvas 2 95 1194 1020 10;
 #X text 151 34 Workings for a mapping between X \, Y control input
 and differential-drive motor control (for robot \, tank \, etc.);
 #X obj 292 510 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 9900 1;
+-1 -1 0 1;
 #X obj 368 507 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 4750 1;
+-1 -1 0 1;
 #X obj 344 102 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 8200 1;
+-1 -1 0 1;
 #X obj 304 236 hsl 100 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 8400 1;
+-1 -1 0 1;
 #X obj 292 460 +;
 #X obj 368 460 +;
 #X floatatom 344 210 5 0 0 0 - - -, f 5;
