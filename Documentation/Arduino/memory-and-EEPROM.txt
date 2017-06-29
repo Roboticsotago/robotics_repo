@@ -41,7 +41,7 @@ Flash program memory:
 EEPROM:
 	This stands for Electrically Eraseable Programmable Read-Only Memory.  This memory provides a non-volatile storage that your programs can use.  It is a little like a computer's hard drive, only very basic: instead of files and folders, you are limited to reading and writing one byte at a time.  EEPROM cells have a limited lifespan: around 100,000 write cycles before they wear out.
 	
-	The Atmega chips used on Arduinos provide between 1024 and 4096 bytes of EEPROM storage.
+	The Atmega chips used on Arduino boards provide between 1024 and 4096 bytes of EEPROM storage.
 
 The AVR architecture uses the Harvard memory model (named after the US university), which has separate memory and access buses for data and program code.  This is in contrast to he Von Neumann architecture, which has a combined memory for data and code with one memory access bus.
 
@@ -72,21 +72,56 @@ Using the EEPROM
 
 Since the EEPROM capacity varies from chip to chip, it is useful to be able to find out how much is there (especially if you want to use a lot of it).  The EEPROM.length() function returns the number of bytes in the EEPROM.
 
-	Hmm, EEPROM.length() doesn't seem to be available in the Arduino version I'm testing on...  Apparently this got dropped when the EEPROM library was updated, and was later re-introduced.
+	Hmm, only EEPROM.length() doesn't seem to be available in the Arduino version I'm testing on...  Apparently this got dropped when the EEPROM library was updated, and was later re-introduced.
 
 
-low-level functions 
-clear()
-EEPROM.write(int address, byte value)
-byte EEPROM.read(int address)
+The Arduino API provides these low-level functions for reading/writing EEPROM data one byte at a time.  Addresses are byte-level.
 
-Higher-level functions:
-put()
-EEPROM.update(<address>, <value>)
-get()
-
-You can check the EEPROM contents for data corruption using the CRC function.  This won't let you recover or correct the data corruption - only detect it.
+	void EEPROM.write(int address, byte value)
+	byte EEPROM.read(int address)
 
 
-https://www.arduino.cc/en/Tutorial/EEPROMUpdate
-https://www.arduino.cc/en/Reference/EEPROMUpdate
+It also provides these higher-level functions, that allow you to read/write larger/more complex data:
+
+	EEPROM.put(address, value)
+	EEPROM.get(address, value)
+
+However, not all Arduino versions seem to support this.  If reading/writing int values (signed or unsigned - but watch for overflow!), you could use the following:
+
+--
+void EEPROM_write_int(int address, int value) {
+	EEPROM.write(address, highByte(value));
+	EEPROM.write(address + sizeof(byte), lowByte(value));
+}
+
+int EEPROM_read_int(int address) {
+	byte highByte = 0;
+	byte lowByte = 0;
+	highByte = EEPROM.read(address);
+	lowByte = EEPROM.read(address + sizeof(byte));
+	return word(highByte, lowByte);
+}
+
+// You could combine the reading and writing into a one-liner:
+int EEPROM_read_int(int address) {
+	return word(EEPROM.read(address), EEPROM.read(address + sizeof(byte)));
+}
+--
+
+Since int values occupy two bytes, you will need to leave room in your addressing scheme for both.  There is nothing stopping you from overwriting part of an int in EEPROM, so be careful!
+
+Since EEPROM supports only a limited number of write cycles, there is also the update() function which only writes if the data would be changing:
+
+EEPROM.update(int address, ?? value)
+
+	This also is absent from the Arduino version I'm testing with!
+
+You can check the EEPROM contents for data corruption using the CRC function.  This won't let you recover or correct the data corruption - only detect it.  There is example code here:
+
+https://www.arduino.cc/en/Tutorial/EEPROMCrc
+
+
+Further reading/reference:
+
+https://www.arduino.cc/en/Tutorial/EEPROM
+https://www.arduino.cc/en/Reference/EEPROM
