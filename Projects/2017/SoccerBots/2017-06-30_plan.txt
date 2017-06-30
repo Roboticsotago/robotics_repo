@@ -19,11 +19,13 @@ Lesson plan for Friday 2017-06-30
 [ ] Sketch revisions to chassis model for new version to be printed
 	Main chassis:
 		Enlarge recess for battery connector, not just cable
-		Add hole for new "magnetometer set" button
 		Possibly enlarge the whole platform to make room for an additional planetary gear module (4 x 4 x 5 = 80:1 ratio)
 			Will need mounting holes to be moved too (perhaps just add a new pair so we can vary)
+		Add hole for new "magnetometer set" button
 		Add mounting holes for the larger kicker servo mount
 		Add mounting holes for the IR platform pillars
+		Add mounting holes for power distribution board
+		Maybe return to original battery mounting scheme (could lower DSpace board slightly, and would give better strength to main chassis)
 	Kicker mount:
 		Add recess for battery connector to pass through
 	IR platform:
