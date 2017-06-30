@@ -14,8 +14,8 @@ const int buzzer = 10;
 int ball_detected = 0;
 float ball_angle = 0;
 float ball_distance = 0;
-float front_range = 0;
-float back_range = 0;
+int front_range = 0;
+int back_range = 0; // so far unused
 float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
@@ -67,13 +67,12 @@ void loop() {
 	//printIRsensors();
 	get_ball_angle();
 	get_calibration_mode_switch();
-	//compass_heading = getRelativeAngle(getCompassHeading()); 
 	angle_to_goal = getAngleToTarget();
 	front_range = getUSDistance();
 	//TODO: get_compass etc.
 	send_output();
 #ifdef DEBUGGING 
-	delay(2000);
+	delay(20);
 #else 
 	delay(20);
 #endif
@@ -176,7 +175,7 @@ float get_ball_angle() {
 	// You can use the degrees() function to convert for output/debugging.
 	ball_angle = degrees(atan2(x_average, y_average));
     DEBUG_NOEOL("Angle to ball: ");
-    DEBUG_NOEOL(degrees(ball_angle));
+    DEBUG_NOEOL(ball_angle);
 	
 	// Calculate approximate distance:
 	// First, determine the length of the vector (use the Pythagorean theorem):
