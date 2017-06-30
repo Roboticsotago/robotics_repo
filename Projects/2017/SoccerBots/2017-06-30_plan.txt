@@ -12,6 +12,8 @@ Lesson plan for Friday 2017-06-30
 	Should honour signals and respond to Ctrl-C
 	Should attempt to reconnect on failure!
 	
+[ ] Measure L298 heat sink temperature after heavy motor use
+
 [ ] Examine Arduino EEPROM use
 	[ ] and modify magnetometer code to use it
 [ ] Look at general accuracy of the magnetometerand see if we can improve it
