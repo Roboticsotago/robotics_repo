@@ -7,6 +7,10 @@ Lesson plan for Friday 2017-06-30
 	Serial port naming issues due to different Arduino Mega board
 		Now have separate motor-control-boris.pd
 	Calibration mode switch was connected to the wrong pin on the Mega
+
+[ ] Write Tcl replacement for cu
+	Should honour signals and respond to Ctrl-C
+	Should attempt to reconnect on failure!
 	
 [ ] Examine Arduino EEPROM use
 	[ ] and modify magnetometer code to use it
