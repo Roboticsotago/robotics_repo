@@ -1,0 +1,28 @@
+Lesson plan for Friday 2017-06-30
+
+[ ] Update on changes to Boris the Goalie to make it work (Sebastian and Chris):
+	Serial port naming issues due to different Arduino Mega board
+		Now have separate motor-control-boris.pd
+	Calibration mode switch was connected to the wrong pin on the Mega
+	
+[ ] Examine Arduino EEPROM use, modify magnetometer code to use it
+[ ] Look at magnetometer inaccuracy and see if we can improve
+[ ] Rethink mounting of main circuit boards. DSpace board is probably fine, but the Pi and Mega could perhaps be improved, ditto the 5 V regulator board.
+[ ] Sketch revisions to chassis model for new version to be printed
+	Main chassis:
+		Enlarge recess for battery connector, not just cable
+		Add hole for new "magnetometer set" button
+		Add holes
+		Possibly enlarge the whole platform to make room for an additional planetary gear module (4 x 4 x 5 = 80:1 ratio)
+			Will need mounting holes to be moved too (perhaps just add a new pair so we can vary)
+		Add mounting holes for the larger kicker servo mount
+		Add mounting holes for the IR platform pillars
+	Kicker mount:
+		Add recess for battery connector to pass through
+[ ] Experiment with rudimentary goalie behaviour
+[ ] Test larger servo for kicker? Or wait until the new goalie chassis is ready?
+
+Also:
+[ ] PBTech have a sale starting this weekend. Perhaps we can pick up four of those right-angle USB cables.
+[ ] Also order some colour sensors from Adafruit?  Any other sensors while we're there?
+
