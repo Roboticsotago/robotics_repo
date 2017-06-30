@@ -1,4 +1,5 @@
 #!/bin/sh
+# NOTE: this should no longer be needed!  See read_sensors.tcl instead.
 # Runs the cu pipeline to stream the Mega's sensor readings to the Pd control program for the SoccerBots.
 # NOTE: will have to change the USB device name for the goalie!
 #DEVICE=/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0

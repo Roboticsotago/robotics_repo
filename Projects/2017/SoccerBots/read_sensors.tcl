@@ -7,7 +7,7 @@
 
 
 # Tcl version on the SoccerBot Pi systems is 8.6
-
+# TODO: have SERIAL_DEVICE determined by hostname. The following is for Boris the goalie:
 set SERIAL_DEVICE /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_852313632363516031B2-if00
 
 # Open the channel and store the channel identifier ("handle") for future reference:
