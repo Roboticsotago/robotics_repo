@@ -1,5 +1,7 @@
 Lesson plan for Friday 2017-06-30
 
+[ ] Unwrap A-B PLC goodies!
+
 [ ] Update on changes to Boris the Goalie to make it work (Sebastian and Chris):
 	Replaced USB cable
 	Serial port naming issues due to different Arduino Mega board
