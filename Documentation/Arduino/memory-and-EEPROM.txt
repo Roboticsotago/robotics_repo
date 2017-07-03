@@ -42,6 +42,8 @@ EEPROM:
 	This stands for Electrically Eraseable Programmable Read-Only Memory.  This memory provides a non-volatile storage that your programs can use.  It is a little like a computer's hard drive, only very basic: instead of files and folders, you are limited to reading and writing one byte at a time.  EEPROM cells have a limited lifespan: around 100,000 write cycles before they wear out.
 	
 	The Atmega chips used on Arduino boards provide between 1024 and 4096 bytes of EEPROM storage.
+	
+	Arduino-based 3D printers typically use the EEPROM to store machine-specific settings such as the X, Y and Z dimensions, axis homing directions, acceleration settings, etc.  A climate-control microcontroller might use the EEPROM for storing set-points for temperature and humidity, or information about what times of the day to run the climate control system.
 
 The AVR architecture uses the Harvard memory model (named after the US university), which has separate memory and access buses for data and program code.  This is in contrast to he Von Neumann architecture, which has a combined memory for data and code with one memory access bus.
 
@@ -75,7 +77,7 @@ Since the EEPROM capacity varies from chip to chip, it is useful to be able to f
 	Hmm, only EEPROM.length() doesn't seem to be available in the Arduino version I'm testing on...  Apparently this got dropped when the EEPROM library was updated, and was later re-introduced.
 
 
-The Arduino API provides these low-level functions for reading/writing EEPROM data one byte at a time.  Addresses are byte-level.
+The Arduino API provides these low-level functions for reading/writing EEPROM data one byte at a time.  The address values are byte-level.
 
 	void EEPROM.write(int address, byte value)
 	byte EEPROM.read(int address)
@@ -108,9 +110,9 @@ int EEPROM_read_int(int address) {
 }
 --
 
-Since int values occupy two bytes, you will need to leave room in your addressing scheme for both.  There is nothing stopping you from overwriting part of an int in EEPROM, so be careful!
+Values of type int occupy two bytes, so you will need to leave room in your addressing scheme for both bytes.  There is nothing stopping you from overwriting part of an int in EEPROM, so be careful!  You should sketch out your EEPROM addressing scheme before implementing and using it, and document it in your program.
 
-Since EEPROM supports only a limited number of write cycles, there is also the update() function which only writes if the data would be changing:
+Since EEPROM supports only a limited number of write cycles, you should try to avoid unnecessary writes.  To help you with this, the Arduino API provides the update() function, which only writes if the data would be changing (it does a read first to see if the write is necessary):
 
 EEPROM.update(int address, ?? value)
 
