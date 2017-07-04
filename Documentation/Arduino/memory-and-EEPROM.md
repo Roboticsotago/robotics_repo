@@ -127,10 +127,8 @@ void EEPROM_write_int(int address, int value) {
 }
 
 int EEPROM_read_int(int address) {
-	byte highByte = 0;
-	byte lowByte = 0;
-	highByte = EEPROM.read(address);
-	lowByte = EEPROM.read(address + sizeof(byte));
+	byte highByte = EEPROM.read(address);
+	byte  lowByte = EEPROM.read(address + sizeof(byte));
 	return word(highByte, lowByte);
 }
 
