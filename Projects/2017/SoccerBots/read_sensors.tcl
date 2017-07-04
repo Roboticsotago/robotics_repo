@@ -4,11 +4,13 @@
 
 # The general procedure is to open a channel, read from and/or write to it, then close when done.
 # You can configure an existing channel using the "chan configure" command.
-
-
 # Tcl version on the SoccerBot Pi systems is 8.6
-# TODO: have SERIAL_DEVICE determined by hostname. The following is for Boris the goalie:
-set SERIAL_DEVICE /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_852313632363516031B2-if00
+
+if {[info hostname] == "Boris"} {
+	set SERIAL_DEVICE /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_852313632363516031B2-if00
+} else {
+	set SERIAL_DEVICE /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0
+}
 
 # Open the channel and store the channel identifier ("handle") for future reference:
 set serial_channel [open $SERIAL_DEVICE RDONLY]
