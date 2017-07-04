@@ -132,7 +132,7 @@ int EEPROM_read_int(int address) {
 	return word(highByte, lowByte);
 }
 
-// You could combine the reading and writing into a one-liner:
+// You could combine the two reads and the return into a one-liner:
 int EEPROM_read_int(int address) {
 	return word(EEPROM.read(address), EEPROM.read(address + sizeof(byte)));
 }
