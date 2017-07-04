@@ -1,6 +1,6 @@
-#N canvas 2 99 1905 987 10;
+#N canvas 0 51 1265 718 10;
 #X obj 243 69 hsl 260 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 22015 1;
 #X obj 262 119 >= 0;
 #X floatatom 270 236 5 0 0 0 Direction - -, f 5;
 #X obj 364 244 int;
@@ -13,7 +13,7 @@
 #X obj 1322 791 % 2;
 #X floatatom 1322 813 5 0 0 0 - - -, f 5;
 #X obj 1342 870 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X floatatom 1263 839 5 0 0 0 - - -, f 5;
 #X obj 1284 871 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
 0 1;
@@ -26,15 +26,15 @@
 #X obj 1195 816 >= 4;
 #X floatatom 1129 840 5 0 0 0 - - -, f 5;
 #X obj 1150 872 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 1127 793 % 16;
 #X obj 1127 815 >= 8;
 #X floatatom 1061 837 5 0 0 0 - - -, f 5;
 #X obj 1086 874 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X floatatom 1002 839 5 0 0 0 - - -, f 5;
 #X obj 1023 871 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X floatatom 936 841 5 0 0 0 - - -, f 5;
 #X obj 957 873 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
@@ -62,7 +62,7 @@
 -1 -1;
 #X obj 345 29 r Stop;
 #X obj 1044 139 hsl 260 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 24605 1;
 #X obj 1044 184 >= 0;
 #X floatatom 1056 294 5 0 0 0 Direction - -, f 5;
 #X obj 1150 302 int;
@@ -151,10 +151,10 @@
 #X connect 4 0 0 0;
 #X connect 5 0 4 0;
 #X restore 1041 159 pd deadzone;
-#X obj 211 158 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 211 158 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 1044 218 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 213 865 r motor_device;
 #X msg 421 841 open, f 7;
 #X obj 651 910 comport 0 115200;
@@ -163,6 +163,8 @@ f 20;
 #X text 211 774 Input from bot-specific control patch (to set the motor
 control serial port):, f 17;
 #X obj 599 659 loadbang;
+#X obj 699 51 hsl 260 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
 #X connect 0 0 93 0;
 #X connect 0 0 94 0;
 #X connect 1 0 97 0;
@@ -269,3 +271,5 @@ control serial port):, f 17;
 #X connect 99 0 101 0;
 #X connect 100 0 101 0;
 #X connect 104 0 89 0;
+#X connect 105 0 51 0;
+#X connect 105 0 0 0;
