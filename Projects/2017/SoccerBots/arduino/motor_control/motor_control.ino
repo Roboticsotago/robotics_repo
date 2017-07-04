@@ -1,6 +1,7 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
 #define BAUD_RATE 115200 
+//#define SHUTTER 1
 
 //TODO: Do the duty cycles of the SoccerBot motors need adjusting? 
 #include <Servo.h> //incldued for kicker
@@ -10,8 +11,13 @@ const int KICKER_MIN = 100;
 const int KICKER_MAX = 60; //tested 
 const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
-const int MOTOR_L_DUTY=150; //to limit 8.0V to 4.5V
+#ifdef SHUTTER
+const int MOTOR_L_DUTY=120; //to limit 8.0V to 4.5V
 const int MOTOR_R_DUTY=150;
+#else
+const int MOTOR_L_DUTY=155; //to limit 8.0V to 4.5V
+const int MOTOR_R_DUTY=190;
+#endif
 const int DIR_MASK 			= 0b00100000;
 const int MOTOR_MASK 		= 0b01000000;
 const int SPEED_MASK	 	= 0b00011111;
@@ -55,6 +61,9 @@ int motors_enabled = 0;
 #endif
 
 
+
+
+       
 
 
 void setup() {
