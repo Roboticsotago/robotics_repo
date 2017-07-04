@@ -1,9 +1,10 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
 #define BAUD_RATE 115200 
-//#define SHUTTER 1
+#define SHUTTER 1
 
-//TODO: Do the duty cycles of the SoccerBot motors need adjusting? 
+//TODO: Do the duty cycles of the SoccerBot motors need adjusting?
+//TODO: Move the duty cycles into the eeprom
 #include <Servo.h> //incldued for kicker
 Servo Kicker;
 const int SERVO_PIN = 13; //Servo 2, Pin 2 SDK.
@@ -12,8 +13,8 @@ const int KICKER_MAX = 60; //tested
 const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
 #ifdef SHUTTER
-const int MOTOR_L_DUTY=120; //to limit 8.0V to 4.5V
-const int MOTOR_R_DUTY=150;
+const int MOTOR_L_DUTY=125; //to limit 8.0V to 4.5V
+const int MOTOR_R_DUTY=170;
 #else
 const int MOTOR_L_DUTY=155; //to limit 8.0V to 4.5V
 const int MOTOR_R_DUTY=190;
