@@ -8,8 +8,10 @@
 
 if {[info hostname] == "Boris"} {
 	set SERIAL_DEVICE /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_852313632363516031B2-if00
+	puts stderr goalie
 } else {
 	set SERIAL_DEVICE /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0
+	puts stderr attacker
 }
 
 # Open the channel and store the channel identifier ("handle") for future reference:
