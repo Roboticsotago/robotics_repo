@@ -15,13 +15,16 @@ if {[info hostname] == "Boris"} {
 }
 
 # Open the channel and store the channel identifier ("handle") for future reference:
+puts stderr "Opening serial device $SERIAL_DEVICE ..."
 set serial_channel [open $SERIAL_DEVICE RDONLY]
 
 # Configure the channel:
 chan configure $serial_channel -mode 115200,n,8,1 -translation crlf -buffering line -blocking 0
 
+puts stderr "Good to go!"
+
 # You can read a line of text on demand like so:
-gets $serial_channel
+#gets $serial_channel
 
 # A nicer way is to use Tcl's event loop, and set up an event handler that is called whenever the channel has something to read:
 
@@ -29,9 +32,17 @@ gets $serial_channel
 proc read_serial channel {
 	set line [gets $channel]
 	if {$line != ""} {
-		puts $line		
+		if {[catch {puts $line} err]} {
+			puts stderr "Error write writing output: $err"
+			# How to recover? Restart everything?
+			# For now, just exit.
+			puts stderr "Halting."
+			while {1} {}
+		}
+		puts -nonewline stderr .	;# Indicate activity
 	}
 	if {[eof $channel]} {
+		puts stderr "Channel closed!"
 		close $channel
 		set ::done true
 	}
