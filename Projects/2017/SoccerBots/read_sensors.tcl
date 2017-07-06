@@ -14,22 +14,12 @@ if {[info hostname] == "Boris"} {
 	puts stderr attacker
 }
 
-# Open the channel and store the channel identifier ("handle") for future reference:
-puts stderr "Opening serial device $SERIAL_DEVICE ..."
-set serial_channel [open $SERIAL_DEVICE RDONLY]
-
-# Configure the channel:
-chan configure $serial_channel -mode 115200,n,8,1 -translation crlf -buffering line -blocking 0
-
-puts stderr "Good to go!"
-
-# You can read a line of text on demand like so:
-#gets $serial_channel
 
 # A nicer way is to use Tcl's event loop, and set up an event handler that is called whenever the channel has something to read:
 
 # Callback function:
 proc read_serial channel {
+	global SERIAL_DEVICE
 	set line [gets $channel]
 	if {$line != ""} {
 		if {[catch {puts $line} err]} {
@@ -42,14 +32,39 @@ proc read_serial channel {
 		puts -nonewline stderr .	;# Indicate activity
 	}
 	if {[eof $channel]} {
-		puts stderr "Channel closed!"
+		puts stderr "Channel EOF! Will try to reconnect..."
 		close $channel
-		set ::done true
+		connect $SERIAL_DEVICE
 	}
 }
 
-# Set up the callback:
-chan event $serial_channel readable [list read_serial $serial_channel]
+
+proc connect {serial_device} {
+	# Open the channel and store the channel identifier ("handle") for future reference:
+	puts stderr "Opening serial device ${serial_device}..."
+	# Loop for reliability/reconnection capability:
+	while {1} {
+		catch {set ::serial_channel [open $serial_device RDONLY]} result options
+		if {[dict get $options -code] == 0} {
+			puts stderr "Opened OK."
+			break
+		}
+		puts stderr "$result"
+		puts stderr "Retrying in 1 s..."
+		after 1000
+	}
+
+	# Configure the channel:
+	chan configure $::serial_channel -mode 115200,n,8,1 -translation crlf -buffering line -blocking 0
+
+	# Set up the callback:
+	chan event $::serial_channel readable [list read_serial $::serial_channel]
+
+	puts stderr "Good to go!"
+}
+
+
+connect $SERIAL_DEVICE
 
 # Enter the event loop (exit when done)
-vwait ::done
+vwait forever
