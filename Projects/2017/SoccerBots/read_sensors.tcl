@@ -22,6 +22,7 @@ chan configure $serial_channel -mode 115200,n,8,1 -translation crlf -buffering l
 
 # You can read a line of text on demand like so:
 gets $serial_channel
+# TODO: remove that line!  Also, implement reconnection logic.
 
 # A nicer way is to use Tcl's event loop, and set up an event handler that is called whenever the channel has something to read:
 
