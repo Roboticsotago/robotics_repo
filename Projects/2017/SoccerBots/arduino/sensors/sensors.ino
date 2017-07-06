@@ -20,9 +20,9 @@ float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
 
-//#define DEBUGGING 1
+#define DEBUGGING 0
 
-#ifdef DEBUGGING 
+#if DEBUGGING == 1
 	#define DEBUG(x) Serial.println (x)
 	#define DEBUG_NOEOL(x) Serial.print (x)
 #else
