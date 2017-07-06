@@ -1,20 +1,20 @@
-#N canvas 85 155 1254 727 10;
+#N canvas 41 51 1236 726 10;
 #X floatatom 722 335 5 0 0 0 - - -, f 5;
 #X obj 721 372 change;
 #X obj 722 406 metro 100;
 #X obj 724 435 s kick;
 #X obj 311 11 r ball_angle;
 #X obj 313 120 hsl 128 15 -180 180 0 0 empty empty empty -2 -8 0 10
--262144 -1 -1 9525 1;
+-262144 -1 -1 0 1;
 #X obj 523 80 r ball_distance;
 #X obj 493 85 vsl 15 128 0 4 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 513 158 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 320 618 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 4950 1;
 #X obj 548 638 hsl 100 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 6930 1;
+-1 -1 0 1;
 #X obj 950 102 r ball_detected;
 #X floatatom 311 43 5 0 0 0 - - -, f 5;
 #X floatatom 464 32 5 0 0 0 - - -, f 5;
@@ -42,13 +42,13 @@
 #X floatatom 850 124 5 0 0 0 - - -, f 5;
 #N canvas 466 160 676 568 differential_drive 0;
 #X obj 217 287 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 6930 1;
+-1 -1 4950 1;
 #X obj 293 284 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 2970 1;
+-1 -1 4950 1;
 #X obj 279 -22 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 4950 1;
 #X obj 235 117 hsl 100 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 6930 1;
+-1 -1 0 1;
 #X obj 217 237 +;
 #X obj 293 237 +;
 #X floatatom 275 91 5 0 0 0 - - -, f 5;
@@ -146,17 +146,15 @@ required: distance \, ball angle \, compass heading, f 17;
 #X obj 1151 171 moses -180;
 #X floatatom 238 668 5 0 0 0 - - -, f 5;
 #X msg 418 503 -0.1;
-#X msg 784 618 devicename /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351A0D161-if00
-;
 #X obj 784 666 s motor_device;
 #X text 777 550 Tell motor-control what serial device to use:;
 #X obj 784 572 loadbang;
 #X obj 784 594 delay 50;
-#X text 1023 664 NOTE: this is actually the one for Boris the Goalie!
-, f 26;
 #X text 836 61 TODO: properly handle range=0 (inf/err):, f 22;
 #X obj 950 125 tgl 50 0 empty empty ball_detected 17 7 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
+#X msg 784 618 devicename /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351503221-if00
+;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
@@ -168,7 +166,7 @@ required: distance \, ball angle \, compass heading, f 17;
 #X connect 9 0 87 0;
 #X connect 10 0 36 0;
 #X connect 10 0 35 1;
-#X connect 11 0 96 0;
+#X connect 11 0 94 0;
 #X connect 12 0 5 0;
 #X connect 12 0 64 0;
 #X connect 14 0 8 0;
@@ -252,6 +250,6 @@ required: distance \, ball angle \, compass heading, f 17;
 #X connect 84 0 79 1;
 #X connect 85 0 83 0;
 #X connect 88 0 76 1;
-#X connect 89 0 90 0;
-#X connect 92 0 93 0;
-#X connect 93 0 89 0;
+#X connect 91 0 92 0;
+#X connect 92 0 95 0;
+#X connect 95 0 89 0;
