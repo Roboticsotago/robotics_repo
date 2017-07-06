@@ -44,6 +44,8 @@ Vision system:
 
 [Y] Add separate calibration program, and handle saving/loading calibration state
 
+[ ] Try to reduce latency with the Pi Camera and SimpleCV
+
 
 General:
 
