@@ -97,6 +97,7 @@ Since the EEPROM capacity varies from chip to chip, it is useful to be able to f
 
 (Hmm, only `EEPROM.length()` doesn't seem to be available in the Arduino version I'm testing on.  Apparently this got dropped when the EEPROM library was updated, and was later re-introduced.)
 
+You can also use the precompiler constant `E2END` to find out the last available address on the EEPROM for the selected chip.  This value is determined an compile-time rather than run-time, and relies on choosing the correct board type in the Arduino IDE.  The size of the EEPROM would be `E2END+1`.
 
 The Arduino API provides these low-level functions for reading/writing EEPROM data one byte at a time.  The address values are byte-level.
 
@@ -127,14 +128,12 @@ void EEPROM_write_int(int address, int value) {
 }
 
 int EEPROM_read_int(int address) {
-	byte highByte = 0;
-	byte lowByte = 0;
-	highByte = EEPROM.read(address);
-	lowByte = EEPROM.read(address + sizeof(byte));
+	byte highByte = EEPROM.read(address);
+	byte  lowByte = EEPROM.read(address + sizeof(byte));
 	return word(highByte, lowByte);
 }
 
-// You could combine the reading and writing into a one-liner:
+// You could combine the two reads and the return into a one-liner:
 int EEPROM_read_int(int address) {
 	return word(EEPROM.read(address), EEPROM.read(address + sizeof(byte)));
 }

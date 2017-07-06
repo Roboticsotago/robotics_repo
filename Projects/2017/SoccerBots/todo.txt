@@ -7,11 +7,33 @@ Software:
 [ ] Arrange for control program to launch when Raspberry Pi boots
 	Pd startup: pd -noaudio -nomidi patch-filename.pd
 
+[ ] EEPROM goodness (motor PWM limits, servo ranges, magnetometer calibration data, etc.)
+
+[ ] Add restart-on-error to read_sensors.tcl
+
+[ ] Edit /etc/hosts (or equivalent) on remote client computers to add:
+	192.168.43.253	shutter
+	192.168.43.237	boris
+[ ] ...and aliases:
+	alias shutter='ssh -Y pi@shutter'
+	alias boris='ssh -Y pi@boris'
+	alias attack='ssh -Y pi@shutter'
+	alias goalie='ssh -Y pi@boris'
+	
+
+[ ] Have runeverything.sh launch separate terminal windows for each task, e.g.
+	urxvt -name Blah -title Blah -e sh -c "mycmd | targetcmd" &
+	(might be different for LXTerminal...ah, but both bots already have urxvt as well)
+
+[Y] Fix slow report frequency on sensor board (it was due to the DFRobot board being in the wrong mode, and pulseIn() blocking for a long time when the ultrasound sensor got no reflection).
+[ ] sensors.ino: reinstate debugging delay (now that we've figured out why the sensor reporting frequency was so low)
+[ ] Get Pd patches to properly handle the 0 values reported by the ultrasonic sensor (these mean "out of range", not 0 cm distance)
+
 
 IR system:
 
-[ ] Implement trigonometry stuff for ball direction finding (use atan2() function)
-[ ] Calibrate IR ball distance sensing (want to determine approx. distance based on magnitude of the ball sense vector)
+[Y] Implement trigonometry stuff for ball direction finding (use atan2() function)
+[Y] Calibrate IR ball distance sensing (want to determine approx. distance based on magnitude of the ball sense vector)
 	Will probably need to talk about what a vector is and how you can use and combine them. :)
 
 	To pipe input from serial:
@@ -23,14 +45,20 @@ IR system:
 	Combining the two using a shell pipeline:
 	cu -l ttyUSB0 -s 115200 | pdsend 7000
 
-[ ] The RCJ IR beacon pattern varies the signal strength! Might be a good idea for our Arduino program to read frequently and calculate the mean signal strength every n samples.
+[N] The RCJ IR beacon pattern varies the signal strength! Might be a good idea for our Arduino program to read frequently and calculate the mean signal strength every n samples.
 	NOTE: average the raw co-ordinates, not the angle (the sign flip at 180 degrees will cause problems otherwise)
+	Probably not necessary now that we've added a hardware-based analog low-pass filter to each sensor. :)
+
 
 Vision system:
 
 [ ] refine debug function for debug levels
 
 [ ] fix white balance bug when click off image
+
+[Y] Add separate calibration program, and handle saving/loading calibration state
+
+[ ] Try to reduce latency with the Pi Camera and SimpleCV
 
 
 General:
@@ -55,6 +83,8 @@ Hardware:
 [, ] Main power switch (to save having to disconnect the battery when not in use!)
 
 [ ] A pushbutton switch to safely shut down the Pi (with accompanying software)
+
+[ ] A pushbutton switch to set the orientation to the target goal (once EEPROM saving of magnetometer calibration is done)
 
 [?] Add buzzer, and use it to warn of low voltage as reported by the DC-DC converter
 
