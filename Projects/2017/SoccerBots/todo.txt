@@ -11,6 +11,10 @@ Software:
 
 [ ] Add restart-on-error to read_sensors.tcl
 
+[ ] Have runeverything.sh launch separate terminal windows for each task, e.g.
+	urxvt -name Blah -title Blah -e sh -c "mycmd | targetcmd" &
+	(might be different for LXTerminal)
+
 [Y] Fix slow report frequency on sensor board (it was due to the DFRobot board being in the wrong mode, and pulseIn() blocking for a long time when the ultrasound sensor got no reflection).
 [ ] sensors.ino: reinstate debugging delay (now that we've figured out why the sensor reporting frequency was so low)
 [ ] Get Pd patches to properly handle the 0 values reported by the ultrasonic sensor (these mean "out of range", not 0 cm distance)
