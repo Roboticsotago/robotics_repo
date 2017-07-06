@@ -1,0 +1,20 @@
+EEPROM use for the SoccerBots
+
+We can probably use the Arduino EEPROM memory to store robot-specific settings independently of the Arduino code.  This way, we don't need special versions of the code for the goalie and attacker (requiring separate files or "#ifdef"s), and can use one program for both.
+
+Here are some possibilities:
+
+ - Magnetometer calibration settings ({X,Y,Z} x {min, max})
+ - Motor PWM limits (min as well as max?) for the left and right drivetrains.
+ - Servo midpoint, max, min for different kickers
+
+Before modifying the code, read the handout on Arduino memory types, and design a memory map for each Arduino type (DSpace motor controller, Mega-based sensor reader).  Remember that int values (signed or unsigned) will require two bytes.  A spreadsheet will help you avoid problems:
+
+ Address | Variable  | Length (bytes) 
+---------+-----------+----------------
+       0 | L_PWM_MIN | 1
+       1 | R_PWM_MAX | 1
+       2 | L_PWM_MIN | 1
+     ... |    ...    | ...
+       
+...where the address values are calculated using the address and length of the previous line.
