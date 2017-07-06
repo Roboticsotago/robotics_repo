@@ -3,6 +3,8 @@ Things to be done for the 2017 SoccerBots project
 Software:
 
 [ ] Define a DEBUG function or macro for Arduino programs
+[ ] Rewrite "#ifdef"s to use "#if" conditionals (where it makes sense)
+       e.g. "#if DEBUGGING==1" instead of "#ifdef DEBUGGING"
 [ ] Robot control behaviour (in Pd)
 [ ] Arrange for control program to launch when Raspberry Pi boots
 	Pd startup: pd -noaudio -nomidi patch-filename.pd
