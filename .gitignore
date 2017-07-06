@@ -16,3 +16,7 @@ Thumbs.db
 *.pyc
 *.o
 *.a
+
+# Temporary files:
+*.save
+
