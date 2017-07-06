@@ -11,9 +11,19 @@ Software:
 
 [ ] Add restart-on-error to read_sensors.tcl
 
+[ ] Edit /etc/hosts (or equivalent) on remote client computers to add:
+	192.168.43.253	shutter
+	192.168.43.237	boris
+[ ] ...and aliases:
+	alias shutter='ssh -Y pi@shutter'
+	alias boris='ssh -Y pi@boris'
+	alias attack='ssh -Y pi@shutter'
+	alias goalie='ssh -Y pi@boris'
+	
+
 [ ] Have runeverything.sh launch separate terminal windows for each task, e.g.
 	urxvt -name Blah -title Blah -e sh -c "mycmd | targetcmd" &
-	(might be different for LXTerminal)
+	(might be different for LXTerminal...ah, but both bots already have urxvt as well)
 
 [Y] Fix slow report frequency on sensor board (it was due to the DFRobot board being in the wrong mode, and pulseIn() blocking for a long time when the ultrasound sensor got no reflection).
 [ ] sensors.ino: reinstate debugging delay (now that we've figured out why the sensor reporting frequency was so low)
