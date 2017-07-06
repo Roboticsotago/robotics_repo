@@ -62,6 +62,13 @@ signal trap {SIGINT SIGUSR1 SIGUSR2} {handle_signal %S}
 kill SIGUSR2 [pid]
 
 
+# You can even ignore certain signals (within limits: SIGKILL and SIGSTOP cannot be ignored)
+
+signal ignore SIGINT
+# Ctrl-C now does nothing!
+
+# --
+
 # The shell command `pidof` can tell you the PID of a given process name (not necessarily unique).
 # kill -s STOP `pidof firefox`
 
