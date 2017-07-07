@@ -21,18 +21,20 @@ if {[info hostname] == "Boris"} {
 proc read_serial channel {
 	global SERIAL_DEVICE
 	set line [gets $channel]
+	# We sometimes get blank lines..just ignore those.
 	if {$line != ""} {
+		# Copy the line we read to standard output.
+		# If the Pd patch is closed, we might bet a write error on the pipe.
 		if {[catch {puts $line} err]} {
 			puts stderr "Error write writing output: $err"
-			# How to recover? Restart everything?
-			# For now, just exit.
+			# TODO: How to recover? Restart everything?
 			puts stderr "Halting."
-			while {1} {}
+			while {1} {}	;# Just spin, so that the window stays open
 		}
 		puts -nonewline stderr .	;# Indicate activity
 	}
 	if {[eof $channel]} {
-		puts stderr "Channel EOF! Will try to reconnect..."
+		puts stderr "Channel end-of-file! Will try to reconnect..."
 		close $channel
 		connect $SERIAL_DEVICE
 	}
@@ -43,16 +45,11 @@ proc connect {serial_device} {
 	# Open the channel and store the channel identifier ("handle") for future reference:
 	puts stderr "Opening serial device ${serial_device}..."
 	# Loop for reliability/reconnection capability:
-	while {1} {
-		catch {set ::serial_channel [open $serial_device RDONLY]} result options
-		if {[dict get $options -code] == 0} {
-			puts stderr "Opened OK."
-			break
-		}
-		puts stderr "$result"
-		puts stderr "Retrying in 1 s..."
+	while {[catch {set ::serial_channel [open $serial_device RDONLY]}]} {
+		puts stderr "Couldn't open ${serial_device}. Retrying in 1 s..."
 		after 1000
 	}
+	puts stderr "${serial_device} opened OK."
 
 	# Configure the channel:
 	chan configure $::serial_channel -mode 115200,n,8,1 -translation crlf -buffering line -blocking 0
@@ -60,11 +57,11 @@ proc connect {serial_device} {
 	# Set up the callback:
 	chan event $::serial_channel readable [list read_serial $::serial_channel]
 
-	puts stderr "Good to go!"
+	puts stderr "Ready to roll..."
 }
 
 
 connect $SERIAL_DEVICE
 
-# Enter the event loop (exit when done)
+# Enter the event loop
 vwait forever
