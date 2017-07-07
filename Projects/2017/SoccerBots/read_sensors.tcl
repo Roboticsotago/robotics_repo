@@ -16,27 +16,41 @@ if {[info hostname] == "Boris"} {
 	set SERIAL_DEVICE /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0
 }
 
-# Open the channel and store the channel identifier ("handle") for future reference:
-set serial_channel [open $SERIAL_DEVICE RDONLY]
-
-# Configure the channel:
-chan configure $serial_channel -mode 115200,n,8,1 -translation crlf -buffering line -blocking 0
-
+# Define a start procedure to connect to the serial device
+proc connect {serial_device} {
+	puts stderr "connectig to $serial_device"
+	
+	# Open the channel and store the channel identifier ("handle") for future reference:
+	while {[catch {set serial_channel [open $serial_device RDONLY]}]} {
+		puts stderr "Couldn't open $serial_device, retrying in 1 second"
+		after 1000
+	}
+	
+	# Configure the channel:
+	chan configure $serial_channel -mode 115200,n,8,1 -translation crlf -buffering line -blocking 0
+	
+	# Set up the callback:
+	chan event $serial_channel readable [list read_serial $serial_channel]
+}
 
 # Define a callback procedure, called whenever the serial channel has data available to read:
 proc read_serial channel {
+	global SERIAL_DEVICE
 	set line [gets $channel]
 	if {$line != ""} {
-		puts $line		
+		puts $line
+		# TODO: handle pipe closure, e.g. restarting
+		puts -nonewline stderr .	;# Indicate activity
 	}
 	if {[eof $channel]} {
+		puts stderr "end of file on serial channel"
 		close $channel
-		set ::done true
+		connect $SERIAL_DEVICE
 	}
 }
 
-# Set up the callback:
-chan event $serial_channel readable [list read_serial $serial_channel]
+connect $SERIAL_DEVICE
 
 # Enter the event loop (exit when done)
-vwait ::done
+vwait forever
+puts stderr exiting
