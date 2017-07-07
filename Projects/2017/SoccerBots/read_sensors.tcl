@@ -1,17 +1,19 @@
 #!/usr/bin/env tclsh
-# Tcl serial port basics
-# In Tcl, serial communication is part of a large I/O (Input/Output) framework centred around channels.  File I/O and network I/O also uses channels.
 
-# The general procedure is to open a channel, read from and/or write to it, then close when done.
-# You can configure an existing channel using the "chan configure" command.
-# Tcl version on the SoccerBot Pi systems is 8.6
+# Read sensor data from the Mega's serial port and write it out to standard output (stdout) for piping into pdsend
+
+# This uses Tcl's event loop to copy serial data only when it becomes available (as opposed to a polling approach).
+
+# See robotics_repo/Documentation/Tcl/serial-basics.tcl for further explanation on the use of serial port channels in Tcl.
+
+puts stderr "Serial reader starting up..."
 
 if {[info hostname] == "Boris"} {
+	puts stderr "Robot: Goalie"
 	set SERIAL_DEVICE /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_852313632363516031B2-if00
-	puts stderr goalie
 } else {
+	puts stderr "Robot: Attack"
 	set SERIAL_DEVICE /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0
-	puts stderr attacker
 }
 
 # Open the channel and store the channel identifier ("handle") for future reference:
@@ -20,13 +22,8 @@ set serial_channel [open $SERIAL_DEVICE RDONLY]
 # Configure the channel:
 chan configure $serial_channel -mode 115200,n,8,1 -translation crlf -buffering line -blocking 0
 
-# You can read a line of text on demand like so:
-gets $serial_channel
-# TODO: remove that line!  Also, implement reconnection logic.
 
-# A nicer way is to use Tcl's event loop, and set up an event handler that is called whenever the channel has something to read:
-
-# Callback function:
+# Define a callback procedure, called whenever the serial channel has data available to read:
 proc read_serial channel {
 	set line [gets $channel]
 	if {$line != ""} {
