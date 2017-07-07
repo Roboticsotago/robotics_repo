@@ -2,15 +2,23 @@
 #include <LIS3MDL.h>
 #include <Wire.h>
 #include <math.h>
+#include <EEPROM.h>
 
 const int NUM_SENSORS = 8;
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
 float ir_values[8];
-float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
+const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000
 const int CALIBRATION_MODE_SWITCH_PIN = 2;
+const int SAVE_HEADING_BUTTON_PIN = 7;
+const int EEPROM_MIN_X = 0;
+const int EEPROM_MIN_Y = 2;
+const int EEPROM_MIN_Z = 4;
+const int EEPROM_MAX_X = 6;
+const int EEPROM_MAX_Y = 8;
+const int EEPROM_MAX_Z = 10;
 
-const int buzzer = 10;
+const int BUZZER = 10;
 int ball_detected = 0;
 float ball_angle = 0;
 float ball_distance = 0;
@@ -20,9 +28,9 @@ float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
 
-//#define DEBUGGING 1
+#define DEBUGGING 0
 
-#ifdef DEBUGGING 
+#if DEBUGGING ==1
 	#define DEBUG(x) Serial.println (x)
 	#define DEBUG_NOEOL(x) Serial.print (x)
 #else
@@ -36,21 +44,38 @@ int light_sensor = 0;
 // int ir_val;
 const float TAU = 2 * PI;
 
+// To write an int to EEPROM requires two write() calls, since write() works only in bytes and an int is two.
+// Not sure whether to have address be a specific byte address or to multiply by sizeof(int) within the functions to create a virtual addressing scheme for int values only.
+// Probably safer to leave as raw byte addresses in case we have to mix and match, but watch for accidental overwriting!
+
+void EEPROM_write_int(int address, int value) {
+	EEPROM.write(address, highByte(value));
+	EEPROM.write(address + sizeof(byte), lowByte(value));
+}
+
+// Ditto for reading:
+
+int EEPROM_read_int(int address) {
+	/*
+	byte highByte = EEPROM.read(address);
+	byte  lowByte = EEPROM.read(address + sizeof(byte));
+	return word(highByte, lowByte);
+	*/
+	// Or simply:
+	return word(EEPROM.read(address), EEPROM.read(address + sizeof(byte)));
+}
+
 void setup() {
 	for(int n=0; n<NUM_SENSORS; n++) {
 		pinMode(analog_sensor_pins[n], INPUT);
 	}
 	pinMode(CALIBRATION_MODE_SWITCH_PIN, INPUT_PULLUP);
-	pinMode(buzzer,OUTPUT);
+	pinMode(SAVE_HEADING_BUTTON_PIN, INPUT_PULLUP);
+	pinMode(BUZZER,OUTPUT);
 	Serial.begin(115200);
-	while(digitalRead(CALIBRATION_MODE_SWITCH_PIN)){ 
-	tone(buzzer, 3600);
-	delay(100);
-        noTone(buzzer);
-        delay(200);
-	}
-        noTone(buzzer);
+	
 	magnetometerSetup();
+	magnetometer_beepUntillHeadingSaved();
 	ultrasonic_setup();
 }
 
@@ -63,16 +88,24 @@ void test_loop() {
 }
 
 void loop() {
+	calibration_mode_switch = digitalRead(CALIBRATION_MODE_SWITCH_PIN);
+	if (!calibration_mode_switch) {
+		magnetometer_calibrateMagnetometer(); 
+		magnetometer_beepUntillHeadingSaved();
+	}
+	if (!digitalRead(SAVE_HEADING_BUTTON_PIN)) {
+		magnetometer_saveHeading();
+	}
 	readIRsensors();
 	//printIRsensors();
 	get_ball_angle();
-	get_calibration_mode_switch();
-	angle_to_goal = getAngleToTarget();
+	//get_calibration_mode_switch();
+	angle_to_goal = magnetometer_getAngleToTarget();
 	front_range = getUSDistance();
 	//TODO: get_compass etc.
 	send_output();
-#ifdef DEBUGGING 
-	delay(20);
+#if DEBUGGING == 1
+	delay(2000);
 #else 
 	delay(20);
 #endif
@@ -196,10 +229,4 @@ float get_ball_angle() {
 	// TODO: maybe also check for infinity, and map that to a usable value (e.g. 0).
 }
 
-int get_calibration_mode_switch(){
-	calibration_mode_switch = digitalRead(CALIBRATION_MODE_SWITCH_PIN); 
-	if (!digitalRead(CALIBRATION_MODE_SWITCH_PIN)){
-		calibrateSensor();
-	}
-}
 //TODO: define other get functions (getCompass etc)

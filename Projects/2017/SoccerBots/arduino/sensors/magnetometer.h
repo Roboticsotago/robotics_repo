@@ -29,13 +29,13 @@ reading of 1292 corresponds to 1292 / 6842 = 0.1888 gauss.
 char report[80];
 int cal_x, cal_y;
 float target_heading;
-float getCompassHeading();
+float magnetometer_getCompassHeading();
 
 LIS3MDL mag;
 LIS3MDL::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32768, -32768, -32768};
 
-float saveHeading() { // stores the compass angle that is the desired direction
-	target_heading = getCompassHeading();
+float magnetometer_saveHeading() { // stores the compass angle that is the desired direction
+	target_heading = magnetometer_getCompassHeading();
 }
 
 void magnetometer_reset() { // reset the running max and min values for each axis to allow a complete calibration
@@ -47,7 +47,26 @@ void magnetometer_reset() { // reset the running max and min values for each axi
 	running_max.z = -32768;
 }
 
-void calibrateSensor() { // calibrate the magnetometer, the magnetometer must be moved through its full axis of rotation while calibrating
+void magnetometer_calculateOrigin(int min_x, int min_y, int min_z, int max_x, int max_y, int max_z) {
+	cal_x = (max_x + min_x) / 2;
+	cal_y = (max_y + min_y) / 2;
+}
+
+void magnetometer_saveCalibration() { // stores the new calibrated origin in the EEPROM
+	EEPROM_write_int(EEPROM_MIN_X, running_min.x);
+	EEPROM_write_int(EEPROM_MIN_Y, running_min.y);
+	EEPROM_write_int(EEPROM_MIN_Z, running_min.z);
+	EEPROM_write_int(EEPROM_MAX_X, running_max.x);
+	EEPROM_write_int(EEPROM_MAX_Y, running_max.y);
+	EEPROM_write_int(EEPROM_MAX_Z, running_max.z);
+}
+
+void magnetometer_restoreCalibration() { // restores the calibrated origin stored in the EEPROM
+	magnetometer_calculateOrigin(EEPROM_read_int(EEPROM_MIN_X), EEPROM_read_int(EEPROM_MIN_Y), EEPROM_read_int(EEPROM_MIN_Z),
+					EEPROM_read_int(EEPROM_MAX_X), EEPROM_read_int(EEPROM_MAX_Y), EEPROM_read_int(EEPROM_MAX_Z));
+}
+
+void magnetometer_calibrateMagnetometer() { // calibrate the magnetometer, the magnetometer must be moved through its full axis of rotation while calibrating
 	DEBUG("starting magnetometer calibration");
 	magnetometer_reset();
 	while(!digitalRead(CALIBRATION_MODE_SWITCH_PIN)){
@@ -70,14 +89,23 @@ void calibrateSensor() { // calibrate the magnetometer, the magnetometer must be
 		// DEBUG(report);
 	}
 
-	// calculate new origin
-	cal_x = (running_max.x + running_min.x) / 2; // if latency rethink placement of these
-	cal_y = (running_max.y + running_min.y) / 2;
-	saveHeading();
+	magnetometer_saveCalibration();
+	magnetometer_restoreCalibration(); // also calculates the origin
 	DEBUG("ending magnetometer calibration");
 }
 
-void read() { // read raw data from magnetometer and adjust from calibration
+void magnetometer_beepUntillHeadingSaved() { // beeps the buzzer untill the save heading button is pressed
+	while (!digitalRead(SAVE_HEADING_BUTTON_PIN)) {
+		tone(BUZZER, 3600);
+		delay(100);
+        noTone(BUZZER);
+        delay(200);
+	}
+	noTone(BUZZER);
+	magnetometer_saveHeading();
+}
+
+void magnetometer_read() { // read raw data from magnetometer and adjust from calibration
 	mag.read();
 
 	// adjust raw data for calibration
@@ -89,13 +117,13 @@ void read() { // read raw data from magnetometer and adjust from calibration
 	// DEBUG(report);
 }
 
-float calcAngle(int x, int y) { // calculate the angle of point (x, y)
+float magnetometer_calcAngle(int x, int y) { // calculate the angle of point (x, y)
 	return degrees(atan2(x, y));
 }
 
-float getCompassHeading() { // returns the compass heading from magnetometer, range [0, 360]
-	read();
-	float heading = calcAngle(mag.m.x, mag.m.y) * -1; // compass heading is angle clockwise from North, hence the * -1
+float magnetometer_getCompassHeading() { // returns the compass heading from magnetometer, range [0, 360]
+	magnetometer_read();
+	float heading = magnetometer_calcAngle(mag.m.x, mag.m.y) * -1; // compass heading is angle clockwise from North, hence the * -1
 	if (heading < 0) {
 		return heading + 360.0;
 	} else {
@@ -103,7 +131,7 @@ float getCompassHeading() { // returns the compass heading from magnetometer, ra
 	}
 }
 
-float getRelativeAngle(float actual_heading) { // returns the angle that the robot is off the target heading, range [-180, 180]
+float magnetometer_getRelativeAngle(float actual_heading) { // returns the angle that the robot is off the target heading, range [-180, 180]
 	float angle_diff = (actual_heading - target_heading) * -1.0;
 
 	DEBUG_NOEOL("Actual heading: "); DEBUG_NOEOL(actual_heading);
@@ -118,7 +146,7 @@ float getRelativeAngle(float actual_heading) { // returns the angle that the rob
 	}
 }
 
-int isTargetdirrection(float actual_heading) { // checks to see if facing in the general target dirrection
+int magnetometer_isTargetdirrection(float actual_heading) { // checks to see if facing in the general target dirrection
 	if ((actual_heading < 70.0) && (actual_heading > -70.0)) {
 		return 1;
 	} else {
@@ -126,13 +154,13 @@ int isTargetdirrection(float actual_heading) { // checks to see if facing in the
 	}
 }
 
-float getAngleToTarget() { // returns the angle needed to turn towards the target heading
-	return getRelativeAngle(getCompassHeading());
+float magnetometer_getAngleToTarget() { // returns the angle needed to turn towards the target heading
+	return magnetometer_getRelativeAngle(magnetometer_getCompassHeading());
 }
 
 void magnetometerTestLoop() {
 	DEBUG_NOEOL("Angle to desired heading is: ");
-	DEBUG(isTargetdirrection(getAngleToTarget()));
+	DEBUG(magnetometer_isTargetdirrection(magnetometer_getAngleToTarget()));
 }
 
 void magnetometerSetup() {
@@ -144,4 +172,6 @@ void magnetometerSetup() {
 		while (1);
 	}
 	mag.enableDefault();
+	
+	magnetometer_restoreCalibration();
 }
