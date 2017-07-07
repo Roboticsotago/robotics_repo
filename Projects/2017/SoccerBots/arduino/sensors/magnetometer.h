@@ -36,6 +36,8 @@ LIS3MDL::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32
 
 float magnetometer_saveHeading() { // stores the compass angle that is the desired direction
 	target_heading = magnetometer_getCompassHeading();
+	EEPROM_write_int(EEPROM_TARGET_HEADING, target_heading);
+	beep();
 }
 
 void magnetometer_reset() { // reset the running max and min values for each axis to allow a complete calibration
@@ -59,11 +61,19 @@ void magnetometer_saveCalibration() { // stores the new calibrated origin in the
 	EEPROM_write_int(EEPROM_MAX_X, running_max.x);
 	EEPROM_write_int(EEPROM_MAX_Y, running_max.y);
 	EEPROM_write_int(EEPROM_MAX_Z, running_max.z);
+	
+	beep();
+	delay(50);
+	beep();
 }
 
 void magnetometer_restoreCalibration() { // restores the calibrated origin stored in the EEPROM
 	magnetometer_calculateOrigin(EEPROM_read_int(EEPROM_MIN_X), EEPROM_read_int(EEPROM_MIN_Y), EEPROM_read_int(EEPROM_MIN_Z),
 					EEPROM_read_int(EEPROM_MAX_X), EEPROM_read_int(EEPROM_MAX_Y), EEPROM_read_int(EEPROM_MAX_Z));
+	
+	beep();
+	delay(50);
+	beep();
 }
 
 void magnetometer_calibrateMagnetometer() { // calibrate the magnetometer, the magnetometer must be moved through its full axis of rotation while calibrating
@@ -96,9 +106,7 @@ void magnetometer_calibrateMagnetometer() { // calibrate the magnetometer, the m
 
 void magnetometer_beepUntillHeadingSaved() { // beeps the buzzer untill the save heading button is pressed
 	while (!digitalRead(SAVE_HEADING_BUTTON_PIN)) {
-		tone(BUZZER, 3600);
-		delay(100);
-        noTone(BUZZER);
+		beep();
         delay(200);
 	}
 	noTone(BUZZER);
@@ -174,4 +182,5 @@ void magnetometerSetup() {
 	mag.enableDefault();
 	
 	magnetometer_restoreCalibration();
+	target_heading = EEPROM_read_int(EEPROM_TARGET_HEADING);
 }

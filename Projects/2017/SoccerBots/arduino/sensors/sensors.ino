@@ -17,6 +17,7 @@ const int EEPROM_MIN_Z = 4;
 const int EEPROM_MAX_X = 6;
 const int EEPROM_MAX_Y = 8;
 const int EEPROM_MAX_Z = 10;
+const int EEPROM_TARGET_HEADING = 12;
 
 const int BUZZER = 10;
 int ball_detected = 0;
@@ -75,7 +76,6 @@ void setup() {
 	Serial.begin(115200);
 	
 	magnetometerSetup();
-	magnetometer_beepUntillHeadingSaved();
 	ultrasonic_setup();
 }
 
@@ -109,6 +109,12 @@ void loop() {
 #else 
 	delay(20);
 #endif
+}
+
+void beep() {
+	tone(BUZZER, 3600);
+	delay(100);
+	noTone(BUZZER);
 }
 
 float readIRsensor(int sensor_num) { // takes single reading from one IR sensor
