@@ -7,18 +7,12 @@ import cvutils
 import time
 import serial
 #sys.path.append(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots')
-import camera_calibration_state
+execfile("camera_calibration_state.py")
 
 #ser = serial.Serial('/dev/serial/by-id/usb-www.freetronics.com_Eleven_64935343233351909241-if00')
 
 camera = SimpleCV.Camera(0, {"width":320,"height":240})
 os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
-
-#lab_grey_sample = cvutils.calibrate_white_balance(camera)
-#lab_goal_blue = cvutils.calibrate_colour_match(camera, lab_grey_sample)
-lab_grey_sample = camera_calibration_state.col_grey()
-lab_goal_blue = camera_calibration_state.col_blue()
-#print lab_grey_sample
 
 speed = 0
 #global current_angle
@@ -113,10 +107,10 @@ def send2pd(message):
 
 while True:
 	start_time = time.clock()
-	image = cvutils.wb(camera.getImage().scale(0.075), lab_grey_sample)
+	image = cvutils.wb(camera.getImage().scale(0.075), calibrated_grey_sample)
 	v,s,h = image.toHSV().splitChannels()
-	hue_match = h.colorDistance((lab_goal_blue[0][0],lab_goal_blue[0][0],lab_goal_blue[0][0])).binarize(lab_goal_blue[0][1]*3)
-	sat_match = s.colorDistance((lab_goal_blue[1][0],lab_goal_blue[1][0],lab_goal_blue[1][0])).binarize(lab_goal_blue[1][1]*3)
+	hue_match = h.colorDistance((calibrated_goal_sample[0][0],calibrated_goal_sample[0][0],calibrated_goal_sample[0][0])).binarize(calibrated_goal_sample[0][1]*3)
+	sat_match = s.colorDistance((calibrated_goal_sample[1][0],calibrated_goal_sample[1][0],calibrated_goal_sample[1][0])).binarize(calibrated_goal_sample[1][1]*3)
 	matched = ((hue_match / 16) * (sat_match / 16))
 	matched.show()
 	blobs = matched.findBlobs(100, 1)
