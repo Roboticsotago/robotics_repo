@@ -91,9 +91,8 @@ void loop() {
 	calibration_mode_switch = digitalRead(CALIBRATION_MODE_SWITCH_PIN);
 	if (!calibration_mode_switch) {
 		magnetometer_calibrateMagnetometer(); 
-		magnetometer_beepUntillHeadingSaved();
 	}
-	if (!digitalRead(SAVE_HEADING_BUTTON_PIN)) {
+	if (!digitalRead(SAVE_HEADING_BUTTON_PIN)) { // allows the heading to be saved during use
 		magnetometer_saveHeading();
 	}
 	readIRsensors();
