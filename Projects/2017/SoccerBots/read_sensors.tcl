@@ -18,7 +18,7 @@ if {[info hostname] == "Boris"} {
 
 # Define a start procedure to connect to the serial device
 proc connect {serial_device} {
-	puts stderr "connectig to $serial_device"
+	puts stderr "connecting to $serial_device"
 	
 	# Open the channel and store the channel identifier ("handle") for future reference:
 	while {[catch {set serial_channel [open $serial_device RDONLY]}]} {
