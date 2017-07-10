@@ -65,6 +65,7 @@ void magnetometer_saveCalibration() { // stores the new calibrated origin in the
 	beep();
 	delay(50);
 	beep();
+	delay(250);
 }
 
 void magnetometer_restoreCalibration() { // restores the calibrated origin stored in the EEPROM
@@ -74,6 +75,16 @@ void magnetometer_restoreCalibration() { // restores the calibrated origin store
 	beep();
 	delay(50);
 	beep();
+	delay(250);
+}
+
+void magnetometer_beepUntilHeadingSaved() { // beeps the buzzer untill the save heading button is pressed
+	while (digitalRead(SAVE_HEADING_BUTTON_PIN)) {
+		beep();
+		delay(200);
+	}
+	noTone(BUZZER);
+	magnetometer_saveHeading();
 }
 
 void magnetometer_calibrateMagnetometer() { // calibrate the magnetometer, the magnetometer must be moved through its full axis of rotation while calibrating
@@ -101,16 +112,8 @@ void magnetometer_calibrateMagnetometer() { // calibrate the magnetometer, the m
 
 	magnetometer_saveCalibration();
 	magnetometer_restoreCalibration(); // also calculates the origin
+	magnetometer_beepUntilHeadingSaved(); // prompt for save heading
 	DEBUG("ending magnetometer calibration");
-}
-
-void magnetometer_beepUntillHeadingSaved() { // beeps the buzzer untill the save heading button is pressed
-	while (!digitalRead(SAVE_HEADING_BUTTON_PIN)) {
-		beep();
-        delay(200);
-	}
-	noTone(BUZZER);
-	magnetometer_saveHeading();
 }
 
 void magnetometer_read() { // read raw data from magnetometer and adjust from calibration
@@ -154,7 +157,7 @@ float magnetometer_getRelativeAngle(float actual_heading) { // returns the angle
 	}
 }
 
-int magnetometer_isTargetdirrection(float actual_heading) { // checks to see if facing in the general target dirrection
+int magnetometer_isTargetDirection(float actual_heading) { // checks to see if facing in the general target dirrection
 	if ((actual_heading < 70.0) && (actual_heading > -70.0)) {
 		return 1;
 	} else {
@@ -168,7 +171,7 @@ float magnetometer_getAngleToTarget() { // returns the angle needed to turn towa
 
 void magnetometerTestLoop() {
 	DEBUG_NOEOL("Angle to desired heading is: ");
-	DEBUG(magnetometer_isTargetdirrection(magnetometer_getAngleToTarget()));
+	DEBUG(magnetometer_isTargetDirection(magnetometer_getAngleToTarget()));
 }
 
 void magnetometerSetup() {
