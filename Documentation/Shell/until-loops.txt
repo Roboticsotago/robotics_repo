@@ -1,0 +1,30 @@
+# Shell script examples of "until" loop for reliability
+# The "until" loop construct will run until a condition is met.  Unix commands by convention return a number (return code) indicating whether the program ran successfully or exited because of some error.  To indicate normal success or TRUE, 0 is used (this may seem weird).  Non-zero values can signify various error conditions.
+
+# General form:
+# until CONDITION; do COMMANDS; done
+
+# For example, to wait until a host is reachable before logging in:
+# (here, the CONDITION is actually a call to a command, namely "ping -c 1 $HOST", which checks once if the host is responding)
+
+HOST=localhost
+until ping -c 1 $HOST; do
+  echo Waiting for $HOST to become available...
+  sleep 1
+done
+ssh -Y $HOST
+
+# A simpler version that just tries the ssh command directly:
+HOST=localhost
+until ssh -Y $HOST; do
+  echo .
+  sleep 1
+done
+
+
+# Keep trying to run the robot sensor input pipeline:
+
+until ./read_sensors.tcl | pdsend 7000; do
+  echo Retrying...
+  sleep 1
+done
