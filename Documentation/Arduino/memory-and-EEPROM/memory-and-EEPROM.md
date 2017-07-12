@@ -93,13 +93,13 @@ When logging data, consider streaming the data to a larger host computer via ser
 
 ## Using the EEPROM
 
-Since the EEPROM capacity varies from chip to chip, it is useful to be able to find out how much is there (especially if you want to use a lot of it).  The `EEPROM.length()` function returns the number of bytes in the EEPROM.
+In practice, the EEPROM behaves a lot like a fixed-size non-volatile array of bytes.  Since the EEPROM capacity varies from chip to chip, it is useful to be able to find out how much is there (especially if you want to use a lot of it).  The `EEPROM.length()` function returns the number of bytes in the EEPROM.
 
 (Hmm, only `EEPROM.length()` doesn't seem to be available in the Arduino version I'm testing on.  Apparently this got dropped when the EEPROM library was updated, and was later re-introduced.)
 
 You can also use the precompiler constant `E2END` to find out the last available address on the EEPROM for the selected chip.  This value is determined an compile-time rather than run-time, and relies on choosing the correct board type in the Arduino IDE.  The size of the EEPROM would be `E2END+1`.
 
-The Arduino API provides these low-level functions for reading/writing EEPROM data one byte at a time.  The address values are byte-level.
+The Arduino API provides the following low-level functions for reading/writing EEPROM data (one byte at a time; the address values are byte-level):
 
 _____________________________________________
 ```c
