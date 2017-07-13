@@ -1,5 +1,7 @@
 Things to be done for the 2017 SoccerBots project
 
+[ ] Move this list to github's issue tracker?
+
 Software:
 
 [ ] Define a DEBUG function or macro for Arduino programs
@@ -9,9 +11,12 @@ Software:
 [ ] Arrange for control program to launch when Raspberry Pi boots
 	Pd startup: pd -noaudio -nomidi patch-filename.pd
 
-[ ] EEPROM goodness (motor PWM limits, servo ranges, magnetometer calibration data, etc.)
+[.] EEPROM goodness (motor PWM limits, servo ranges, magnetometer calibration data, etc.)
 
-[ ] Add restart-on-error to read_sensors.tcl
+[Y] Add restart-on-error to read_sensors.tcl
+	[ ] Could still add catching of write errors if the pipe fails..perhaps restart Pd if so.
+
+[ ] Implement shell "until" loops in runeverything.sh for more graceful and efficient startup.
 
 [ ] Edit /etc/hosts (or equivalent) on remote client computers to add:
 	192.168.43.253	shutter
@@ -21,16 +26,16 @@ Software:
 	alias boris='ssh -Y pi@boris'
 	alias attack='ssh -Y pi@shutter'
 	alias goalie='ssh -Y pi@boris'
-	
 
-[ ] Have runeverything.sh launch separate terminal windows for each task, e.g.
+[Y] Have runeverything.sh launch separate terminal windows for each task, e.g.
 	urxvt -name Blah -title Blah -e sh -c "mycmd | targetcmd" &
 	(might be different for LXTerminal...ah, but both bots already have urxvt as well)
 
-[Y] Fix slow report frequency on sensor board (it was due to the DFRobot board being in the wrong mode, and pulseIn() blocking for a long time when the ultrasound sensor got no reflection).
-[ ] sensors.ino: reinstate debugging delay (now that we've figured out why the sensor reporting frequency was so low)
+[Y] Fix slow report frequency on sensor board
+	This was due to the DFRobot board being in the wrong mode, and pulseIn() blocking for a long time when the ultrasound sensor got no reflection.
+[Y] sensors.ino: reinstate debugging delay (now that we've figured out why the sensor reporting frequency was so low)
 [ ] Get Pd patches to properly handle the 0 values reported by the ultrasonic sensor (these mean "out of range", not 0 cm distance)
-
+[ ] Music for the buzzer!
 
 IR system:
 
@@ -70,6 +75,8 @@ General:
 
 Hardware:
 
+[ ] Redesign main chassis and see if we can get it lasercut (it might be too large for Chris's 3D printer)
+
 [Y] Design and fab main robot platform (3D print? lasercut?)
 
 [ ] Implement servo mechanism for wheels? Optical? Hall sensor?
@@ -95,11 +102,13 @@ Hardware:
 [ ] Build second robot as Goalie.
 
 [ ] Apply threadlocker (e.g. Loctite) to fasteners before competition
+	or (perhaps better) use nylock locking nuts
 
 [.] Build IR sensors for ball detection
 
 [.] Compass sensor (Sebastian and Tobias have been working on this)
 
-[ ] Install range sensors front and back for collision avoidance.
+[ ] Install range sensors front and/or back for collision avoidance.
 
 [ ] Colour sensors for approximate location on the field
+	Need to get some - Adafruit?
