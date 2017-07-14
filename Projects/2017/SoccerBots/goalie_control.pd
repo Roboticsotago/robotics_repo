@@ -1,4 +1,4 @@
-#N canvas 0 52 1234 731 10;
+#N canvas 102 51 893 540 10;
 #X obj 29 39 r ball_angle;
 #X obj 327 36 r compass_heading;
 #X obj 165 34 r ball_distance;
@@ -10,7 +10,7 @@
 #X obj 552 106 > 14;
 #X obj 522 479 r ball_detected;
 #X obj 836 31 r angle2goal;
-#X text 1035 675, f 26;
+#X text 1035 675 comment, f 26;
 #N canvas 0 52 1234 731 motor-serial 0;
 #X text 69 49 Tell motor-control what serial device to use:;
 #X msg 76 117 devicename /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351A0D161-if00
@@ -24,13 +24,13 @@
 #X restore 1078 659 pd motor-serial;
 #N canvas 476 174 676 568 differential_drive 0;
 #X obj 217 287 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 6555 1;
+-1 -1 4950 1;
 #X obj 293 284 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 3345 1;
+-1 -1 4950 1;
 #X obj 279 -22 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 4950 1;
 #X obj 235 117 hsl 100 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 6555 1;
+-1 -1 4950 1;
 #X obj 217 237 +;
 #X obj 293 237 +;
 #X floatatom 275 91 5 0 0 0 - - -, f 5;
@@ -66,10 +66,10 @@
 #X connect 15 0 2 0;
 #X connect 16 0 3 0;
 #X restore 354 679 pd differential_drive;
-#X floatatom 328 60 5 0 0 0 - - -, f 5;
-#X obj 330 82 hsl 128 15 -180 180 0 0 empty empty empty -2 -8 0 10
--262144 -1 -1 1247 1;
-#X floatatom 165 59 5 0 0 0 - - -, f 5;
+#X floatatom 348 68 5 0 0 0 - - -, f 5;
+#X obj 351 90 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 3287 1;
+#X floatatom 165 59 8 0 0 0 - - -, f 8;
 #X obj 502 619 *;
 #X obj 523 572 t b f;
 #X obj 309 467 r ball_detected;
@@ -87,32 +87,42 @@
 #X connect 1 0 3 0;
 #X connect 3 0 4 0;
 #X connect 4 0 0 0;
-#X restore 324 119 pd heading;
+#X restore 327 119 pd heading;
 #X floatatom 371 155 5 0 0 0 - - -, f 5;
 #X obj 552 132 tgl 50 0 empty empty way_is_clear 17 7 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 525 511 tgl 50 0 empty empty Ball_Detected 17 7 0 10 -262144
 -1 -1 1 1;
 #X obj 202 111 < 0.3;
 #X obj 131 149 tgl 50 0 empty empty Ball_nearish 0 -5 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 225 150 tgl 50 0 empty empty Ball_very_near 0 -5 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 142 112 < 1;
-#N canvas 8 60 1219 731 face-ball 0;
-#X obj 457 288 clip -1 1;
-#X obj 449 180 inlet;
-#X obj 458 402 outlet;
-#X obj 455 236 expr if($f1 > 10 \, $f1 - 10 \, if($f1 < -10 \, $f1
-+ 10 \, 0));
-#X obj 456 263 / 170;
+#N canvas 102 51 893 540 face-ball 0;
+#X obj 38 142 clip -1 1;
+#X obj 38 57 inlet;
+#X obj 38 186 outlet;
+#X obj 38 90 expr if($f1 > 20 \, $f1 - 20 \, if($f1 < -20 \, $f1 +
+20 \, 0));
+#X obj 38 117 / 160;
 #X connect 0 0 2 0;
 #X connect 1 0 3 0;
 #X connect 3 0 4 0;
 #X connect 4 0 0 0;
-#X restore 123 279 pd face-ball;
-#X floatatom 29 61 5 0 0 0 - - -, f 5;
+#X restore 29 210 pd face-ball;
+#X floatatom 39 68 5 0 0 0 - - -, f 5;
+#X obj 42 90 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 91 1;
+#X obj 187 312 t b f;
+#X obj 187 334 *;
+#X text 188 277 Only face ball when ball is near, f 18;
+#X text 25 402 Dealing with reflections off the goal will be especially
+tricky for the goalie. It will affect the apaprent ball distance as
+well as the angle., f 25;
 #X connect 0 0 31 0;
+#X connect 0 0 30 0;
+#X connect 1 0 22 0;
 #X connect 1 0 13 0;
 #X connect 2 0 15 0;
 #X connect 3 0 4 0;
@@ -122,7 +132,6 @@
 #X connect 8 0 17 0;
 #X connect 8 0 25 0;
 #X connect 13 0 14 0;
-#X connect 14 0 22 0;
 #X connect 15 0 26 0;
 #X connect 15 0 29 0;
 #X connect 16 0 12 1;
@@ -137,6 +146,10 @@
 #X connect 22 0 23 0;
 #X connect 22 0 16 0;
 #X connect 26 0 28 0;
+#X connect 27 0 33 0;
 #X connect 29 0 27 0;
-#X connect 30 0 16 0;
-#X connect 31 0 30 0;
+#X connect 30 0 34 0;
+#X connect 31 0 32 0;
+#X connect 33 0 34 0;
+#X connect 33 1 34 1;
+#X connect 34 0 16 0;

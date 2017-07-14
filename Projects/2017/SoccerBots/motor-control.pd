@@ -1,4 +1,4 @@
-#N canvas 0 51 1265 718 10;
+#N canvas 102 51 893 540 10;
 #X obj 243 69 hsl 260 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 12950 1;
 #X obj 262 119 >= 0;
@@ -109,33 +109,28 @@
 #X obj 1041 109 r right_speed;
 #X obj 59 343 r kick;
 #X floatatom 200 90 5 0 0 0 - - -, f 5;
-#N canvas 583 236 450 300 deadzone 0;
-#X floatatom 54 154 5 0 0 0 - - -, f 5;
-#X floatatom 53 81 5 0 0 0 - - -, f 5;
-#X obj 27 26 inlet;
-#X obj 19 211 outlet;
-#X obj 39 105 expr if($f1 > 0 \, $f1 + 0.7 \, if($f1 < 0 \, $f1 - 0.7
-\, 0));
-#X obj 54 128 clip -1 1;
+#N canvas 390 240 450 300 deadzone 0;
+#X obj 39 78 inlet;
+#X obj 39 161 outlet;
+#X obj 39 132 clip -1 1;
+#X obj 39 105 expr if($f1 > 0 \, $f1 + 0.75 \, if($f1 < 0 \, $f1 -
+0.75 \, 0));
+#X text 83 38 Offsets are for Boris \, Left motor;
 #X connect 0 0 3 0;
-#X connect 1 0 4 0;
 #X connect 2 0 1 0;
-#X connect 4 0 5 0;
-#X connect 5 0 0 0;
+#X connect 3 0 2 0;
 #X restore 299 92 pd deadzone;
-#N canvas 996 425 450 300 deadzone 0;
-#X floatatom 460 180 5 0 0 0 - - -, f 5;
-#X floatatom 459 107 5 0 0 0 - - -, f 5;
-#X obj 433 52 inlet;
-#X obj 425 237 outlet;
-#X obj 460 154 clip -0.8 0.8;
-#X obj 445 131 expr if($f1 > 0 \, $f1 + 0.5 \, if($f1 < 0 \, $f1 -
-0.5 \, 0));
+#N canvas 543 294 450 300 deadzone 0;
+#X obj 15 15 inlet;
+#X obj 7 200 outlet;
+#X obj 42 117 clip -0.8 0.8;
+#X obj 27 94 expr if($f1 > 0 \, $f1 + 0.6 \, if($f1 < 0 \, $f1 - 0.6
+\, 0));
+#X text 107 23 Boris \, Right motor;
+#X text 149 119 TODO: why 0.8 and not 1.0?;
 #X connect 0 0 3 0;
-#X connect 1 0 5 0;
 #X connect 2 0 1 0;
-#X connect 4 0 0 0;
-#X connect 5 0 4 0;
+#X connect 3 0 2 0;
 #X restore 1041 159 pd deadzone;
 #N canvas 996 425 450 300 deadzone 0;
 #X floatatom 460 180 5 0 0 0 - - -, f 5;
@@ -164,7 +159,7 @@ f 20;
 control serial port):, f 17;
 #X obj 599 659 loadbang;
 #X obj 699 51 hsl 260 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 12950 1;
 #X msg 662 26 0;
 #X obj 741 8 r Stop;
 #X connect 0 0 93 0;

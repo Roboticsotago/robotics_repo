@@ -1,4 +1,4 @@
-#N canvas 328 136 491 337 10;
+#N canvas 333 143 491 337 10;
 #X obj 44 31 netreceive 7000;
 #X obj 44 77 unpack f f f f f f f f;
 #X obj 44 286 s ball_detected;
