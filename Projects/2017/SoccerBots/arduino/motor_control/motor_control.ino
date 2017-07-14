@@ -1,7 +1,7 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
 #define BAUD_RATE 115200 
-#define SHUTTER 1
+#define SHUTTER 0
 
 //TODO: Do the duty cycles of the SoccerBot motors need adjusting?
 //TODO: Move the duty cycles into the eeprom
@@ -12,7 +12,7 @@ const int KICKER_MIN = 100;
 const int KICKER_MAX = 60; //tested 
 const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
-#ifdef SHUTTER
+#if (SHUTTER==1)
 const int MOTOR_L_DUTY=125; //to limit 8.0V to 4.5V
 const int MOTOR_R_DUTY=170;
 #else
@@ -94,7 +94,6 @@ void setup() {
 	DEBUG("\n\nDspace Motor Controller for SoccerBots - Info Sci Mechatronics v0.01");
 	#endif
 }
-
 
 void Stop() {
 	digitalWrite(MOTOR_L_1_PIN, LOW);
