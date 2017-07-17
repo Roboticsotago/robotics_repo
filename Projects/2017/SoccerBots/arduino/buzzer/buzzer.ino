@@ -1,4 +1,7 @@
+#include "pokemon.h"
+#include "nokia.h"
 #include "mountainKing.h"
+#include "fnaf.h"
 
 const int buzzerPin = 10;
 int crotchet;
@@ -34,7 +37,10 @@ void setup() {
 }
 
 void loop() {
-	playTune(mountainKing, mountainKingTempo, mountainKingArrayLength);
+	/*playTune(pokemon, pokemonTempo, pokemonArrayLength);
+    playTune(nokia, nokiaTempo, nokiaArrayLength);
+    playTune(mountainKing, mountainKingTempo, mountainKingArrayLength);*/
+    playTune(fnaf, fnafTempo, fnafArrayLength);
 }
 
 
