@@ -4,10 +4,12 @@
 #include <math.h>
 #include <EEPROM.h>
 
+#define SHUTTER 0
+#define DEBUGGING 0
+
 const int NUM_SENSORS = 8;
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
 float ir_values[8];
-const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000
 const int CALIBRATION_MODE_SWITCH_PIN = 2;
 const int SAVE_HEADING_BUTTON_PIN = 7;
@@ -29,14 +31,18 @@ float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
 
-#define DEBUGGING 0
-
 #if DEBUGGING ==1
 	#define DEBUG(x) Serial.println (x)
 	#define DEBUG_NOEOL(x) Serial.print (x)
 #else
 	#define DEBUG(x)
 	#define DEBUG_NOEOL(x)
+#endif
+
+#if (SHUTTER ==1)
+const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
+#else
+const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0,0},{0,0},{0,0},{-1.0, 0.0},{-0.71, 0.71}};
 #endif
 
 #include "magnetometer.h"

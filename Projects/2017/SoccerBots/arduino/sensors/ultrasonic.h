@@ -15,7 +15,7 @@ void ultrasonic_setup() {
 
 int getUSDistance() {
 	digitalWrite(trig, LOW);
-        //delay(50);    
+        delayMicroseconds(10);    
 	digitalWrite(trig, HIGH);
 	
 	us_distance = pulseIn(pwm, LOW, RANGE_SENSOR_TIMEOUT);
