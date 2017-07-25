@@ -1,4 +1,4 @@
-#N canvas 44 52 710 734 10;
+#N canvas 49 60 710 734 10;
 #X obj 29 39 r ball_angle;
 #X obj 327 36 r compass_heading;
 #X obj 165 34 r ball_distance;
@@ -6,7 +6,7 @@
 #X floatatom 506 65 5 0 0 0 - - -, f 5;
 #X obj 506 84 moses 0;
 #X obj 316 497 tgl 50 0 empty empty Ball_Detected 17 7 0 10 -262144
--1 -1 0 1;
+-1 -1 1 1;
 #X obj 552 106 > 14;
 #X obj 522 479 r ball_detected;
 #X obj 836 31 r angle2goal;
@@ -22,13 +22,13 @@
 #X connect 3 0 4 0;
 #X connect 4 0 1 0;
 #X restore 1078 659 pd motor-serial;
-#N canvas 765 97 676 568 differential_drive 1;
+#N canvas 770 104 676 568 differential_drive 1;
 #X obj 217 287 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 4950 1;
+-1 -1 9900 1;
 #X obj 293 284 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 4950 1;
+-1 -1 9900 1;
 #X obj 279 -22 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 4950 1;
+-1 -1 9900 1;
 #X obj 235 117 hsl 100 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 4950 1;
 #X obj 217 237 +;
@@ -68,7 +68,7 @@
 #X restore 354 679 pd differential_drive;
 #X floatatom 348 68 5 0 0 0 - - -, f 5;
 #X obj 351 90 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 2305 1;
+-1 -1 2656 1;
 #X floatatom 165 59 8 0 0 0 - - -, f 8;
 #X obj 502 619 *;
 #X obj 523 572 t b f;
@@ -92,9 +92,9 @@
 #X obj 552 132 tgl 50 0 empty empty way_is_clear 17 7 0 10 -262144
 -1 -1 1 1;
 #X obj 525 511 tgl 50 0 empty empty Ball_Detected 17 7 0 10 -262144
--1 -1 0 1;
+-1 -1 1 1;
 #X obj 131 149 tgl 50 0 empty empty Ball_nearish 0 -5 0 10 -262144
--1 -1 0 1;
+-1 -1 1 1;
 #X obj 225 150 tgl 50 0 empty empty Ball_very_near 0 -5 0 10 -262144
 -1 -1 0 1;
 #X obj 142 112 < 1;
@@ -112,7 +112,7 @@
 #X restore 29 210 pd face-ball;
 #X floatatom 39 68 5 0 0 0 - - -, f 5;
 #X obj 42 90 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 3150 1;
+-1 -1 2688 1;
 #X obj 187 312 t b f;
 #X obj 187 334 *;
 #X text 188 277 Only face ball when ball is near, f 18;
@@ -120,7 +120,7 @@
 tricky for the goalie. It will affect the apaprent ball distance as
 well as the angle., f 25;
 #X obj 202 111 < 0.25;
-#N canvas 587 158 742 471 save_goal 0;
+#N canvas 339 201 742 471 save_goal 1;
 #X obj 104 28 inlet;
 #X obj 238 341 outlet;
 #X obj 203 167 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -135,7 +135,7 @@ well as the angle., f 25;
 #X obj 236 43 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X obj 134 138 spigot;
-#X obj 259 92 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 259 92 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X msg 245 66 0;
 #X obj 54 140 moses 1;
@@ -154,9 +154,6 @@ well as the angle., f 25;
 #X text 345 185 stop;
 #X text 549 212 stop;
 #X text 420 196 drive backwards;
-#X obj 534 241 delay 2000;
-#X obj 347 209 delay 2000;
-#X obj 204 143 delay 2000;
 #X msg 192 289 0;
 #X text 504 372 not running;
 #X obj 62 42 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -167,22 +164,26 @@ well as the angle., f 25;
 -1 -1;
 #X obj 556 267 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
+#X obj 347 210 delay 1500;
+#X obj 534 241 delay 1500;
+#X msg 166 331 1;
+#X obj 208 131 delay 1000;
 #X connect 0 0 19 0;
 #X connect 0 0 10 0;
-#X connect 0 0 33 0;
+#X connect 0 0 30 0;
 #X connect 2 0 4 0;
 #X connect 2 0 20 0;
 #X connect 3 0 5 0;
-#X connect 3 0 29 0;
+#X connect 3 0 34 0;
 #X connect 4 0 1 0;
 #X connect 5 0 1 0;
 #X connect 6 0 1 0;
 #X connect 7 0 1 0;
 #X connect 9 0 12 0;
 #X connect 10 0 9 0;
-#X connect 10 0 30 0;
-#X connect 10 0 31 0;
-#X connect 10 0 23 0;
+#X connect 10 0 28 0;
+#X connect 10 0 37 0;
+#X connect 10 0 36 0;
 #X connect 11 0 10 1;
 #X connect 12 0 11 0;
 #X connect 14 0 15 0;
@@ -192,22 +193,24 @@ well as the angle., f 25;
 #X connect 19 0 13 0;
 #X connect 20 0 3 0;
 #X connect 21 0 7 0;
-#X connect 21 0 28 0;
+#X connect 21 0 32 0;
 #X connect 21 0 35 0;
 #X connect 22 0 8 0;
 #X connect 23 0 8 0;
-#X connect 28 0 22 0;
-#X connect 28 0 36 0;
-#X connect 28 0 14 0;
-#X connect 29 0 6 0;
-#X connect 29 0 21 0;
-#X connect 29 0 34 0;
-#X connect 30 0 2 0;
-#X connect 31 0 1 0;
-#X connect 33 0 10 0;
+#X connect 28 0 1 0;
+#X connect 30 0 10 0;
+#X connect 34 0 6 0;
+#X connect 34 0 21 0;
+#X connect 34 0 31 0;
+#X connect 35 0 22 0;
+#X connect 35 0 33 0;
+#X connect 35 0 14 0;
+#X connect 36 0 8 0;
+#X connect 37 0 2 0;
+#X connect 37 0 23 0;
 #X restore 238 236 pd save_goal;
 #X obj 503 645 spigot;
-#X obj 350 290 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 350 290 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X floatatom 245 312 5 0 0 0 - - -, f 5;
 #X obj 150 210 metro 4000;
