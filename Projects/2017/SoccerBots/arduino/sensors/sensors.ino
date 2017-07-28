@@ -5,7 +5,7 @@
 #include <EEPROM.h>
 
 #define SHUTTER 0
-#define DEBUGGING 1
+#define DEBUGGING 0
 
 const int NUM_SENSORS = 8;
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
@@ -44,6 +44,7 @@ const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0
 
 #include "magnetometer.h"
 #include "ultrasonic.h"
+#include "reflectance.h"
 
 // int ir_val;
 const float TAU = 2 * PI;
@@ -98,6 +99,7 @@ void loop() {
 	if (!digitalRead(SAVE_HEADING_BUTTON_PIN)) { // allows the heading to be saved during use
 		magnetometer_saveHeading();
 	}
+        readReflectance();
 	readIRsensors();
 	//printIRsensors();
 	get_ball_angle();
@@ -198,7 +200,7 @@ void send_output() {
 	Serial.print(back_range);Serial.print(" ");
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
-	Serial.print(light_sensor);Serial.print(" ");
+	Serial.print(reflectance);Serial.print(" ");
 	Serial.println(";");
 }
 
