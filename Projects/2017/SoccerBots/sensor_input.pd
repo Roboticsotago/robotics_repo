@@ -1,4 +1,4 @@
-#N canvas 329 147 491 337 10;
+#N canvas 995 409 491 337 10;
 #X obj 44 31 netreceive 7000;
 #X obj 44 286 s ball_detected;
 #X obj 65 230 s ball_angle;

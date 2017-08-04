@@ -1,13 +1,13 @@
-#N canvas 2 99 1905 987 10;
+#N canvas 99 93 1905 987 10;
 #X obj 29 39 r ball_angle;
 #X obj 682 26 r compass_heading;
 #X obj 900 31 r range;
 #X floatatom 900 58 5 0 0 0 - - -, f 5;
 #X obj 900 77 moses 0;
-#X obj 1697 690 tgl 50 0 empty empty Ball_Detected 17 7 0 10 -262144
+#X obj 1369 704 tgl 50 0 empty empty Ball_Detected 17 7 0 10 -262144
 -1 -1 0 1;
 #X obj 946 99 > 14;
-#X obj 1382 660 r ball_detected;
+#X obj 1174 676 r ball_detected;
 #X obj 1339 33 r angle2goal;
 #N canvas 0 52 1234 731 motor-serial 0;
 #X text 69 49 Tell motor-control what serial device to use:;
@@ -20,7 +20,7 @@
 #X connect 3 0 4 0;
 #X connect 4 0 1 0;
 #X restore 1520 721 pd motor-serial;
-#N canvas 517 202 1905 987 differential_drive 1;
+#N canvas -76 236 1905 987 differential_drive 0;
 #X obj 281 525 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 4950 1;
 #X obj 362 519 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
@@ -98,13 +98,13 @@
 #X restore 295 646 pd differential_drive;
 #X floatatom 703 58 5 0 0 0 - - -, f 5;
 #X obj 706 80 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 3335 1;
-#X obj 1362 800 *;
-#X obj 1383 753 t b f;
-#X obj 1690 660 r ball_detected;
-#X floatatom 1696 746 5 0 0 0 - - -, f 5;
-#X obj 1675 821 *;
-#X obj 1696 774 t b f;
+-1 -1 2596 1;
+#X obj 1154 816 *;
+#X obj 1175 769 t b f;
+#X obj 1362 674 r ball_detected;
+#X floatatom 1368 760 5 0 0 0 - - -, f 5;
+#X obj 1347 835 *;
+#X obj 1368 788 t b f;
 #N canvas 511 235 549 344 heading 0;
 #X obj 29 134 clip -1 1;
 #X obj 28 27 inlet;
@@ -121,8 +121,8 @@ degrees. (deadzone);
 #X restore 682 109 pd heading;
 #X floatatom 726 145 5 0 0 0 - - -, f 5;
 #X obj 946 125 tgl 50 0 empty empty way_is_clear 17 7 0 10 -262144
--1 -1 0 1;
-#X obj 1385 692 tgl 50 0 empty empty Ball_Detected 17 7 0 10 -262144
+-1 -1 1 1;
+#X obj 1177 708 tgl 50 0 empty empty Ball_Detected 17 7 0 10 -262144
 -1 -1 0 1;
 #X obj 131 149 tgl 50 0 empty empty Ball_nearish 0 -5 0 10 -262144
 -1 -1 0 1;
@@ -144,7 +144,7 @@ degrees. (deadzone);
 -1 -1 3150 1;
 #X obj 45 265 t b f;
 #X obj 45 292 *;
-#X obj 1363 826 spigot;
+#X obj 1155 842 spigot;
 #X msg 515 689 0, f 2;
 #X floatatom 1339 59 5 0 0 0 - - -, f 5;
 #X obj 1339 78 abs;
@@ -197,18 +197,17 @@ degrees. (deadzone);
 #X connect 5 0 3 0;
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 1502 764 pd sig2num;
-#X obj 552 322 s steering_toggle;
+#X obj 495 335 s steering_toggle;
 #X obj 567 524 r steering_toggle;
-#X obj 568 544 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 568 544 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 508 593 *;
 #X obj 536 566 t b f;
 #X floatatom 508 615 5 0 0 0 - - -, f 5;
 #X obj 1068 30 r reflectance;
 #X floatatom 1068 52 5 0 0 0 - - -, f 5;
-#X obj 1068 71 > 920;
-#X obj 1069 97 tgl 50 0 empty empty inside_goal 17 7 0 10 -262144 -1
--1 0 1;
+#X obj 1068 103 tgl 50 0 empty empty inside_goal 17 7 0 10 -262144
+-1 -1 1 1;
 #X text 37 764 Dealing with reflections off the goal will be especially
 tricky for the goalie. It will affect the apaprent ball distance as
 well as the angle. Post note: Solved by automatic gain control to filter
@@ -219,121 +218,151 @@ out reflections., f 25;
 -1 0 1;
 #X obj 44 361 throw~ steering;
 #X text 32 122 Only face ball when ball is near;
-#X obj 380 26 r ball_distance;
-#X floatatom 380 51 8 0 0 0 - - -, f 8;
-#X obj 440 142 tgl 50 0 empty empty Ball_very_near 0 -5 0 10 -262144
+#X obj 280 29 r ball_distance;
+#X floatatom 280 54 8 0 0 0 - - -, f 8;
+#X obj 439 137 tgl 50 0 empty empty Ball_very_near 0 -5 0 10 -262144
 -1 -1 0 1;
-#X obj 417 103 < 0.25;
-#N canvas 329 201 742 471 save_goal 0;
-#X obj 104 28 inlet;
-#X obj 238 341 outlet;
-#X obj 203 167 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 433 105 < 0.25;
+#N canvas -204 119 1905 987 save_goal 0;
+#X obj 128 62 inlet;
+#X obj 276 793 outlet;
+#X obj 195 220 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 271 235 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 263 288 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X msg 234 286 1;
-#X msg 290 288 0;
-#X msg 323 242 -1;
-#X msg 364 284 0;
-#X obj 447 373 outlet;
+#X msg 272 738 1;
+#X msg 328 740 0;
+#X msg 383 744 -1;
+#X msg 435 744 0;
+#X obj 485 825 outlet;
 #X obj 236 43 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X obj 134 138 spigot;
 #X obj 259 92 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X msg 245 66 0;
-#X obj 54 140 moses 1;
 #X obj 291 40 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X msg 291 66 1;
 #X text 172 19 drive towards the ball \, then move back.;
 #X obj 388 43 loadbang;
 #X msg 339 68 1;
-#X obj 54 117 change;
-#X msg 532 286 1;
-#X msg 156 364 0;
-#X text 197 187 drive forwards;
-#X text 345 185 stop;
-#X text 549 212 stop;
-#X text 420 196 drive backwards;
-#X msg 192 289 0;
-#X text 504 372 not running;
-#X obj 62 42 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X msg 570 738 1;
+#X msg 130 793 0;
+#X text 189 240 drive forwards;
+#X text 322 306 stop;
+#X text 590 491 stop;
+#X text 425 458 drive backwards;
+#X msg 230 741 0;
+#X text 542 824 not running;
+#X obj 95 72 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj 363 236 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 340 357 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 450 248 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 455 510 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 556 267 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 597 546 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 347 210 delay 1500;
-#X obj 534 241 delay 1500;
-#X msg 166 331 1;
-#X obj 245 205 delay 800;
-#X obj 438 224 delay 800;
-#X obj 244 144 delay 500;
-#X connect 0 0 19 0;
+#X obj 324 331 delay 1500;
+#X obj 575 520 delay 1500;
+#X msg 204 783 1;
+#X obj 237 258 delay 800;
+#X obj 443 486 delay 800;
+#X obj 65 214 delay 500;
+#X obj 583 267 inlet;
+#X msg 583 289 stop;
+#X obj 417 366 timer;
+#X floatatom 400 405 5 0 0 0 - - -, f 5;
+#X obj 599 335 t b b;
+#X text 624 201 interupting the sequence \, expecting a bang. Now using
+range detection \, issues occured when not knowing the period already
+driven backwards., f 19;
 #X connect 0 0 10 0;
-#X connect 0 0 28 0;
+#X connect 0 0 26 0;
 #X connect 2 0 4 0;
-#X connect 2 0 35 0;
+#X connect 2 0 33 0;
+#X connect 2 0 38 0;
 #X connect 3 0 5 0;
-#X connect 3 0 32 0;
+#X connect 3 0 30 0;
+#X connect 3 0 38 1;
 #X connect 4 0 1 0;
 #X connect 5 0 1 0;
 #X connect 6 0 1 0;
 #X connect 7 0 1 0;
 #X connect 9 0 12 0;
 #X connect 10 0 9 0;
-#X connect 10 0 26 0;
-#X connect 10 0 34 0;
-#X connect 10 0 37 0;
+#X connect 10 0 24 0;
+#X connect 10 0 32 0;
+#X connect 10 0 35 0;
 #X connect 11 0 10 1;
 #X connect 12 0 11 0;
-#X connect 14 0 15 0;
-#X connect 15 0 11 0;
-#X connect 17 0 18 0;
-#X connect 18 0 11 0;
-#X connect 19 0 13 0;
-#X connect 20 0 8 0;
-#X connect 21 0 8 0;
-#X connect 26 0 1 0;
-#X connect 28 0 10 0;
-#X connect 32 0 6 0;
-#X connect 32 0 29 0;
-#X connect 32 0 36 0;
-#X connect 33 0 20 0;
-#X connect 33 0 31 0;
-#X connect 33 0 14 0;
-#X connect 34 0 8 0;
-#X connect 35 0 3 0;
-#X connect 36 0 7 0;
-#X connect 36 0 30 0;
-#X connect 36 0 33 0;
-#X connect 37 0 2 0;
-#X connect 37 0 21 0;
-#X restore 420 235 pd save_goal;
-#X obj 517 242 tgl 50 0 empty empty steering_toggle 17 7 0 10 -262144
--1 -1 0 1;
-#X floatatom 369 259 5 0 0 0 - - -, f 5;
+#X connect 13 0 14 0;
+#X connect 14 0 11 0;
+#X connect 16 0 17 0;
+#X connect 17 0 11 0;
+#X connect 18 0 8 0;
+#X connect 19 0 8 0;
+#X connect 24 0 1 0;
+#X connect 26 0 10 0;
+#X connect 30 0 6 0;
+#X connect 30 0 27 0;
+#X connect 30 0 34 0;
+#X connect 31 0 18 0;
+#X connect 31 0 29 0;
+#X connect 31 0 13 0;
+#X connect 32 0 8 0;
+#X connect 33 0 3 0;
+#X connect 34 0 7 0;
+#X connect 34 0 28 0;
+#X connect 34 0 31 0;
+#X connect 35 0 2 0;
+#X connect 35 0 19 0;
+#X connect 36 0 37 0;
+#X connect 36 0 38 1;
+#X connect 37 0 33 0;
+#X connect 37 0 30 0;
+#X connect 37 0 34 0;
+#X connect 37 0 31 0;
+#X connect 38 0 39 0;
+#X connect 38 0 34 1;
+#X restore 369 241 pd save_goal;
+#X obj 501 270 tgl 50 0 empty empty steering_toggle 17 7 0 10 -262144
+-1 -1 1 1;
+#X floatatom 333 268 5 0 0 0 - - -, f 5;
 #X obj 365 202 metro 4000;
-#X obj 453 206 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 365 222 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 369 278 sig~;
-#X obj 369 300 *~;
-#X obj 414 257 tgl 50 0 empty empty throttle_toggle 17 7 0 10 -262144
--1 -1 0 1;
-#X obj 364 323 throw~ throttle;
+#X obj 333 287 sig~;
+#X obj 333 309 *~;
+#X obj 378 266 tgl 50 0 empty empty throttle_toggle 17 7 0 10 -262144
+-1 -1 1 1;
+#X obj 328 332 throw~ throttle;
 #X obj 486 448 sig2num~;
-#X obj 130 555 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 6350 1;
-#X obj 310 561 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 6350 1;
-#X obj 252 417 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 1201 573 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 1381 579 hsl 128 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 1452 441 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X msg 252 437 0;
-#X obj 307 581 sig~;
-#X obj 127 575 sig~;
+#X msg 1452 461 0;
+#X obj 1378 599 sig~;
+#X obj 1198 593 sig~;
+#X floatatom 1149 57 5 0 0 0 - - -, f 5;
+#X obj 1068 71 > 800;
+#X obj 280 73 moses 0.01;
+#X obj 136 540 catch~ throttle;
+#X obj 305 585 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 287 564 r throttle_toggle;
+#X obj 273 609 *~;
+#X obj 466 205 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 901 252 -1;
+#X msg 982 253 0;
+#X obj 929 197 moses 1;
+#X text 994 291 preventing robot from driving into goal., f 11;
+#X obj 931 373 clip~ 0 1;
+#X msg 314 230 0;
 #X connect 0 0 26 0;
 #X connect 0 0 25 0;
 #X connect 1 0 11 0;
@@ -357,13 +386,14 @@ out reflections., f 25;
 #X connect 18 1 17 1;
 #X connect 19 0 20 0;
 #X connect 20 0 45 0;
+#X connect 21 0 95 0;
 #X connect 23 0 28 0;
 #X connect 24 0 23 0;
 #X connect 25 0 29 0;
 #X connect 26 0 27 0;
 #X connect 28 0 29 0;
 #X connect 28 1 29 1;
-#X connect 29 0 61 0;
+#X connect 29 0 60 0;
 #X connect 32 0 33 0;
 #X connect 33 0 35 0;
 #X connect 34 0 42 1;
@@ -377,39 +407,50 @@ out reflections., f 25;
 #X connect 43 0 38 0;
 #X connect 44 0 48 1;
 #X connect 45 0 48 0;
-#X connect 47 0 79 0;
+#X connect 47 0 78 0;
 #X connect 48 0 46 0;
 #X connect 51 0 52 0;
 #X connect 52 0 54 0;
 #X connect 53 0 55 0;
 #X connect 54 0 53 0;
 #X connect 54 1 53 1;
+#X connect 55 0 10 2;
 #X connect 56 0 57 0;
-#X connect 57 0 58 0;
-#X connect 58 0 59 0;
-#X connect 61 0 62 0;
-#X connect 62 0 64 0;
-#X connect 63 0 62 1;
-#X connect 66 0 67 0;
-#X connect 67 0 69 0;
-#X connect 67 0 24 0;
-#X connect 68 0 73 0;
-#X connect 69 0 68 0;
-#X connect 70 0 72 0;
-#X connect 70 1 71 0;
-#X connect 71 0 50 0;
-#X connect 72 0 75 0;
-#X connect 73 0 74 0;
-#X connect 74 0 70 0;
-#X connect 74 0 71 0;
-#X connect 75 0 76 0;
-#X connect 76 0 78 0;
-#X connect 77 0 76 1;
-#X connect 79 0 53 0;
-#X connect 80 0 85 0;
-#X connect 81 0 84 0;
-#X connect 82 0 83 0;
-#X connect 83 0 80 0;
-#X connect 83 0 81 0;
-#X connect 84 0 10 2;
-#X connect 85 0 10 0;
+#X connect 57 0 86 0;
+#X connect 60 0 61 0;
+#X connect 61 0 63 0;
+#X connect 62 0 61 1;
+#X connect 65 0 66 0;
+#X connect 66 0 87 0;
+#X connect 67 0 72 0;
+#X connect 68 0 67 0;
+#X connect 69 0 71 0;
+#X connect 69 1 70 0;
+#X connect 70 0 50 0;
+#X connect 71 0 74 0;
+#X connect 72 0 73 0;
+#X connect 73 0 69 0;
+#X connect 74 0 75 0;
+#X connect 75 0 77 0;
+#X connect 76 0 75 1;
+#X connect 78 0 53 0;
+#X connect 79 0 84 0;
+#X connect 80 0 83 0;
+#X connect 81 0 82 0;
+#X connect 82 0 79 0;
+#X connect 82 0 80 0;
+#X connect 85 0 86 1;
+#X connect 86 0 58 0;
+#X connect 87 1 68 0;
+#X connect 87 1 24 0;
+#X connect 88 0 97 0;
+#X connect 89 0 91 1;
+#X connect 90 0 89 0;
+#X connect 91 0 10 0;
+#X connect 92 0 69 1;
+#X connect 93 0 97 1;
+#X connect 94 0 97 1;
+#X connect 95 0 94 0;
+#X connect 95 1 93 0;
+#X connect 97 0 91 0;
+#X connect 98 0 71 0;
