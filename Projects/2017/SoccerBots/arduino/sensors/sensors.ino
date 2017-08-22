@@ -31,6 +31,7 @@ int back_range = 0; // so far unused
 float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
+int crotchet;
 
 #if DEBUGGING ==1
 	#define DEBUG(x) Serial.println (x)
@@ -45,6 +46,7 @@ const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0
 #include "magnetometer.h"
 #include "ultrasonic.h"
 #include "reflectance.h"
+#include "nokia.h"
 
 // int ir_val;
 const float TAU = 2 * PI;
@@ -119,6 +121,32 @@ void beep() {
 	tone(BUZZER, 3600);
 	delay(100);
 	noTone(BUZZER);
+}
+
+float frequency(int note) {
+	return 440 * pow(2.0, (note - 69) / 12.0);
+}
+
+void playNote(int pitch, int duration) {
+	tone(BUZZER, (int)round(frequency(pitch)), duration);	
+	delay(duration+5);
+	noTone(BUZZER);
+	delay(5);
+}
+
+void setNoteDurations(int bpm) {
+	crotchet = 60000 / bpm;
+}
+
+void playTune(float tune[][2], int tempo, int arrayLength) {
+	setNoteDurations(tempo);
+	for(int x=0; x<arrayLength; x+=1) {
+		if(tune[x][0] == 0) {
+			delay(tune[x][1]*crotchet);
+		} else {
+			playNote(tune[x][0], tune[x][1]*crotchet);
+		}
+	}
 }
 
 float readIRsensor(int sensor_num) { // takes single reading from one IR sensor
