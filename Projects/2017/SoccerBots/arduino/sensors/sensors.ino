@@ -43,10 +43,10 @@ int crotchet;
 
 const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
 
+#include "nokia.h"
 #include "magnetometer.h"
 #include "ultrasonic.h"
 #include "reflectance.h"
-#include "nokia.h"
 
 // int ir_val;
 const float TAU = 2 * PI;
