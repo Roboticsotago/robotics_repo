@@ -1,4 +1,4 @@
-#N canvas 96 51 893 540 10;
+#N canvas 102 51 893 540 10;
 #X obj 29 39 r ball_angle;
 #X obj 682 26 r compass_heading;
 #X obj 900 31 r range;
@@ -9,7 +9,7 @@
 #X obj 946 99 > 14;
 #X obj 1174 676 r ball_detected;
 #X obj 1339 33 r angle2goal;
-#N canvas 214 194 1234 727 motor-serial 1;
+#N canvas 102 51 893 540 motor-serial 1;
 #X text 69 49 Tell motor-control what serial device to use:;
 #X obj 76 244 s motor_device;
 #X obj 12 142 loadbang;
@@ -19,11 +19,16 @@
 #X obj 102 74 r dspace_restart;
 #X msg 73 192 devicename /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351A0D161-if00
 , f 111;
+#X obj 165 131 bng 15 250 50 0 empty empty disconnect 17 7 0 10 -262144
+-1 -1;
+#X msg 165 151 close;
 #X connect 2 0 3 0;
 #X connect 3 0 6 0;
 #X connect 4 0 6 0;
 #X connect 5 0 4 0;
 #X connect 6 0 1 0;
+#X connect 7 0 8 0;
+#X connect 8 0 1 0;
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 1520 721 pd motor-serial;
 #N canvas 102 51 893 540 differential_drive 0;
@@ -114,14 +119,14 @@
 #X restore 751 667 pd differential_drive;
 #X floatatom 703 58 5 0 0 0 - - -, f 5;
 #X obj 706 80 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 3018 1;
+-1 -1 1524 1;
 #X obj 1154 816 *;
 #X obj 1175 769 t b f;
 #X obj 1362 674 r ball_detected;
 #X floatatom 1368 760 5 0 0 0 - - -, f 5;
 #X obj 1347 835 *;
 #X obj 1368 788 t b f;
-#N canvas 440 248 549 344 heading 1;
+#N canvas 438 246 549 344 heading 1;
 #X obj 28 27 inlet;
 #X obj 28 239 outlet;
 #X obj 28 82 expr if($f1 > 80 \, $f1 - 80 \, if($f1 < -80 \, $f1 +
@@ -145,7 +150,7 @@ degrees. (deadzone);
 #X obj 131 149 tgl 50 0 empty empty Ball_nearish 0 -5 0 10 -262144
 -1 -1 0 1;
 #X obj 142 112 < 1;
-#N canvas 96 238 584 354 face-ball 1;
+#N canvas 102 236 584 354 face-ball 1;
 #X obj 38 162 clip -1 1;
 #X obj 38 57 inlet;
 #X obj 38 186 outlet;
