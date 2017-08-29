@@ -78,7 +78,7 @@ proc run_tests {} {
 set ::serial_channel [connect $SERIAL_DEVICE]
 
 puts stderr "About to run tests..."
-after 1000 run_tests
+after 4000 run_tests
 
 # Enter the event loop (exit when done)
 vwait ::finished
