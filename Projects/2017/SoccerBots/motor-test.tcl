@@ -54,21 +54,21 @@ proc send {binary_string} {
 proc run_tests {} {
 	# Kicker:
 	send 00000001
-	after 500
+	after 1000
 	send 00000000
-	after 500
+	after 1000
 	
 	# Left motor:
 	send 10110000
 	after 2000
-	send 10010000
+	send 10010001
 	after 2000
 	send 10000000
 	
 	# Right motor:
 	send 11110000
 	after 2000
-	send 11010000
+	send 11010001
 	after 2000
 	send 11000000
 	
