@@ -24,10 +24,10 @@ const int MOTOR_R_DUTY=190;
 const int KICKER_MIN = 100;  //tested
 const int KICKER_MAX = 60;   //tested
 #endif
-const int DIR_MASK 		= 0b00100000;
-const int MOTOR_MASK 		= 0b01000000;
-const int SPEED_MASK	 	= 0b00011111;
 const int MESSAGE_TYPE_MASK	= 0b10000000;
+const int MOTOR_MASK 		= 0b01000000;
+const int DIR_MASK 			= 0b00100000;
+const int SPEED_MASK	 	= 0b00011111;
 const int KICKER_MASK 		= 0b00000001;
 const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 2.
 int motors_enabled = 0;
@@ -66,12 +66,6 @@ int motors_enabled = 0;
 	#define DEBUG_NOEOL(x)
 #endif
 
-
-
-
-       
-
-
 void setup() {
 	Kicker.attach(SERVO_PIN);
 	Kicker.write(KICKER_MIN);
@@ -108,7 +102,6 @@ void Stop() {
 	digitalWrite(MOTOR_R_1_PIN, LOW);
 	digitalWrite(MOTOR_R_2_PIN, HIGH);
 	analogWrite(MOTOR_R_ENABLE, 0);
-
 }
 
 //speed argument expected to be between 0-255
@@ -120,7 +113,6 @@ void L_Spd(int speed, bool dir) {
 	digitalWrite(MOTOR_L_2_PIN, !dir);
 	analogWrite(MOTOR_L_ENABLE, (int) round(speed/255.0 * MOTOR_L_DUTY));
 }
-
 
 void R_Spd(int speed, bool dir) {
 	if (!motors_enabled) {speed = 0;}
@@ -136,7 +128,6 @@ void kick(){ //this is unused, but it could be useful so it can stay.
 	delay(KICKER_DELAY);
 	Kicker.write(KICKER_MIN);
 	delay(KICKER_DELAY);
-
 }
 
 void kicker_move(int direction) {
@@ -149,7 +140,11 @@ void kicker_move(int direction) {
 
 void motor_control(){
 	if (Serial.available() > 0) {
-		int data = Serial.read();
+		int data_int = Serial.read();
+		byte data = byte(data_int);
+		if (data<0){
+			return;
+		}
 		if ((data&MESSAGE_TYPE_MASK)>>7==0){
 			kicker_move(data&KICKER_MASK);
         }else{
