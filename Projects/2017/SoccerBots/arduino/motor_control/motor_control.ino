@@ -68,7 +68,6 @@ int motors_enabled = 0;
 
 void setup() {
 	Kicker.attach(SERVO_PIN);
-	Kicker.write(KICKER_MIN);
 	pinMode(MOTOR_TOGGLE_SWITCH, INPUT); digitalWrite(MOTOR_TOGGLE_SWITCH, 1);
   // TODO: check if these are valid (I think they're from the separate test/diagnostic board
 	pinMode(R_LED, OUTPUT); digitalWrite(R_LED, LOW);
@@ -93,6 +92,14 @@ void setup() {
 	#ifdef DEBUGGING
 	DEBUG("\n\nDspace Motor Controller for SoccerBots - Info Sci Mechatronics v0.01");
 	#endif
+
+	// Flap kicker paddle to signal startup (even if motors disabled):
+	Kicker.write(KICKER_MAX); delay(200);
+	Kicker.write(KICKER_MIN); delay(200);
+	Kicker.write(KICKER_MAX); delay(200);
+	Kicker.write(KICKER_MIN); delay(200);
+	Kicker.write(KICKER_MAX); delay(200);
+	Kicker.write(KICKER_MIN);
 }
 
 void Stop() {
@@ -141,13 +148,13 @@ void kicker_move(int direction) {
 void motor_control(){
 	if (Serial.available() > 0) {
 		int data_int = Serial.read();
-		byte data = byte(data_int);
-		if (data<0){
+		if (data_int < 0) {
 			return;
 		}
+		byte data = byte(data_int);
 		if ((data&MESSAGE_TYPE_MASK)>>7==0){
 			kicker_move(data&KICKER_MASK);
-        }else{
+		} else {
 			if ((data&MOTOR_MASK)>>6) {
 				R_Spd((data&SPEED_MASK)<<3, (data&DIR_MASK)>>5);
 				DEBUG("R forward (DIR, Speed): ");
