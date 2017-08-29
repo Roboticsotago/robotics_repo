@@ -12,19 +12,23 @@ const int KICKER_MIN = 100;
 const int KICKER_MAX = 60; //tested 
 const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
+// For limiting output power to 4.5 V equivalent from an 8 V supply:
+// duty = 4.5 V / (8 V) x 255 = 143
 #if (SHUTTER==1)
-const int MOTOR_L_DUTY=125; //to limit 8.0V to 4.5V
+// Motor speed limits tweaked for Shutter (attacker):
+const int MOTOR_L_DUTY=125;
 const int MOTOR_R_DUTY=170;
 #else
-const int MOTOR_L_DUTY=155; //to limit 8.0V to 4.5V
+// Motor speed limits tweaked for Boris (goalie):
+const int MOTOR_L_DUTY=155;
 const int MOTOR_R_DUTY=190;
 #endif
-const int DIR_MASK 			= 0b00100000;
+const int DIR_MASK 		= 0b00100000;
 const int MOTOR_MASK 		= 0b01000000;
 const int SPEED_MASK	 	= 0b00011111;
 const int MESSAGE_TYPE_MASK	= 0b10000000;
 const int KICKER_MASK 		= 0b00000001;
-const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 4.
+const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 2.
 int motors_enabled = 0;
 
 #define MOTOR_R_ENABLE 5
@@ -71,6 +75,7 @@ void setup() {
 	Kicker.attach(SERVO_PIN);
 	Kicker.write(KICKER_MIN);
 	pinMode(MOTOR_TOGGLE_SWITCH, INPUT); digitalWrite(MOTOR_TOGGLE_SWITCH, 1);
+  // TODO: check if these are valid (I think they're from the separate test/diagnostic board
 	pinMode(R_LED, OUTPUT); digitalWrite(R_LED, LOW);
 	pinMode(O_LED, OUTPUT); digitalWrite(O_LED, LOW);
 	pinMode(Y_LED, OUTPUT); digitalWrite(Y_LED, LOW);
