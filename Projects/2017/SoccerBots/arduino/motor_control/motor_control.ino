@@ -21,7 +21,7 @@ const int KICKER_MAX = 145;
 // Motor speed and servo limits tweaked for Boris (goalie):
 const int MOTOR_L_DUTY=155;
 const int MOTOR_R_DUTY=190;
-const int KICKER_MIN = 100;  //tested
+const int KICKER_MIN = 115;  //tested
 const int KICKER_MAX = 60;   //tested
 #endif
 const int MESSAGE_TYPE_MASK	= 0b10000000;
