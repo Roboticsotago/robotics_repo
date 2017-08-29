@@ -33,13 +33,13 @@
 #X restore 1520 721 pd motor-serial;
 #N canvas 102 51 893 540 differential_drive 0;
 #X obj 281 525 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 4950 1;
+-1 -1 3879 1;
 #X obj 362 519 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 4950 1;
+-1 -1 6021 1;
 #X obj 345 194 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 4950 1;
 #X obj 304 352 hsl 100 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 4950 1;
+-1 -1 3879 1;
 #X obj 286 472 +;
 #X obj 362 472 +;
 #X floatatom 344 326 5 0 0 0 - - -, f 5;
@@ -67,20 +67,21 @@
 #X obj 205 10 inlet;
 #X obj 133 74 *~;
 #X obj 204 116 tgl 50 1 steering_toggle_out steering_toggle_in empty
-17 7 0 10 -262144 -1 -1 0 1;
+17 7 0 10 -262144 -1 -1 1 1;
 #X obj 963 139 s steering_toggle_in;
 #X obj 966 186 r steering_toggle_out;
 #X obj 142 30 s throttle_toggle_in;
 #X obj 119 120 tgl 50 1 throttle_toggle_out throttle_toggle_in empty
-17 7 0 10 -262144 -1 -1 0 1;
+17 7 0 10 -262144 -1 -1 1 1;
 #X obj 182 55 r throttle_toggle_out;
 #X obj 201 228 hsl 60 15 -1 1 0 0 empty steering_drive empty -2 -8
-0 10 -262144 -1 -1 2950 1;
+0 10 -262144 -1 -1 2311 1;
 #X obj 137 205 vsl 15 60 -1 1 0 0 empty throttle_drive empty 0 -9 0
 10 -262144 -1 -1 2950 1;
 #X obj 398 197 s throttle_drive;
 #X obj 574 278 s steering_drive;
 #X floatatom 471 73 5 0 0 0 - - -, f 5;
+#X text 0 94 TODO: enable these at startup:;
 #X connect 0 0 13 0;
 #X connect 1 0 14 0;
 #X connect 2 0 6 0;
@@ -119,14 +120,14 @@
 #X restore 751 667 pd differential_drive;
 #X floatatom 703 58 5 0 0 0 - - -, f 5;
 #X obj 706 80 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 1524 1;
+-1 -1 1497 1;
 #X obj 1154 816 *;
 #X obj 1175 769 t b f;
 #X obj 1362 674 r ball_detected;
 #X floatatom 1368 760 5 0 0 0 - - -, f 5;
 #X obj 1347 835 *;
 #X obj 1368 788 t b f;
-#N canvas 438 246 549 344 heading 1;
+#N canvas 436 244 549 344 heading 1;
 #X obj 28 27 inlet;
 #X obj 28 239 outlet;
 #X obj 28 82 expr if($f1 > 80 \, $f1 - 80 \, if($f1 < -80 \, $f1 +
@@ -150,7 +151,7 @@ degrees. (deadzone);
 #X obj 131 149 tgl 50 0 empty empty Ball_nearish 0 -5 0 10 -262144
 -1 -1 0 1;
 #X obj 142 112 < 1;
-#N canvas 102 236 584 354 face-ball 1;
+#N canvas 102 234 584 354 face-ball 1;
 #X obj 38 162 clip -1 1;
 #X obj 38 57 inlet;
 #X obj 38 186 outlet;
@@ -223,7 +224,7 @@ degrees. (deadzone);
 #X restore 1495 804 pd sig2num;
 #X obj 495 335 s steering_toggle;
 #X obj 949 556 r steering_toggle;
-#X obj 975 582 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 975 582 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 1068 30 r reflectance;
 #X floatatom 1068 52 5 0 0 0 - - -, f 5;
@@ -258,7 +259,7 @@ out reflections., f 25;
 #X obj 236 43 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X obj 134 138 spigot;
-#X obj 259 92 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 259 92 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X msg 245 66 0;
 #X obj 291 40 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -347,7 +348,7 @@ driven backwards., f 19;
 #X connect 41 0 31 0;
 #X restore 369 241 pd save_goal;
 #X obj 501 270 tgl 50 1 empty empty steering_toggle 17 7 0 10 -262144
--1 -1 0 1;
+-1 -1 1 1;
 #X floatatom 333 268 5 0 0 0 - - -, f 5;
 #X obj 365 202 metro 4000;
 #X obj 365 222 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -391,6 +392,7 @@ driven backwards., f 19;
 #X obj 950 433 clip~ -1 1;
 #X msg 1162 268 1;
 #X obj 432 102 < 0.4;
+#X text 591 605;
 #X connect 0 0 26 0;
 #X connect 0 0 25 0;
 #X connect 1 0 11 0;
