@@ -59,16 +59,16 @@ proc run_tests {} {
 	after 1000
 	
 	# Left motor:
-	send 10110000
+	send 10111111
 	after 2000
-	send 10010001
+	send 10011111
 	after 2000
 	send 10000000
 	
 	# Right motor:
-	send 11110000
+	send 11111111
 	after 2000
-	send 11010001
+	send 11011111
 	after 2000
 	send 11000000
 	
