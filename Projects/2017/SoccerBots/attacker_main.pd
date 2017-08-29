@@ -1,8 +1,8 @@
-#N canvas 14 101 1905 545 10;
+#N canvas 102 51 893 545 10;
 #X obj 69 39 r ball_angle;
 #X floatatom 102 69 5 0 0 0 - - -, f 5;
 #X obj 105 91 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 4429 1;
+-1 -1 3150 1;
 #X obj 326 109 tgl 50 0 empty empty ball_near 17 7 0 10 -262144 -1
 -1 0 1;
 #X obj 202 68 < 20;
@@ -16,12 +16,12 @@
 #X obj 326 84 < 0.25;
 #X floatatom 325 65 5 0 0 0 - - -, f 5;
 #X obj 204 89 tgl 50 0 empty empty facing_ball 17 7 0 10 -262144 -1
--1 0 1;
+-1 1 1;
 #X obj 491 44 r compass_heading;
 #X obj 491 66 abs;
 #X obj 491 88 < 70;
 #X floatatom 531 66 5 0 0 0 - - -, f 5;
-#N canvas 14 59 1219 718 differential_drive 0;
+#N canvas 102 54 893 540 differential_drive 0;
 #X obj 281 525 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 4950 1;
 #X obj 362 519 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
@@ -71,8 +71,10 @@
 #X obj 398 197 s throttle_drive;
 #X obj 574 278 s steering_drive;
 #X floatatom 471 73 5 0 0 0 - - -, f 5;
-#X connect 0 0 13 0;
-#X connect 1 0 14 0;
+#X obj 257 638 change;
+#X obj 365 637 change;
+#X connect 0 0 40 0;
+#X connect 1 0 41 0;
 #X connect 2 0 6 0;
 #X connect 3 0 8 0;
 #X connect 3 0 9 0;
@@ -105,69 +107,61 @@
 #X connect 28 0 19 0;
 #X connect 31 0 26 1;
 #X connect 34 0 28 1;
+#X connect 40 0 13 0;
+#X connect 41 0 14 0;
 #X coords 0 -1 1 1 170 200 1 100 100;
-#X restore 838 327 pd differential_drive;
-#X obj 979 213 catch~ steering;
-#X obj 998 237 r steering_toggle;
-#X obj 1024 263 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
-#X obj 795 256 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X restore 98 327 pd differential_drive;
+#X obj 239 243 catch~ steering;
+#X obj 256 268 r steering_toggle;
+#X obj 284 293 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 790 225 r throttle_toggle;
-#X obj 808 291 *~;
-#X obj 978 293 *~;
-#X obj 845 253 r goal_area;
+#X obj 68 267 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 68 246 r throttle_toggle;
+#X obj 68 291 *~;
+#X obj 238 293 *~;
+#X obj 86 269 r goal_area;
 #X obj 485 110 tgl 50 0 empty empty facing_goal 17 7 0 10 -262144 -1
 -1 1 1;
-#N canvas 899 363 450 300 kick? 1;
-#X obj 50 294 change;
-#X obj 82 359 s kick;
-#X text 167 5 triggers metro to send kick ball;
-#X obj 53 272 snapshot~;
-#X obj 177 222 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#N canvas 101 51 895 549 kick? 0;
+#X obj 87 154 change;
+#X obj 48 263 s kick;
+#X obj 87 132 snapshot~;
+#X obj 212 83 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X obj 208 209 loadbang;
-#X obj 178 36 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 20 1;
-#X floatatom 181 61 5 0 0 0 - - -, f 5;
-#X obj 181 100 expr 1 / $f1;
-#X obj 181 80 clip 0.1 5;
-#X floatatom 180 129 5 0 0 0 - - -, f 5;
-#X obj 107 -49 loadbang;
-#X obj 63 175 phasor~;
-#X text -1 -31 toggles kicker;
-#X obj 146 244 metro 10;
-#X obj 60 243 *~;
-#X obj 6 -49 inlet~;
-#X obj 69 200 expr~ $v1 < 0.5;
-#X floatatom 176 299 5 0 0 0 - - -, f 5;
-#X floatatom 110 319 5 0 0 0 - - -, f 5;
-#X obj 6 -16 lop~ 1;
-#X obj 20 110 expr~ $v1 < 0.5;
-#X msg 226 235 10;
-#X msg 106 -24 0.2;
-#X connect 0 0 1 0;
-#X connect 0 0 19 0;
-#X connect 3 0 0 0;
-#X connect 3 0 18 0;
-#X connect 4 0 14 0;
-#X connect 5 0 4 0;
-#X connect 5 0 22 0;
-#X connect 6 0 7 0;
-#X connect 7 0 9 0;
-#X connect 8 0 10 0;
-#X connect 9 0 8 0;
-#X connect 10 0 12 0;
-#X connect 11 0 23 0;
-#X connect 12 0 17 0;
-#X connect 14 0 3 0;
-#X connect 15 0 3 0;
-#X connect 16 0 20 0;
-#X connect 17 0 15 1;
-#X connect 20 0 21 0;
-#X connect 21 0 15 0;
-#X connect 22 0 14 1;
-#X connect 23 0 6 0;
+#X obj 212 57 loadbang;
+#X text 88 17 toggles kicker;
+#X obj 212 107 metro 10;
+#X obj 88 44 inlet~;
+#X floatatom 154 153 5 0 0 0 - - -, f 5;
+#X floatatom 147 179 5 0 0 0 - - -, f 5;
+#X obj 88 77 lop~ 1;
+#X obj 87 105 expr~ $v1 >= 0.5;
+#X obj 48 207 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 48 185 metro 170;
+#X obj 48 243 spigot;
+#X obj 87 208 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 14 140 loadbang;
+#X obj 48 164 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X connect 0 0 9 0;
+#X connect 0 0 15 0;
+#X connect 2 0 0 0;
+#X connect 2 0 8 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 6 0 2 0;
+#X connect 7 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 2 0;
+#X connect 12 0 14 0;
+#X connect 13 0 12 0;
+#X connect 14 0 1 0;
+#X connect 15 0 14 1;
+#X connect 16 0 17 0;
+#X connect 17 0 13 0;
 #X restore 380 233 pd kick?;
 #X obj 653 42 r ball_detected;
 #X obj 788 39 r angle2goal;
@@ -183,12 +177,34 @@
 #X obj 485 165 sig~;
 #X obj 382 209 expr~ $v1 * $v2 * $v3;
 #X obj 741 168 sig~;
-#X obj 1371 421 s motor_device;
-#X text 1364 305 Tell motor-control what serial device to use:;
-#X obj 1371 327 loadbang;
-#X obj 1371 349 delay 50;
-#X msg 1371 373 devicename /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351503221-if00
+#X text 791 11 Vision:;
+#X text 327 18 IR:;
+#X text 71 15 IR:;
+#X text 495 23 Compass:;
+#X text 656 16 IR:;
+#X text 906 13 Ultrasound:;
+#N canvas 101 51 895 549 serial-connection 0;
+#X obj 223 184 s motor_device;
+#X text 216 68 Tell motor-control what serial device to use:;
+#X obj 223 90 loadbang;
+#X obj 223 112 delay 50;
+#X msg 223 136 devicename /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351503221-if00
 ;
+#X obj 116 90 r reconnect;
+#X obj 108 119 bng 15 250 50 0 empty empty Connect 17 7 0 10 -262144
+-1 -1;
+#X msg 128 190 close;
+#X obj 108 140 bng 15 250 50 0 empty empty disconnect 17 7 0 10 -262144
+-1 -1;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 0 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X connect 7 0 0 0;
+#X connect 8 0 7 0;
+#X coords 0 -1 1 1 85 60 1 100 100;
+#X restore 353 378 pd serial-connection;
 #X connect 0 0 1 0;
 #X connect 0 0 4 0;
 #X connect 0 0 5 0;
@@ -218,12 +234,10 @@
 #X connect 30 0 35 0;
 #X connect 32 0 34 0;
 #X connect 33 0 41 0;
+#X connect 34 0 33 0;
 #X connect 35 0 36 0;
 #X connect 36 0 37 0;
 #X connect 38 0 40 0;
 #X connect 39 0 40 1;
 #X connect 40 0 28 0;
 #X connect 41 0 40 2;
-#X connect 44 0 45 0;
-#X connect 45 0 46 0;
-#X connect 46 0 42 0;
