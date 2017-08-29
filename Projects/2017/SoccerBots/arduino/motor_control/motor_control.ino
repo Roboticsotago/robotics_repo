@@ -1,27 +1,28 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
 #define BAUD_RATE 115200 
-#define SHUTTER 0
+#define SHUTTER 1
 
 //TODO: Do the duty cycles of the SoccerBot motors need adjusting?
 //TODO: Move the duty cycles into the eeprom
 #include <Servo.h> //incldued for kicker
 Servo Kicker;
 const int SERVO_PIN = 13; //Servo 2, Pin 2 SDK.
-const int KICKER_MIN = 100;
-const int KICKER_MAX = 60; //tested 
-const int KICKER_MID = 80;
 const int KICKER_DELAY = 1000;
 // For limiting output power to 4.5 V equivalent from an 8 V supply:
 // duty = 4.5 V / (8 V) x 255 = 143
 #if (SHUTTER==1)
-// Motor speed limits tweaked for Shutter (attacker):
+// Motor speed and servo limits tweaked for Shutter (attacker):
 const int MOTOR_L_DUTY=125;
 const int MOTOR_R_DUTY=170;
+const int KICKER_MIN = 105;  //tested
+const int KICKER_MAX = 145;
 #else
-// Motor speed limits tweaked for Boris (goalie):
+// Motor speed and servo limits tweaked for Boris (goalie):
 const int MOTOR_L_DUTY=155;
 const int MOTOR_R_DUTY=190;
+const int KICKER_MIN = 100;  //tested
+const int KICKER_MAX = 60;   //tested
 #endif
 const int DIR_MASK 		= 0b00100000;
 const int MOTOR_MASK 		= 0b01000000;
@@ -140,14 +141,10 @@ void kick(){ //this is unused, but it could be useful so it can stay.
 
 void kicker_move(int direction) {
 	if (!motors_enabled) {
-		kicker_midpoint(); 
+		Kicker.write(KICKER_MIN); 
 	} else{
 		Kicker.write(direction? KICKER_MAX: KICKER_MIN);
 	}
-}
-
-void kicker_midpoint(){
-  Kicker.write(KICKER_MID);	
 }
 
 void motor_control(){
