@@ -1,22 +1,25 @@
 Things to be done for the 2017 SoccerBots project
 
+[ ] Register for Nationals!!!
 [ ] Move this list to github's issue tracker?
 
 Software:
 
 [ ] Define a DEBUG function or macro for Arduino programs
-[ ] Rewrite "#ifdef"s to use "#if" conditionals (where it makes sense)
+[?] Rewrite "#ifdef"s to use "#if" conditionals (where it makes sense)
        e.g. "#if DEBUGGING==1" instead of "#ifdef DEBUGGING"
 [ ] Robot control behaviour (in Pd)
-[ ] Arrange for control program to launch when Raspberry Pi boots
+[Y] Arrange for control program to launch when Raspberry Pi boots
 	Pd startup: pd -noaudio -nomidi patch-filename.pd
 
 [.] EEPROM goodness (motor PWM limits, servo ranges, magnetometer calibration data, etc.)
+	[Y] Have done this for magnetometer stuff...
+	[ ] ...but not for machine-dependent motor speed PWM values and servo ranges
 
 [Y] Add restart-on-error to read_sensors.tcl
-	[ ] Could still add catching of write errors if the pipe fails..perhaps restart Pd if so.
+	[ ] Could still add catching of write errors if the pipe (TCP from pdsend to Pd) fails..perhaps restart Pd if so.
 
-[ ] Implement shell "until" loops in runeverything.sh for more graceful and efficient startup.
+[Y] Implement shell "until" loops in runeverything.sh for more graceful and efficient startup.
 
 [ ] Edit /etc/hosts (or equivalent) on remote client computers to add:
 	192.168.43.253	shutter
@@ -35,7 +38,8 @@ Software:
 	This was due to the DFRobot board being in the wrong mode, and pulseIn() blocking for a long time when the ultrasound sensor got no reflection.
 [Y] sensors.ino: reinstate debugging delay (now that we've figured out why the sensor reporting frequency was so low)
 [ ] Get Pd patches to properly handle the 0 values reported by the ultrasonic sensor (these mean "out of range", not 0 cm distance)
-[ ] Music for the buzzer!
+[Y] Music for the buzzer!
+	Tobias has created a nice library of tunes. :)
 
 IR system:
 
@@ -75,7 +79,8 @@ General:
 
 Hardware:
 
-[ ] Redesign main chassis and see if we can get it lasercut (it might be too large for Chris's 3D printer)
+[Y] Redesign main chassis and see if we can get it lasercut (it might be too large for Chris's 3D printer)
+	The revised design was just small enough to print. :)
 
 [Y] Design and fab main robot platform (3D print? lasercut?)
 
@@ -85,11 +90,11 @@ Hardware:
 
 [, ] Trial using a DSpace Robot board for motor and servo control (rather than separate Arduino + H-bridge)
 
-[ ,] Motor Enable switch (just a software switch for the DSpace board)
+[Y] Motor Enable switch (just a software switch for the DSpace board)
 
-[ ,] Build a power+ground bus board (screw terminals for input, header pins for multiple outputs)
+[Y] Build a power+ground bus board (screw terminals for input, header pins for multiple outputs)
 
-[, ] Main power switch (to save having to disconnect the battery when not in use!)
+[Y] Main power switch (to save having to disconnect the battery when not in use!)
 
 [ ] A pushbutton switch to safely shut down the Pi (with accompanying software)
 
@@ -105,10 +110,14 @@ Hardware:
 	or (perhaps better) use nylock locking nuts
 
 [.] Build IR sensors for ball detection
+	The high platform and horizontal sensor mounting means the ball can't reliably be detected when close!
+	Could redesign the platform with an angled (conical?) base perhaps.
 
 [.] Compass sensor (Sebastian and Tobias have been working on this)
 
 [ ] Install range sensors front and/or back for collision avoidance.
+	[ ] Finish CAD model of mounting bracket and print
 
-[ ] Colour sensors for approximate location on the field
+[.] Colour sensors for approximate location on the field
 	Need to get some - Adafruit?
+	We have a prototype using just an active IR reflectance sensor, which seems to work pretty well.
