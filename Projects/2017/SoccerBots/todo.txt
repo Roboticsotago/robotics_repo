@@ -79,6 +79,17 @@ General:
 
 Hardware:
 
+[ ] Design and build circuits for detecting and alerting on low battery.
+	Could just have a big red LED that comes on when low.
+	Or it could provide a signal to the sensor Arduino.
+	What threshold? Somewhere around 5.5 V?
+		For NiMH, 1.0-1.1 V per cell is probably about the beginning of the end.
+		So around 6.0-6.6 V would be a sensible warning threshold.
+		Of course, under load, the battery voltage will be a bit lower.
+	http://www.edn.com/design/analog/4427219/Simple-circuit-indicates-a-low-battery
+		For a threshold around 6-6.6 V, try R1 = 51..56 kohm (or a 100k trimpot)
+		Also, R5 (100k) might need to be increased to prevent the LED from turning on slightly under normal conditions. Try 1M.
+
 [Y] Redesign main chassis and see if we can get it lasercut (it might be too large for Chris's 3D printer)
 	The revised design was just small enough to print. :)
 
