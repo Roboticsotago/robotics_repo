@@ -78,6 +78,7 @@ proc run_tests {} {
 set ::serial_channel [connect $SERIAL_DEVICE]
 
 puts stderr "About to run tests..."
+puts stderr "(make sure the motor enable switch is on!)"
 after 4000 run_tests
 
 # Enter the event loop (exit when done)
