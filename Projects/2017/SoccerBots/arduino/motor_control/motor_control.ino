@@ -1,16 +1,27 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
-#define BAUD_RATE 115200 
+// MOST IMPORTANT!!! Make sure this is set correctly before uploading:
 #define SHUTTER 1
+// (it might be nice to have the robot's identity stored in EEPROM and detected automatically by this program)
 
-//TODO: Do the duty cycles of the SoccerBot motors need adjusting?
-//TODO: Move the duty cycles into the eeprom
+
+// Stuff below here shouldn't need to change very often.
+
+#define BAUD_RATE 115200
+
+// TODO: Do the duty cycles of the SoccerBot motors need adjusting?
+// TODO: Move the duty cycles into the eeprom
+// TODO: Remove unused stuff copied from the Dalek program.
+
 #include <Servo.h> //incldued for kicker
+
 Servo Kicker;
 const int SERVO_PIN = 13; //Servo 2, Pin 2 SDK.
 const int KICKER_DELAY = 1000;
-// For limiting output power to 4.5 V equivalent from an 8 V supply:
+
+// For PWM limiting output power to 4.5 V equivalent from an 8 V supply:
 // duty = 4.5 V / (8 V) x 255 = 143
+
 #if (SHUTTER==1)
 // Motor speed and servo limits tweaked for Shutter (attacker):
 const int MOTOR_L_DUTY=125;
@@ -24,12 +35,14 @@ const int MOTOR_R_DUTY=190;
 const int KICKER_MIN = 115;  //tested
 const int KICKER_MAX = 60;   //tested
 #endif
+
 const int MESSAGE_TYPE_MASK	= 0b10000000;
 const int MOTOR_MASK 		= 0b01000000;
 const int DIR_MASK 			= 0b00100000;
 const int SPEED_MASK	 	= 0b00011111;
 const int KICKER_MASK 		= 0b00000001;
 const int MOTOR_TOGGLE_SWITCH = 18; //physical pin 2 on sensor block 2.
+
 int motors_enabled = 0;
 
 #define MOTOR_R_ENABLE 5
@@ -94,11 +107,11 @@ void setup() {
 	#endif
 
 	// Flap kicker paddle to signal startup (even if motors disabled):
-	Kicker.write(KICKER_MAX); delay(200);
-	Kicker.write(KICKER_MIN); delay(200);
-	Kicker.write(KICKER_MAX); delay(200);
-	Kicker.write(KICKER_MIN); delay(200);
-	Kicker.write(KICKER_MAX); delay(200);
+	Kicker.write(KICKER_MAX); delay(100);
+	Kicker.write(KICKER_MIN); delay(100);
+	Kicker.write(KICKER_MAX); delay(100);
+	Kicker.write(KICKER_MIN); delay(100);
+	Kicker.write(KICKER_MAX); delay(100);
 	Kicker.write(KICKER_MIN);
 }
 
