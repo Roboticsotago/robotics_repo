@@ -5,6 +5,7 @@ Things to be done for the 2017 SoccerBots project
 
 Software:
 
+[ ] Prioritise and complete Pd behaviour for Shutter(attacker)
 [ ] Define a DEBUG function or macro for Arduino programs
 [?] Rewrite "#ifdef"s to use "#if" conditionals (where it makes sense)
        e.g. "#if DEBUGGING==1" instead of "#ifdef DEBUGGING"
@@ -115,9 +116,9 @@ Hardware:
 
 [?] Maybe add lights? Just decorative? Must not confuse other robots!
 
-[ ] Build second robot as Goalie.
+[Y] Build second robot as Goalie.
 
-[ ] Apply threadlocker (e.g. Loctite) to fasteners before competition
+[Y] Apply threadlocker (e.g. Loctite) to fasteners before competition
 	or (perhaps better) use nylock locking nuts
 
 [.] Build IR sensors for ball detection
@@ -126,7 +127,7 @@ Hardware:
 
 [.] Compass sensor (Sebastian and Tobias have been working on this)
 
-[ ] Install range sensors front and/or back for collision avoidance.
+[Y] Install range sensors front and/or back for collision avoidance.
 	[ ] Finish CAD model of mounting bracket and print
 
 [.] Colour sensors for approximate location on the field
