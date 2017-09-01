@@ -1,19 +1,35 @@
-#N canvas 995 409 491 337 10;
-#X obj 44 31 netreceive 7000;
+#N canvas 1111 436 734 434 10;
+#X obj 40 13 netreceive 7000;
 #X obj 44 286 s ball_detected;
 #X obj 65 230 s ball_angle;
 #X obj 87 195 s ball_distance;
 #X obj 334 29 netreceive 7001;
-#X obj 334 66 s angle2goal;
-#X obj 151 121 s compass_heading;
+#X obj 332 75 s angle2goal;
+#X obj 291 285 s compass_heading;
 #X obj 108 164 s range;
 #X obj 44 77 unpack f f f f f f f f f;
 #X obj 305 125 s reflectance;
-#X connect 0 0 8 0;
-#X connect 4 0 5 0;
+#X obj 40 41 cyclone/speedlim 150;
+#X text 290 170 Compass sensor correction:;
+#X text 177 8 TODO: remove/reduce speedlim before the competition!
+;
+#X obj 501 189 expr 4e-06 * $f1 ** 4 - 0.0011 * $f1 ** 3 + 0.0821 *
+$f1 ** 2 - 0.2148 * $f1 + 0.5274;
+#X obj 589 322 expr;
+#X obj 291 192 expr if($f1 <= 0 \, $f1 \, -5.038 / pow(10 \, 7) * pow($f1
+\, 4) + 0.000152 * pow($f1 \, 3) - 0.01 * pow($f1 \, 2) + 0.871 * $f1
++ 0.613), f 27;
+#X obj 334 51 moses -179;
+#X floatatom 467 61 5 0 0 0 - - -, f 5;
+#X connect 0 0 10 0;
+#X connect 4 0 16 0;
 #X connect 8 0 1 0;
 #X connect 8 1 2 0;
 #X connect 8 2 3 0;
 #X connect 8 3 7 0;
-#X connect 8 5 6 0;
+#X connect 8 5 15 0;
 #X connect 8 7 9 0;
+#X connect 10 0 8 0;
+#X connect 15 0 6 0;
+#X connect 16 1 5 0;
+#X connect 16 1 17 0;
