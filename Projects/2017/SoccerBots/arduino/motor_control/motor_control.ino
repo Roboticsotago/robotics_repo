@@ -24,8 +24,8 @@ const int KICKER_DELAY = 1000;
 
 #if (SHUTTER==1)
 // Motor speed and servo limits tweaked for Shutter (attacker):
-const int MOTOR_L_DUTY=125;
-const int MOTOR_R_DUTY=170;
+const int MOTOR_L_DUTY=130;
+const int MOTOR_R_DUTY=143;
 const int KICKER_MIN = 105;  //tested
 const int KICKER_MAX = 145;
 #else

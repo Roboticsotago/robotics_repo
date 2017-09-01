@@ -72,6 +72,23 @@ proc run_tests {} {
 	after 2000
 	send 11000000
 	
+	#Both motors full speed:
+	send 10111111
+	send 11111111
+	after 5000
+	send 10000000
+	send 11000000
+	
+	after 1000
+	
+	#Both motors half speed:
+	send 10101111
+	send 11101111
+	after 5000
+	send 10000000
+	send 11000000
+	
+	
 	set ::finished 1
 }
 
