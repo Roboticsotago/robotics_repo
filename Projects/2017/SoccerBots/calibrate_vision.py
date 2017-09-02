@@ -7,7 +7,7 @@ import cvutils
 
 calibration_file_name = "camera_calibration_state.py"
 camera = SimpleCV.Camera(0, {"width":320,"height":240})
-os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/uvcdynctrl-settings.tcl')
+os.system(os.environ['HOME'] + '/robotics_repo/Projects/2017/SoccerBots/rpicam-setup.sh')
 
 grey_sample = cvutils.calibrate_white_balance(camera)
 blue_sample = cvutils.calibrate_colour_match(camera, grey_sample)

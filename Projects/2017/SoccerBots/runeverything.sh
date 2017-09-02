@@ -11,5 +11,5 @@ urxvt -name Pd -title Pd -e sh -c "pd -noaudio -nomidi -send \"; pd dsp 1\" moto
 sleep 5
 urxvt -name read_sensors -title read_sensors -e sh -c "./read_sensors.tcl | pdsend 7000" &
 export DISPLAY=:0.0
-v4l2-ctl -c  power_line_frequency=1 -c auto_exposure=1 -c exposure_time_absolute=150 -c white_balance_auto_preset=3 -c  iso_sensitivity=4 -c iso_sensitivity_auto=0
+./rpicam-setup.sh
 urxvt -name blob_tracking -title blob_tracking -e sh -c "python2.7 blob_tracking.py | pdsend 7001" &
