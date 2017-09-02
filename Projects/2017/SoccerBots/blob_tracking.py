@@ -25,6 +25,8 @@ times = []
 output = False
 then = 0
 now = 0	
+scaling_factor = 0.250 #0.075
+
 
 def average(numbers):
 	x = 0
@@ -56,13 +58,13 @@ while True:
 	#times.append(elapsed_time)
 	#frame_rate = 1 / average(times) not calcultating the correct result
 	
-	image = cvutils.wb(camera.getImage().scale(0.075), calibrated_grey_sample)
+	image = cvutils.wb(camera.getImage().scale(scaling_factor), calibrated_grey_sample)
 	v,s,h = image.toHSV().splitChannels()
 	hue_match = h.colorDistance((calibrated_goal_sample[0][0],calibrated_goal_sample[0][0],calibrated_goal_sample[0][0])).binarize(calibrated_goal_sample[0][1]*3)
 	sat_match = s.colorDistance((calibrated_goal_sample[1][0],calibrated_goal_sample[1][0],calibrated_goal_sample[1][0])).binarize(calibrated_goal_sample[1][1]*3)
 	matched = ((hue_match / 16) * (sat_match / 16))
 	matched.show()
-	blobs = matched.findBlobs(100, 1)
+	blobs = matched.findBlobs(threshval=100, minsize=1, maxsize=0, threshblocksize=0, threshconstant=5)
 	if blobs is not None:
 		blob_size = blobs[-1].area()
 		image_size = image.area()
