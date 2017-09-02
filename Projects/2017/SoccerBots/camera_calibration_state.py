@@ -1,2 +1,2 @@
-calibrated_grey_sample = (131.44827586206895, 128.54022988505747, 131.32183908045977)
-calibrated_goal_sample = ((105.5, 2.5), (193.5, 37.5), (66.0, 32.0))
+calibrated_grey_sample = (148.75, 147.25, 149.25)
+calibrated_goal_sample = ((103.5, 3.5), (182.5, 31.5), (54.0, 22.0))
