@@ -1,4 +1,4 @@
-#N canvas 1301 476 450 300 10;
+#N canvas 290 296 450 300 10;
 #X obj 79 81 snapshot~;
 #X obj 75 49 inlet~;
 #X floatatom 111 118 5 0 0 0 - - -, f 5;
@@ -24,4 +24,4 @@
 #X connect 9 0 6 0;
 #X connect 10 0 6 0;
 #X connect 10 0 7 1;
-#X coords 0 -1 1 1 85 60 1 100 100;
+#X coords 0 300 1 299 85 60 0;
