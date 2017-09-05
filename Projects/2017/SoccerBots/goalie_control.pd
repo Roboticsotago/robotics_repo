@@ -1,4 +1,4 @@
-#N canvas 0 52 1280 722 10;
+#N canvas 102 51 893 540 10;
 #X obj 29 39 r ball_angle;
 #X obj 682 26 r compass_heading;
 #X obj 900 31 r range;
@@ -120,7 +120,7 @@
 #X restore 751 667 pd differential_drive;
 #X floatatom 703 58 5 0 0 0 - - -, f 5;
 #X obj 706 80 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 3626 1;
+-1 -1 2781 1;
 #X obj 1154 816 *;
 #X obj 1175 769 t b f;
 #X obj 1362 674 r ball_detected;
@@ -167,7 +167,7 @@ degrees. (deadzone);
 #X restore 29 210 pd face-ball;
 #X floatatom 39 68 5 0 0 0 - - -, f 5;
 #X obj 42 90 hsl 64 15 -180 180 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 2219 1;
+-1 -1 2758 1;
 #X obj 45 265 t b f;
 #X obj 45 292 *;
 #X obj 1155 842 spigot;
@@ -223,8 +223,8 @@ degrees. (deadzone);
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 1495 804 pd sig2num;
 #X obj 495 335 s steering_toggle;
-#X obj 949 556 r steering_toggle;
-#X obj 975 582 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 947 559 r steering_toggle;
+#X obj 947 587 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 1068 30 r reflectance;
 #X floatatom 1068 52 5 0 0 0 - - -, f 5;
@@ -244,9 +244,9 @@ out reflections., f 25;
 #X floatatom 280 54 8 0 0 0 - - -, f 8;
 #X obj 439 137 tgl 50 0 empty empty Ball_very_near 0 -5 0 10 -262144
 -1 -1 0 1;
-#N canvas 530 51 923 730 save_goal 1;
+#N canvas 102 51 893 540 save_goal 1;
 #X obj 128 62 inlet;
-#X obj 195 220 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 181 223 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 286 284 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
@@ -267,24 +267,24 @@ out reflections., f 25;
 #X text 172 19 drive towards the ball \, then move back.;
 #X obj 388 43 loadbang;
 #X msg 339 68 1;
-#X msg 541 584 1;
+#X msg 457 642 1;
 #X msg 65 641 0;
 #X text 214 221 drive forwards;
 #X text 317 283 stop;
-#X text 588 498 stop;
-#X text 425 458 drive backwards;
+#X text 503 445 stop;
+#X text 382 367 drive backwards;
 #X msg 215 562 0;
 #X text 507 671 not running;
 #X obj 95 72 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj 349 351 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 362 366 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 455 510 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 483 446 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 597 546 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 756 496 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 324 331 delay 1500;
-#X obj 575 520 delay 1500;
+#X obj 297 311 delay 1500;
+#X obj 480 469 delay 1500;
 #X msg 134 629 1;
 #X obj 65 214 delay 500;
 #X obj 575 261 inlet;
@@ -296,7 +296,7 @@ out reflections., f 25;
 range detection \, issues occured when not knowing the period already
 driven backwards., f 19;
 #X obj 238 246 delay 1500;
-#X obj 443 486 delay 1500;
+#X obj 361 390 delay 1500;
 #X text 330 624 speed;
 #X obj 749 654 outlet;
 #X text 799 660 steering;
@@ -308,13 +308,17 @@ driven backwards., f 19;
 #X obj 1339 100 < 15;
 #X floatatom 749 423 5 0 0 0 - - -, f 5;
 #X obj 749 572 *;
-#X msg 681 536 0;
-#X text 768 510 Steer using vision while driving backwards, f 13;
-#X floatatom 758 635 5 0 0 0 - - -, f 5;
-#X msg 716 536 -1;
-#X obj 749 445 / 90;
-#X obj 281 601 * 0.5;
+#X msg 756 523 0;
+#X text 750 333 Steer using vision while driving backwards, f 13;
+#X floatatom 767 617 5 0 0 0 - - -, f 5;
 #X obj 281 623 outlet;
+#X msg 790 523 1;
+#X floatatom 232 624 5 0 0 0 - - -, f 5;
+#X text 778 492 Restore control;
+#X obj 767 546 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 749 445 * 0.01;
+#X obj 281 601 * 0.3;
 #X connect 0 0 9 0;
 #X connect 0 0 25 0;
 #X connect 1 0 3 0;
@@ -323,11 +327,11 @@ driven backwards., f 19;
 #X connect 2 0 4 0;
 #X connect 2 0 29 0;
 #X connect 2 0 35 1;
-#X connect 2 0 54 0;
-#X connect 3 0 56 0;
-#X connect 4 0 56 0;
-#X connect 5 0 56 0;
-#X connect 6 0 56 0;
+#X connect 2 0 55 0;
+#X connect 3 0 60 0;
+#X connect 4 0 60 0;
+#X connect 5 0 60 0;
+#X connect 6 0 60 0;
 #X connect 8 0 11 0;
 #X connect 9 0 8 0;
 #X connect 9 0 23 0;
@@ -341,7 +345,7 @@ driven backwards., f 19;
 #X connect 16 0 10 0;
 #X connect 17 0 7 0;
 #X connect 18 0 7 0;
-#X connect 23 0 56 0;
+#X connect 23 0 60 0;
 #X connect 25 0 9 0;
 #X connect 28 0 51 0;
 #X connect 29 0 5 0;
@@ -369,14 +373,16 @@ driven backwards., f 19;
 #X connect 45 0 46 0;
 #X connect 46 0 48 0;
 #X connect 48 0 47 0;
-#X connect 49 0 55 0;
+#X connect 49 0 59 0;
 #X connect 50 0 42 0;
 #X connect 50 0 53 0;
-#X connect 51 0 50 1;
 #X connect 51 0 50 0;
-#X connect 54 0 50 1;
-#X connect 55 0 50 0;
-#X connect 56 0 57 0;
+#X connect 51 0 58 0;
+#X connect 55 0 58 0;
+#X connect 58 0 50 1;
+#X connect 59 0 50 0;
+#X connect 60 0 54 0;
+#X connect 60 0 56 0;
 #X restore 369 241 pd save_goal;
 #X obj 501 270 tgl 50 1 empty empty steering_toggle 17 7 0 10 -262144
 -1 -1 1 1;
@@ -425,6 +431,10 @@ driven backwards., f 19;
 #X obj 432 102 < 0.4;
 #X obj 640 268 sig~;
 #X obj 640 290 throw~ steering;
+#X text 434 368 Oh \, haha - that 2nd output disables steering while
+save_goal routine is running! Need to implement separate modes for
+this to work properly.;
+#X text 267 427 TODO: auto-kicker \, for when saving goal.;
 #X connect 0 0 26 0;
 #X connect 0 0 25 0;
 #X connect 1 0 11 0;
@@ -472,7 +482,7 @@ driven backwards., f 19;
 #X connect 46 0 94 0;
 #X connect 47 0 45 0;
 #X connect 50 0 51 0;
-#X connect 50 0 94 1;
+#X connect 51 0 94 1;
 #X connect 52 0 53 0;
 #X connect 53 0 80 0;
 #X connect 54 0 96 0;
@@ -485,7 +495,6 @@ driven backwards., f 19;
 #X connect 64 0 66 0;
 #X connect 64 1 65 0;
 #X connect 64 2 101 0;
-#X connect 65 0 49 0;
 #X connect 66 0 69 0;
 #X connect 67 0 68 0;
 #X connect 68 0 64 0;
