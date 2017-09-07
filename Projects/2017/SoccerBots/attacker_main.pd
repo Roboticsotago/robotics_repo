@@ -1,24 +1,24 @@
-#N canvas 102 51 893 540 10;
+#N canvas 0 93 1920 987 10;
 #X floatatom 102 68 5 0 0 0 - - -, f 5;
 #X obj 105 91 hsl 64 15 -35 35 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 400 1;
+-1 -1 5452 1;
 #X obj 691 105 tgl 50 0 empty empty ball_near 17 7 0 10 -262144 -1
--1 1 1;
+-1 0 1;
 #X obj 215 46 < 20;
 #X obj 74 167 sig~;
 #X obj 71 203 *~;
 #X obj 70 304 throw~ steering;
 #X obj 690 53 r ball_distance;
 #X obj 217 67 tgl 50 0 empty empty facing_goal 17 7 0 10 -262144 -1
--1 1 1;
+-1 0 1;
 #X obj 856 54 r compass_heading;
 #X obj 856 76 abs;
 #X obj 856 98 < 70;
 #N canvas 0 52 1280 722 differential_drive 0;
 #X obj 309 193 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 9900 1;
-#X obj 390 187 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 5940 1;
+#X obj 390 187 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 9900 1;
 #X obj 314 140 +;
 #X obj 390 140 +;
 #X obj 314 162 clip -1 1;
@@ -50,7 +50,7 @@
 17 7 0 10 -262144 -1 -1 1 1;
 #X obj 242 -73 r throttle_toggle_out;
 #X obj 201 228 hsl 60 15 -1 1 0 0 empty steering_drive empty -2 -8
-0 10 -262144 -1 -1 5015 1;
+0 10 -262144 -1 -1 885 1;
 #X obj 137 205 vsl 15 60 -1 1 0 0 empty throttle_drive empty 0 -9 0
 10 -262144 -1 -1 5605 1;
 #X obj 190 46 s throttle_drive;
@@ -160,7 +160,7 @@
 #X text 860 33 Compass:;
 #X text 1802 25 IR:;
 #X text 1589 25 Ultrasound:;
-#N canvas 101 51 895 549 serial-connection 0;
+#N canvas 99 65 895 549 serial-connection 0;
 #X obj 223 184 s motor_device;
 #X text 216 68 Tell motor-control what serial device to use:;
 #X obj 223 90 loadbang;
@@ -173,6 +173,9 @@
 #X msg 128 190 close;
 #X obj 108 140 bng 15 250 50 0 empty empty disconnect 17 7 0 10 -262144
 -1 -1;
+#X text 202 229 TODO: consider using the hostname message to set this.
+Actually \, since the two robots will have different control patches
+anyway \, this will work perfectly well.;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
 #X connect 4 0 0 0;
@@ -205,7 +208,7 @@
 #X text 1165 11 Compass: detirmines whether the ball is between us
 and the goal, f 30;
 #X obj 1796 80 tgl 50 0 empty empty ball_detected 17 7 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 69 39 r angle2goal;
 #X obj 72 138 / 35;
 #N canvas 401 118 171 119 diy_pwm 0;
@@ -222,7 +225,7 @@ and the goal, f 30;
 #X obj 1434 70 abs;
 #X obj 1434 92 < 45;
 #X obj 1467 121 tgl 50 0 empty empty facing_ball 17 7 0 10 -262144
--1 -1 0 1;
+-1 -1 1 1;
 #X obj 1432 209 sig~;
 #X obj 207 165 tgl 75 0 empty empty shoot_mode 17 7 0 10 -262144 -1
 -1 0 1;
@@ -313,6 +316,9 @@ between robot and the goal., f 38;
 #X obj 521 667 sig2num~;
 #X obj 467 66 sig2num~;
 #X obj 567 62 sig2num~;
+#X text 396 204 TODO: perhaps put each mode's control into a subpatch
+\, with a graph-on-parent toggle to show whether it's active (and any
+other info that might be handy)., f 46;
 #X connect 0 0 1 0;
 #X connect 2 0 21 0;
 #X connect 3 0 8 0;
