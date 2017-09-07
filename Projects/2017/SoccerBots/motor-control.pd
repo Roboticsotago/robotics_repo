@@ -1,4 +1,4 @@
-#N canvas 1 51 1265 718 10;
+#N canvas 355 152 1057 718 10;
 #X obj 262 125 >= 0;
 #X obj 326 125 abs;
 #X obj 326 152 * 255;
@@ -39,7 +39,7 @@
 #X obj 839 228 << 6;
 #X obj 443 210 << 6;
 #X obj 689 328 + 128;
-#X obj 122 284 tgl 32 0 empty empty Kicker! 17 7 0 10 -262144 -1 -1
+#X obj 776 363 tgl 32 0 empty empty Kicker! 17 7 0 10 -262144 -1 -1
 0 1;
 #X obj 671 418 i;
 #X obj 234 428 bng 150 250 50 0 reconnect empty Connect 17 7 0 10 -262144
@@ -48,8 +48,8 @@
 -1 -1;
 #X obj 252 22 r left_speed;
 #X obj 689 25 r right_speed;
-#X obj 122 257 r kick;
-#N canvas 98 249 518 365 deadzone 1;
+#X obj 776 336 r kick;
+#N canvas 97 255 518 365 deadzone 0;
 #X obj 39 78 inlet;
 #X obj 39 161 outlet;
 #X obj 39 132 clip -1 1;
@@ -62,7 +62,7 @@
 #X connect 4 0 5 1;
 #X connect 5 0 2 0;
 #X restore 252 99 pd deadzone;
-#N canvas 672 268 450 300 deadzone 1;
+#N canvas 669 286 450 300 deadzone 0;
 #X obj 15 15 inlet;
 #X obj 7 200 outlet;
 #X text 107 23 Boris \, Right motor;
@@ -184,10 +184,25 @@ control serial port):, f 17;
 #X restore 755 599 pd unpack_bits;
 #X obj 326 45 r deadzone_thres;
 #X obj 763 49 r deadzone_thres;
-#X obj 90 38 loadbang;
-#X floatatom 90 82 5 0 0 0 - - -, f 5;
-#X obj 90 101 s deadzone_thres;
-#X msg 90 60 0.45;
+#X floatatom 70 239 5 0 0 0 - - -, f 5;
+#X obj 70 258 s deadzone_thres;
+#X msg 70 217 0.45;
+#X obj 70 102 hcs/hostname;
+#X obj 70 84 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 70 143 route Shutter Boris;
+#X obj 70 163 bng 15 250 50 0 empty empty Shutter 17 7 0 10 -262144
+-1 -1;
+#X obj 135 163 bng 15 250 50 0 empty empty Boris 17 7 0 10 -262144
+-1 -1;
+#X msg 70 124 \$1;
+#X obj 47 191 send hostname;
+#X obj 70 63 loadbang;
+#X floatatom 135 239 5 0 0 0 - - -, f 5;
+#X msg 135 217 0.45;
+#X text 56 30 Which robot are we?;
+#X text 52 293 TODO: consider refactoring the com port conditional
+stuff to use this as well., f 17;
 #X connect 0 0 47 0;
 #X connect 1 0 2 0;
 #X connect 2 0 32 0;
@@ -250,6 +265,16 @@ control serial port):, f 17;
 #X connect 58 0 50 0;
 #X connect 60 0 44 1;
 #X connect 61 0 45 1;
-#X connect 62 0 65 0;
-#X connect 63 0 64 0;
-#X connect 65 0 63 0;
+#X connect 62 0 63 0;
+#X connect 64 0 62 0;
+#X connect 65 0 70 0;
+#X connect 66 0 65 0;
+#X connect 67 0 68 0;
+#X connect 67 1 69 0;
+#X connect 68 0 64 0;
+#X connect 69 0 74 0;
+#X connect 70 0 67 0;
+#X connect 70 0 71 0;
+#X connect 72 0 66 0;
+#X connect 73 0 63 0;
+#X connect 74 0 73 0;
