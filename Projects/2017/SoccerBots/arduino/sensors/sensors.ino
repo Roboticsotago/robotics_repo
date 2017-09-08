@@ -4,10 +4,13 @@
 #include <math.h>
 #include <EEPROM.h>
 
+#define SHUTTER 0
+#define DEBUGGING 0
+
 const int NUM_SENSORS = 8;
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
-float ir_values[8];
-const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
+float ir_values[NUM_SENSORS];
+const float IR_GAIN_THRESHOLD = 0.5; // For culling reflections, hopefully
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000
 const int CALIBRATION_MODE_SWITCH_PIN = 2;
 const int SAVE_HEADING_BUTTON_PIN = 7;
@@ -28,8 +31,7 @@ int back_range = 0; // so far unused
 float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
-
-#define DEBUGGING 0
+int crotchet;
 
 #if DEBUGGING ==1
 	#define DEBUG(x) Serial.println (x)
@@ -39,8 +41,12 @@ int light_sensor = 0;
 	#define DEBUG_NOEOL(x)
 #endif
 
+const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
+
+#include "nokia.h"
 #include "magnetometer.h"
 #include "ultrasonic.h"
+#include "reflectance.h"
 
 // int ir_val;
 const float TAU = 2 * PI;
@@ -95,6 +101,7 @@ void loop() {
 	if (!digitalRead(SAVE_HEADING_BUTTON_PIN)) { // allows the heading to be saved during use
 		magnetometer_saveHeading();
 	}
+        readReflectance();
 	readIRsensors();
 	//printIRsensors();
 	get_ball_angle();
@@ -116,6 +123,32 @@ void beep() {
 	noTone(BUZZER);
 }
 
+float frequency(int note) {
+	return 440 * pow(2.0, (note - 69) / 12.0);
+}
+
+void playNote(int pitch, int duration) {
+	tone(BUZZER, (int)round(frequency(pitch)), duration);	
+	delay(duration+5);
+	noTone(BUZZER);
+	delay(5);
+}
+
+void setNoteDurations(int bpm) {
+	crotchet = 60000 / bpm;
+}
+
+void playTune(float tune[][2], int tempo, int arrayLength) {
+	setNoteDurations(tempo);
+	for(int x=0; x<arrayLength; x+=1) {
+		if(tune[x][0] == 0) {
+			delay(tune[x][1]*crotchet);
+		} else {
+			playNote(tune[x][0], tune[x][1]*crotchet);
+		}
+	}
+}
+
 float readIRsensor(int sensor_num) { // takes single reading from one IR sensor
 	int reading = analogRead(analog_sensor_pins[sensor_num]);
 	DEBUG_NOEOL("sensor "); DEBUG_NOEOL(sensor_num); DEBUG_NOEOL(": "); DEBUG(reading);
@@ -129,7 +162,27 @@ float readIRsensor(int sensor_num) { // takes single reading from one IR sensor
 void readIRsensors() { // takes readings from all 8 sensors and stores them in an array.
 	for (int i=0; i<NUM_SENSORS; i++) {
 		ir_values[i] = readIRsensor(i);
-	} 
+	}
+  printIRsensors();
+  irAutoGain();
+  printIRsensors();
+  
+}
+
+void irAutoGain() { // stretch out the IR sensor values, apply a threshold, then scale back again, in an attempt to ignore IR reflections off the goal.
+  float irMax = 0.0;
+  float irMin = 1.0;
+  // First, determine the min and max for the latest readings:
+  for (int i=0; i<NUM_SENSORS; i++) {
+    if(ir_values[i] < irMin && ir_values[i] != 0){irMin = ir_values[i];}
+    if(ir_values[i] > irMax){irMax = ir_values[i];}
+  }
+  // Then scale to full scale, apply threshold, and scale back down:
+  for(int i=0; i<NUM_SENSORS; i++){
+   if((ir_values[i]-irMin)/(irMax-irMin) < IR_GAIN_THRESHOLD){
+     ir_values[i]=0;
+  }
+  }
 }
 
 void printIRsensors() { // used for debugging
@@ -175,7 +228,7 @@ void send_output() {
 	Serial.print(back_range);Serial.print(" ");
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
-	Serial.print(light_sensor);Serial.print(" ");
+	Serial.print(reflectance);Serial.print(" ");
 	Serial.println(";");
 }
 
@@ -184,23 +237,24 @@ float get_ball_angle() {
 	
 	// Calculate the centroid of the ball detection vectors...
 
-	float x_total = 0; float y_total = 0; int count = 0; 
+	float x_total = 0.0; float y_total = 0.0;
 	for (int n=0; n<NUM_SENSORS; n++) {
 		x_total += IR_COORDINATES[n][0]*ir_values[n];
 		y_total += IR_COORDINATES[n][1]*ir_values[n];
 
+		DEBUG_NOEOL("Sensor #:");
 		DEBUG_NOEOL(n);
+		DEBUG_NOEOL("; value=");
+		DEBUG_NOEOL(ir_values[n]);
 		DEBUG_NOEOL(": (");
 		DEBUG_NOEOL(IR_COORDINATES[n][0]*ir_values[n]);
 		DEBUG_NOEOL(",");
 		DEBUG_NOEOL(IR_COORDINATES[n][1]*ir_values[n]);
 		DEBUG_NOEOL("); ");
-
-		count += 1;
 	}
 
-	float x_average = x_total/(float)count;
-	float y_average = y_total/(float)count;
+	float x_average = x_total/(float)NUM_SENSORS;
+	float y_average = y_total/(float)NUM_SENSORS;
 	
 	DEBUG_NOEOL("  X AVERAGE: ");
 	DEBUG_NOEOL(x_average);

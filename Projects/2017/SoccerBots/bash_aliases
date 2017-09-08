@@ -1,0 +1,7 @@
+alias frink="rlwrap java -cp /usr/share/java/frink.jar frink.parser.Frink"
+alias lsserial='find /dev/serial/by-id -type l -print0 | xargs -0 -i ls -l {}'
+alias re='./runeverything.sh'
+alias se='./stopeverything.sh'
+alias old_arduino="/usr/local/arduino-0105/arduino" 
+alias shutter="ssh -Y pi@shutter"
+alias boris="ssh -Y pi@boris"

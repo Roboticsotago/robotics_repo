@@ -72,10 +72,11 @@ void magnetometer_restoreCalibration() { // restores the calibrated origin store
 	magnetometer_calculateOrigin(EEPROM_read_int(EEPROM_MIN_X), EEPROM_read_int(EEPROM_MIN_Y), EEPROM_read_int(EEPROM_MIN_Z),
 					EEPROM_read_int(EEPROM_MAX_X), EEPROM_read_int(EEPROM_MAX_Y), EEPROM_read_int(EEPROM_MAX_Z));
 	
-	beep();
+        playTune(nokia, nokiaTempo, nokiaArrayLength);
+	/*beep();
 	delay(50);
 	beep();
-	delay(250);
+	delay(250);*/
 }
 
 void magnetometer_beepUntilHeadingSaved() { // beeps the buzzer untill the save heading button is pressed
