@@ -4,7 +4,7 @@
 # General form:
 # until CONDITION; do COMMANDS; done
 
-# For example, to wait until a host is reachable before logging in:
+# For example, to wait until a network host is reachable before logging in:
 # (here, the CONDITION is actually a call to a command, namely "ping -c 1 $HOST", which checks once if the host is responding)
 
 HOST=localhost
@@ -15,6 +15,7 @@ done
 ssh -Y $HOST
 
 # A simpler version that just tries the ssh command directly:
+
 HOST=localhost
 until ssh -Y $HOST; do
   echo .
