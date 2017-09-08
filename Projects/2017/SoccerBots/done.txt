@@ -1,0 +1,15 @@
+Thought it might be useful to document things that have been improved upon since the regionals:
+
+ - Wider-track chassis, allowing lower gear ratio for more reliable and controllable motion
+ - Reliability improvements to goalie sensor Arduino (hardware, software)
+ - Added kicker to goalie, and upgraded kicker servo motors
+ - Added reflectance sensor under goalie to detect when leaving the goal area
+ - Revamped control programs for both robots:
+	Goalie uses vision, reflectance sensor, and range sensor to try to stay sensibly positioned when goal-saving
+	Attacker has three modes: Seek, Aim, and Shoot, which are activated depending on where the ball is relative to the robot, and what the orientation to the goal and field are.
+ - Improvements to vision system
+ - Use of EEPROM to save having to recalibrate magnetometer every time
+ - Added buzzer for Arduino sensor boards to alert when reset
+ - Added battery-low warning indicator circuit
+ 
+Might also be worth trawling the git logs for other things.
