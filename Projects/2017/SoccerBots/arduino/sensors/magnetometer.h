@@ -72,7 +72,8 @@ void magnetometer_restoreCalibration() { // restores the calibrated origin store
 	magnetometer_calculateOrigin(EEPROM_read_int(EEPROM_MIN_X), EEPROM_read_int(EEPROM_MIN_Y), EEPROM_read_int(EEPROM_MIN_Z),
 					EEPROM_read_int(EEPROM_MAX_X), EEPROM_read_int(EEPROM_MAX_Y), EEPROM_read_int(EEPROM_MAX_Z));
 	
-        playTune(nokia, nokiaTempo, nokiaArrayLength);
+        //playTune(nokia, nokiaTempo, nokiaArrayLength); FOR BORIS
+        playTune(mk_shortened, mk_shortened_tempo, mk_shortened_array_length); //FOR SHUTTER
 	/*beep();
 	delay(50);
 	beep();

@@ -44,6 +44,7 @@ int crotchet;
 const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
 
 #include "nokia.h"
+#include "mk_shortened.h"
 #include "magnetometer.h"
 #include "ultrasonic.h"
 #include "reflectance.h"
