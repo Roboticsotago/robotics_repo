@@ -1,4 +1,4 @@
-#N canvas 298 134 1057 718 10;
+#N canvas 292 130 1057 718 10;
 #X obj 262 125 >= 0;
 #X obj 326 125 abs;
 #X obj 326 152 * 255;
@@ -40,7 +40,7 @@
 #X obj 443 210 << 6;
 #X obj 689 328 + 128;
 #X obj 776 363 tgl 32 0 empty empty Kicker! 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 671 418 i;
 #X obj 234 428 bng 150 250 50 0 reconnect empty Connect 17 7 0 10 -262144
 -1 -1;
@@ -102,7 +102,7 @@ f 20;
 control serial port):, f 17;
 #X obj 412 404 loadbang;
 #X obj 479 60 hsl 130 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 6450 1;
 #X msg 476 37 0;
 #X obj 476 15 r Stop;
 #X obj 302 307 + 128;
@@ -198,11 +198,11 @@ control serial port):, f 17;
 #X obj 47 191 send hostname;
 #X obj 70 63 loadbang;
 #X floatatom 135 239 5 0 0 0 - - -, f 5;
-#X msg 135 217 0.45;
 #X text 56 30 Which robot are we?;
 #X text 52 293 TODO: consider refactoring the com port conditional
 stuff to use this as well., f 17;
 #X msg 70 218 0.33;
+#X msg 135 217 0.4;
 #X connect 0 0 47 0;
 #X connect 1 0 2 0;
 #X connect 2 0 32 0;
@@ -270,11 +270,11 @@ stuff to use this as well., f 17;
 #X connect 65 0 64 0;
 #X connect 66 0 67 0;
 #X connect 66 1 68 0;
-#X connect 67 0 76 0;
-#X connect 68 0 73 0;
+#X connect 67 0 75 0;
+#X connect 68 0 76 0;
 #X connect 69 0 66 0;
 #X connect 69 0 70 0;
 #X connect 71 0 65 0;
 #X connect 72 0 63 0;
-#X connect 73 0 72 0;
-#X connect 76 0 62 0;
+#X connect 75 0 62 0;
+#X connect 76 0 72 0;
