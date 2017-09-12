@@ -1,7 +1,7 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
 // MOST IMPORTANT!!! Make sure this is set correctly before uploading:
-#define SHUTTER 0
+#define SHUTTER 1
 // (it might be nice to have the robot's identity stored in EEPROM and detected automatically by this program)
 
 
@@ -25,7 +25,7 @@ const int KICKER_DELAY = 1000;
 #if (SHUTTER==1)
 // Motor speed and servo limits tweaked for Shutter (attacker):
 const int MOTOR_L_DUTY=123;
-const int MOTOR_R_DUTY=143;
+const int MOTOR_R_DUTY=130;
 const int KICKER_MIN = 105;  //tested
 const int KICKER_MAX = 145;
 #else
