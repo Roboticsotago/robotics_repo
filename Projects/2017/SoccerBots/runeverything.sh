@@ -1,6 +1,6 @@
 #!/bin/bash
-if [[ `hostname` == "Boris" ]]; then
-	pd_patch=goalie_control.pd
+if [[ $(hostname) == "Boris" ]]; then
+	pd_patch=goalie_control_refactored.pd
 	echo Goalie
 else
 	pd_patch=attacker_main.pd
