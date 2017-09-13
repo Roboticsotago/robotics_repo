@@ -1,13 +1,13 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
 // MOST IMPORTANT!!! Make sure this is set correctly before uploading:
-#define SHUTTER 1
+#define SHUTTER 0
 // (it might be nice to have the robot's identity stored in EEPROM and detected automatically by this program)
 
 
 // Stuff below here shouldn't need to change very often.
 
-#define BAUD_RATE 115200
+#define BAUD_RATE 9600
 
 // TODO: Do the duty cycles of the SoccerBot motors need adjusting?
 // TODO: Move the duty cycles into the eeprom
@@ -30,8 +30,8 @@ const int KICKER_MIN = 105;  //tested
 const int KICKER_MAX = 145;
 #else
 // Motor speed and servo limits tweaked for Boris (goalie):
-const int MOTOR_L_DUTY=153;
-const int MOTOR_R_DUTY=163;
+const int MOTOR_L_DUTY=134;
+const int MOTOR_R_DUTY=143;
 const int KICKER_MIN = 115;  //tested
 const int KICKER_MAX = 60;   //tested
 #endif
