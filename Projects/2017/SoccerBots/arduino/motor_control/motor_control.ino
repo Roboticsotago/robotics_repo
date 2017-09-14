@@ -7,7 +7,7 @@
 
 // Stuff below here shouldn't need to change very often.
 
-#define BAUD_RATE 9600
+#define BAUD_RATE 19200
 
 // TODO: Do the duty cycles of the SoccerBot motors need adjusting?
 // TODO: Move the duty cycles into the eeprom
