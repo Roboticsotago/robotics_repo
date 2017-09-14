@@ -2,6 +2,8 @@
 
 # Test program for the DSpace board motor control protocol
 
+set ::BAUDRATE 19200
+
 puts stderr "Starting up..."
 
 if {[info hostname] == "Boris"} {
@@ -23,7 +25,7 @@ proc connect {serial_device} {
 	}
 	
 	# Configure the channel:
-	chan configure $serial_channel -mode 9600,n,8,1 -translation binary -buffering none -blocking 0
+	chan configure $serial_channel -mode $::BAUDRATE,n,8,1 -translation binary -buffering none -blocking 0
 	
 	# Set up the callback:
 	chan event $serial_channel readable [list read_serial $serial_channel]
