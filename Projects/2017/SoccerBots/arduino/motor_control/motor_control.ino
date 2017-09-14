@@ -1,7 +1,7 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
 // MOST IMPORTANT!!! Make sure this is set correctly before uploading:
-#define SHUTTER 0
+#define SHUTTER 1
 // (it might be nice to have the robot's identity stored in EEPROM and detected automatically by this program)
 
 
@@ -54,17 +54,6 @@ int motors_enabled = 0;
 #define MOTOR_L_1_PIN 7
 #define MOTOR_L_2_PIN 6
 
-// Unused?
-#define LEFT_MOTOR 0
-#define RIGHT_MOTOR 1
-
-#define R_LED 11
-#define O_LED 2
-#define Y_LED 12
-#define G_LED 13
-#define BUZZER 3
-#define L_BUTTON 19
-#define R_BUTTON 8
 
 #define DEBUGGING 0
 /*
@@ -79,17 +68,10 @@ int motors_enabled = 0;
 	#define DEBUG_NOEOL(x)
 #endif
 
+
 void setup() {
 	Kicker.attach(SERVO_PIN);
 	pinMode(MOTOR_TOGGLE_SWITCH, INPUT); digitalWrite(MOTOR_TOGGLE_SWITCH, 1);
-  // TODO: check if these are valid (I think they're from the separate test/diagnostic board
-	pinMode(R_LED, OUTPUT); digitalWrite(R_LED, LOW);
-	pinMode(O_LED, OUTPUT); digitalWrite(O_LED, LOW);
-	pinMode(Y_LED, OUTPUT); digitalWrite(Y_LED, LOW);
-	pinMode(G_LED, OUTPUT); digitalWrite(G_LED, LOW);
-	pinMode(BUZZER, OUTPUT);
-	pinMode(L_BUTTON, INPUT); digitalWrite(L_BUTTON, HIGH); // or INPUT_PULLUP on newer Arduino
-	pinMode(R_BUTTON, INPUT); digitalWrite(R_BUTTON, HIGH);	// NOTE: hardware problem with Sensor 0 Pin 1 on the Dalek board?  It's stuck at only about 1.7 V when pulled high.  Oh, hardwired onboard LED!  Have now removed resistor R4 to open that circuit. :)
 
 	pinMode(MOTOR_L_ENABLE, OUTPUT); digitalWrite(MOTOR_L_ENABLE, LOW);
 	pinMode(MOTOR_R_ENABLE, OUTPUT); digitalWrite(MOTOR_R_ENABLE, LOW);
@@ -154,7 +136,7 @@ void kicker_move(int direction) {
 	if (!motors_enabled) {
 		Kicker.write(KICKER_MIN); 
 	} else{
-		Kicker.write(direction? KICKER_MAX: KICKER_MIN);
+		Kicker.write(direction ? KICKER_MAX : KICKER_MIN);
 	}
 }
 
