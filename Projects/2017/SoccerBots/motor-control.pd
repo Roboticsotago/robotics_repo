@@ -1,4 +1,4 @@
-#N canvas 211 59 1116 719 10;
+#N canvas 205 55 1116 719 10;
 #X obj 262 125 >= 0;
 #X obj 326 125 abs;
 #X obj 326 152 * 255;
@@ -101,7 +101,7 @@ f 20;
 control serial port):, f 17;
 #X obj 412 404 loadbang;
 #X obj 479 60 hsl 130 15 -1 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 6450 1;
 #X msg 476 37 0;
 #X obj 476 15 r Stop;
 #X obj 302 307 + 128;
