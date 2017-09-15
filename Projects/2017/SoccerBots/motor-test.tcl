@@ -6,7 +6,7 @@ set ::BAUDRATE 19200
 
 puts stderr "Starting up..."
 
-if {[info hostname] == "Boris"} {
+if {[string match -nocase boris* [info hostname]]} {
 	puts stderr "Robot: Goalie"
 	set SERIAL_DEVICE /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351A0D161-if00
 } else {
