@@ -1,7 +1,7 @@
 //Currently working Motor Control using the DSpace robot board for RoboCup Soccer 2017.
 
 // MOST IMPORTANT!!! Make sure this is set correctly before uploading:
-#define SHUTTER 1
+#define SHUTTER 0
 // (it might be nice to have the robot's identity stored in EEPROM and detected automatically by this program)
 
 
@@ -32,8 +32,8 @@ const int KICKER_MAX = 145;
 // Motor speed and servo limits tweaked for Boris (goalie):
 const int MOTOR_L_DUTY=134;
 const int MOTOR_R_DUTY=143;
-const int KICKER_MIN = 115;  //tested
-const int KICKER_MAX = 60;   //tested
+const int KICKER_MAX = 125;  //tested
+const int KICKER_MIN = 85;   //tested
 #endif
 
 const int MESSAGE_TYPE_MASK	= 0b10000000;
