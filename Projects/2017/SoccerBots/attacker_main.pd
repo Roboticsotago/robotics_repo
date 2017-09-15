@@ -1,9 +1,9 @@
-#N canvas 446 308 1049 653 10;
+#N canvas 443 312 1049 653 10;
 #N canvas 131 207 952 540 differential_drive 0;
 #X obj 309 193 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 7312 1;
+-1 -1 8287 1;
 #X obj 390 187 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 7637 1;
+-1 -1 1613 1;
 #X obj 314 140 +;
 #X obj 390 140 +;
 #X obj 314 162 clip -1 1;
@@ -35,9 +35,9 @@
 17 7 0 10 -262144 -1 -1 1 1;
 #X obj 242 -73 r throttle_toggle_out;
 #X obj 201 228 hsl 60 15 -1 1 0 0 empty steering_drive empty -2 -8
-0 10 -262144 -1 -1 2853 1;
+0 10 -262144 -1 -1 4939 1;
 #X obj 137 205 vsl 15 60 -1 1 0 0 empty throttle_drive empty 0 -9 0
-10 -262144 -1 -1 4454 1;
+10 -262144 -1 -1 2950 1;
 #X obj 190 46 s throttle_drive;
 #X obj 491 48 s steering_drive;
 #X floatatom 688 195 5 0 0 0 - - -, f 5;
@@ -115,10 +115,10 @@ anyway \, this will work perfectly well.;
 #X obj 544 413 < 10;
 #X obj 543 391 abs;
 #X obj 585 393 tgl 50 0 empty empty facing_goal 17 7 0 10 -262144 -1
--1 0 1;
+-1 1 1;
 #X obj 678 351 r ball_near;
 #X obj 247 466 tgl 50 0 empty empty way_is_clear 17 7 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 246 521 s way_is_clear;
 #X obj 12 201 catch~ throttle;
 #N canvas 71 51 1531 971 seek 0;
@@ -335,7 +335,7 @@ avoidance., f 33;
 #X connect 108 0 49 0;
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 18 122 pd seek;
-#N canvas 71 51 1531 971 aim 0;
+#N canvas 69 53 1531 971 aim 0;
 #X text 603 162 Aim mode:;
 #X obj 605 184 r ball_side;
 #X obj 698 188 r~ shoot_mode;
@@ -379,7 +379,7 @@ avoidance., f 33;
 #X obj 953 538 sig2num~;
 #X obj 698 210 not~;
 #X msg 463 444 0.25;
-#X msg 711 441 0.45;
+#X msg 711 441 0.5;
 #X connect 1 0 4 0;
 #X connect 2 0 40 0;
 #X connect 3 0 7 0;
@@ -501,7 +501,7 @@ avoidance., f 33;
 #X floatatom 1364 214 5 0 0 0 - - -, f 5;
 #X floatatom 107 550 5 0 0 0 - - -, f 5;
 #X obj 110 573 hsl 64 15 -35 35 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 1382 1;
+-1 -1 2714 1;
 #X obj 220 528 < 20;
 #X obj 67 601 sig~;
 #X obj 56 754 *~;
@@ -561,7 +561,7 @@ f 29;
 #X floatatom 531 869 5 0 0 0 - - -, f 5;
 #X obj 155 809 s~ not_adjusting;
 #X obj 305 726 r~ not_adjusting;
-#X obj 196 786 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 196 786 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 205 748 sig2num~;
 #X obj 634 671 sig2num~;
@@ -696,7 +696,7 @@ also avoids the ball so that we don't score own goals :P, f 39;
 #X obj 470 309 sig~;
 #X obj 470 331 lop~ 1;
 #X obj 331 316 hsl 128 15 -180 180 0 0 empty empty empty -2 -8 0 10
--262144 -1 -1 6350 1;
+-262144 -1 -1 7097 1;
 #X connect 1 0 0 2;
 #X connect 2 0 29 0;
 #X connect 5 0 7 0;
