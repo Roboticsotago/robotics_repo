@@ -8,7 +8,7 @@
 
 puts stderr "Serial reader starting up..."
 
-if {[info hostname] == "Boris"} {
+if {[string match -nocase boris* [info hostname]]} {
 	puts stderr "Robot: Goalie"
 	set SERIAL_DEVICE /dev/serial/by-id/usb-Arduino__www.arduino.cc__0042_852313632363516031B2-if00
 } else {
@@ -31,6 +31,8 @@ proc connect {serial_device} {
 	
 	# Set up the callback:
 	chan event $serial_channel readable [list read_serial $serial_channel]
+
+	return $serial_channel
 }
 
 # Define a callback procedure, called whenever the serial channel has data available to read:
@@ -49,7 +51,13 @@ proc read_serial channel {
 	}
 }
 
-connect $SERIAL_DEVICE
+# Hmm, we're having problems with this not working at first boot.
+# Maybe connect, wait, disconnect, reconnect....
+set serial_channel [connect $SERIAL_DEVICE]
+after 1000
+close $serial_channel
+set serial_channel [connect $SERIAL_DEVICE]
+
 
 # Enter the event loop (exit when done)
 vwait forever
