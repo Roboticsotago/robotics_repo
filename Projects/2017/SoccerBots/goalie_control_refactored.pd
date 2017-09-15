@@ -15,7 +15,7 @@
 #X obj 912 119 lop~ 1;
 #X obj 912 141 s~ ball_distance~;
 #X obj 1048 132 s~ ball_detected~;
-#N canvas 421 187 781 476 panic 0;
+#N canvas 412 181 781 476 panic 0;
 #X obj 110 120 tgl 30 0 empty panic panic 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 399 96 r goal_detected;
@@ -24,7 +24,7 @@
 #X obj 236 118 not;
 #X obj 399 118 not;
 #X obj 399 140 t b f;
-#X obj 291 240 s panic;
+#X obj 284 240 s panic;
 #X connect 1 0 5 0;
 #X connect 2 0 4 0;
 #X connect 3 0 7 0;
@@ -40,7 +40,7 @@
 #X text 48 223 Modes;
 #N canvas 199 145 1037 547 rotate_2_ball 0;
 #X obj 110 120 tgl 30 0 empty rotate_2_ball rotate_2_ball 17 7 0 10
--262144 -1 -1 1 1;
+-262144 -1 -1 0 1;
 #X obj 277 91 r homed;
 #X obj 277 112 s rotate_2_ball;
 #X obj 726 42 r~ ball_distance~;
@@ -128,7 +128,7 @@
 #X connect 36 1 30 1;
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 50 317 pd rotate_2_ball;
-#N canvas 405 147 755 530 intercept_ball 0;
+#N canvas 402 145 755 530 intercept_ball 0;
 #X obj 110 120 tgl 30 0 empty intercept_ball intercept_ball 17 7 0
 10 -262144 -1 -1 0 1;
 #X obj 280 65 r homed;
@@ -164,7 +164,7 @@
 #X obj 78 208 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 44 140 loadbang;
-#X obj 78 164 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 78 164 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 259 31 inlet~;
 #X obj 115 138 inlet;
@@ -262,7 +262,7 @@
 #X floatatom 50 289 5 0 0 0 - - -, f 5;
 #X msg 50 267 0.7;
 #X text 77 267 ir very close to ball;
-#N canvas 251 151 569 459 return_home 0;
+#N canvas 248 149 569 459 return_home 0;
 #X obj 110 120 tgl 30 0 empty return_home return_home 17 7 0 10 -262144
 -1 -1 0 1;
 #X obj 250 91 r homed;
@@ -422,7 +422,7 @@
 #X obj 278 32 r inside_goal_zone;
 #X obj 681 32 r compass_heading;
 #X obj 387 161 expr $f1 * $f2 * $f3 * $f4;
-#X obj 110 120 tgl 30 0 empty homed homed 17 7 0 10 -262144 -1 -1 1
+#X obj 110 120 tgl 30 0 empty homed homed 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 387 183 moses 1;
 #X msg 387 205 1;
@@ -513,16 +513,14 @@ the goal zone, f 17;
 #X obj 1055 311 loadbang;
 #X text 918 309 Reconnect every n seconds to prevent total loss of
 function, f 19;
-#X floatatom 728 336 5 0 0 0 - - -, f 5;
-#X obj 728 314 r ball_angle;
 #X msg 1055 333 60;
-#N canvas 310 147 677 448 reorientate 0;
+#N canvas 26 93 677 448 reorientate 0;
 #X obj 110 120 tgl 30 0 empty reorientate reorientate 17 7 0 10 -262144
 -1 -1 0 1;
 #X obj 242 71 r panic;
 #X obj 242 93 s reorientate;
 #X obj 352 170 r reorientate;
-#N canvas 679 303 549 344 heading 0;
+#N canvas 213 360 549 344 heading 0;
 #X obj 28 27 inlet;
 #X obj 28 239 outlet;
 #X obj 28 108 / 100;
@@ -540,48 +538,66 @@ function, f 19;
 #X obj 219 242 *~;
 #X obj 352 170 r reorientate;
 #X obj 219 264 *~ 1;
+#X obj 379 217 abs;
+#X obj 379 239 < 5;
+#X obj 379 305 sig~;
+#X obj 379 327 throw~ throttle;
+#X obj 379 261 * 0.8;
+#X obj 379 283 *;
+#X text 408 217 Coppied this from unstick;
+#X obj 430 261 r reorientate;
 #X connect 1 0 2 0;
 #X connect 3 0 8 1;
 #X connect 4 0 6 0;
 #X connect 5 0 4 0;
+#X connect 5 0 11 0;
 #X connect 6 0 8 0;
 #X connect 8 0 10 0;
 #X connect 10 0 7 0;
+#X connect 11 0 12 0;
+#X connect 12 0 15 0;
+#X connect 13 0 14 0;
+#X connect 15 0 16 0;
+#X connect 16 0 13 0;
+#X connect 18 0 16 1;
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 50 404 pd reorientate;
 #X obj 820 240 r bal_angle;
 #X floatatom 820 262 5 0 0 0 - - -, f 5;
-#N canvas 318 159 781 476 stuck 0;
+#N canvas 399 147 781 476 stuck 0;
 #X obj 110 120 tgl 30 0 empty stuck stuck 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 352 81 r return_home;
-#X obj 352 103 moses 1;
-#X obj 352 124 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 432 71 r return_home;
+#X obj 432 93 moses 1;
+#X obj 412 124 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X msg 352 251 1;
-#X obj 277 82 r homed;
-#X obj 277 103 moses 1;
-#X msg 229 125 stop;
-#X text 235 48 cancel panic when homed, f 12;
-#X text 337 62 panic watchdog;
-#X msg 275 126 0;
-#X obj 361 273 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X msg 412 251 1;
+#X obj 337 62 r homed;
+#X obj 337 83 moses 1;
+#X msg 289 125 stop;
+#X text 295 28 cancel panic when homed, f 12;
+#X text 417 52 panic watchdog;
+#X msg 335 126 0;
+#X obj 421 273 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 289 146 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 349 146 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 352 186 spigot;
-#X obj 430 166 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 412 186 spigot;
+#X obj 490 166 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X obj 458 135 loadbang;
-#X obj 352 208 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 518 135 loadbang;
+#X obj 412 208 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X msg 407 137 0;
-#X msg 310 126 1;
-#X obj 344 341 s stuck;
-#X obj 352 229 delay 5000;
-#X obj 387 251 delay 2000;
-#X text 465 246 drive towards heading time:, f 16;
-#X text 398 210 time till stuck:;
+#X msg 467 137 0;
+#X msg 370 126 1;
+#X obj 404 341 s stuck;
+#X text 267 310 drive towards heading time:, f 16;
+#X text 458 210 time till stuck:;
+#X obj 412 229 delay 7500;
+#X obj 189 315 delay 3000;
+#X obj 209 71 r panic;
+#X obj 209 93 moses 1;
+#X text 184 37 restart when panicked, f 12;
 #X connect 1 0 2 0;
 #X connect 3 0 13 0;
 #X connect 4 0 11 0;
@@ -592,27 +608,32 @@ function, f 19;
 #X connect 6 1 7 0;
 #X connect 6 1 10 0;
 #X connect 6 1 18 0;
-#X connect 7 0 20 0;
+#X connect 7 0 22 0;
 #X connect 10 0 12 0;
 #X connect 10 0 19 0;
 #X connect 13 0 16 0;
 #X connect 14 0 13 1;
 #X connect 15 0 14 0;
 #X connect 16 0 17 0;
-#X connect 16 0 20 0;
+#X connect 16 0 22 0;
 #X connect 17 0 14 0;
 #X connect 18 0 14 0;
-#X connect 20 0 4 0;
-#X connect 20 0 21 0;
-#X connect 21 0 10 0;
-#X connect 21 0 18 0;
-#X connect 21 0 3 0;
+#X connect 22 0 4 0;
+#X connect 22 0 23 0;
+#X connect 23 0 10 0;
+#X connect 23 0 18 0;
+#X connect 23 0 3 0;
+#X connect 24 0 25 0;
+#X connect 25 1 7 0;
+#X connect 25 1 10 0;
+#X connect 25 1 18 0;
+#X connect 25 1 3 0;
 #X coords 0 -1 1 1 85 60 1 100 100;
-#X restore 273 127 pd stuck;
-#N canvas 523 152 587 401 unstick 0;
+#X restore 276 127 pd stuck;
+#N canvas 640 126 587 401 unstick 0;
 #X obj 104 116 tgl 30 0 empty unstick unstick 17 7 0 10 -262144 -1
 -1 0 1;
-#N canvas 418 232 549 344 heading 0;
+#N canvas 415 230 549 344 heading 0;
 #X obj 28 27 inlet;
 #X obj 28 239 outlet;
 #X obj 28 108 / 100;
@@ -628,17 +649,17 @@ function, f 19;
 #X obj 208 204 sig~;
 #X obj 207 272 throw~ steering;
 #X obj 208 226 *~;
-#X obj 403 221 abs;
-#X obj 403 243 < 5;
-#X obj 403 309 sig~;
-#X obj 403 331 throw~ throttle;
+#X obj 379 217 abs;
+#X obj 379 239 < 5;
+#X obj 379 305 sig~;
+#X obj 379 327 throw~ throttle;
 #X obj 348 160 r unstick;
 #X obj 234 74 r stuck;
 #X obj 234 96 s unstick;
-#X obj 403 265 * 0.8;
+#X obj 379 261 * 0.8;
 #X obj 348 160 r unstick;
-#X obj 454 265 r unstick;
-#X obj 403 287 *;
+#X obj 430 261 r unstick;
+#X obj 379 283 *;
 #X floatatom 156 182 5 0 0 0 - - -, f 5;
 #X obj 208 248 *~ 1;
 #X connect 1 0 3 0;
@@ -672,15 +693,15 @@ function, f 19;
 #X connect 10 0 11 0;
 #X connect 11 0 12 0;
 #X connect 11 0 21 0;
-#X connect 15 0 56 0;
+#X connect 15 0 54 0;
 #X connect 16 0 38 0;
-#X connect 16 0 55 1;
+#X connect 16 0 53 1;
 #X connect 23 0 25 0;
 #X connect 24 0 20 0;
 #X connect 24 0 19 0;
 #X connect 25 0 24 0;
 #X connect 28 0 29 0;
-#X connect 29 0 55 0;
+#X connect 29 0 53 0;
 #X connect 31 0 34 0;
 #X connect 32 0 35 1;
 #X connect 33 0 35 1;
@@ -693,10 +714,9 @@ function, f 19;
 #X connect 42 0 40 0;
 #X connect 43 0 44 0;
 #X connect 44 0 40 1;
-#X connect 45 0 49 0;
+#X connect 45 0 47 0;
 #X connect 45 0 41 0;
-#X connect 48 0 47 0;
-#X connect 49 0 43 0;
-#X connect 51 0 52 0;
-#X connect 55 0 31 0;
-#X connect 56 0 16 0;
+#X connect 47 0 43 0;
+#X connect 49 0 50 0;
+#X connect 53 0 31 0;
+#X connect 54 0 16 0;
