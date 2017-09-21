@@ -1,0 +1,1 @@
+raspivid -f -fps 30 -ISO 100 -w 1640 -h 922 -v -t 0 --shutter 20000
