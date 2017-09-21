@@ -17,6 +17,10 @@ import numpy
 
 # Set up camera and a NumPy array wrapper suitable for transferring the image data into OpenCV
 
+target_framerate = 10
+# 0.08 s frame capture with 50 Hz target
+
+
 # Had originally thought 1640 x 922 (scaled down to 820 x 461) would be suitable
 # However: "PiCameraResolutionRounded: frame size rounded up from 820x461 to 832x464"
 # Perhaps 1640 x 1232 capture, scaled down by 4 to 410 x 308?
@@ -26,6 +30,9 @@ import numpy
 capture_res = (1640,922)
 #capture_res = (3280,2464)
 #capture_res = (1640,1232)
+capture_res = (640,480)
+capture_res = (320,240)
+capture_res = (128,96)
 # Nope, even then: PiCameraResolutionRounded: frame size rounded up from 3280x2464 to 3296x2464
 # Hmm, but at full res, we can't capture faster than 15 Hz.
 # Argh, 1640 is not divisible by 16 either!: "PiCameraResolutionRounded: frame size rounded up from 1640x1232 to 1664x1232"
@@ -41,13 +48,18 @@ capture_res = (1640,922)
 resized_res = (768,432)
 #resized_res = (512,288)
 resized_res = (256,144)
+resized_res = (640,480)
+resized_res = (320,240)
+resized_res = (128,96)
 # 4:3 modes:
 #resized_res = (512,384)
 #camera = PiCamera()
 
-camera = PiCamera(sensor_mode=4, resolution=capture_res, framerate=10)
+#camera = PiCamera(sensor_mode=4, resolution=capture_res, framerate=target_framerate)
+camera = PiCamera(resolution=capture_res, framerate=target_framerate)
 camera.iso = 400
 camera.shutter_speed = 20000
+#camera.shutter_speed = 15000
 print("calibrating gain...")
 sleep(2)
 camera.exposure_mode = 'off'
@@ -63,10 +75,13 @@ camera.awb_gains = g
 
 # That's it for the camera setup.
 
+#camera.start_preview(alpha=127)
+#sleep(60)
+
 # array wrapper:
-#rawCapture = PiRGBArray(camera)
+rawCapture = PiRGBArray(camera)
 # If resizing, you likely have to tell the array how big to be:
-rawCapture = PiRGBArray(camera, size=resized_res)
+#rawCapture = PiRGBArray(camera, size=resized_res)
 
 sleep(0.1)
 
@@ -82,10 +97,13 @@ def capture_still():
 	rawCapture.truncate(0)
 	# Yes, that was it!
 
+#capture_still()
+
 #exit()
 
 then = 0
 now = 0
+end_time = 0
 
 # For colour matching testing:
 # Helper for converting a decimal <r,g,b> triple into an integer [b,g,r] array:
@@ -101,7 +119,7 @@ upper = numpy.array(blue_hi, dtype="uint8")
 # OpenCV docs: For HSV, Hue range is [0,179], Saturation range is [0,255] and Value range is [0,255]
 # Goal blue H was about 102/180, S=190/255, V=50/255 (or 50/100?)
 goal_hsv = (102, 190, 100)
-goal_hsv_tolerance = (10, 60, 100)
+goal_hsv_tolerance = (12, 65, 100)
 # Um, does bad stuff happen if the range results in a min below 0 or a max above 255?
 # Should the range be applied additively or multiplicatively?
 def lower(hsv, hsv_tolerance):
@@ -115,37 +133,60 @@ goal_hsv_hi = numpy.array(upper(goal_hsv, goal_hsv_tolerance), dtype="uint8")
 # capture frames from the camera
 # CME: can we specify resize with use_video_port=True? Seems so
 # Hmm, why is the video capture noticeably dimmer than the still?
-# And why is the frame rate so jittery?
+# And why is the frame rate so jittery? Hmm, it seems to be slow to capture the next frame every second frame. Setting the capture frame rate low makes it more obvious.
+# Hmm, it's not just every second frame that's pausing...and how long the pause is when capturing the new frame depends on the timing of the loop!
+# Sometimes there's a delay of over 2 s while restarting the loop!
+# Ah-ha: looks like it's the resizing that causes the jitter.
+# Note that when use_video_port=False, reading each image takes about 0.3 s!
 print("Press 'q' to quit...")
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True, resize=resized_res):
+# , resize=resized_res
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+#while True:
+	#camera.capture_sequence(rawCapture, format="bgr", use_video_port=True, resize=resized_res)
+	#print(time() - end_time)
+	#print("start loop")
 	now = time()
 	elapsed_time = now  - then
 	sys.stderr.write('Frame rate: ' + str(round(1.0/elapsed_time,1)) + ' Hz\n')
 
 	# grab the raw NumPy array representing the image, then initialize the timestamp
 	# and occupied/unoccupied text
+	#print("copy array")
 	image = frame.array
+	#image = rawCapture.array
  
 	# show the frame
+	#print("show raw frame")
 	#cv2.imshow("Frame", image)
-	#key = cv2.waitKey(1) & 0xFF
+	#print(" wait >")
+	#key = cv2.waitKey(16) & 0xFF
+	# if the `q` key was pressed, break from the loop
+	#if key == ord("q"):
+	#	break
 	
 	# Let's try some basic colour matching:
 	# Should we convert to HSV first?
+	# Hmm, it seems that the chroma resolution is quite poor at certain camera settings (low res)...or maybe it's just the lower res exaggerating it.
+	#print("BGR -> HSV...")
 	hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 	# Remember, it's (B,G,R) otherwise!
 	mask = cv2.inRange(hsv, goal_hsv_lo, goal_hsv_hi)
 	#output = cv2.bitwise_and(image, image, mask=mask)
 
 	# show the matching area:
+	#print("show masked frame")
 	cv2.imshow("Frame", mask)
-	key = cv2.waitKey(1) & 0xFF
+	#print(" wait >")
+	key = cv2.waitKey(16) & 0xFF
+	# if the `q` key was pressed, break from the loop
+	if key == ord("q"):
+		break
 	
 	# clear the stream in preparation for the next frame
+	#print("truncating...")
 	rawCapture.truncate(0)
  
 	then = now
 	
-	# if the `q` key was pressed, break from the loop
-	if key == ord("q"):
-		break
+	#print("end loop")
+	#end_time = time()
