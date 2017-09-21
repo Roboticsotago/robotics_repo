@@ -13,15 +13,12 @@ camera = PiCamera(resolution=(1640,922), framerate=25)
 camera.iso = 400
 #camera.start_preview()
 # Pause briefly to allow automatic settings to settle:
-print("Hold a white card in front of the camera now!")
-sleep(5)
 
 # NOTE:
 # <<
 # Exposure mode 'off' is special: this disables the camera's automatic gain control, fixing the values of digital_gain and analog_gain.
 # Please note that these properties are not directly settable (although they can be influenced by setting iso prior to fixing the gains), and default to low values when the camera is first initialized. Therefore it is important to let them settle on higher values before disabling automatic gain control otherwise all frames captured will appear black.
 # >>
-
 
 print("camera.exposure_speed = ",camera.exposure_speed)
 # Is this measured in microseconds?
@@ -49,6 +46,8 @@ camera.exposure_mode = 'off'
 #camera.analog_gain = 8
 #camera.analog_gain = Fraction(241, 32)
 
+print("Hold a white card in front of the camera now!")
+sleep(5)
 
 g = camera.awb_gains
 print("camera.awb_gains = ",g)
@@ -57,7 +56,7 @@ camera.awb_gains = g
 
 #camera.rotation = 180
 
-# TODO: fix focus settings?
+# TODO: fix focus settings? Ah, this requires a hardware adjustment! The cameras are set to focus at infinity from the factory, but I've 3D printed a couple of wrenches for adjusting it.
 
 print("You can take away the white card now. :)")
 
@@ -67,7 +66,7 @@ camera.start_preview(alpha=255)
 # Can we use resize with other capture functions as well? Seems so..also with start_recording().
 #camera.capture_sequence(['image%02d.jpg' % i for i in range(99)], resize=(820,461))
 # What's the best way to capture for sharing with SimpleCV or OpenCV? A shell pipeline? A socket? A NumPy array?
-sleep(10)
+sleep(3600)
 
 # Cature to a video file:
 # Note that the video file is raw h.264, with no frame rate information!
