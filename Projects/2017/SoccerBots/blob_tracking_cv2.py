@@ -24,6 +24,10 @@ target_framerate = 20
 #capture_res = (128,96)
 capture_res = (256,192)
 
+# How much of the frame to crop to when doing the calibration sampling?
+xfrac = 0.1
+yfrac = 0.1
+
 camera = PiCamera(resolution=capture_res, framerate=target_framerate)
 camera.iso = 400
 camera.shutter_speed = 20000
@@ -65,7 +69,23 @@ def calibrate_target_colour():
 		# and occupied/unoccupied text
 		#print("copy array")
 		image = frame.array
-		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+		
+		# Crop the central region of interest and convert to HSV colour space:
+		xres = capture_res[0]
+		yres = capture_res[1]
+		# TODO: make a function for these?
+		Y1 = int(round(yres * (yfrac + 1) / 2.0))
+		Y0 = int(round(yres * (1 - yfrac) / 2.0))
+		X0 = int(round(xres * (1 - xfrac) / 2.0))
+		X1 = int(round(xres * (xfrac + 1) / 2.0))
+		hsv = cv2.cvtColor(image[Y0:Y1,X0:X1], cv2.COLOR_BGR2HSV)
+		
+		# Draw sampling region on the frame to assist with aiming:
+		cv2.rectangle(image,(X0,Y0),(X1,Y1),(0,255,0),2)
+		cv2.imshow("Frame",image)
+		key = cv2.waitKey(16) & 0xFF
+
+		# Compute the average colour for the sampling region:
 		average_colour = [hsv[:, :, c].mean() for c in range(hsv.shape[-1])]
 		#average_colour = hsv[capture_res[0]/2,capture_res[1]/2]
 		print(average_colour, i)
@@ -93,7 +113,7 @@ def calibrate_target_colour():
 		if current_v_max > v_max: v_max = current_v_max
 		
 		i = i + 1
-		if i >= 60:
+		if i >= 120:
 			average_colour[0] = h_avg
 			average_colour[1] = s_avg
 			average_colour[2] = v_avg
