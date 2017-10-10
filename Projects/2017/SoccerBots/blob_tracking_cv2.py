@@ -39,17 +39,50 @@ def lower(hsv, hsv_tolerance):
 	return [float(hsv[0])-hsv_tolerance[0], float(hsv[1])-hsv_tolerance[1], float(hsv[2])-hsv_tolerance[2]]
 def upper(hsv, hsv_tolerance):
 	return [float(hsv[0])+hsv_tolerance[0], float(hsv[1])+hsv_tolerance[1], float(hsv[2])+hsv_tolerance[2]]
+	
+	
+def clip8bit(x):
+	if isinstance(x, int):
+		if x < 0:
+			return 0
+		elif x > 255:
+			return 255
+		else: 
+			return x
+	elif isinstance(x, list):
+		for y in range(len(x)):
+			if x[y] < 0:
+				x[y] = 0
+			elif x[y] > 255:
+				x[y] = 255
+			else: 
+				x[y] = x[y]
+		return x
+	
 
 #goal_hsv_lo = numpy.array(lower(goal_hsv, goal_hsv_tolerance), dtype="uint8")
 #goal_hsv_hi = numpy.array(upper(goal_hsv, goal_hsv_tolerance), dtype="uint8")
 calibration = calibrate_target_colour()
 print calibration
-goal_hsv_lo = numpy.array(calibration[0], dtype="uint8")
-goal_hsv_hi = numpy.array(calibration[1], dtype="uint8")
+for x in range(3):
+	calibration[0][x] = calibration[0][x] - 10
+	calibration[1][x] = calibration[1][x] + 10
+print calibration
+
+clipped_cal = (clip8bit(calibration[0]),clip8bit(calibration[1]))
+
+print clipped_cal
+
+goal_hsv_lo = numpy.array(clipped_cal[0], dtype="uint8")
+goal_hsv_hi = numpy.array(clipped_cal[1], dtype="uint8")
+print goal_hsv_lo
+print goal_hsv_hi
+
 
 print("Press 'q' to quit...")
 # , resize=resized_res
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+	rawCapture.truncate(0)
 	now = time()
 	elapsed_time = now  - then
 	sys.stderr.write('Frame rate: ' + str(round(1.0/elapsed_time,1)) + ' Hz\n')
@@ -60,7 +93,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	image = frame.array
 
 	hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-	# Remember, it's (B,G,R) otherwise!
+	# Remember, it's (B,G,R) otherwise!	
+	
 	mask = cv2.inRange(hsv, goal_hsv_lo, goal_hsv_hi)
 	#output = cv2.bitwise_and(image, image, mask=mask)
 
@@ -79,6 +113,44 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	
 	# Show keypoints
 	cv2.imshow("Keypoints", mask_with_keypoints)
+	# Show hsv image
+	cv2.imshow("HSV", hsv)
+	# Show raw image
+	cv2.imshow("Raw Image", image)
+	
+	blob_size = 0
+	largest_blob_index = 0
+	n=0
+	
+	if len(keypoints) == 0:
+		print "No blobs detected!"
+		key = cv2.waitKey(0) & 0xFF
+		if key == ord("q"):
+			break
+		continue
+
+	for keypoint in keypoints:
+		if keypoint.size > blob_size:
+			blob_size = keypoint.size
+			largest_blob_index = n
+		n = n+1
+		
+	largest_blob = keypoints[largest_blob_index]
+	
+	
+	#Show largest blob
+	
+	mask_with_largest_blob = cv2.drawKeypoints(mask, [largest_blob], numpy.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+	
+	blob_x = largest_blob.pt[0]
+	blob_y = largest_blob.pt[1]
+	
+	cv2.line(mask_with_largest_blob,(int(blob_x),0),(int(blob_x),96),(255,0,0),2)	
+	cv2.line(mask_with_largest_blob,(0,int(blob_y))	,(128,int(blob_y)),(0,255,0),2)
+	
+	cv2.imshow("Largest Blob", mask_with_largest_blob)
+	
+	
 	
 	#print(" wait >")
 	key = cv2.waitKey(16) & 0xFF
@@ -88,7 +160,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	
 	# clear the stream in preparation for the next frame
 	#print("truncating...")
-	rawCapture.truncate(0)
+	
  
 	then = now
 	
