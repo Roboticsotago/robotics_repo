@@ -102,14 +102,17 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	#print("show masked frame")
 	# Detect blobs.
 	keypoints = detector.detect(mask)
-	print keypoints
+	
+	for keypoint in keypoints:
+		print keypoint
+		print "Size:", keypoint.size
+		print "Co-ordinates:", keypoint.pt
+	print "Number of blobs", len(keypoints)
+	
 
 	# Draw detected blobs as red circles.
 	# cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
 	mask_with_keypoints = cv2.drawKeypoints(mask, keypoints, numpy.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-	
-	for x in keypoints:
-		print x
 	
 	# Show keypoints
 	cv2.imshow("Keypoints", mask_with_keypoints)
@@ -124,11 +127,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	
 	if len(keypoints) == 0:
 		print "No blobs detected!"
-		key = cv2.waitKey(0) & 0xFF
+		key = cv2.waitKey(16) & 0xFF
 		if key == ord("q"):
 			break
 		continue
-
+		
 	for keypoint in keypoints:
 		if keypoint.size > blob_size:
 			blob_size = keypoint.size
@@ -136,7 +139,12 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		n = n+1
 		
 	largest_blob = keypoints[largest_blob_index]
+	print largest_blob_index
 	
+	if numpy.isnan(largest_blob.pt[0]) | numpy.isnan(largest_blob.pt[1]):
+		print "Not a Number"
+		continue
+
 	
 	#Show largest blob
 	
@@ -144,6 +152,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	
 	blob_x = largest_blob.pt[0]
 	blob_y = largest_blob.pt[1]
+	print blob_x, blob_y
 	
 	cv2.line(mask_with_largest_blob,(int(blob_x),0),(int(blob_x),96),(255,0,0),2)	
 	cv2.line(mask_with_largest_blob,(0,int(blob_y))	,(128,int(blob_y)),(0,255,0),2)
