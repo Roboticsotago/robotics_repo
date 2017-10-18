@@ -1,4 +1,6 @@
+alias l='ls -hal'
 alias frink="rlwrap java -cp /usr/share/java/frink.jar frink.parser.Frink"
+alias jdiskreport='java -jar /usr/share/java/jdiskreport.jar'
 alias lsserial='find /dev/serial/by-id -type l -print0 | xargs -0 -i ls -l {}'
 alias re='./runeverything.sh'
 alias se='./stopeverything.sh'

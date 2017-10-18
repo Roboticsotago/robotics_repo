@@ -7,7 +7,7 @@
 
 // Stuff below here shouldn't need to change very often.
 
-#define BAUD_RATE 115200
+#define BAUD_RATE 19200
 
 // TODO: Do the duty cycles of the SoccerBot motors need adjusting?
 // TODO: Move the duty cycles into the eeprom
@@ -25,15 +25,15 @@ const int KICKER_DELAY = 1000;
 #if (SHUTTER==1)
 // Motor speed and servo limits tweaked for Shutter (attacker):
 const int MOTOR_L_DUTY=123;
-const int MOTOR_R_DUTY=143;
+const int MOTOR_R_DUTY=130;
 const int KICKER_MIN = 105;  //tested
 const int KICKER_MAX = 145;
 #else
 // Motor speed and servo limits tweaked for Boris (goalie):
-const int MOTOR_L_DUTY=153;
-const int MOTOR_R_DUTY=163;
-const int KICKER_MIN = 115;  //tested
-const int KICKER_MAX = 60;   //tested
+const int MOTOR_L_DUTY=134;
+const int MOTOR_R_DUTY=143;
+const int KICKER_MAX = 125;  //tested
+const int KICKER_MIN = 85;   //tested
 #endif
 
 const int MESSAGE_TYPE_MASK	= 0b10000000;
@@ -54,17 +54,6 @@ int motors_enabled = 0;
 #define MOTOR_L_1_PIN 7
 #define MOTOR_L_2_PIN 6
 
-// Unused?
-#define LEFT_MOTOR 0
-#define RIGHT_MOTOR 1
-
-#define R_LED 11
-#define O_LED 2
-#define Y_LED 12
-#define G_LED 13
-#define BUZZER 3
-#define L_BUTTON 19
-#define R_BUTTON 8
 
 #define DEBUGGING 0
 /*
@@ -79,17 +68,10 @@ int motors_enabled = 0;
 	#define DEBUG_NOEOL(x)
 #endif
 
+
 void setup() {
 	Kicker.attach(SERVO_PIN);
 	pinMode(MOTOR_TOGGLE_SWITCH, INPUT); digitalWrite(MOTOR_TOGGLE_SWITCH, 1);
-  // TODO: check if these are valid (I think they're from the separate test/diagnostic board
-	pinMode(R_LED, OUTPUT); digitalWrite(R_LED, LOW);
-	pinMode(O_LED, OUTPUT); digitalWrite(O_LED, LOW);
-	pinMode(Y_LED, OUTPUT); digitalWrite(Y_LED, LOW);
-	pinMode(G_LED, OUTPUT); digitalWrite(G_LED, LOW);
-	pinMode(BUZZER, OUTPUT);
-	pinMode(L_BUTTON, INPUT); digitalWrite(L_BUTTON, HIGH); // or INPUT_PULLUP on newer Arduino
-	pinMode(R_BUTTON, INPUT); digitalWrite(R_BUTTON, HIGH);	// NOTE: hardware problem with Sensor 0 Pin 1 on the Dalek board?  It's stuck at only about 1.7 V when pulled high.  Oh, hardwired onboard LED!  Have now removed resistor R4 to open that circuit. :)
 
 	pinMode(MOTOR_L_ENABLE, OUTPUT); digitalWrite(MOTOR_L_ENABLE, LOW);
 	pinMode(MOTOR_R_ENABLE, OUTPUT); digitalWrite(MOTOR_R_ENABLE, LOW);
@@ -154,7 +136,7 @@ void kicker_move(int direction) {
 	if (!motors_enabled) {
 		Kicker.write(KICKER_MIN); 
 	} else{
-		Kicker.write(direction? KICKER_MAX: KICKER_MIN);
+		Kicker.write(direction ? KICKER_MAX : KICKER_MIN);
 	}
 }
 

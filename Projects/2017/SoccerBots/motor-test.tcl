@@ -2,9 +2,11 @@
 
 # Test program for the DSpace board motor control protocol
 
+set ::BAUDRATE 19200
+
 puts stderr "Starting up..."
 
-if {[info hostname] == "Boris"} {
+if {[string match -nocase boris* [info hostname]]} {
 	puts stderr "Robot: Goalie"
 	set SERIAL_DEVICE /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351A0D161-if00
 } else {
@@ -23,7 +25,7 @@ proc connect {serial_device} {
 	}
 	
 	# Configure the channel:
-	chan configure $serial_channel -mode 115200,n,8,1 -translation binary -buffering none -blocking 0
+	chan configure $serial_channel -mode $::BAUDRATE,n,8,1 -translation binary -buffering none -blocking 0
 	
 	# Set up the callback:
 	chan event $serial_channel readable [list read_serial $serial_channel]
@@ -96,9 +98,11 @@ set ::serial_channel [connect $SERIAL_DEVICE]
 
 puts stderr "About to run tests..."
 puts stderr "(make sure the motor enable switch is on!)"
+if {0} {
 after 4000 run_tests
 
 # Enter the event loop (exit when done)
 vwait ::finished
 close $::serial_channel
 puts stderr "All done."
+}
