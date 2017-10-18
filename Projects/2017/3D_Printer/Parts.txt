@@ -1,0 +1,59 @@
+2D plotter/3D printer build, 2017
+
+Igus have some interesting looking bushings and stuff.
+
+http://www.igus.com/wpck/3639/drylin_r_rqa
+http://www.igus.com/wpck/3614/drylin_r_taf
+http://www.igus.com/wpck/17171/DryLin_Miniature_nuts
+http://www.igus.com/wpck/17172/DryLin_metric_leadscrew_es
+
+These are trapezoidal thread
+
+M3	0.5 mm lead
+M4	0.7 mm lead
+M5	0.8 mm lead
+M6	1.0 mm lead	<- perhaps go with this, for strength and simplicity of maths ("M6x1")
+
+	Max length seems to be 1000 mm for most sizes (and 3000 mm for one in particular)
+
+	Screw orientation - left or right?
+
+	1 mm / 200 full steps/rev = 0.005 mm/step
+	1 mm / 3200 microsteps/rev = 0.3 micron/step, but remember that microstepping is for smoothness, not accuracy.
+
+Required speeds for printing: up to about 80 mm/s would be useful for printing, and 200 mm/s for travel moves.
+
+	80 mm/s * 200 steps/mm = 16 kHz
+	200 mm/s * 3200 steps/mm = 40 kHz
+	
+	Maybe we won't be able to use microstepping then. BBB PRUs can achieve 50 kHz with a 10 us period, but could go much higher (100-200 kHz) without too much trouble, apparently.
+	
+	https://groups.google.com/forum/#!topic/machinekit/eI5IeGuhBE0
+
+	2x microstepping should at least be possible, then, which should help a lot with smoothness. IIRC you get diminishing returns.
+	
+	For comparison, the CNC machine at home has 400 steps/mm, from 5 mm lead pitch and 10x microstepping, IIRC.  Yep: 200 * 10 / 5 = 400.
+
+
+Maybe use these for the vertical Z axis:
+
+http://www.igus.com/wpck/17357/drylin_n
+
+What orientation is best for the horizontal rails?
+
+Would we use OpenBeam? IIRC that's about 17 mm, and there's a DryLin NW 17
+
+	I think OpenBeam is actually 15 mm
+
+	What kind of floating element?  Y/Z/YZ?
+	
+http://www.igus.com/wpck/17067/dryLin_N_endcaps
+
+
+Extra OpenBeam hardware from MakerBeam (if you can't get from MAKERshop):
+
+https://www.makerbeam.com/openbeam-feet-8p-for-openbeam.html
+https://www.makerbeam.com/openbeam-shaft-clamp-4p-2p-for-openbeam.html
+https://www.makerbeam.com/openbeam-corner-cubes-black-12p-for-openbeam.html
+https://www.makerbeam.com/openbeam-l-brackets-metal-8p-for-openbeam.html
+
