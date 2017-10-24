@@ -1,0 +1,9 @@
+solve in under two minutes
+requires no more than 30 moves to solve
+size estimate: 30cm x 30cm x 30cm
+core needs to include microcontroller + 6 motors
+~2 seconds per move
+~30rpm
+gear ratio of 300:1
+one move is a 90degree turn of one side
+it is possible to move two opposite sides at the same time
