@@ -1,0 +1,17 @@
+Stepper motor resonance
+
+According to Haydon Kerk, stepper motors typically have a resonant frequency around 70-120 Hz, although it depends on the entire system (damping, friction, mass, etc.).  Microstepping can reduce the severity.  Acceleration profiles should aim to pass through the resonant band as quickly as possible.
+
+According to Oriental Motor, the resonant frequency is usually around 200 Hz (around 60 RPM for a two-phase motor).  They advise loading a motor to 30-70% of the rated torque, and load inertia should be between 1 and 10 times the rotor inertia (1-3x for short, fast motion applications).  Stepper motors can be "jump started" up to around 1000 pulses/s, to avoid the resonant band altogether.  External damping devices can also be added.
+
+I've wondered with my delta printer whether it is typically operating above or below the motor resonance.  Assuming delta carriage travel roughly corresponds to print head speed, and printing speeds of around 40 mm/s:
+
+	pulley: 2 mm x 20 teeth = 40 mm circumference (40 mm/rev)
+	motor: 200 steps/rev
+	40 mm/rev / 200 step/rev = 0.2 mm/step
+	40 mm/s / (0.2 mm/step) = 200 Hz
+
+So, it might not be exceeding the resonant frequency for print moves.  Hmm.
+
+Fast travel moves should be well above, though: 150 mm/s / (0.2 mm/step) = 750 Hz, though it's notable that I'm seeing sometimes jerky movement when doing fast travel moves at the start or end of a print (between home and bed).  I know the stepper driver chips sometimes overheat a little and stutter if there's insufficient cooling.
+
