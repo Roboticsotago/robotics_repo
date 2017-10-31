@@ -30,6 +30,11 @@ For example:
 stepper_resonance[2, 20 N cm, 20 g m^2]
 100.65842420897407543 s^-1 (frequency)
 
+To calculate the corresponding motor speed in RPM, divide by the number of steps per revolution and convert:
+
+stepper_resonance[2, 20 N cm, 20 g m^2] / 200 -> 1/min
+30.197527262692222629
+
 Resonant frequency can be decreased by:
 	decreasing the number of poles
 	decreasing the torque
