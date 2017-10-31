@@ -4,6 +4,8 @@ According to Haydon Kerk, stepper motors typically have a resonant frequency aro
 
 According to Oriental Motor, the resonant frequency is usually around 200 Hz (around 60 RPM for a two-phase motor).  They advise loading a motor to 30-70% of the rated torque, and load inertia should be between 1 and 10 times the rotor inertia (1-3x for short, fast motion applications).  Stepper motors can be "jump started" up to around 1000 pulses/s, to avoid the resonant band altogether.  External damping devices can also be added.
 
+It seems then that the normal mode of operation of a stepper motor is above the renonant frequency.
+
 I've wondered with my delta printer whether it is typically operating above or below the motor resonance.  Assuming delta carriage travel roughly corresponds to print head motion (in terms of speed), and printing speeds of around 40 mm/s:
 
 	pulley: 2 mm x 20 teeth = 40 mm circumference (40 mm/rev)
@@ -13,10 +15,11 @@ I've wondered with my delta printer whether it is typically operating above or b
 
 So, it might not be exceeding the resonant frequency for print moves.  Hmm.
 
-Fast travel moves are probably well above resonance, though: 150 mm/s / (0.2 mm/step) = 750 Hz, though it's notable that I'm seeing sometimes jerky movement when doing fast travel moves at the start or end of a print (between home and bed).  I know the motor driver chips sometimes overheat a little and stutter if there's insufficient cooling.
+Fast travel moves are probably well above resonance, though: 150 mm/s / (0.2 mm/step) = 750 Hz, though it's notable that I'm seeing sometimes jerky movement when doing fast travel moves at the start or end of a print (between home and bed) (though it doesn't seem to affect the positioning accuracy).  I know the motor driver chips sometimes overheat a little and stutter if there's insufficient cooling.
 
-So, selecting a motor with excessive torque might be a bad idea in terms of resonance?
+So, selecting a motor with higher torque than necessary might be a bad idea in terms of resonance?
 
+--
 
 Stepper motor resonant frequency (unloaded?) can be calculated using this formula:
 
@@ -27,8 +30,14 @@ For example:
 stepper_resonance[2, 20 N cm, 20 g m^2]
 100.65842420897407543 s^-1 (frequency)
 
+Resonant frequency can be decreased by:
+	decreasing the number of poles
+	decreasing the torque
+	increasing the rotational inertia
+
 I wonder if it might make sense to add the load inertia to the rotor inertia when calculating system resonance.
 
+--
 
 References:
 
