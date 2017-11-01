@@ -1,0 +1,96 @@
+Stepper motor resonance
+
+According to Haydon Kerk, stepper motors typically have a resonant frequency around 70-120 Hz, although it depends on the entire system (damping, friction, mass, etc.).  Microstepping can reduce the severity.  Acceleration profiles should aim to pass through the resonant band as quickly as possible.
+
+According to Oriental Motor, the resonant frequency is usually around 200 Hz (around 60 RPM for a two-phase motor).  They advise loading a motor to 30-70% of the rated torque, and load inertia should be between 1 and 10 times the rotor inertia (1-3x for short, fast motion applications).  Stepper motors can be "jump started" up to around 1000 pulses/s, to avoid the resonant band altogether.  External damping devices can also be added.
+
+It seems then that the normal mode of operation of a stepper motor is above the renonant frequency.
+
+I've wondered with my delta printer whether it is typically operating above or below the motor resonance.  Assuming delta carriage travel roughly corresponds to print head motion (in terms of speed), and printing speeds of around 40 mm/s:
+
+	pulley: 2 mm x 20 teeth = 40 mm circumference (40 mm/rev)
+	motor: 200 steps/rev
+	40 mm/rev / 200 step/rev = 0.2 mm/step
+	40 mm/s / (0.2 mm/step) = 200 Hz
+
+So, it might not be exceeding the resonant frequency for print moves.  Hmm.
+
+Fast travel moves are probably well above resonance, though: 150 mm/s / (0.2 mm/step) = 750 Hz, though it's notable that I'm seeing sometimes jerky movement when doing fast travel moves at the start or end of a print (between home and bed) (though it doesn't seem to affect the positioning accuracy).  I know the motor driver chips sometimes overheat a little and stutter if there's insufficient cooling.
+
+So, selecting a motor with higher torque than necessary might be a bad idea in terms of resonance?
+
+--
+
+Stepper motor resonant frequency (unloaded?) can be calculated using this formula:
+
+stepper_resonance[num_poles, holding_torque, rotor_inertia] := 100 / (2 pi) * sqrt[2 * num_poles * holding_torque / rotor_inertia ]
+
+	TODO: why the factor of 100?  I suspect it's for additional conversion, not necessary for Frink, so should simply be 1.
+
+
+For an example Schneider Electric NEMA-17 single-length 1.5 A motor (https://motion.schneider-electric.com/downloads/quickreference/NEMA17.pdf
+):
+
+stepper_resonance[2, 23 N cm, 38 g cm^2]
+78.310905736681339922 s^-1 (frequency)
+
+To calculate the corresponding motor speed in RPM, divide by the number of steps per revolution and convert to "per-minutes":
+
+stepper_resonance[2, 23 N cm, 38 g cm^2] / 200 -> 1/min
+23.493271721004401977
+
+double-length motor:
+stepper_resonance[2, 42 N cm, 57 g cm^2]
+86 Hz (26 RPM)
+
+triple-length:
+stepper_resonance[2, 53 N cm, 82 g cm^2]
+81 Hz (24 RPM)
+
+Resonant frequency can be decreased by:
+	decreasing the number of poles
+	decreasing the torque
+	increasing the rotational inertia
+
+I wonder if it might make sense to add the load inertia to the rotor inertia when calculating system resonance.
+
+Johann Rocholl on Google Groups has measured the required extrusion force at 10-20 N for 17 mm PLA through a 0.5 mm diameter nozzle, and 15-25 N for a 0.35 mm nozzle.  My impression is that the required force goes up dramatically with increasing extrusion speed, quickly becoming impractical.
+
+I like the idea of using a series of opposing rubber rollers instead of the traditional hobbed bolt, since filament damage is quite common in my experience.  Say 20 N at 20 mm (0.4 N m) torque required.  At speed, the stepper motor torque is perhaps 0.6 x the rated holding torque (higher voltages help greatly here!).
+
+For the single-length Schneider motor, we'd need gearing of about 4.5:1
+
+30 N * 20 mm / (23 N cm * 0.6)
+4.3478260869565217391
+
+For the double-length, about 2.5:1 ratio:
+
+30 N * 20 mm / (42 N cm * 0.6)
+2.3809523809523809524
+
+For the triple-length, about 2:1 gear ratio:
+
+30 N * 20 mm / (53 N cm * 0.6)
+1.8867924528301886792
+
+For slower extrusion speeds, I can see that direct drive might work OK with a large enough stepper motor.  In my experience, though, direct-drive with 12 V is really not sufficient.
+
+Note that the classic Wade's geared extruder uses a 39:11 gear ratio (roughly 3.5:1).  The RepRapWiki author reports easily achieving 7 kg (70 N) in testing, with a maximum of 15 kg (150 N) achieved with tweaking.  Kysan 42BYGH4803 motor (0.49 Nm holding torque); not sure what voltage.
+
+See Greg Frost's parametric gear library for OpenSCAD on Thingiverse for making custom involute gear wheels.
+
+--
+
+References:
+
+http://www.haydonkerkpittman.com/learningzone/technicaldocuments/stepper-motor-theory
+
+http://www.orientalmotor.com/stepper-motors/technology/stepper-motor-basics.html
+
+https://www.fxsolver.com/browse/formulas/Motor+Resonance+Frequency
+
+https://groups.google.com/forum/#!topic/deltabot/f87P464Cw40
+
+http://reprap.org/wiki/Wade%27s_Geared_Extruder
+
+https://www.thingiverse.com/thing:3575
