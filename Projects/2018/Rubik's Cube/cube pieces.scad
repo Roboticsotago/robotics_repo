@@ -1,32 +1,38 @@
-include <self_solving_cube.scad>;
-
 $fn=50;
-CUBIE=18.9;
-CORE=18;
-INNER=4.5;
-SCREW_TIP=1.5;
-SCREW_BODY=2;
-SCREW_HEAD=3.8;
-SPRING=3.2;
-ROUND=2;
-DEPTH=6;
-RAFT=5;
-LAYER=0.3;
-GAP=0.25;
+
+scale_factor = 300/55;
+
+CUBIE=18.9*scale_factor; //total side length of each cube piece (including rounded edges)
+CORE=18*scale_factor;
+SCREW_TIP=1.5*scale_factor;
+SCREW_BODY=2*scale_factor;
+SCREW_HEAD=3.8*scale_factor;
+INNER=4.5*scale_factor;
+SPRING=3.2*scale_factor;
+ROUND=2*scale_factor; //radius of rounded edges
+DEPTH=6*scale_factor;
+RAFT=5*scale_factor;
+LAYER=0.3*scale_factor;
+GAP=0.25*scale_factor;
+
+core_height = 20 * scale_factor;
+core_radius = 3 * scale_factor;
 
 
 WITH_SUPPORT=false;
 WITH_RAFT=false;
 
-inner_cubie=(CUBIE-2*ROUND);
+inner_cubie=(CUBIE-2*ROUND); //length of each cube before rounded edges
 
-tile_length = inner_cubie;
+tile_length = inner_cubie*0.75;
 tile_height = 1;
 
 module tile(length, height) {
-	minkowski(){
-		cube([length,length,height]);
-		cylinder(r=1,h=height,center=true);
+	translate([-length/2,-length/2,0]) {
+		minkowski(){
+			translate([0,0,-height/2]) cube([length,length,height]);
+			cylinder(r=ROUND,h=height,center=true);
+		}
 	}
 	
 }
@@ -40,7 +46,6 @@ module cubie() {
     }
 }
 
-
 module disc() {
     cylinder(CUBIE, r1=CORE, r2=CORE, $fn=50, center=true);
 
@@ -51,7 +56,7 @@ module disc2() {
 
 }
 
-module core() {
+module icore() {
     disc();
     rotate([0,90,0])
         disc();
@@ -80,7 +85,6 @@ module screw() {
     }
 }
 
-center();
 
 module center() 
 {
@@ -93,7 +97,7 @@ module center()
 	            {
 	                cubie();
 	                translate([CUBIE,0,0])
-	                    core();
+	                    icore();
 	
 	            }
 	            rotate([0,90,0])
@@ -124,66 +128,110 @@ module center()
 	            }
 	        }
 	    }
-		translate([-inner_cubie/2 + tile_height,-inner_cubie/2,inner_cubie/2])
+		translate([-CUBIE/2 + tile_height/2,0])
 		rotate(v=[0,1,0], a=90)
-		tile(tile_length*1.05, tile_height*1.05);		
+		tile(tile_length*1.05, tile_height);		
 	}
 }
 
 module edge() {
-    union() {
-        difference() {
-            cubie();
-            translate([CUBIE,CUBIE,0])
-                core();
-        }
-          
-
-        intersection() {
-            cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),2*INNER],center=true);
-            cube([50,50,2*INNER],center=true);
-            translate([CUBIE,CUBIE,0])
-                core();
-        }
-    }
-
-    if (WITH_RAFT)
-        raft();
-    if (WITH_SUPPORT)
-        edge_support();
+	difference() {
+		difference() {
+	    	union() {
+		        difference() {
+		            cubie();
+		            translate([CUBIE,CUBIE,0])
+		                icore();
+		        }
+		          
+		
+		       intersection() {
+		            cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),2*INNER],center=true);
+		            cube([50,50,2*INNER],center=true);
+		            translate([CUBIE,CUBIE,0])
+		            icore();
+		   	}
+			}
+			translate([-CUBIE/2 + tile_height/2,0,0])
+			rotate(v=[0,1,0],a=90)
+			tile(tile_length*1.05,tile_height);
+		}
+		translate([0,-CUBIE/2 + tile_height/2,0])
+		rotate(v=[1,0,0],a=90)
+		tile(tile_length*1.05,tile_height);
+	}
+	
+	if (WITH_RAFT)
+	    raft();
+   if (WITH_SUPPORT)
+	    edge_support();
 }
 
 module corner() {
-    union() {
-        difference() {
-            cubie();
-        }
- 
-        intersection() {
-            cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER)],center=true);
-            translate([CUBIE,CUBIE,-CUBIE])
-                core2();
-        }
-    }
+	difference() {
+		difference() {
+			difference() {
+    			union() {
+			        difference() {
+			            cubie();
+			        }
+			 
+			        intersection() {
+			            cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER)],center=true);
+			            translate([CUBIE,CUBIE,-CUBIE])
+			                core2();
+			        }
+			   }
+				translate([0,-CUBIE/2 + tile_height/2,0])
+				rotate(v=[1,0,0],a=90)
+				tile(tile_length*1.05,tile_height);
+			}
+			translate([-CUBIE/2 + tile_height/2,0,0])
+			rotate(v=[0,1,0],a=90)
+			tile(tile_length*1.05,tile_height);
+		}
+		translate([0,0,CUBIE/2 - tile_height/2])
+		tile(tile_length*1.05,tile_height);
+	}
+			
+	if (WITH_RAFT)
+   raft();
+   if (WITH_SUPPORT)
+   corner_support();
 
-    if (WITH_RAFT)
-        raft();
-    if (WITH_SUPPORT)
-        corner_support();
 }
 
-module inner_cyl() {
-    cylinder(CUBIE,r1=INNER,r2=INNER,center=true);
+module cylinder_sphere(height) {
+	intersection() {
+		cylinder(h=height, r=height/2, center=true);
+		rotate(a=90, v=[1,0,0]) cylinder(h=height, r=height/2, center=true);
+		rotate(a=90, v=[0,1,0]) cylinder(h=height, r=height/2, center=true);
+	}
 }
 
-module inner_hole() {
-    cylinder(CUBIE+0.1,r1=SCREW_TIP,r2=SCREW_TIP,$fn=10,center=true);
+module core_shape(height, radius) {
+	cylinder(h=height,r=radius,center=true);
+	rotate(a=90,v=[1,0,0]) cylinder(h=height,r=radius,center=true);
+	rotate(a=90,v=[0,1,0]) cylinder(h=height,r=radius,center=true);
 }
 
-module inner_support() {
-    translate([-CUBIE/4,CUBIE/2-0.75,0])
-        cube([CUBIE/2,1.5,INNER],center=true);
+module core_filled_in() {
+	core_shape(core_height, core_radius);
+	cylinder_sphere(core_height*0.75);
 }
+
+module core_hollow_part() {
+	core_shape(core_height, core_radius/2);
+	cylinder_sphere(core_height*0.6);
+}
+
+module core() {
+	difference() {
+		core_filled_in();
+		core_hollow_part();
+	}
+}
+
 
 module edge_support() {
     translate([0,-1.5/2+CUBIE-INNER,0])
@@ -201,39 +249,6 @@ module corner_support() {
             cube([CUBIE, 1.5, 2*INNER],center=true);
     translate([0,CUBIE/2+1.5,-CUBIE/2-1.5])
         cube([CUBIE, 1.5, 1.5],center=true);
-}
-
-module inner() {
-    difference() {
-        union() {
-            inner_cyl();
-            rotate([0,90,0])
-                inner_cyl();
-            rotate([90,0,0])
-                inner_cyl();
-
-            if (WITH_RAFT)
-                raft();
-            if (WITH_SUPPORT)
-            {
-                inner_support();
-                rotate([90,0,0])
-                    inner_support();
-                rotate([180,0,0])
-                    inner_support();
-                rotate([270,0,0])
-                    inner_support();
-            }
-        }
-        union() {
-            inner_hole();
-            rotate([0,90,0])
-                inner_hole();
-            rotate([90,0,0])
-                inner_hole();
-        }
-    }
-
 }
 
 module raft() {
@@ -272,6 +287,5 @@ translate([2*CUBIE+4*RAFT+4,0,CUBIE/2])
 rotate([0,-90,0])
 center();
 
-translate([3*CUBIE+6*RAFT+6,0,CUBIE/2])
-rotate([0,-90,0])
-inner();
+translate(500,[core_height/2],0)
+core();
