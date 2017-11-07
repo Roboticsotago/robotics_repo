@@ -23,9 +23,19 @@ So, selecting a motor with higher torque than necessary might be a bad idea in t
 
 Stepper motor resonant frequency (unloaded?) can be calculated using this formula:
 
+WRONG:
 stepper_resonance[num_poles, holding_torque, rotor_inertia] := 100 / (2 pi) * sqrt[2 * num_poles * holding_torque / rotor_inertia ]
 
-	TODO: why the factor of 100?  I suspect it's for additional conversion, not necessary for Frink, so should simply be 1.
+	Uh, why the factor of 100?  I suspect it's for additional units conversion, not necessary for Frink, so should simply be 1.
+
+	According to <http://homepage.divms.uiowa.edu/~jones/step/physics.html#resonance>, the formula is:
+
+	f = (k / mu) ^ 0.5 / (2 pi)
+
+	or (Frinkified):
+
+RIGHT:
+stepper_resonance[num_poles, holding_torque, rotor_inertia] := sqrt[2 * num_poles * holding_torque / rotor_inertia ] / (2 pi)
 
 
 For an example Schneider Electric NEMA-17 single-length 1.5 A motor (https://motion.schneider-electric.com/downloads/quickreference/NEMA17.pdf
