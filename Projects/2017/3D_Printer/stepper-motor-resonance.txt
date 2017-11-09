@@ -64,9 +64,9 @@ Resonant frequency can be decreased by:
 
 I wonder if it might make sense to add the load inertia to the rotor inertia when calculating system resonance.
 
-Johann Rocholl on Google Groups has measured the required extrusion force at 10-20 N for 17 mm PLA through a 0.5 mm diameter nozzle, and 15-25 N for a 0.35 mm nozzle.  My impression is that the required force goes up dramatically with increasing extrusion speed, quickly becoming impractical.
+Johann Rocholl on Google Groups has measured the required extrusion force at 10-20 N for 1.75 mm PLA through a 0.5 mm diameter nozzle, and 15-25 N for a 0.35 mm nozzle.  My impression is that the required force goes up dramatically with increasing extrusion speed, quickly becoming impractical.
 
-I like the idea of using a series of opposing rubber rollers instead of the traditional hobbed bolt, since filament damage is quite common in my experience.  Say 20 N at 20 mm (0.4 N m) torque required.  At speed, the stepper motor torque is perhaps 0.6 x the rated holding torque (higher voltages help greatly here!).
+I like the idea of using a series of opposing rubber rollers instead of the traditional hobbed bolt, since filament damage is quite common in my experience.  Say 20 N at 20 mm radius (0.4 N m torque required).  (Smaller wheels would mean less gearing required, but also less contact area with the filament.)  Note that at speed, the stepper motor torque is perhaps 0.6 x the rated holding torque (higher voltages help greatly here!).
 
 For the single-length Schneider motor, we'd need gearing of about 4.5:1
 
@@ -91,6 +91,11 @@ See Greg Frost's parametric gear library for OpenSCAD on Thingiverse for making 
 
 --
 
+Ooh, good reading here (even if not designing a delta printer):
+http://reprap.org/wiki/Choosing_stepper_for_a_delta
+
+--
+
 References:
 
 http://www.haydonkerkpittman.com/learningzone/technicaldocuments/stepper-motor-theory
@@ -104,3 +109,5 @@ https://groups.google.com/forum/#!topic/deltabot/f87P464Cw40
 http://reprap.org/wiki/Wade%27s_Geared_Extruder
 
 https://www.thingiverse.com/thing:3575
+
+http://reprap.org/wiki/Choosing_stepper_for_a_delta
