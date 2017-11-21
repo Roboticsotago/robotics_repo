@@ -18,7 +18,7 @@ Ideal motor winding inductance for 24 V power supply:
 
 
 Stepper motor drivers?  BeBoPr board support Pololu-style carriers, yes?  Go with the DRVs?
-	Are we intending to use a BeagleBone (Black)?  What break-out board?
+	Are we intending to use a BeagleBone (Black)?  What break-out board? I'm thinking either that or a big, conventional, LinuxCNC system using a PC with a parallel port.
 
 MAKERshop have a variety of NEMA17 stepper motors and drivers, notably a 400 step/rev stepper motor.
 	http://www.makershop.co.nz/motors/stepper_42BYGHM809
@@ -39,7 +39,13 @@ MAKERshop have a variety of NEMA17 stepper motors and drivers, notably a 400 ste
 		1.8 A max per phase
 		+/-5% step angle accuracy
 
+Rails? Perhaps get some Igus Drylin bearings, blocks, etc.
 
+Break-out board:
+	http://blog.machinekit.io/p/hardware-capes.html
+	Replicape
+		https://www.thing-printer.com/product/replicape/
+		
 --
 
 DRV8825 boards:

@@ -97,6 +97,28 @@ https://www.youtube.com/watch?v=R_AIzCTYBNs
 
 --
 
+Axis motion:
+
+Motors will probably be 200 steps/revolution.
+Microstepping might have to be fairly low to avoid excessive step frequencies for the controller. Perhaps just 1/2 stepping, so 400 microsteps/revolution.
+Small metric ballscrews, perhaps M6x1 (1 mm thread pitch, I guess, so 1 mm per revolution).
+So, 400 microsteps/mm.
+
+Simulation (LinuxCNC on Cyclone):
+
+Set up to print on LinuxCNC:
+G53 F1500 X225 Y150 Z0
+G92 X0 Y0 Z0
+
+Will be interesting to see what speeds and accelerations are achievable in practice. We want to keep the motion pretty uniform for consistent extrusion. The way RepRap firmwares generally deal with it is to allow the toolpath to "jerk" instantaneously from one velocity to another, within limits.  This is the so-called "jerk" parameter, which is different from the usual meaning in physics/mechanics of the derivative of acceleration. I can't help thinking a better way is LinuxCNC-style path-blending, where you can specify one of:
+ - exact toolpath (with the drawback of complete stops at corners and possibly jerky motion on arcs or curves that are actually lines)
+ - constant speed (at the expense of positioning accuracy - possibly extreme inaccuracy!)
+ - permissible toolpath error (compromise: allow speed reduction to keep within a certain distance of the programmed path)
+
+
+ 
+--
+
 Might get some construction ideas from the Mendel Max 2:
 https://www.youtube.com/watch?v=PMS00ll8lnw
 
