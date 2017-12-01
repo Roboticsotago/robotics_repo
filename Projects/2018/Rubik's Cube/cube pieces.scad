@@ -25,7 +25,7 @@ WITH_RAFT=false;
 inner_cubie=(CUBIE-2*ROUND); //length of each cube before rounded edges
 
 tile_length = inner_cubie*0.75;
-tile_height = 1;
+tile_height = 1 * scale_factor;
 
 module tile(length, height) {
 	translate([-length/2,-length/2,0]) {
@@ -147,7 +147,7 @@ module edge() {
 		
 		       intersection() {
 		            cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),2*INNER],center=true);
-		            cube([50,50,2*INNER],center=true);
+		            cube([50*scale_factor,50*scale_factor,2*INNER],center=true);
 		            translate([CUBIE,CUBIE,0])
 		            icore();
 		   	}
@@ -287,5 +287,8 @@ translate([2*CUBIE+4*RAFT+4,0,CUBIE/2])
 rotate([0,-90,0])
 center();
 
-translate(500,[core_height/2],0)
+translate([470,0,core_height/2])
 core();
+
+translate([200,-150,0])
+!tile(tile_length,tile_height);
