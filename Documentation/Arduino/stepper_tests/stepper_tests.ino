@@ -12,7 +12,7 @@
 // 2015-11-04: Have rigged up the 24-V power supply and the modded-for-24-V RAMPS board for testing.  Need to pull the enable pin for the stepper drive low.  Also, the RAMPS is jumpered for 16x microstepping, so the frequency-to-RPM mapping is changed again.  192 kHz would be 3600 RPM, I think
 // 192 kHz / 200 / 16 -> min^-1 = 3600
 // With delayMicroseconds(), I think it's a bit tough to reach high frequencies, and certainly not with any precision.  I managed to get it to just over 30 kHz
-
+//17HS19 reached 690RPM with no load 
 
 // For initial testing:
 //const int STEP_PIN = 2;
@@ -35,8 +35,8 @@ const int PULSE_HIGH_TIME = 1000;
 
 const int LED_PIN = 13;
 
-const int MIN_FREQ = 200;
-const long int MAX_FREQ = 1000; // Max step frequency in Hz.  Typical stepper motors are 1.8 degrees/step (200 steps/revolution), although microstepping could increase this up to 16-fold.  Hmm, but I'm seeing the frequency not go any higher than about 12 kHz on the scope..may need more optimised code...
+const int MIN_FREQ = 50;
+const long int MAX_FREQ = 1500; // Max step frequency in Hz.  Typical stepper motors are 1.8 degrees/step (200 steps/revolution), although microstepping could increase this up to 16-fold.  Hmm, but I'm seeing the frequency not go any higher than about 12 kHz on the scope..may need more optimised code...
 const float FREQ_STEP = 10;
 
 float freq = 0.0;
