@@ -4,7 +4,7 @@
 #include <math.h>
 #include <EEPROM.h>
 
-#define SHUTTER 0
+#define SHUTTER 1
 #define DEBUGGING 0
 
 const int NUM_SENSORS = 8;
@@ -45,6 +45,7 @@ const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0
 
 #include "nokia.h"
 #include "mk_shortened.h"
+#include "sherlockShort.h"
 #include "magnetometer.h"
 #include "ultrasonic.h"
 #include "reflectance.h"
