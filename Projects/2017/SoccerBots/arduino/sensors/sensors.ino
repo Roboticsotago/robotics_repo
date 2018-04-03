@@ -25,7 +25,7 @@ const int EEPROM_TARGET_HEADING = 12;
 const int BUZZER = 10;
 int ball_detected = 0;
 float ball_angle = 0;
-float ball_distance = 0;
+float ball_distance = 1;
 int front_range = 0;
 int back_range = 0; // so far unused
 float angle_to_goal = 0;
@@ -41,7 +41,7 @@ int crotchet;
 	#define DEBUG_NOEOL(x)
 #endif
 
-const float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
+
 
 #include "nokia.h"
 #include "mk_shortened.h"
@@ -95,6 +95,11 @@ void test_loop() {
 	delay(50);
 }
 
+void loopy() {
+	get_ball_angle();
+	delay(500);
+}
+
 void loop() {
 	calibration_mode_switch = digitalRead(CALIBRATION_MODE_SWITCH_PIN);
 	if (!calibration_mode_switch) {
@@ -104,7 +109,7 @@ void loop() {
 		magnetometer_saveHeading();
 	}
         readReflectance();
-	readIRsensors();
+	//readIRsensors();
 	//printIRsensors();
 	get_ball_angle();
 	//get_calibration_mode_switch();
@@ -151,41 +156,6 @@ void playTune(float tune[][2], int tempo, int arrayLength) {
 	}
 }
 
-float readIRsensor(int sensor_num) { // takes single reading from one IR sensor
-	int reading = analogRead(analog_sensor_pins[sensor_num]);
-	DEBUG_NOEOL("sensor "); DEBUG_NOEOL(sensor_num); DEBUG_NOEOL(": "); DEBUG(reading);
-	if (reading>IR_THRESHOLD) {
-		return 0.0;
-	} else {
-		return (1023-reading)/1023.0;
-	}
-}
-
-void readIRsensors() { // takes readings from all 8 sensors and stores them in an array.
-	for (int i=0; i<NUM_SENSORS; i++) {
-		ir_values[i] = readIRsensor(i);
-	}
-  printIRsensors();
-  irAutoGain();
-  printIRsensors();
-  
-}
-
-void irAutoGain() { // stretch out the IR sensor values, apply a threshold, then scale back again, in an attempt to ignore IR reflections off the goal.
-  float irMax = 0.0;
-  float irMin = 1.0;
-  // First, determine the min and max for the latest readings:
-  for (int i=0; i<NUM_SENSORS; i++) {
-    if(ir_values[i] < irMin && ir_values[i] != 0){irMin = ir_values[i];}
-    if(ir_values[i] > irMax){irMax = ir_values[i];}
-  }
-  // Then scale to full scale, apply threshold, and scale back down:
-  for(int i=0; i<NUM_SENSORS; i++){
-   if((ir_values[i]-irMin)/(irMax-irMin) < IR_GAIN_THRESHOLD){
-     ir_values[i]=0;
-  }
-  }
-}
 
 void printIRsensors() { // used for debugging
 	DEBUG_NOEOL("Raw sensor readings: ");
@@ -194,32 +164,6 @@ void printIRsensors() { // used for debugging
 		DEBUG_NOEOL(" ");
 	} 
 	DEBUG();
-}
-
-void rad2degTest() {
-	for (int i=0; i < 8; i ++) {
-		DEBUG(i / 8.0 * TAU);
-		DEBUG(normaliseDegrees(rad2deg(i / 8.0 * TAU)));
-	}
-}
-
-float rad2deg(float rad) { // redundant as math.h provides degrees function
-	return (rad * -1.0 + TAU / 4.0) * (360.0 / TAU);
-}
-
-float normaliseDegrees(float d) {
-	//return fmod(d + 180, 360); 
-	if (d < -180) {
-		return d + 360;
-	} else if (d>180) {
-		return d - 360;
-	} else {
-		return d;
-	}
-}
-
-float vector2distance(float vector_magnitude) { // calculates an approx. dist. to the ball from the IR array
-	return exp(0.33/vector_magnitude) * 0.03;
 }
 
 void send_output() {
@@ -234,60 +178,37 @@ void send_output() {
 	Serial.println(";");
 }
 
-float get_ball_angle() {
-	DEBUG("ball angle called!");
-	
-	// Calculate the centroid of the ball detection vectors...
-
-	float x_total = 0.0; float y_total = 0.0;
-	for (int n=0; n<NUM_SENSORS; n++) {
-		x_total += IR_COORDINATES[n][0]*ir_values[n];
-		y_total += IR_COORDINATES[n][1]*ir_values[n];
-
-		DEBUG_NOEOL("Sensor #:");
-		DEBUG_NOEOL(n);
-		DEBUG_NOEOL("; value=");
-		DEBUG_NOEOL(ir_values[n]);
-		DEBUG_NOEOL(": (");
-		DEBUG_NOEOL(IR_COORDINATES[n][0]*ir_values[n]);
-		DEBUG_NOEOL(",");
-		DEBUG_NOEOL(IR_COORDINATES[n][1]*ir_values[n]);
-		DEBUG_NOEOL("); ");
-	}
-
-	float x_average = x_total/(float)NUM_SENSORS;
-	float y_average = y_total/(float)NUM_SENSORS;
-	
-	DEBUG_NOEOL("  X AVERAGE: ");
-	DEBUG_NOEOL(x_average);
-	DEBUG_NOEOL("  Y AVERAGE: ");
-	DEBUG_NOEOL(y_average);
-	DEBUG(" ");
-	
-	// Calculate angle:
-	// This will use the atan2() function to determine the angle from the average x and y co-ordinates
-	// You can use the degrees() function to convert for output/debugging.
-	ball_angle = degrees(atan2(x_average, y_average));
-    DEBUG_NOEOL("Angle to ball: ");
-    DEBUG_NOEOL(ball_angle);
-	
-	// Calculate approximate distance:
-	// First, determine the length of the vector (use the Pythagorean theorem):
-	float vector_magnitude = sqrt(pow(x_average, 2)+pow(y_average,2));	
-    if (ball_angle == 0 && vector_magnitude == 0) {
-		ball_detected = 0;
-	} else {
-		ball_detected = 1;
-	}
-	// We need to map the raw vector magnitudes to real-world distances. This is probably not linear! Will require some calibration testing...
-	ball_distance = vector2distance(vector_magnitude); 
-	DEBUG_NOEOL(" Vector magnitude: ");
-	DEBUG_NOEOL(vector_magnitude);
-	DEBUG_NOEOL(" Distance: ");
-	DEBUG_NOEOL(ball_distance);
-	DEBUG("");
-	
-	// TODO: maybe also check for infinity, and map that to a usable value (e.g. 0).
+int posneg(int input) {
+  if(input > 180) {
+    return(input - 360); 
+  }
+  return input;
 }
 
-//TODO: define other get functions (getCompass etc)
+float get_ball_angle() {
+	DEBUG("ball angle called!");
+	int small=2000;
+    int sens=0;
+    for(int x=0; x<NUM_SENSORS; x++) {
+		
+		//Serial.print(analogRead(analog_sensor_pins[x]));
+		//Serial.print(" ");
+		
+		if(analogRead(analog_sensor_pins[x]) < small) {
+			small=analogRead(analog_sensor_pins[x]);
+			sens=x;
+		}
+     }
+     if(small>900) {
+		 ball_detected = 0;
+	 } else {
+		 ball_detected = 1;
+	 }
+     
+     ball_angle = sens*45;
+    ball_angle = posneg(ball_angle);
+    
+    //Serial.print(ball_angle);
+    //Serial.println("");
+}
+

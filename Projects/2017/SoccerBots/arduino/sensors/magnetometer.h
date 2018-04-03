@@ -74,7 +74,7 @@ void magnetometer_restoreCalibration() { // restores the calibrated origin store
 	
         //playTune(nokia, nokiaTempo, nokiaArrayLength); FOR BORIS
         //playTune(mk_shortened, mk_shortened_tempo, mk_shortened_array_length); //FOR SHUTTER
-        playTune(sherlockShort, sherlockTempo, sherlockArrayLength);
+        playTune(sherlock, sherlockTempo, sherlockArrayLength);
 	/*beep();
 	delay(50);
 	beep();
