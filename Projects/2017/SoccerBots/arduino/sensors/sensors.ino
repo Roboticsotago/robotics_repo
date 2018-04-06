@@ -3,6 +3,8 @@
 #include <Wire.h>
 #include <math.h>
 #include <EEPROM.h>
+#include <HTInfraredSeeker.h>
+
 
 #define SHUTTER 1
 #define DEBUGGING 0
@@ -21,6 +23,8 @@ const int EEPROM_MAX_X = 6;
 const int EEPROM_MAX_Y = 8;
 const int EEPROM_MAX_Z = 10;
 const int EEPROM_TARGET_HEADING = 12;
+
+
 
 const int BUZZER = 10;
 int ball_detected = 0;
@@ -83,6 +87,7 @@ void setup() {
 	pinMode(BUZZER,OUTPUT);
 	Serial.begin(115200);
 	
+        InfraredSeeker::Initialize();
 	magnetometerSetup();
 	ultrasonic_setup();
 }
@@ -114,7 +119,9 @@ void loop() {
 	get_ball_angle();
 	//get_calibration_mode_switch();
 	angle_to_goal = magnetometer_getAngleToTarget();
-	front_range = getUSDistance();
+	//front_range = getUSDistance();
+        InfraredResult InfraredBall = InfraredSeeker::ReadAC();
+        ball_distance = 90.147-0.4345*InfraredBall.Strength;
 	//TODO: get_compass etc.
 	send_output();
 #if DEBUGGING == 1
