@@ -9,6 +9,26 @@ execfile("camera_setup.py")
 average_colour=(0,0,0)
 sleep(0.1)
 
+from fractions import Fraction
+
+calibration_file_name = "camera_calibration_state_cv2.py"
+execfile(calibration_file_name)
+
+camera.awb_mode = 'off'
+camera.awb_gains = calibrated_white_balance
+
+def debug(msg):
+	#sys.stderr.write(str(msg) + "\n")
+	pass
+
+def send2pd(message):
+	print(str(message) + ";")
+	sys.stdout.flush()
+	
+def x_coordinate_to_angle(coord): 
+	#return coord*35.543 #calibrated for LogiTech Camera.
+	return coord*33.0 #calibrated for RPi Camera. 
+
 then = 0
 now = 0
 end_time = 0
@@ -29,16 +49,10 @@ upper = numpy.array(blue_hi, dtype="uint8")
 goal_hsv = (104.3136,251.977,89.199)
 #goal_hsv = average_colour
 #goal_hsv = (average_colour[0], 127, 127)
-print(average_colour[0])
-print(goal_hsv)
-goal_hsv_tolerance = (12, 3, 100)
-#goal_hsv_tolerance = (12,127,127)
-# Um, does bad stuff happen if the range results in a min below 0 or a max above 255?
+debug(average_colour[0])
+debug(goal_hsv)
+
 # Should the range be applied additively or multiplicatively?
-def lower(hsv, hsv_tolerance):
-	return [float(hsv[0])-hsv_tolerance[0], float(hsv[1])-hsv_tolerance[1], float(hsv[2])-hsv_tolerance[2]]
-def upper(hsv, hsv_tolerance):
-	return [float(hsv[0])+hsv_tolerance[0], float(hsv[1])+hsv_tolerance[1], float(hsv[2])+hsv_tolerance[2]]
 	
 	
 def clip8bit(x):
@@ -62,30 +76,31 @@ def clip8bit(x):
 
 #goal_hsv_lo = numpy.array(lower(goal_hsv, goal_hsv_tolerance), dtype="uint8")
 #goal_hsv_hi = numpy.array(upper(goal_hsv, goal_hsv_tolerance), dtype="uint8")
-calibration = calibrate_target_colour()
-print calibration
+calibration = calibrated_goal_colour
+tolerance = 20
+debug(calibration)
 for x in range(3):
-	calibration[0][x] = calibration[0][x] - 10
-	calibration[1][x] = calibration[1][x] + 10
-print calibration
+	calibration[0][x] = calibration[0][x] - tolerance
+	calibration[1][x] = calibration[1][x] + tolerance
+debug(calibration)
 
 clipped_cal = (clip8bit(calibration[0]),clip8bit(calibration[1]))
 
-print clipped_cal
+debug(clipped_cal)
 
 goal_hsv_lo = numpy.array(clipped_cal[0], dtype="uint8")
 goal_hsv_hi = numpy.array(clipped_cal[1], dtype="uint8")
-print goal_hsv_lo
-print goal_hsv_hi
+debug(goal_hsv_lo)
+debug(goal_hsv_hi)
 
 
-print("Press 'q' to quit...")
+debug("Press 'q' to quit...")
 # , resize=resized_res
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 	rawCapture.truncate(0)
 	now = time()
 	elapsed_time = now  - then
-	sys.stderr.write('Frame rate: ' + str(round(1.0/elapsed_time,1)) + ' Hz\n')
+	debug('Frame rate: ' + str(round(1.0/elapsed_time,1)) + ' Hz\n')
 
 	# grab the raw NumPy array representing the image, then initialize the timestamp
 	# and occupied/unoccupied text
@@ -104,10 +119,10 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	keypoints = detector.detect(mask)
 	
 	for keypoint in keypoints:
-		print keypoint
-		print "Size:", keypoint.size
-		print "Co-ordinates:", keypoint.pt
-	print "Number of blobs", len(keypoints)
+		debug(keypoint)
+		debug("Size: " + str(keypoint.size))
+		debug("Co-ordinates: " + str(keypoint.pt))
+	debug("Number of blobs " + str(len(keypoints)))
 	
 
 	# Draw detected blobs as red circles.
@@ -115,21 +130,22 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	mask_with_keypoints = cv2.drawKeypoints(mask, keypoints, numpy.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 	
 	# Show keypoints
-	cv2.imshow("Keypoints", mask_with_keypoints)
+	#cv2.imshow("Keypoints", mask_with_keypoints)
 	# Show hsv image
-	cv2.imshow("HSV", hsv)
+	#cv2.imshow("HSV", hsv)
 	# Show raw image
-	cv2.imshow("Raw Image", image)
+	#cv2.imshow("Raw Image", image)
 	
 	blob_size = 0
 	largest_blob_index = 0
 	n=0
 	
 	if len(keypoints) == 0:
-		print "No blobs detected!"
-		key = cv2.waitKey(16) & 0xFF
+		debug("No blobs detected!")
+		key = cv2.waitKey(1) & 0xFF
 		if key == ord("q"):
 			break
+		send2pd(-180)
 		continue
 		
 	for keypoint in keypoints:
@@ -139,10 +155,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		n = n+1
 		
 	largest_blob = keypoints[largest_blob_index]
-	print largest_blob_index
+	debug(largest_blob_index)
 	
 	if numpy.isnan(largest_blob.pt[0]) | numpy.isnan(largest_blob.pt[1]):
-		print "Not a Number"
+		debug("Not a Number")
+		send2pd(-180)
 		continue
 
 	
@@ -152,7 +169,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	
 	blob_x = largest_blob.pt[0]
 	blob_y = largest_blob.pt[1]
-	print blob_x, blob_y
+	debug(str(blob_x) + str(blob_y))
 	
 	cv2.line(mask_with_largest_blob,(int(blob_x),0),(int(blob_x),96),(255,0,0),2)	
 	cv2.line(mask_with_largest_blob,(0,int(blob_y))	,(128,int(blob_y)),(0,255,0),2)
@@ -160,6 +177,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	cv2.imshow("Largest Blob", mask_with_largest_blob)
 	
 	
+	normalised_x = 2.0/capture_res[0] * blob_x - 1
+	send2pd(x_coordinate_to_angle(normalised_x))
 	
 	#print(" wait >")
 	key = cv2.waitKey(16) & 0xFF
