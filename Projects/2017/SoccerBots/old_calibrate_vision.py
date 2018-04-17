@@ -20,5 +20,7 @@ def file_output():
 	output_file = open(calibration_file_name, "w")
 	output_file.write("calibrated_grey_sample = " + str(grey_sample) + "\n")
 	output_file.write("calibrated_goal_sample = " + str(blue_sample) + "\n")
+	output_file.close()
 	
 file_output()
+

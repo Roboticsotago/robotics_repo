@@ -30,6 +30,6 @@ xdotool mousemove --sync 0 0
 sleep 1
 #xmessage go
 #urxvt -hold -name not_blob_tracking -title not_blob_tracking -e sh -c "dmesg | less" &
-urxvt -hold -name blob_tracking -title blob_tracking -e sh -c "python2.7 blob_tracking.py | pdsend 7001" &
+urxvt -hold -name blob_tracking -title blob_tracking -e sh -c "python2.7 blob_tracking_cv2.py | pdsend 7001" &
 #python2.7 blob_tracking.py | pdsend 7001 &
 xmessage yo
