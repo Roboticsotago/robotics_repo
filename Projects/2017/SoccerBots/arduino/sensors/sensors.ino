@@ -11,6 +11,7 @@
 
 const int NUM_SENSORS = 8;
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
+const int ir_sensor_angles[] = {180, -107, -80, -53, -27, 0, 27, 53, 80, 107};
 float ir_values[NUM_SENSORS];
 const float IR_GAIN_THRESHOLD = 0.5; // For culling reflections, hopefully
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000
@@ -117,12 +118,14 @@ void loop() {
 	//readIRsensors();
 	//printIRsensors();
 	get_ball_angle();
-	//get_calibration_mode_switch();
+	
 	angle_to_goal = magnetometer_getAngleToTarget();
-	//front_range = getUSDistance();
+	
         InfraredResult InfraredBall = InfraredSeeker::ReadAC();
-        ball_distance = 90.147-0.4345*InfraredBall.Strength;
-	//TODO: get_compass etc.
+        //ball_distance = 90.147-0.4345*InfraredBall.Strength;
+	 ball_distance = InfraredBall.Strength;
+         
+
 	send_output();
 #if DEBUGGING == 1
 	delay(2000);
@@ -206,14 +209,20 @@ float get_ball_angle() {
 			sens=x;
 		}
      }
+
      if(small>900) {
 		 ball_detected = 0;
-	 } else {
-		 ball_detected = 1;
+                 ball_angle = 999;
+	 } else {		 
+                ball_detected = 1;
+                 //ball_angle = sens*45;
+                 //ball_angle = posneg(ball_angle);
+                   InfraredResult InfraredBall = InfraredSeeker::ReadAC();
+                   ball_angle = ir_sensor_angles[InfraredBall.Direction];
+                 
 	 }
      
-     ball_angle = sens*45;
-    ball_angle = posneg(ball_angle);
+     
     
     //Serial.print(ball_angle);
     //Serial.println("");
