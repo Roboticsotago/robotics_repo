@@ -8,13 +8,28 @@ module center()
 	    {
 	        union() 
 	        {
-	            difference() 
-	            {
-	                cubie();
-	                translate([CUBIE,0,0])
-	                    icore();
-	
-	            }
+	            difference() {
+                
+                    difference() 
+                    {
+                        cubie();
+                        translate([CUBIE,0,0])
+                            icore();
+        
+                    }
+                    
+                    
+                    translate([0,0,0])
+                    scale([0.8,0.8,0.8])
+                    difference() 
+                    {
+                        cubie();
+                        translate([CUBIE,0,0])
+                            icore();
+        
+                    }
+                }                
+                
 	            rotate([0,90,0])
 	                cylinder(CUBIE,r1=INNER,r2=INNER,center=true);
 	            if (WITH_RAFT)
@@ -48,5 +63,10 @@ module center()
 		tile(tile_length*1.05, tile_height);		
 	}
 }
+
+/*difference() {
+    center();
+    translate([-70,15,0])cube(55);
+}*/
 
 center();

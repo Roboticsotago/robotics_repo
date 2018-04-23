@@ -7,13 +7,26 @@ module corner() {
     			union() {
 			        difference() {
 			            cubie();
+                        scale([0.8,0.8,0.8]) cubie();
 			        }
 			 
-			        intersection() {
-			            cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER)],center=true);
-			            translate([CUBIE,CUBIE,-CUBIE])
-			                core2();
-			        }
+			        difference() {
+                        intersection() {
+                            cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER)],center=true);
+                            translate([CUBIE,CUBIE,-CUBIE])
+                                core2();
+                        }
+                        
+                        
+                        translate([(CORE-CUBIE/2)*0.2,(CORE-CUBIE/2)*0.2,(CORE-CUBIE/2)*-0.2])
+                        scale([0.8,0.8,0.8])
+                        intersection() {
+                            cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER)],center=true);
+                            translate([CUBIE,CUBIE,-CUBIE])
+                                core2();
+                        }
+                    }
+
 			   }
 				translate([0,-CUBIE/2 + tile_height/2,0])
 				rotate(v=[1,0,0],a=90)
@@ -33,4 +46,8 @@ module corner() {
    corner_support();
 
 }
+/*difference(){
+    corner();
+    translate([-55,-55,0])cube(60);
+}*/
 corner();
