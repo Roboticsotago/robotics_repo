@@ -1,4 +1,4 @@
-$fn=50;
+//$fn=50;
 
 scale_factor = 300/55;
 
@@ -16,7 +16,7 @@ LAYER=0.3*scale_factor;
 GAP=0.25*scale_factor;
 
 core_height = 20 * scale_factor;
-core_radius = 3 * scale_factor;
+core_radius = 3.1 * scale_factor;
 
 WITH_SUPPORT=false;
 WITH_RAFT=false;
@@ -24,7 +24,8 @@ WITH_RAFT=false;
 inner_cubie=(CUBIE-2*ROUND); //length of each cube before rounded edges
 
 tile_length = inner_cubie*0.75;
-tile_height = 1 * scale_factor;
+//tile_height = 0.8 * scale_factor;
+tile_height = 3;
 
 module tile(length, height) {
 	translate([-length/2,-length/2,0]) {
@@ -40,17 +41,17 @@ module cubie() {
     translate([-inner_cubie/2,-inner_cubie/2, -inner_cubie/2])
     minkowski() {
         cube([inner_cubie, inner_cubie, inner_cubie]);
-        sphere(r=ROUND, $fn=10);
+        sphere(r=ROUND);
     }
 }
 
 module disc() {
-    cylinder(CUBIE, r1=CORE, r2=CORE, $fn=50, center=true);
+    cylinder(CUBIE, r1=CORE, r2=CORE,  center=true);
 
 }
 
 module disc2() {
-    cylinder(CUBIE*10, r1=CORE, r2=CORE, $fn=50, center=true);
+    cylinder(CUBIE*10, r1=CORE, r2=CORE,center=true);
 
 }
 
@@ -75,10 +76,10 @@ module core2() {
 module screw() {
     translate([5.2,0,0])
     rotate([0,90,0]) {
-        cylinder(11.7,r1=SCREW_BODY,r2=SCREW_BODY,$fn=10,center=true);
+        cylinder(11.7,r1=SCREW_BODY,r2=SCREW_BODY,center=true);
         translate([0,0,-11.7/2-1.7/2])
-            cylinder(1.7,r1=SCREW_HEAD,r2=SCREW_HEAD,$fn=10,center=true);
+            cylinder(1.7,r1=SCREW_HEAD,r2=SCREW_HEAD,center=true);
         translate([0,0,11.7/2+5.7/2])
-            cylinder(5.7,r1=SCREW_TIP,r2=SCREW_TIP,$fn=10,center=true);
+            cylinder(5.7,r1=SCREW_TIP,r2=SCREW_TIP,center=true);
     }
 }
