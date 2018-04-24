@@ -1,6 +1,7 @@
 include <variables.scad>
 
-$fa=1;
+//$fa=1;
+$fn=100;
 
 module cylinder_sphere(height) {
 	intersection() {
@@ -16,11 +17,10 @@ module core_shape_cylinders(height, radius) {
 	rotate(a=90,v=[0,1,0]) cylinder(h=height,r=radius,center=true);
 }
 
-core_shape(core_height,core_radius);
 module core_shape(height, radius){
-    cube([radius,radius,height],center=true);
-	rotate(a=90,v=[1,0,0]) cube([radius,radius,height],center=true);
-	rotate(a=90,v=[0,1,0]) cube([radius,radius,height],center=true);
+    cube([radius*2,radius*2,height],center=true);
+	rotate(a=90,v=[1,0,0]) cube([radius*2,radius*2,height],center=true);
+	rotate(a=90,v=[0,1,0]) cube([radius*2,radius*2,height],center=true);
 }
 
 module core_filled_in() {
@@ -35,29 +35,42 @@ module core_hollow_part() {
 }
 
 module square_bits() {
-     translate([0,0,core_height/2-1.5]) cube([core_radius,core_radius,3],center=true);
-    translate([0,0,-core_height/2+1.5]) cube([core_radius,core_radius,3],center=true);
+     translate([0,0,core_height/2-1.5]) cube([core_radius*2,core_radius*2,3],center=true);
+    translate([0,0,-core_height/2+1.5]) cube([core_radius*2,core_radius*2,3],center=true);
     
-    translate([0,core_height/2-1.5,0]) rotate([90,0,0]) cube([core_radius,core_radius,3],center=true);
-    translate([0,-core_height/2+1.5,0]) rotate([90,0,0])cube([core_radius,core_radius,3],center=true);
+    translate([0,core_height/2-1.5,0]) rotate([90,0,0]) cube([core_radius*2,core_radius*2,3],center=true);
+    translate([0,-core_height/2+1.5,0]) rotate([90,0,0])cube([core_radius*2,core_radius*2,3],center=true);
     
-    translate([core_height/2-1.5,0,0]) rotate([0,90,0]) cube([core_radius,core_radius,3],center=true);
-    translate([-core_height/2+1.5,0,0]) rotate([0,90,0]) cube([core_radius,core_radius,3],center=true);
+    translate([core_height/2-1.5,0,0]) rotate([0,90,0]) cube([core_radius*2,core_radius*2,3],center=true);
+    translate([-core_height/2+1.5,0,0]) rotate([0,90,0]) cube([core_radius*2,core_radius*2,3],center=true);
 }
 
 module screw_holes() {
-    cylinder() {
-    
-        }
+    translate([23/2,23/2,0]) cylinder(h=core_height+5,r=3.5/2,center=true);
+    translate([23/2,-23/2,0]) cylinder(h=core_height+5,r=3.5/2,center=true);
+    translate([-23/2,-23/2,0]) cylinder(h=core_height+5,r=3.5/2,center=true);
+    translate([-23/2,23/2,0]) cylinder(h=core_height+5,r=3.5/2,center=true);
+    cylinder(h=core_height+5,r=23/2,center=true);
 }
 
 module core() {
-	difference() {
-		core_filled_in();
-		core_hollow_part();
-	}
-    square_bits();
-   
+	difference(){
+        difference() {
+            difference() {
+                union() {
+                    difference() {
+                        core_filled_in();
+                        core_hollow_part();
+                    }
+                    square_bits();
+                }
+                
+                screw_holes();
+            }
+            rotate([90,0,0]) screw_holes();
+        }
+        rotate([0,90,0]) screw_holes();
+    }
 }
 
 /*

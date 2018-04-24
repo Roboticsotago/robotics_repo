@@ -1,6 +1,7 @@
 include <variables.scad>
 
-$fa=1;
+//$fa=1;
+$fn=100;
 
 module center() 
 {
