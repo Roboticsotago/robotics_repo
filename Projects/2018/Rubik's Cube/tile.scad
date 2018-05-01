@@ -1,3 +1,5 @@
 include <variables.scad>
 
-tile(tile_length,tile_height);
+$fn=100;
+
+projection(cut=false) tile(tile_length,tile_height);
