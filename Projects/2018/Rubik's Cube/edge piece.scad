@@ -57,8 +57,16 @@ module edge() {
    if (WITH_SUPPORT)
 	    edge_support();
 }
+
+module half_edge() {
+    difference() {
+        edge();
+        translate([0,0,-CUBIE/2]) cube([CUBIE+100,CUBIE+100,CUBIE],center=true);
+    }
+}
+
 /*difference(){
     edge();
     translate([-55,-55,0])cube(60);
 }*/
-edge();
+half_edge();

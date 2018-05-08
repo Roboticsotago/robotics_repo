@@ -2,6 +2,7 @@ include <variables.scad>
 
 //$fa=1;
 $fn=100;
+SQUARE_THICKNESS=2;
 
 module cylinder_sphere(height) {
 	intersection() {
@@ -35,14 +36,14 @@ module core_hollow_part() {
 }
 
 module square_bits() {
-     translate([0,0,core_height/2-1.5]) cube([core_radius*2,core_radius*2,3],center=true);
-    translate([0,0,-core_height/2+1.5]) cube([core_radius*2,core_radius*2,3],center=true);
+     translate([0,0,core_height/2-(SQUARE_THICKNESS/2)]) cube([core_radius*2,core_radius*2,SQUARE_THICKNESS],center=true);
+    translate([0,0,-core_height/2+(SQUARE_THICKNESS/2)]) cube([core_radius*2,core_radius*2,SQUARE_THICKNESS],center=true);
     
-    translate([0,core_height/2-1.5,0]) rotate([90,0,0]) cube([core_radius*2,core_radius*2,3],center=true);
-    translate([0,-core_height/2+1.5,0]) rotate([90,0,0])cube([core_radius*2,core_radius*2,3],center=true);
+    translate([0,core_height/2-(SQUARE_THICKNESS/2),0]) rotate([90,0,0]) cube([core_radius*2,core_radius*2,SQUARE_THICKNESS],center=true);
+    translate([0,-core_height/2+(SQUARE_THICKNESS/2),0]) rotate([90,0,0])cube([core_radius*2,core_radius*2,SQUARE_THICKNESS],center=true);
     
-    translate([core_height/2-1.5,0,0]) rotate([0,90,0]) cube([core_radius*2,core_radius*2,3],center=true);
-    translate([-core_height/2+1.5,0,0]) rotate([0,90,0]) cube([core_radius*2,core_radius*2,3],center=true);
+    translate([core_height/2-(SQUARE_THICKNESS/2),0,0]) rotate([0,90,0]) cube([core_radius*2,core_radius*2,SQUARE_THICKNESS],center=true);
+    translate([-core_height/2+(SQUARE_THICKNESS/2),0,0]) rotate([0,90,0]) cube([core_radius*2,core_radius*2,SQUARE_THICKNESS],center=true);
 }
 
 module screw_holes() {

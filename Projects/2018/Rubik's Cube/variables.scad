@@ -27,6 +27,8 @@ tile_length = inner_cubie*0.75;
 //tile_height = 0.8 * scale_factor;
 tile_height = 3;
 
+
+
 module tile(length, height) {
 	translate([-length/2,-length/2,0]) {
 		minkowski(){
@@ -36,6 +38,7 @@ module tile(length, height) {
 	}
 	
 }
+//tile(tile_length,tile_height);
 
 module cubie() {
     translate([-inner_cubie/2,-inner_cubie/2, -inner_cubie/2])
