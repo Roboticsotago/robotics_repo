@@ -117,13 +117,15 @@ void loop() {
         readReflectance();
 	//readIRsensors();
 	//printIRsensors();
-	get_ball_angle();
+	//get_ball_angle();
 	
 	angle_to_goal = magnetometer_getAngleToTarget();
 	
         InfraredResult InfraredBall = InfraredSeeker::ReadAC();
         //ball_distance = 90.147-0.4345*InfraredBall.Strength;
 	 ball_distance = InfraredBall.Strength;
+   ball_angle = ir_sensor_angles[InfraredBall.Direction];
+   ball_detected = 1;
          
 
 	send_output();
