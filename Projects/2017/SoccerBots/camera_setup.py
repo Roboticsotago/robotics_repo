@@ -25,7 +25,7 @@ yfrac = 0.1
 
 camera = PiCamera(resolution=capture_res, framerate=target_framerate)
 camera.iso = 400
-camera.shutter_speed = 20000
+camera.shutter_speed = 30000
 #camera.shutter_speed = 15000
 print("calibrating gain...")
 sleep(2)

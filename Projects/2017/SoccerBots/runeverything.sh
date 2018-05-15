@@ -22,7 +22,7 @@ urxvt -hold -name read_sensors -title read_sensors -e sh -c "./read_sensors.tcl 
 #export DISPLAY=:0.0
 #./rpicam-setup.sh
 #sleep 3
-./rpicam-setup.sh
+#./rpicam-setup.sh
 sleep 5
 #xmessage -timeout 2 go
 # What?! Do you have to move the mouse in order for the blob-tracking program to run?!
