@@ -121,9 +121,9 @@ void loop() {
 	
 	angle_to_goal = magnetometer_getAngleToTarget();
 	
-        InfraredResult InfraredBall = InfraredSeeker::ReadAC();
+        //InfraredResult InfraredBall = InfraredSeeker::ReadAC();
         //ball_distance = 90.147-0.4345*InfraredBall.Strength;
-	 ball_distance = InfraredBall.Strength;
+	 //ball_distance = InfraredBall.Strength;
          
 
 	send_output();
@@ -215,12 +215,13 @@ float get_ball_angle() {
                  ball_angle = 999;
 	 } else {		 
                 ball_detected = 1;
-                 //ball_angle = sens*45;
-                 //ball_angle = posneg(ball_angle);
-                   InfraredResult InfraredBall = InfraredSeeker::ReadAC();
-                   ball_angle = ir_sensor_angles[InfraredBall.Direction];
+                 ball_angle = sens*45;
+                 ball_angle = posneg(ball_angle);
+                   //InfraredResult InfraredBall = InfraredSeeker::ReadAC();
+                   //ball_angle = ir_sensor_angles[InfraredBall.Direction];
                  
 	 }
+    ball_distance=small;
      
      
     

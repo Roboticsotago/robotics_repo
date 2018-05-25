@@ -1,4 +1,4 @@
-#N canvas 8 100 1265 672 10;
+#N canvas 23 121 1265 672 10;
 #X obj 34 13 netreceive 7000;
 #X obj 34 276 s ball_detected;
 #X obj 54 231 s ball_angle;
@@ -29,16 +29,17 @@
 #X obj 424 80 bang;
 #X msg 424 102 999;
 #X obj 627 40 r compass_heading;
-#X obj 777 34 r ball_angle;
-#X obj 776 60 t b f;
+#X obj 780 12 r ball_angle;
+#X obj 758 60 t b f;
 #X obj 726 103 -;
 #X obj 725 150 abs;
 #X obj 725 172 < 90;
 #X obj 725 195 s ball_side;
 #X floatatom 679 200 5 0 0 0 - - -, f 5;
-#X floatatom 829 59 5 0 0 0 - - -, f 5;
+#X floatatom 892 36 5 0 0 0 - - -, f 5;
 #X floatatom 624 79 5 0 0 0 - - -, f 5;
 #X obj 726 125 expr if($f1 < -180 \, $f1 + 360 \, $f1);
+#X obj 779 36 moses 900;
 #X connect 0 0 22 0;
 #X connect 0 0 8 0;
 #X connect 4 0 12 0;
@@ -63,7 +64,7 @@
 #X connect 24 0 5 0;
 #X connect 25 0 28 0;
 #X connect 25 0 34 0;
-#X connect 26 0 27 0;
+#X connect 26 0 36 0;
 #X connect 26 0 33 0;
 #X connect 27 0 28 0;
 #X connect 27 1 28 1;
@@ -72,3 +73,4 @@
 #X connect 30 0 31 0;
 #X connect 30 0 32 0;
 #X connect 35 0 29 0;
+#X connect 36 0 27 0;
