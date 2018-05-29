@@ -85,6 +85,7 @@ void setup() {
 	}
 	pinMode(CALIBRATION_MODE_SWITCH_PIN, INPUT_PULLUP);
 	pinMode(SAVE_HEADING_BUTTON_PIN, INPUT_PULLUP);
+	pinMode(hall_effect, INPUT);
 	pinMode(BUZZER,OUTPUT);
 	Serial.begin(115200);
 	
