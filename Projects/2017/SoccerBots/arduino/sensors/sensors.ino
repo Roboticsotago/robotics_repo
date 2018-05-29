@@ -26,7 +26,7 @@ const int EEPROM_MAX_Z = 10;
 const int EEPROM_TARGET_HEADING = 12;
 
 
-
+const int hall_effect = A9;
 const int BUZZER = 10;
 int ball_detected = 0;
 float ball_angle = 0;
@@ -187,6 +187,7 @@ void send_output() {
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
 	Serial.print(reflectance);Serial.print(" ");
+	Serial.print(analogRead(hall_effect));Serial.print(" ")
 	Serial.println(";");
 }
 
