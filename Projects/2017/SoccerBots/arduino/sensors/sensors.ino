@@ -88,8 +88,8 @@ void setup() {
 	pinMode(hall_effect, INPUT);
 	pinMode(BUZZER,OUTPUT);
 	Serial.begin(115200);
-	
-        InfraredSeeker::Initialize();
+	Serial.println("Shutter Starting");
+        //InfraredSeeker::Initialize();
 	magnetometerSetup();
 	ultrasonic_setup();
 }
@@ -122,13 +122,10 @@ void loop() {
 	
 	angle_to_goal = magnetometer_getAngleToTarget();
 	
-        InfraredResult InfraredBall = InfraredSeeker::ReadAC();
-        //ball_distance = 90.147-0.4345*InfraredBall.Strength;
-	 ball_distance = InfraredBall.Strength;
-   ball_angle = ir_sensor_angles[InfraredBall.Direction];
+       
    ball_detected = 1;
          
-
+        //Serial.println("Sending Output");
 	send_output();
 #if DEBUGGING == 1
 	delay(2000);
@@ -183,7 +180,7 @@ void send_output() {
 	Serial.print(ball_detected);Serial.print(" ");
 	Serial.print(ball_angle);Serial.print(" ");
 	Serial.print(ball_distance);Serial.print(" ");
-	Serial.print(analogRead(hall_effect));Serial.print(" ")
+	Serial.print(analogRead(hall_effect));Serial.print(" ");
 	Serial.print(back_range);Serial.print(" ");
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
