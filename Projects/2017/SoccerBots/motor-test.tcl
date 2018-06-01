@@ -11,7 +11,8 @@ if {[string match -nocase boris* [info hostname]]} {
 	set SERIAL_DEVICE /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351A0D161-if00
 } else {
 	puts stderr "Robot: Attack"
-	set SERIAL_DEVICE /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351503221-if00
+	#set SERIAL_DEVICE /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351503221-if00
+	set SERIAL_DEVICE /dev/serial/by-id/usb-DSpace__www.dspace.org.nz__DSpace_Robot_2.0_55234313335351A0D161-if00
 }
 
 # Define a start procedure to connect to the serial device

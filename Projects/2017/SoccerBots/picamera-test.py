@@ -62,7 +62,7 @@ print("You can take away the white card now. :)")
 
 #camera.capture('picamera-test.jpg', resize=(820,461))
 # .resize()
-camera.start_preview(alpha=255)
+camera.start_preview(alpha=127)
 # Can we use resize with other capture functions as well? Seems so..also with start_recording().
 #camera.capture_sequence(['image%02d.jpg' % i for i in range(99)], resize=(820,461))
 # What's the best way to capture for sharing with SimpleCV or OpenCV? A shell pipeline? A socket? A NumPy array?
