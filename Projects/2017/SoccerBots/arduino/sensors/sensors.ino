@@ -30,7 +30,7 @@ const int hall_effect = A9;
 const int BUZZER = 10;
 int ball_detected = 0;
 float ball_angle = 0;
-float ball_distance = 1;
+float ball_distance;
 int front_range = 0;
 int back_range = 0; // so far unused
 float angle_to_goal = 0;
@@ -89,7 +89,7 @@ void setup() {
 	pinMode(BUZZER,OUTPUT);
 	Serial.begin(115200);
 	Serial.println("Shutter Starting");
-        //InfraredSeeker::Initialize();
+        InfraredSeeker::Initialize();
 	magnetometerSetup();
 	ultrasonic_setup();
 }
@@ -118,7 +118,7 @@ void loop() {
         readReflectance();
 	//readIRsensors();
 	//printIRsensors();
-	//get_ball_angle();
+	get_ball_angle();
 	
 	angle_to_goal = magnetometer_getAngleToTarget();
 	
@@ -215,10 +215,12 @@ float get_ball_angle() {
                  ball_angle = 999;
 	 } else {		 
                 ball_detected = 1;
-                 //ball_angle = sens*45;
-                 //ball_angle = posneg(ball_angle);
-                   InfraredResult InfraredBall = InfraredSeeker::ReadAC();
-                   ball_angle = ir_sensor_angles[InfraredBall.Direction];
+                 ball_angle = sens*45;
+                 ball_angle = posneg(ball_angle);
+                 
+                 InfraredResult InfraredBall = InfraredSeeker::ReadAC();
+                 ball_distance = InfraredBall.Strength;
+                   //ball_angle = ir_sensor_angles[InfraredBall.Direction];
                  
 	 }
      
