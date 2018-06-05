@@ -18,8 +18,8 @@ camera.awb_mode = 'off'
 camera.awb_gains = calibrated_white_balance
 
 def debug(msg):
-	#sys.stderr.write(str(msg) + "\n")
-	pass
+	sys.stderr.write(str(msg) + "\n")
+	#pass
 
 def send2pd(message):
 	print(str(message) + ";")

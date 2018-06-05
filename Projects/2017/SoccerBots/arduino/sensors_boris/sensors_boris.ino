@@ -3,16 +3,15 @@
 #include <Wire.h>
 #include <math.h>
 #include <EEPROM.h>
-#include <HTInfraredSeeker.h>
 
-
-#define SHUTTER 1
 #define DEBUGGING 0
 
 const int NUM_SENSORS = 8;
 const int analog_sensor_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7};
 const int ir_sensor_angles[] = {180, -107, -80, -53, -27, 0, 27, 53, 80, 107};
 float ir_values[NUM_SENSORS];
+const int hall_effect=0;
+float IR_COORDINATES[NUM_SENSORS][2] = {{0.0,1.0},{0.71,0.71},{1.0,0.0},{0.71,-0.71},{0.0,-1.0},{-0.71, -0.71},{-1.0, 0.0},{-0.71, 0.71}};
 const float IR_GAIN_THRESHOLD = 0.5; // For culling reflections, hopefully
 const int IR_THRESHOLD = 980; // About 0.15 after converting to 0..1 float looked about right, which would be ~870 raw.  In practice, with no IR ball present, we never see a raw value less than 1000
 const int CALIBRATION_MODE_SWITCH_PIN = 2;
@@ -26,13 +25,11 @@ const int EEPROM_MAX_Z = 10;
 const int EEPROM_TARGET_HEADING = 12;
 
 
-const int hall_effect = A9;
 const int BUZZER = 10;
 int ball_detected = 0;
 float ball_angle = 0;
 float ball_distance;
-int front_range = 0;
-int back_range = 0; // so far unused
+int range = 0;
 float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
@@ -45,8 +42,6 @@ int crotchet;
 	#define DEBUG(x)
 	#define DEBUG_NOEOL(x)
 #endif
-
-
 
 #include "nokia.h"
 #include "mk_shortened.h"
@@ -88,8 +83,10 @@ void setup() {
 	pinMode(hall_effect, INPUT);
 	pinMode(BUZZER,OUTPUT);
 	Serial.begin(115200);
-	Serial.println("Shutter Starting");
-        InfraredSeeker::Initialize();
+	Serial.println("Starting");
+        #if SHUTTER == 1
+          InfraredSeeker::Initialize();
+        #endif
 	magnetometerSetup();
 	ultrasonic_setup();
 }
@@ -180,8 +177,8 @@ void send_output() {
 	Serial.print(ball_detected);Serial.print(" ");
 	Serial.print(ball_angle);Serial.print(" ");
 	Serial.print(ball_distance);Serial.print(" ");
-	Serial.print(analogRead(hall_effect));Serial.print(" ");
-	Serial.print(back_range);Serial.print(" ");
+	Serial.print(hall_effect);Serial.print(" ");
+	Serial.print(getUSDistance());Serial.print(" ");
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
 	Serial.print(reflectance);Serial.print(" ");
@@ -195,38 +192,61 @@ int posneg(int input) {
   return input;
 }
 
-float get_ball_angle() {
-	DEBUG("ball angle called!");
-	int small=2000;
-    int sens=0;
-    for(int x=0; x<NUM_SENSORS; x++) {
-		
-		//Serial.print(analogRead(analog_sensor_pins[x]));
-		//Serial.print(" ");
-		
-		if(analogRead(analog_sensor_pins[x]) < small) {
-			small=analogRead(analog_sensor_pins[x]);
-			sens=x;
-		}
-     }
+float vector2distance(float vector_magnitude){
+       return exp(0.33/vector_magnitude) * 0.03;
+}
 
-     if(small>900) {
-		 ball_detected = 0;
-                 ball_angle = 999;
-	 } else {		 
-                ball_detected = 1;
-                 ball_angle = sens*45;
-                 ball_angle = posneg(ball_angle);
-                 
-                 InfraredResult InfraredBall = InfraredSeeker::ReadAC();
-                 ball_distance = InfraredBall.Strength;
-                   //ball_angle = ir_sensor_angles[InfraredBall.Direction];
-                 
-	 }
-     
-     
-    
-    //Serial.print(ball_angle);
-    //Serial.println("");
+
+float get_ball_angle() {
+	//DEBUG("ball angle called!");
+	
+	// Calculate the centroid of the ball detection vectors...
+	
+	float x_total = 0; float y_total = 0; int count = 0; 
+	for(int n=0; n<NUM_SENSORS; n++) {
+		x_total += IR_COORDINATES[n][0]*ir_values[n];
+		y_total += IR_COORDINATES[n][1]*ir_values[n];
+		/*
+		DEBUG_NOEOL(n);
+		DEBUG_NOEOL(": (");
+		DEBUG_NOEOL(IR_COORDINATES[n][0]*ir_values[n]);
+		DEBUG_NOEOL(",");
+		DEBUG_NOEOL(IR_COORDINATES[n][1]*ir_values[n]);
+		DEBUG_NOEOL("); ");
+		*/
+		count += 1;
+	}
+	//DEBUG();
+	
+	float x_average = x_total/(float)count;
+	float y_average = y_total/(float)count;
+	
+	/*
+	DEBUG_NOEOL("  X AVERAGE: ");
+	DEBUG_NOEOL(x_average);
+	DEBUG_NOEOL("  Y AVERAGE: ");
+	DEBUG_NOEOL(y_average);
+	DEBUG(" ");
+	*/
+	
+	// Calculate angle:
+	// This will use the atan2() function to determine the angle from the average x and y co-ordinates
+	// You can use the degrees() function to convert for output/debugging.
+	float ball_angle = atan2(x_average, y_average);
+        DEBUG_NOEOL("Angle to ball: ");
+        DEBUG_NOEOL(degrees(angle));
+	
+	// Calculate approximate distance:
+	// First, determine the length of the vector (use the Pythagorean theorem):
+	float vector_magnitude = sqrt(pow(x_average, 2)+pow(y_average,2));	// TODO: your code here
+        
+	// We need to map the raw vector magnitudes to real-world distances. This is probably not linear! Will require some calibration testing...
+	float ball_distance = vector2distance(vector_magnitude); // TODO: your code here
+	DEBUG_NOEOL(" Vector magnitude: ");
+	DEBUG_NOEOL(vector_magnitude);
+	DEBUG_NOEOL(" Distance: ");
+	DEBUG_NOEOL(distance);
+	DEBUG("");
+	// TODO: maybe also check for infinity, and map that to a usable value (e.g. 0).
 }
 
