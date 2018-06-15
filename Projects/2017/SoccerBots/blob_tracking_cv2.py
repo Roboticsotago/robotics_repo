@@ -178,7 +178,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	
 	
 	normalised_x = 2.0/capture_res[0] * blob_x - 1
-	send2pd(x_coordinate_to_angle(normalised_x))
+	send2pd(str(x_coordinate_to_angle(normalised_x)) + " " + str(largest_blob.size))
 	
 	#print(" wait >")
 	key = cv2.waitKey(16) & 0xFF
