@@ -31,6 +31,7 @@ float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
 int crotchet;
+const int hall_effect = A9;
 
 #if DEBUGGING ==1
 	#define DEBUG(x) Serial.println (x)
@@ -81,6 +82,7 @@ void setup() {
 	pinMode(BUZZER,OUTPUT);
         analogWrite(BUZZER, 50);
 	Serial.begin(115200);
+        pinMode(hall_effect, INPUT);
 	
 	magnetometerSetup();
 	ultrasonic_setup();
@@ -225,7 +227,7 @@ void send_output() {
 	Serial.print(ball_detected);Serial.print(" ");
 	Serial.print(ball_angle);Serial.print(" ");
 	Serial.print(ball_distance);Serial.print(" ");
-	Serial.print(back_range);Serial.print(" ");
+        Serial.print(analogRead(hall_effect));Serial.print(" ");
 	Serial.print(front_range);Serial.print(" ");
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");

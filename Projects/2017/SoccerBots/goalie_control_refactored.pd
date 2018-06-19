@@ -1,13 +1,13 @@
-#N canvas 0 52 1280 628 10;
+#N canvas 28 48 1172 1551 10;
 #X obj 765 53 r reflectance;
 #X floatatom 765 75 5 0 0 0 - - -, f 5;
 #X obj 765 94 > 800;
 #X obj 765 117 tgl 30 0 empty empty inside_goal_zone 17 7 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 765 152 s inside_goal_zone;
 #X obj 1048 53 r ball_detected;
 #X obj 1048 75 tgl 30 0 empty empty ball_detected 17 7 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 1048 110 sig~;
 #X obj 912 53 r ball_distance;
 #X obj 911 76 moses 0.01;
@@ -50,7 +50,7 @@
 #X text 48 223 Modes;
 #N canvas 43 109 1037 547 rotate_2_ball 0;
 #X obj 110 120 tgl 30 0 empty rotate_2_ball rotate_2_ball 17 7 0 10
--262144 -1 -1 1 1;
+-262144 -1 -1 0 1;
 #X obj 277 91 r homed;
 #X obj 276 113 s rotate_2_ball;
 #X obj 135 207 r ball_angle;
@@ -411,7 +411,7 @@
 #X obj 278 32 r inside_goal_zone;
 #X obj 681 32 r compass_heading;
 #X obj 387 161 expr $f1 * $f2 * $f3 * $f4;
-#X obj 110 120 tgl 30 0 empty homed homed 17 7 0 10 -262144 -1 -1 1
+#X obj 110 120 tgl 30 0 empty homed homed 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 387 183 moses 1;
 #X msg 387 205 1;
@@ -530,7 +530,7 @@ the goal zone, f 17;
 #X obj 482 296 *;
 #X obj 540 216 r reorientate;
 #X obj 540 238 t b f;
-#X text 408 217;
+#X text 408 217 comment;
 #X connect 1 0 2 0;
 #X connect 3 0 8 1;
 #X connect 4 0 6 0;
@@ -570,6 +570,63 @@ the goal zone, f 17;
 #X floatatom 680 302 5 0 0 0 - - -, f 5;
 #X floatatom 679 282 5 0 0 0 - - -, f 5;
 #X obj 633 280 < 0.9;
+#N canvas 31 50 1166 1547 stuck 0;
+#X text 252 81 STUCK;
+#X obj 106 104 tgl 50 0 empty empty STUCK 17 7 0 20 -262144 -1 -1 0
+1;
+#X obj 220 188 throw~ throttle;
+#X obj 601 177 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 597 127 change;
+#X obj 597 149 moses 1;
+#X obj 592 229 spigot;
+#X msg 665 190 0, f 2;
+#X msg 789 314 1;
+#X obj 594 389 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 704 187 loadbang;
+#X msg 704 209 1;
+#X msg 605 273 1;
+#X msg 623 377 0;
+#X obj 613 254 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 597 82 r stuck;
+#X obj 605 298 s stuck_mode;
+#X obj 630 409 s stuck_mode;
+#X obj 254 109 r stuck_mode;
+#X obj 77 49 r stuck_mode;
+#X obj 220 159 sig~;
+#X obj 349 162 sig~;
+#X obj 349 184 throw~ steering;
+#X obj 349 140 * -0.5;
+#X obj 220 137 * -10;
+#X obj 587 341 delay 1000;
+#X connect 3 0 6 0;
+#X connect 4 0 5 0;
+#X connect 5 1 3 0;
+#X connect 6 0 14 0;
+#X connect 6 0 7 0;
+#X connect 6 0 25 0;
+#X connect 7 0 6 1;
+#X connect 8 0 6 1;
+#X connect 10 0 11 0;
+#X connect 11 0 6 1;
+#X connect 12 0 16 0;
+#X connect 13 0 17 0;
+#X connect 14 0 12 0;
+#X connect 15 0 4 0;
+#X connect 18 0 23 0;
+#X connect 18 0 24 0;
+#X connect 19 0 1 0;
+#X connect 20 0 2 0;
+#X connect 21 0 22 0;
+#X connect 23 0 21 0;
+#X connect 24 0 20 0;
+#X connect 25 0 8 0;
+#X connect 25 0 9 0;
+#X connect 25 0 13 0;
+#X coords 0 -1 1 1 85 60 1 100 100;
+#X restore 260 129 pd stuck;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
