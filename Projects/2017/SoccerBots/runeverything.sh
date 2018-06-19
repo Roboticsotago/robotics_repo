@@ -17,7 +17,7 @@ sleep 7
 urxvt -name Pd -title Pd -e sh -c "/usr/bin/pd -nomidi -alsa -noadc -r 8000 -send \"; pd dsp 1\" motor-control.pd $pd_patch sensor_input.pd" &
 
 # Give Pd some time to start up before streaming sensor data (or TODO: replace sleep with until loop, if that makes sense):
-sleep 5
+sleep 10
 urxvt -hold -name read_sensors -title read_sensors -e sh -c "./read_sensors.tcl | pdsend 7000" &
 #export DISPLAY=:0.0
 #./rpicam-setup.sh

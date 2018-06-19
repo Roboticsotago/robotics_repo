@@ -1,9 +1,9 @@
-#N canvas 33 95 1265 628 10;
+#N canvas 38 102 1265 628 10;
 #N canvas 18 74 952 540 differential_drive 0;
 #X obj 310 220 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 4504 1;
+-1 -1 6365 1;
 #X obj 390 228 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 7920 1;
+-1 -1 7099 1;
 #X obj 314 140 +;
 #X obj 390 140 +;
 #X obj 314 162 clip -1 1;
@@ -35,7 +35,7 @@
 17 7 0 10 -262144 -1 -1 1 1;
 #X obj 242 -73 r throttle_toggle_out;
 #X obj 201 228 hsl 60 15 -1 1 0 0 empty steering_drive empty -2 -8
-0 10 -262144 -1 -1 737 1;
+0 10 -262144 -1 -1 2585 1;
 #X obj 137 205 vsl 15 60 -1 1 0 0 empty throttle_drive empty 0 -9 0
 10 -262144 -1 -1 4720 1;
 #X obj 190 46 s throttle_drive;
@@ -114,7 +114,7 @@ anyway \, this will work perfectly well.;
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 24 443 pd serial-connection;
 #X obj 12 201 catch~ throttle;
-#N canvas 28 88 1265 628 seek 0;
+#N canvas 33 95 1265 628 seek 0;
 #X obj 119 105 tgl 50 0 empty empty SEEK 46 7 0 30 -262144 -1 -1 0
 1;
 #X obj 362 62 r ball_side;
@@ -219,7 +219,7 @@ anyway \, this will work perfectly well.;
 #X obj 731 396 *;
 #X obj 868 362 t b f;
 #X obj 442 348 tgl 100 0 empty adjustaintenough empty 17 7 0 100 -262144
--1 -1 0 1;
+-1 -1 1 1;
 #X obj 730 452 *~;
 #X obj 777 424 r~ aim_mode;
 #X msg 245 384 1;
@@ -290,7 +290,7 @@ anyway \, this will work perfectly well.;
 #X connect 53 0 52 0;
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 666 110 pd aim;
-#N canvas 23 81 1265 628 shoot 0;
+#N canvas 28 88 1265 628 shoot 0;
 #X obj 76 -51 tgl 50 0 empty empty ball_near 17 7 0 10 -262144 -1 -1
 0 1;
 #X obj 378 -100 r compass_heading;
@@ -311,7 +311,7 @@ anyway \, this will work perfectly well.;
 #X floatatom 154 153 5 0 0 0 - - -, f 5;
 #X floatatom 147 179 5 0 0 0 - - -, f 5;
 #X obj 87 105 expr~ $v1 >= 0.5;
-#X obj 48 207 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 48 207 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 48 185 metro 170;
 #X obj 48 243 spigot;
@@ -355,7 +355,7 @@ anyway \, this will work perfectly well.;
 #X obj 636 -97 r angle2goal;
 #X obj 639 -71 abs;
 #X obj 589 -23 tgl 50 0 empty empty Facing_Goal 17 7 0 10 -262144 -1
--1 1 1;
+-1 0 1;
 #X obj 75 21 sig~;
 #X obj 372 21 sig~;
 #X obj 598 39 sig~;
@@ -373,13 +373,13 @@ anyway \, this will work perfectly well.;
 #X floatatom 1065 -74 5 0 0 0 - - -, f 5;
 #X floatatom 137 223 5 0 0 0 - - -, f 5;
 #X obj 140 246 hsl 64 15 -35 35 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 1955 1;
+-1 -1 6300 1;
 #X obj 250 201 < 20;
 #X obj 97 274 sig~;
 #X obj 86 427 *~;
 #X obj 127 527 throw~ steering;
 #X obj 252 222 tgl 50 0 empty empty facing_goal 17 7 0 10 -262144 -1
--1 1 1;
+-1 0 1;
 #X text 134 160 controlling steering while shooting for the goal.,
 f 29;
 #X obj 145 347 r~ shoot_mode;
@@ -514,6 +514,7 @@ f 29;
 #X connect 63 0 28 0;
 #X connect 64 0 15 0;
 #X connect 64 0 45 0;
+#X connect 64 0 5 0;
 #X connect 65 0 66 0;
 #X connect 66 0 67 0;
 #X connect 67 0 69 0;
@@ -569,7 +570,7 @@ f 29;
 #X obj 401 722 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 447 762 change;
-#N canvas 43 109 1265 628 round 1;
+#N canvas 48 116 1265 628 round 1;
 #X obj 119 105 tgl 50 0 empty empty ROUND 46 7 0 30 -262144 -1 -1 0
 1;
 #X obj 314 48 r ball_side;
@@ -770,7 +771,7 @@ robot and the goal. Purpose is to score!, f 30;
 #X obj 304 410 bng 100 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 845 325 5 0 0 0 - - -, f 5;
-#N canvas -64 83 1265 628 stuckNEW 0;
+#N canvas 0 83 1265 628 stuckNEW 0;
 #X text 252 81 STUCK;
 #X obj 115 103 tgl 50 0 empty empty STUCK 17 7 0 20 -262144 -1 -1 0
 1;
