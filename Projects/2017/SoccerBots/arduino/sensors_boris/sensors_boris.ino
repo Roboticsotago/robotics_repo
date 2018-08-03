@@ -32,6 +32,8 @@ int calibration_mode_switch = 0;
 int light_sensor = 0;
 int crotchet;
 const int hall_effect = A9;
+const int battery_voltage_pin = A10;
+float battery_voltage = 0;
 
 #if DEBUGGING ==1
 	#define DEBUG(x) Serial.println (x)
@@ -79,11 +81,11 @@ void setup() {
 	}
 	pinMode(CALIBRATION_MODE_SWITCH_PIN, INPUT_PULLUP);
 	pinMode(SAVE_HEADING_BUTTON_PIN, INPUT_PULLUP);
-	pinMode(BUZZER,OUTPUT);
+	pinMode(BUZZER, OUTPUT);
         analogWrite(BUZZER, 50);
-	Serial.begin(115200);
         pinMode(hall_effect, INPUT);
-	
+        pinMode(battery_voltage_pin, INPUT);
+	Serial.begin(115200);
 	magnetometerSetup();
 	ultrasonic_setup();
 }
@@ -111,6 +113,8 @@ void loop() {
 	//get_calibration_mode_switch();
 	angle_to_goal = magnetometer_getAngleToTarget();
 	front_range = getUSDistance();
+        battery_voltage = analogRead(battery_voltage_pin)*(10/1023.0);
+        
 	//TODO: get_compass etc.
 	send_output();
 #if DEBUGGING == 1
@@ -232,7 +236,15 @@ void send_output() {
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
 	Serial.print(reflectance);Serial.print(" ");
+        Serial.print(battery_voltage);Serial.print(" ");
 	Serial.println(";");
+}
+
+int posneg(int input) {
+  if(input > 180) {
+    return(input - 360); 
+  }
+  return input;
 }
 
 float get_ball_angle() {
@@ -268,9 +280,31 @@ float get_ball_angle() {
 	// Calculate angle:
 	// This will use the atan2() function to determine the angle from the average x and y co-ordinates
 	// You can use the degrees() function to convert for output/debugging.
-	ball_angle = degrees(atan2(x_average, y_average));
+	//ball_angle = degrees(atan2(x_average, y_average));
+    int small=2000;
+    int sens=0;
+    for(int x=0; x<NUM_SENSORS; x++) {
+		
+		//Serial.print(analogRead(analog_sensor_pins[x]));
+		//Serial.print(" ");
+		
+		if(analogRead(analog_sensor_pins[x]) < small) {
+			small=analogRead(analog_sensor_pins[x]);
+			sens=x;
+		}
+     }
+
+     if(small>900) {
+		 ball_detected = 0;
+                 ball_angle = 999;
+	 } else {		 
+                ball_detected = 1;
+                 ball_angle = sens*45;
+                 ball_angle = posneg(ball_angle);
+         }
     DEBUG_NOEOL("Angle to ball: ");
     DEBUG_NOEOL(ball_angle);
+
 	
 	// Calculate approximate distance:
 	// First, determine the length of the vector (use the Pythagorean theorem):

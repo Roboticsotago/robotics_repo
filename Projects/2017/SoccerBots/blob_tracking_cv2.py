@@ -18,8 +18,8 @@ camera.awb_mode = 'off'
 camera.awb_gains = calibrated_white_balance
 
 def debug(msg):
-	sys.stderr.write(str(msg) + "\n")
-	#pass
+	#sys.stderr.write(str(msg) + "\n")
+	pass
 
 def send2pd(message):
 	print(str(message) + ";")
@@ -96,6 +96,8 @@ debug(goal_hsv_hi)
 
 debug("Press 'q' to quit...")
 # , resize=resized_res
+
+
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 	rawCapture.truncate(0)
 	now = time()
@@ -194,4 +196,5 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	
 	#print("end loop")
 	#end_time = time()
+
 

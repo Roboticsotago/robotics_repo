@@ -37,6 +37,8 @@ float angle_to_goal = 0;
 int calibration_mode_switch = 0;
 int light_sensor = 0;
 int crotchet;
+const int battery_voltage_pin = A10;
+int battery_voltage = 0;
 
 #if DEBUGGING ==1
 	#define DEBUG(x) Serial.println (x)
@@ -87,6 +89,7 @@ void setup() {
 	pinMode(SAVE_HEADING_BUTTON_PIN, INPUT_PULLUP);
 	pinMode(hall_effect, INPUT);
 	pinMode(BUZZER,OUTPUT);
+        pinMode(battery_voltage_pin, INPUT);
 	Serial.begin(115200);
 	Serial.println("Shutter Starting");
         InfraredSeeker::Initialize();
@@ -122,7 +125,7 @@ void loop() {
 	
 	angle_to_goal = magnetometer_getAngleToTarget();
 	
-       
+        battery_voltage = analogRead(battery_voltage_pin)*(10/1023);
    ball_detected = 1;
          
         //Serial.println("Sending Output");
@@ -185,6 +188,7 @@ void send_output() {
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
 	Serial.print(reflectance);Serial.print(" ");
+        Serial.print(battery_voltage);Serial.print(" ");
 	Serial.println(";");
 }
 
