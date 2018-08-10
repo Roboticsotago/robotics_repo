@@ -11,8 +11,23 @@ kicker_mask = 0b00000000 #first bit -  0 means kicker message
 speed_threshold = 0.4 #deadzone threshold
 intercept_time = 1 #time for intercepting the ball
 
-homed, inside_goal_zone, goal_detected,ball_detected,ball_angle,ball_distance,hall_effect,rangee,compass_heading,calibration_mode,colour, voltage,angle_to_goal,blob_size = (0,)*14
+distance_threshold = 0.8
 
+ball_near = 0
+homed = 0
+inside_goal_zone = 0
+goal_detected = 0
+ball_detected = 0
+ball_angle = 0
+ball_distance = 0
+hall_effect = 0
+rangee = 0
+compass_heading = 0
+calibration_mode = 0
+colour = 0
+voltage = 0
+angle_to_goal = 0
+blob_size = 0
 
 def read_sensors(): #function which constantly reads sensors
 	while True:
@@ -20,21 +35,22 @@ def read_sensors(): #function which constantly reads sensors
 		line = str(serinput.readline()).strip(' ;\r\n ').split(" ")
 		#print(len(line))
 		#print(line)
-		global homed, inside_goal_zone, goal_detected, ball_detected, ball_angle, ball_distance, hall_effect, rangee, compass_heading, calibration_mode, colour, voltage, angle_to_goal, blob_size
+		global ball_near, homed, inside_goal_zone, goal_detected, ball_detected, ball_angle, ball_distance, hall_effect, rangee, compass_heading, calibration_mode, colour, voltage, angle_to_goal, blob_size
 		try:
 			ball_detected = line[0]
 			ball_angle = float(line[1])
-			ball_distance = line[2]
+			ball_distance = float(line[2])
 			hall_effect = line[3]
 			rangee = float(line[4])
 			compass_heading = float(line[5])
 			calibration_mode = line[6]
 			colour = float(line[7])
-			voltage = line[8]
+			voltage = float(line[8])
 			time.sleep(0.1)
 		except(serial.SerialException, ValueError, IndexError) as error:
-			time.sleep(0.1)
+			#time.sleep(1)
 			#print(error)
+			pass
 			
 		#calculate and set ball side variable
 		if ball_angle<900:
@@ -63,6 +79,14 @@ def read_sensors(): #function which constantly reads sensors
 			pass
 		
 		#print("angle to goal: " + angle_to_goal)
+		
+		#decide how close the ball is
+		#TODO: see if battery voltage affects the ball distance
+		if ball_distance < distance_threshold:
+			ball_near = True
+		else:
+			ball_near = False
+			
 		
 		#calculate whether the goal is detected
 		if angle_to_goal != -180:
@@ -103,11 +127,16 @@ def clip(x): #clip x within the range -1..1
 def homing():
 	global homed
 	#print("homing: " + str(homed))
-	if angle_to_goal > 0:
-		motor_output(-0.5, -(angle_to_goal/15))
-	else:
-		motor_output(-(angle_to_goal/15), -0.5)
-	
+	while homed == False:
+		#print(angle_to_goal)
+		if angle_to_goal < 10 and angle_to_goal > -10:
+			motor_output(-0.5, -0.5)
+		if angle_to_goal < -11:
+			motor_output(-0.3, -0.7)
+		elif angle_to_goal > 11:
+			motor_output(-0.7, -0.3)
+			
+		
 def deadzone(speed, threshold):
     if speed>0:
         out = speed + threshold
@@ -141,43 +170,54 @@ def send_byte(i):
 	seroutput.write(chr(i))
 		
 def motor_output(left_speed, right_speed): #drive both motors with left_speed and right_speed as the left and right motor speeds
-	send_byte(left_motor(left_speed)*(voltage/-2.2 + 52/11))
-	send_byte(right_motor(right_speed)*(voltage/-2.2 + 52/11))
+	send_byte(int(left_motor(left_speed*(voltage*-0.5 + 5))))
+	send_byte(int(right_motor(right_speed*(voltage*-0.5 + 5))))
 	
 	
 def turn_to_ball():
 	#read_sensors()
 	#print(ball_angle)
-	if ball_angle<0:	
-		#print("turn left")
-		motor_output(-0.5,0.5)
-	elif ball_angle>0:
-		#print("turn right")
-		motor_output(0.5,-0.5)
-	else:
-		#print("0!")
-		motor_output(0,0)
+	while ball_angle != 0:
+		if ball_angle<0:	
+			#print("turn left")
+			motor_output(-0.5,0.5)
+		elif ball_angle>0:
+			#print("turn right")
+			motor_output(0.5,-0.5)
+		else:
+			#print("0!")
+			motor_output(0,0)
 
 def intercept_ball():
-	motor_output(0.75,0.75)	
+	motor_output(1,1)	
 	time.sleep(intercept_time)
 	motor_output(-0.75,-0.75)
 	time.sleep(intercept_time)
 	motor_output(0,0)
 
-while True:
-	#("homed in main loop:  " + str(homed))
-	turn_to_ball()
-	while ball_angle == 0:
+while True:	
+	"""if ball_near == False:
+		print("turning to ball")
+		turn_to_ball()
+		motor_output(0,0)
+	elif ball_near == True:
+		print("intercepting ball")
 		intercept_ball()
-	#while(homed != True):
-		#homing()
-	#motor_output(0,0)
-	#turn_to_ball()
-	#if ball_angle==0:
-	#	intercept_ball()
-	#print(last_line)
-	#time.sleep(0.1)
-	#read_sensors()
-	#print ball_angle
+		
+	if homed == True:
+		print("homed")
+		pass
+	elif homed == False:
+		print(rangee)
+		print(colour)
+		print("homing")
+		homing()"""
+#	homing()
+	motor_output(0,0)
+	motor_output(-0.8,-0.2)
+	time.sleep(1)
+	motor_output(0,0)
+	motor_output(-0.2,-0.8)
+	time.sleep(1)
+			
 	
