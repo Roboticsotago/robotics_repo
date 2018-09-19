@@ -1,0 +1,68 @@
+Motion specifications:
+	My printer can reasonably print at around 40 mm/s, and non-printing motion around 100 mm/s would be useful.
+	As for acceleration, the way this is specified in the firmware config is a bit weird - it's actually a maximum instantaneous velocity change. But it would be good to have a specific number in mind for calculating required motor parameters.
+
+This has some good indicators of speed, acceleration, and also extruder specs, cartesian vs delta:
+https://dyzedesign.com/2016/10/printing-300-mm-s-part-1-basics-hardware/
+	Notably, most hot-ends suffer worsening loss of extrusion beyond about 5 mm/s (raw filament?).
+
+	For main XYZ motion, 3000 mm/s/s is pretty standard acceleration for Marlin firmware.
+	Igus pre-fabbed motion axes have speeds and accelerations like so:
+		DLE-LG-0001 Line Gantry (NEMA 17/23 steper motors):
+			Max speed: 1.0 m/s
+			Max accel: 3.0 m/s/s
+		DLE-FG-0001 Flat Gantry (NEMA 17 stepper motors):
+			Max speed: 1.5 m/s
+			Max accel: 10 m/s/s
+		DLE-RG-0001 (NEMA 23 stepper motors):
+			Max speed: 0.5 m/s
+			Max accel: 1.5 m/s/s
+
+	Also Part 2 features a great set of engineering calculations:
+		This
+
+Stepper motors:
+	High torque at low speed
+	Peak power at low speed
+	Low speed - not really usable above ~1000 RPM
+	Simple to operate in open-loop
+	Tend to produce juddering motion (can be quite visible on 3D-printed parts)
+	Resonance can cause serious positioning problems
+	Use microstepping to improve smoothness
+	May need to tune drive current
+
+Servo motors:
+	High speed (many thousands of RPM)
+	Peak power at high speed
+	Broad torque range
+	More complex closed-loop operation (could use LinuxCNC or dedicated hardware)
+	Need to tune PID parameters
+	May be more efficient when holding
+
+	Brushed or brushless? I'm leaning towards brushless (electronically-commutated)
+
+	+/- 10 V velocity reference is common..?
+
+
+Teknic CleaPath
+https://www.teknic.com/products/clearpath-brushless-dc-servo-motors/
+
+
+Igus materials:
+	J is probably fine - no high-load, high-temperature or FDA requirement.
+
+iglideÂ® J:		high efficiency at all speeds 
+iglideÂ® L280:	capable of bearing high loads and wear-resistant 
+iglideÂ® J350:	for temperatures of up to +302 Â°F 
+iglideÂ® R:		the favored option for series manufacturing 
+iglideÂ® A180:	FDA-compliant for the food/pharmaceutical industries
+
+https://www.igus.com/info/lead-screw-units-miniature-nuts
+	these go up to M6 is thread size and I think look suitable. Perhaps use M6x1 for simplicity of motion calculations..typically 200 steps/rev, so 200 steps/mm.
+		If we can get 20 kHz step rate, with no microstepping, that would give 100 mm/s, which I think would be enough.
+		
+	How to fasten/support the ends? Bearings? How to attach to drive motor?
+
+Hmm, maybe consider their Line Gantry DLE-FG-0001 
+	see video https://www.youtube.com/watch?v=lLGYaBPnI28 starting around 6:30
+	Hmm, interesting that repeatability on these gantries is only about 0.3-0.5 mm. How come? Would LinuxCNC's backlash compensation help there?

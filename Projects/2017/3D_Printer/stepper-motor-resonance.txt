@@ -104,6 +104,10 @@ http://reprap.org/wiki/Choosing_stepper_for_a_delta
 
 --
 
+Stepper motor torque drops of with increasing speed, and many RepRap-style motors can't manage more than about 500 RPM.  What would that equate to in terms of linear motion with a leadscrew?
+
+--
+
 References:
 
 http://www.haydonkerkpittman.com/learningzone/technicaldocuments/stepper-motor-theory
