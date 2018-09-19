@@ -1,0 +1,9 @@
+This video (from The Current Source) provides a really good introduction to stepper motors and motion profiles:
+https://www.youtube.com/watch?v=xLwqeChqNp0
+
+For Arduino, the AccelStepper library is quite handy:
+http://www.airspayce.com/mikem/arduino/AccelStepper/
+
+
+Possibly useful info on motion profiles:
+http://www.machinedesign.com/motion-control/design-essentials-s-curves-and-linear-motor-sizing
