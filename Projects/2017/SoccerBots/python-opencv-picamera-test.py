@@ -17,7 +17,7 @@ import numpy
 
 # Set up camera and a NumPy array wrapper suitable for transferring the image data into OpenCV
 
-target_framerate = 10
+target_framerate = 20
 # 0.08 s frame capture with 50 Hz target
 
 

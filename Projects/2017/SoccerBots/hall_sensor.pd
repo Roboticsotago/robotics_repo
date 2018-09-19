@@ -1,0 +1,53 @@
+#N canvas 28 48 1172 1551 10;
+#X obj 568 446 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 567 417 Hall sensor input:;
+#X obj 525 561 delay 1000;
+#X obj 520 615 tgl 15 0 empty empty stuck 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 525 583 1;
+#X msg 457 586 0;
+#X obj 583 95 osc~;
+#X obj 583 117 snapshot~;
+#X floatatom 579 50 5 0 0 0 - - -, f 5;
+#X obj 702 56 metro 100;
+#X obj 699 25 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 697 89 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 586 137 + 1;
+#X obj 586 159 / 2;
+#X obj 586 181 * 1023;
+#X floatatom 586 203 5 0 0 0 - - -, f 5;
+#X obj 586 222 < 500;
+#X obj 578 245 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 578 265 change;
+#X obj 768 420 expr;
+#X obj 579 328 -;
+#X obj 578 287 t f f;
+#X floatatom 579 350 5 0 0 0 - - -, f 5;
+#X text 610 308 rising or falling edge;
+#X text 614 328 new - old;
+#X connect 0 0 2 0;
+#X connect 0 0 5 0;
+#X connect 2 0 4 0;
+#X connect 4 0 3 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 12 0;
+#X connect 8 0 6 0;
+#X connect 9 0 11 0;
+#X connect 10 0 9 0;
+#X connect 11 0 7 0;
+#X connect 12 0 13 0;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 17 0 18 0;
+#X connect 18 0 21 0;
+#X connect 20 0 22 0;
+#X connect 21 0 20 1;
+#X connect 21 1 20 0;
+#X connect 22 0 0 0;
