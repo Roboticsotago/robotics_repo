@@ -7,3 +7,13 @@ core needs to include microcontroller + 6 motors
 gear ratio of 300:1
 one move is a 90degree turn of one side
 it is possible to move two opposite sides at the same time
+
+Motors:
+	stepper motors would be a convenient way to precisely control the rotation of each face. 
+	NEMA 08 is (possibly) the smallest in the series
+	NEMA 11 is the next largest
+	NEMA 14 is the next largest
+	NEMA 17 is the next largest (common on 3D printers)
+	
+	RepRap-style NEMA 17 motors can reasonably reach 400 RPM while providing reasonable torque.  By 600 RPM, many motors will have very little torque - possibly not enough to turn with no load!
+
