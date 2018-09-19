@@ -89,6 +89,44 @@ Microstepping might have to be fairly low to avoid excessive step frequencies fo
 Small metric ballscrews, perhaps M6x1 (1 mm thread pitch, I guess, so 1 mm per revolution).
 So, 400 microsteps/mm.
 
+However, be aware that the stepping frequency of the control electronics is not the only limiting factor: stepper motors suffer reduced torque at higher speeds, to the point where they may have virtually none at around 600 RPM.  This is probably the more significant limiting factor on how fast the machine can run:
+
+600/min * 2 mm -> mm/s
+20
+
+That's not really fast enough for 3D printing.
+
+300/min * 10 mm -> mm/s
+50
+
+That's probably enough, though wouldn't allow fast travel moves.
+
+Hmm, I remember doing some figuring of suitable leadscrew pitch, and realised for some reason that 1 mm, while it seemed convenient, was actually not a good match.  Ah, was it because there are 200 steps/revolution, and I wanted each step to be a "sensible" size?  Was it 2 mm pitch that I thought would be sensible, then?  That was probably it, giving 0.01 mm per full step (although we'd probably want at least half stepping in practice).
+
+Note that Igus have some lead screws with substantially larger pitch, e.g.
+	8 mm diameter, 10 mm pitch
+
+We might actually want to select motors with a larger step angle (fewer steps per revolution) in order to achieve higher speeds.  24 and 48 steps/rev motors are supposedly common, along with 200.
+
+	In general, a motor with many steps/rev will have a lower top speed and poorer torque.
+
+Leadscrew pitch = 2 mm, 200 steps/rev:
+
+2 mm / 200 -> mm
+0.01
+
+Hmm, maybe we should actually consider a servo motor system.  If using LinuxCNC, we get that capability for free anyway...
+
+	Stepper motors have high torque at low speeds, but low torque at moderate to high speeds. They cannot reach high rotational speeds.
+
+	But a 3D printer is generally moving at (ideally) a fixed speed of around 30-60 mm/s.  It probably doesn't require a lot of torque, at any speed, although it does need to be able to change velocity, and that means acceleration, which requires a certain amount of force, and therefore torque.
+
+Very interesting demonstration of a Cartesian 3D printer that uses leadscrews:
+https://www.youtube.com/watch?v=reVNrtsDfxQ
+
+Also nice improvement to Z axis on Prusa:
+https://www.youtube.com/watch?v=G5XpvJxJVaQ
+
 Simulation (LinuxCNC on Cyclone):
 
 Set up to print on LinuxCNC:
