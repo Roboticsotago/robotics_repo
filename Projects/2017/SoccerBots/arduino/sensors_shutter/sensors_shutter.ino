@@ -24,7 +24,7 @@ const int EEPROM_MAX_X = 6;
 const int EEPROM_MAX_Y = 8;
 const int EEPROM_MAX_Z = 10;
 const int EEPROM_TARGET_HEADING = 12;
-
+const int reflectance = 0;
 
 const int hall_effect = A9;
 const int BUZZER = 10;
@@ -53,7 +53,6 @@ int crotchet;
 #include "sherlockShort.h"
 #include "magnetometer.h"
 #include "ultrasonic.h"
-#include "reflectance.h"
 
 // int ir_val;
 const float TAU = 2 * PI;
@@ -85,13 +84,17 @@ void setup() {
 	}
 	pinMode(CALIBRATION_MODE_SWITCH_PIN, INPUT_PULLUP);
 	pinMode(SAVE_HEADING_BUTTON_PIN, INPUT_PULLUP);
+        pinMode(22, INPUT_PULLUP); //start of game button
 	pinMode(hall_effect, INPUT);
 	pinMode(BUZZER,OUTPUT);
 	Serial.begin(115200);
 	Serial.println("Shutter Starting");
         InfraredSeeker::Initialize();
+        Serial.println("Infrared intialised");
 	magnetometerSetup();
+        Serial.println("setup almost done");
 	ultrasonic_setup();
+        Serial.println("setup done");
 }
 
 void test_loop() {
@@ -108,6 +111,7 @@ void loopy() {
 }
 
 void loop() {
+        //Serial.println("start loop");
 	calibration_mode_switch = digitalRead(CALIBRATION_MODE_SWITCH_PIN);
 	if (!calibration_mode_switch) {
 		magnetometer_calibrateMagnetometer(); 
@@ -115,14 +119,13 @@ void loop() {
 	if (!digitalRead(SAVE_HEADING_BUTTON_PIN)) { // allows the heading to be saved during use
 		magnetometer_saveHeading();
 	}
-        readReflectance();
-	//readIRsensors();
+    
+   	//readIRsensors();
 	//printIRsensors();
 	get_ball_angle();
-	
 	angle_to_goal = magnetometer_getAngleToTarget();
 	
-       
+       //Serial.println("after magnetometer");
    ball_detected = 1;
          
         //Serial.println("Sending Output");
@@ -132,6 +135,7 @@ void loop() {
 #else 
 	delay(20);
 #endif
+      //Serial.println("loop done");
 }
 
 void beep() {
@@ -185,7 +189,11 @@ void send_output() {
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
 	Serial.print(reflectance);Serial.print(" ");
+        Serial.print(digitalRead(22));Serial.print(" ");
 	Serial.println(";");
+}
+void send_output_test(){
+  Serial.print("yeeto");
 }
 
 int posneg(int input) {
