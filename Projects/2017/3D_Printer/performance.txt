@@ -1,0 +1,10 @@
+What are our targets for printing speed, fast/repositioning motion, extrusion, acceleration, etc.?
+
+I think speeds of 30-60 mm/s while printing are realistic. Above 100 mm/s the print quality degrades quite seriously, and even getting above 80 mm/s is probably going to require a moderate amount of tuning. However, fast repositioning (G0) motion is useful - perhaps 150-200 mm/s - and this should be the overall target speed.
+
+Acceleration...?
+
+The type of drive and gearing used will determine the motor characteristics required. Some amount of gearing down is probably desirable, in order to achieve good positioning accuracy (remember that microstepping doesn't buy you accuracy - only smoothness). You also want stepper motor speed to be high enough that it exceeds the resonant frequency. However, too much will probably limit 
+
+See stepper-motor-resonance.txt for more on the topic.
+
