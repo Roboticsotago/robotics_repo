@@ -1,5 +1,21 @@
 2D plotter/3D printer build, 2017
 
+Selections:
+	guide rails:
+		NS-01-17-480 x 2 (X axis)
+		NS-01-17-350 x 4 (Z axis)
+		Y axis could be N series 17 too, or possibly a W profile, vertically oriented (stronger, and easier to mount a small rotary tool or mini spindle motor to)
+		anti-reflex? Oh, maybe that just means non-reflective (black anodised) surface finish? Yes, I think so.
+	carriages:
+		NW-22-17-30 x 8 (and maybe more for the Y axis)
+		preload?
+		floating: YZ or just Z
+		overmould?
+	leadscrews:
+		PTGSG-10X2-01-R (single start, 10 mm diameter, 2 mm lead and pitch)
+	nuts:
+		JFRM-2525TR10X2 x 2 (or 3)
+
 Igus have some interesting looking bushings and stuff.
 
 http://www.igus.com/wpck/3639/drylin_r_rqa
@@ -14,17 +30,41 @@ M4	0.7 mm lead
 M5	0.8 mm lead
 M6	1.0 mm lead	<- perhaps go with this, for strength and simplicity of maths ("M6x1")
 
+	However, might M6 be too thin to run unsupported over a half-metre distance?  It will be supported by the leadscrew nut, of course, but with the carriage at one end, there will be most of the rail distance unsupported.
+
 	Max length seems to be 1000 mm for most sizes (and 3000 mm for one in particular)
+
+There's also a range of larger trapezoidal thread leadscrews here:
+	http://www.igus.co.nz/wpck/3810/DryLin_Trapezgewindespindel
+
+	Smallest diameter is 8 mm, only available with 1.5 mm pitch
+	10 mm diameter screw is available with 2 mm or 3 mm pitch.
+		CTTOI, 2 mm would be even better WRT simplicity of maths, since we have 200 full steps/rev.  A 2 mm thread would give 0.01 mm/step, which is a nice match for the typical precision of metric G-code and interpreters.
+		
+		(PTGSG-10X2-01-R is the part number there)
+	
+	Single-start or two-start thread?
+		Multi-start threads allow a longer lead (distance per revolution) for the same pitch (distance between threads of any helix), i.e. faster linear motion for a given rotational motion.
+
+Useful discussion of leadscrew thread here (looks like 2 mm is just right: 8 mm might require too much motor torque and allow being driven by the carriage too easily, but 1 mm is probably excessively fine):
+https://3dprinting.stackexchange.com/questions/4031/would-using-a-leadscrew-with-1-or-2-mm-lead-en-lieu-of-8-mm-result-in-a-better/4034
 
 	Screw orientation - left or right?
 
 	1 mm / 200 full steps/rev = 0.005 mm/step
 	1 mm / 3200 microsteps/rev = 0.3 micron/step, but remember that microstepping is for smoothness, not accuracy.
 
+Leadscrew nuts:
+
+	http://www.igus.co.nz/wpck/8338/linear_srew_drives_axial
+	http://www.igus.com/wpck/17171/DryLin_Miniature_nuts
+	http://www.igus.co.nz/wpck/2373/DryLin_Trapezgewindemutter_WFRM
+	
+	
 Required speeds for printing: up to about 80 mm/s would be useful for printing, and 200 mm/s for travel moves.
 
 	80 mm/s * 200 steps/mm = 16 kHz
-	200 mm/s * 3200 steps/mm = 40 kHz
+	200 mm/s * 3200 steps/mm = 640 kHz
 	
 	Maybe we won't be able to use microstepping then. BBB PRUs can achieve 50 kHz with a 10 us period, but could go much higher (100-200 kHz) without too much trouble, apparently.
 	
@@ -34,8 +74,23 @@ Required speeds for printing: up to about 80 mm/s would be useful for printing, 
 	
 	For comparison, the CNC machine at home has 400 steps/mm, from 5 mm lead pitch and 10x microstepping, IIRC.  Yep: 200 * 10 / 5 = 400.
 
+	We could work out the specifications another way: start with maximum step frequency, and divide by desired maximum speed (travel or printing), to determine steps/mm, and thereby what degree of microstepping will be possible.
 
-Maybe use these for the vertical Z axis:
+	Say 100 mm/s (6000 mm/min) as the max speed, and 40 kHz as the max step frequency:
+	
+	40 kHz / (100 mm/s) -> 1/mm
+		400
+
+	400 steps/mm.
+	
+	If we were to up the step frequency to 100 kHz (which MachineKit author Charles Steinkeuhler says is quite achievable):
+	100 kHz / (100 mm/s) -> 1/mm
+		1000
+
+	So could probably use 1/2 stepping or even 1/4 stepping.
+	
+	
+Maybe use these for the vertical Z axis, and perhaps also the X (long) axis:
 
 http://www.igus.com/wpck/17357/drylin_n
 
@@ -50,6 +105,36 @@ Would we use OpenBeam? IIRC that's about 17 mm, and there's a DryLin NW 17
 http://www.igus.com/wpck/17067/dryLin_N_endcaps
 
 
+Oh, they have an example model 3D printer (the BOSON, by NOVA SANDEC, Poland).
+	drylin R bearings
+	drylin T rails
+	drylin E spindle motors
+
+The N series 17 mm rail supports three carriage lengths: 20 mm, 30 mm, 40 mm
+	NW-22-17-30 is the 30 mm one
+
+--
+
+Tom Sanladerer has a video discussing the pros and cons of the polymer bushings:
+
+https://www.youtube.com/watch?v=ZGBipbgwgME
+--
+
+Belt vs leadscrews
+
+I've already pretty much decided to try using leadscrew drive for the plotter/printer, largely because of the positioning accuracy.  On my delta printer at home, artifacts are quite visible on decorative pieces, and high speed (> 200 mm/s) is really not achievable with a narrow nozzle.  If we use LinuxCNC or a derivative (MachineKit), we can control the trade-off between positioning accuracy and feedrate uniformity (using the path-blending settings).
+
+https://www.youtube.com/watch?v=YU5SdzRVtv0
+
+https://www.youtube.com/watch?v=moVDZrYGnyc
+
+
+Also, build a printer from scratch:
+https://www.youtube.com/watch?v=SZO9NTPdU2A
+
+
+--
+
 Extra OpenBeam hardware from MakerBeam (if you can't get from MAKERshop):
 
 https://www.makerbeam.com/openbeam-feet-8p-for-openbeam.html
@@ -57,3 +142,8 @@ https://www.makerbeam.com/openbeam-shaft-clamp-4p-2p-for-openbeam.html
 https://www.makerbeam.com/openbeam-corner-cubes-black-12p-for-openbeam.html
 https://www.makerbeam.com/openbeam-l-brackets-metal-8p-for-openbeam.html
 
+--
+
+Perhaps look at the @FuseDeep printer built by Richard Grant for some inspiration and design and construction details:
+
+http://shop.3dfilaprint.com/blog/

@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 #N canvas 38 102 1265 628 10;
 #N canvas 43 109 952 540 differential_drive 1;
 #X obj 310 220 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 4430 1;
 #X obj 390 228 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 7920 1;
+=======
+#N canvas 31 99 1166 628 10;
+#N canvas 18 74 952 540 differential_drive 0;
+#X obj 310 220 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 4950 1;
+#X obj 390 228 vsl 15 100 -1 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 4950 1;
+>>>>>>> 6886ac0102275aafd6130b4ec92413dda2d610e9
 #X obj 314 140 +;
 #X obj 390 140 +;
 #X obj 314 162 clip -1 1;
@@ -35,9 +44,13 @@
 17 7 0 10 -262144 -1 -1 1 1;
 #X obj 242 -73 r throttle_toggle_out;
 #X obj 201 228 hsl 60 15 -1 1 0 0 empty steering_drive empty -2 -8
+<<<<<<< HEAD
 0 10 -262144 -1 -1 738 1;
+=======
+0 10 -262144 -1 -1 2950 1;
+>>>>>>> 6886ac0102275aafd6130b4ec92413dda2d610e9
 #X obj 137 205 vsl 15 60 -1 1 0 0 empty throttle_drive empty 0 -9 0
-10 -262144 -1 -1 4720 1;
+10 -262144 -1 -1 2950 1;
 #X obj 190 46 s throttle_drive;
 #X obj 491 48 s steering_drive;
 #X floatatom 688 195 5 0 0 0 - - -, f 5;
@@ -179,7 +192,11 @@ anyway \, this will work perfectly well.;
 #X connect 30 0 28 0;
 #X coords 0 -1 1 1 85 60 1 100 100;
 #X restore 44 108 pd seek;
+<<<<<<< HEAD
 #N canvas 22 72 1265 628 aim 0;
+=======
+#N canvas 28 88 1265 628 aim 0;
+>>>>>>> 6886ac0102275aafd6130b4ec92413dda2d610e9
 #X obj 119 105 tgl 50 0 empty empty AIM 46 7 0 30 -262144 -1 -1 0 1
 ;
 #X obj 114 77 sig2num~;
@@ -299,13 +316,17 @@ anyway \, this will work perfectly well.;
 #X restore 666 110 pd aim;
 #N canvas 38 102 1265 628 shoot 0;
 #X obj 76 -51 tgl 50 0 empty empty ball_near 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 378 -100 r compass_heading;
 #X obj 378 -78 abs;
 #X obj 378 -56 < 70;
 #X obj 372 -34 tgl 50 0 empty empty facing_enemy_goal 17 7 0 10 -262144
 -1 -1 0 1;
+<<<<<<< HEAD
 #N canvas 8 159 1265 660 kick? 0;
+=======
+#N canvas 0 93 1920 987 kick? 0;
+>>>>>>> 6886ac0102275aafd6130b4ec92413dda2d610e9
 #X obj 87 154 change;
 #X obj 57 460 s kick;
 #X obj 87 132 snapshot~;
@@ -444,7 +465,7 @@ f 29;
 #X floatatom 533 508 5 0 0 0 - - -, f 5;
 #X obj 185 482 s~ not_adjusting;
 #X obj 314 373 r~ not_adjusting;
-#X obj 226 459 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 226 459 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 235 421 sig2num~;
 #X obj 664 344 sig2num~;
@@ -585,11 +606,15 @@ f 29;
 #X obj 679 298 tgl 40 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 286 275 r ball_detected;
-#X obj 286 299 tgl 40 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 286 299 tgl 40 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 544 258 r ball_distance;
 #X obj 383 331 hsl 128 15 -180 180 0 0 empty empty empty -2 -8 0 10
+<<<<<<< HEAD
 -262144 -1 -1 4762 1;
+=======
+-262144 -1 -1 0 1;
+>>>>>>> 6886ac0102275aafd6130b4ec92413dda2d610e9
 #X obj 447 717 r way_is_clear;
 #X obj 447 740 not;
 #X obj 446 796 bang;
@@ -610,7 +635,11 @@ f 29;
 #X obj 401 722 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X obj 447 762 change;
+<<<<<<< HEAD
 #N canvas 13 67 1265 628 round 0;
+=======
+#N canvas 28 48 1172 1551 round 0;
+>>>>>>> 6886ac0102275aafd6130b4ec92413dda2d610e9
 #X obj 119 105 tgl 50 0 empty empty ROUND 46 7 0 30 -262144 -1 -1 0
 1;
 #X obj 314 48 r ball_side;
@@ -813,9 +842,9 @@ robot and the goal. Purpose is to score!, f 30;
 #X obj 304 410 bng 100 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 845 325 5 0 0 0 - - -, f 5;
-#N canvas 0 83 1265 628 stuckNEW 0;
+#N canvas 31 398 1166 628 stuckNEW 1;
 #X text 252 81 STUCK;
-#X obj 115 103 tgl 50 0 empty empty STUCK 17 7 0 20 -262144 -1 -1 0
+#X obj 106 104 tgl 50 0 empty empty STUCK 17 7 0 20 -262144 -1 -1 0
 1;
 #X obj 220 188 throw~ throttle;
 #X obj 601 177 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144

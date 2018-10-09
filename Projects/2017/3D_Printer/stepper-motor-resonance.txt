@@ -13,6 +13,14 @@ I've wondered with my delta printer whether it is typically operating above or b
 	40 mm/rev / 200 step/rev = 0.2 mm/step
 	40 mm/s / (0.2 mm/step) = 200 Hz
 
+pulley_circumference = 2 mm * 20
+motor_steps_per_rev = 200
+motor_step_angle = rev / motor_steps_per_rev
+	motor_step_angle -> degrees
+step_distance = pulley_circumference / motor_steps_per_rev
+target_speed = 40 mm/s
+target_speed / step_distance
+
 So, it might not be exceeding the resonant frequency for print moves.  Hmm.
 
 Fast travel moves are probably well above resonance, though: 150 mm/s / (0.2 mm/step) = 750 Hz, though it's notable that I'm seeing sometimes jerky movement when doing fast travel moves at the start or end of a print (between home and bed) (though it doesn't seem to affect the positioning accuracy).  I know the motor driver chips sometimes overheat a little and stutter if there's insufficient cooling.
@@ -93,6 +101,10 @@ See Greg Frost's parametric gear library for OpenSCAD on Thingiverse for making 
 
 Ooh, good reading here (even if not designing a delta printer):
 http://reprap.org/wiki/Choosing_stepper_for_a_delta
+
+--
+
+Stepper motor torque drops of with increasing speed, and many RepRap-style motors can't manage more than about 500 RPM.  What would that equate to in terms of linear motion with a leadscrew?
 
 --
 

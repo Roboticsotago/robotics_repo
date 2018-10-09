@@ -1,0 +1,25 @@
+#N canvas 28 48 1172 1551 10;
+#X obj 216 608 print;
+#X msg 39 475 i has a bucket!;
+#X msg 176 474 noooo! they be stealin' my bucket.;
+#X obj 203 317 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 205 357 random 3;
+#X obj 205 408 select 0 1 2;
+#X msg 440 473 42;
+#X msg 494 471 Failed;
+#X obj 205 279 metro 250;
+#X obj 205 230 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 5 0 1 0;
+#X connect 5 1 2 0;
+#X connect 5 2 6 0;
+#X connect 5 3 7 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 8 0 3 0;
+#X connect 9 0 8 0;
