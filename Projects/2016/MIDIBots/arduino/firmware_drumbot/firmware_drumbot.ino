@@ -24,8 +24,8 @@ const int SNARE_DRUM_MAX = 62;
 const int SNARE_DRUM_DELAY = 100;
 
 const int CYMBAL_NOTE = 42;
-const int CYMBAL_MIN = 60;
-const int CYMBAL_MAX = 90;	
+const int CYMBAL_MIN = 75;
+const int CYMBAL_MAX = 105;	
 const int CYMBAL_DELAY = 100;
 
 // Timers for asynchronous release of drum hits:
