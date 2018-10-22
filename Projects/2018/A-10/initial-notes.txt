@@ -1,0 +1,33 @@
+RC A-10 plane build
+Friday robotics, late 2018
+
+Some nice things about the A-10:
+ - It's a real plane
+ - It looks mean
+ - It's a low-speed jet, so...
+ - Ducted fans (protected blades, protected fingers)
+ - Straight wings, with some dihedral
+ - Also, the fans are mounted rear and high, which should protect them in the event of a crash
+
+
+How much thrust might it need?  How heavy will it be?  How much lift?
+
+How much 
+
+Smaller ones are designed for 2-cell batteries, larger ones for 3- or 4-cell batteries
+
+Some common thrust ratings for EDF units:
+
+2 pounds force (9 N), 50 mm fan
+12 pounds force (53 N), 127 mm
+
+30-50,000 RPM?!?!?! Yikes - very dangerous.
+
+What scale would that make the plane, then?
+	GE TF-34 engine
+		1.23 m diameter -> 1/24.6 scale for 50 mm fan
+
+What about scale speed?
+	300 kts is pretty typical
+
+Ducting characteristics: inlet cowling, flaring/tapering? Retain the engine core duct at rear for appearance?
