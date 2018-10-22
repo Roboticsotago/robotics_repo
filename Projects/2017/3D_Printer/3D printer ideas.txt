@@ -77,6 +77,21 @@ https://www.youtube.com/watch?v=FgnxBaFFDi8
 Notes on using MachineKit for 3D printer control:
 http://blog.machinekit.io/2013/07/slicing-for-linuxcnc.html
 
+Charles Steinkuehler on achievable step frequencies on the BeagleBone Black:
+
+<<
+The default PRU configuration uses a 10 uS task period, so the maximum 
+step rate is 50 KHz (1 period high, 1 period low).  This is a *VERY* 
+conservative value, so if you aren't adding lots of additional tasks you 
+can reduce the task period and get faster step rates.  It's easy to get 
+100-200 KHz rates with typical setups (3 or 4 stepgen and maybe some 
+PWMs) just by changing the PRU task period.  Much faster rates are 
+possible (500 KHz to 1 MHz or so) if you dedicate one of the PRUs to 
+step generation for the critical axis, but no one has written code to do 
+this yet (mostly because other than "look how fast we can go", there 
+isn't much practical need for step rates that fast). 
+>>
+
 Parallel SCARA:
 https://www.youtube.com/watch?v=R_AIzCTYBNs
 
@@ -161,7 +176,7 @@ Extruder hot-end
 
 Heated bed
 
-	These are extremely useful. Our bed will be quite large, but at least it's rectangular. Glass should be ?? type.
+	These are extremely useful. Our bed will be quite large, but at least it's rectangular. Glass should probably be borosilicate type, or at least tempered for heat handling (up to ~130 degC).
 	
 	I think an aluminium heat-spreader would be a good idea, since we probably won't find a single heating pad that is big enough.
 	

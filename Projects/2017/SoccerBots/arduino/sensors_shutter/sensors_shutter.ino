@@ -25,7 +25,6 @@ const int EEPROM_MAX_Y = 8;
 const int EEPROM_MAX_Z = 10;
 const int EEPROM_TARGET_HEADING = 12;
 
-
 const int hall_effect = A9;
 const int BUZZER = 10;
 int ball_detected = 0;
@@ -87,14 +86,18 @@ void setup() {
 	}
 	pinMode(CALIBRATION_MODE_SWITCH_PIN, INPUT_PULLUP);
 	pinMode(SAVE_HEADING_BUTTON_PIN, INPUT_PULLUP);
+
+        pinMode(22, INPUT_PULLUP); //start of game button
 	pinMode(hall_effect, INPUT);
 	pinMode(BUZZER,OUTPUT);
-        pinMode(battery_voltage_pin, INPUT);
 	Serial.begin(115200);
 	Serial.println("Shutter Starting");
         InfraredSeeker::Initialize();
+        Serial.println("Infrared intialised");
 	magnetometerSetup();
+        Serial.println("setup almost done");
 	ultrasonic_setup();
+        Serial.println("setup done");
 }
 
 void test_loop() {
@@ -118,14 +121,15 @@ void loop() {
 	if (!digitalRead(SAVE_HEADING_BUTTON_PIN)) { // allows the heading to be saved during use
 		magnetometer_saveHeading();
 	}
-        readReflectance();
-	//readIRsensors();
+
+    
+   	//readIRsensors();
 	//printIRsensors();
 	get_ball_angle();
-	
 	angle_to_goal = magnetometer_getAngleToTarget();
 	
-        battery_voltage = analogRead(battery_voltage_pin)*(10/1023);
+       //Serial.println("after magnetometer");
+
    ball_detected = 1;
          
         //Serial.println("Sending Output");
@@ -135,6 +139,7 @@ void loop() {
 #else 
 	delay(20);
 #endif
+
 }
 
 void beep() {
@@ -188,8 +193,12 @@ void send_output() {
 	Serial.print(angle_to_goal);Serial.print(" ");
 	Serial.print(calibration_mode_switch);Serial.print(" ");
 	Serial.print(reflectance);Serial.print(" ");
-        Serial.print(battery_voltage);Serial.print(" ");
+
+        Serial.print(digitalRead(22));Serial.print(" ");
 	Serial.println(";");
+}
+void send_output_test(){
+  Serial.print("yeeto");
 }
 
 int posneg(int input) {

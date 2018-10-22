@@ -24,8 +24,8 @@ int pos = 0;    // variable to store the servo position
 // TODO: carefully test required delay for each instrument and tweak *_DELAY constants below.
 
 const int TRIANGLE_NOTE = 60; // Middle C
-const int TRIANGLE_MIN = 30;
-const int TRIANGLE_MAX = 14;
+const int TRIANGLE_MIN = 20;
+const int TRIANGLE_MAX = 4;
 const int TRIANGLE_DELAY = 100;
 // Checked!
 
