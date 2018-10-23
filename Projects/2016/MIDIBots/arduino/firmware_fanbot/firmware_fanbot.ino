@@ -21,7 +21,7 @@ Servo partyPopperServo;
 
 #define BMP085_ADDRESS 0x77  // I2C address of BMP085
 
-//#define DEBUG 1
+#define DEBUG 1
 #define NO_PID 1
 	
 const unsigned char OSS = 0;  // Oversampling Setting
