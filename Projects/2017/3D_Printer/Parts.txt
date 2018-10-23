@@ -1,19 +1,28 @@
 2D plotter/3D printer build, 2017
 
+Do we want the high-temp J350 plastic option (rated to 150 degC)? If we want an enclosed heated build chamber, probably yes.
+
+
 Selections:
 	guide rails:
 		NS-01-17-480 x 2 (X axis)
 		NS-01-17-350 x 4 (Z axis)
 		Y axis could be N series 17 too, or possibly a W profile, vertically oriented (stronger, and easier to mount a small rotary tool or mini spindle motor to)
+			Ah, perhaps WSX-10-40 for the Y axis - the integral framing could make for easy construction and good strength. Is there room under the carriage for a 10 mm leadscrew and nut?
 		anti-reflex? Oh, maybe that just means non-reflective (black anodised) surface finish? Yes, I think so.
 	carriages:
 		NW-22-17-30 x 8 (and maybe more for the Y axis)
 		preload?
 		floating: YZ or just Z
 		overmould?
+		
+
+	guide rail end caps:
+		NSKB-17 (one pair per N series rail)
 	leadscrews:
 		PTGSG-10X2-01-R (single start, 10 mm diameter, 2 mm lead and pitch)
 	nuts:
+		flanged with spanner flat?
 		JFRM-2525TR10X2 x 2 (or 3)
 
 Igus have some interesting looking bushings and stuff.
@@ -131,6 +140,12 @@ https://www.youtube.com/watch?v=moVDZrYGnyc
 
 Also, build a printer from scratch:
 https://www.youtube.com/watch?v=SZO9NTPdU2A
+
+
+--
+
+Cable management: igus micro drag chain?
+
 
 
 --
