@@ -1,0 +1,14 @@
+3D printer build: Extruder options
+2019-02-26
+
+The E3D Titan drive looks like a good option:
+https://www.youtube.com/watch?v=tiAQ9slUZ58
+
+	Gearing and compact design allows the use of a smaller, lower-torque motor, giving lighter weight, and therefore better acceleration with less oscillation of the end-effector.
+
+	It also should allow good extruder acceleration for retraction.
+
+I really like the main concept of the extruder on Matt's donated Rostock Max, namely using a loop of PTFE tubing to allow the filament to be gripped and driven on both sides of the grip pulley. Even with direct drive (no gearing), it seems to work fine, although we have seen it skip steps at times (usually appropriate times, e.g. loss of heating!).  I wonder what the effect of this is on hysteresis, though...one side seems to drive slightly more strongly than the other, which can cause the tubing to pop off.
+
+	Note that ringing/oscillation can be caused by the stepper motors themselves: the magnetic detent means that they can oscillate fairly freely!
+
