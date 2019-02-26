@@ -1,0 +1,113 @@
+Tuesday Robotics 2019-02-26
+
+Let's Talk about Torque...
+
+τ = F x r
+
+	τ (Greek lowercase letter Tau) = torque (SI unit: newton metre, N m)
+	F = force (SI unit: newton, N)
+	r = radius (SI unit: metre, m)
+
+You can increase torque by applying the force at a greater radius (leverage).
+
+	This is how gears and pulleys work. However, they trade torque for (rotational) speed.
+	Also why a spiral staircase is easier to climb than a ladder!
+	Other everyday examples:
+		Water tap
+		Screws, nuts, bolts, wrenches, screwdrivers
+		Bottle opener
+		Corkscrew
+		Crowbar
+		Door handle
+		Car steering wheel
+		Car jack (no-hydraulic)
+		Any geared mechanism
+
+Relevant for stepper motor specs, gearing, tightening bolts, cars, ...
+
+	Tightening bolts/machine screws:
+		A wrench is a tool that allows you to apply high torque easily.
+		Too loose and things could come undone, leak, etc.
+		Too tight and you could distort or break the bolt, strip the threads, etc.
+		You can get torque wrenches to help get it right.
+
+	A car's transmission usually includes substantial reduction gearing to allow the motor's limited range of useful speeds to be matched to a variety of road speeds. For example, 14:1 between engine and wheels for low gear, 2.5:1 for high gear. If the engine produces say 100 N m torque, that's multiplied by the transmission to 1400 N m it low gear, to 250 N m for high gear.
+	
+		ICEs have a limited torque and power band. Too slow and they stall, too fast and they will be damaged.
+			Torque peaks around 2000-3000 RPM for a typical petrol car engine
+			Power is torque times speed, so faster engine speeds develop more power, even if torque drops.
+			Peak efficiency (power per unit energy) is usually achieved around peak torque and at high engine load with wide-open throttle. Efficiency drops off at higher speeds due to friction and pumping losses.
+				However, usually you don't need that much power! Better economy can be had by driving with low engine speeds and a high gear ratio.
+				BTW:
+					Fuel efficiency: power output per unit energy input
+					Fuel economy: distance travelled per unit energy
+					Fuel consumption: fuel consumed per unit time (flow rate)
+			Diesel engines provide high torque at low RPMs, often below 2000 RPM.
+	
+		EVs can get away with minimal/fixed/no gearing due to the very high low-speed torque and broad power band of electric motors.
+		
+		Some Frink calculations:
+		
+		tyre_diameter[width is length, aspect_ratio, hub_diameter is length] := hub_diameter + 2 * (width * aspect_ratio)
+
+		For a 185/65R15 tyre:
+		
+		tyre_radius = tyre_diameter[185 mm, 65 percent, 15 inch] / 2
+
+		100 N m * 15 / tyre_radius -> kN
+		6000/1243 (approx. 4.8270313757039425)
+
+		Acceleration would be:
+		100 N m * 15 / tyre_radius / (1 tonne) -> gravity
+		120000000/243793319 (approx. 0.4922202154358463)
+		
+			about 0.5 g
+
+
+In a 3D printer, mechanisms such as pulley and belt convert rotary motion to linear motion. Can solve for F to determine the linear force from the motor torque and effective radius.
+
+A common belt type is the GT2
+	Pitch = distance between belt teeth (commonly 2 mm, 3 mm, 5 mm)
+	GT2 describes the tooth profile - it DOESN'T mean 2 mm pitch! GT2 and GT3 both come in 2 mm, 3 mm, and 5 mm pitch!
+	
+	10-30 pounds force tension? That'd be 45-133 N - that's guitar-string tension!
+	
+	I've seen it stated that T = Timing, and G = general (e.g. linear motion). But this says that GT stands for "Gates Tooth":
+	http://gatesbeltsandapplications.blogspot.com/2015/10/whats-difference-between-gt-gt2-and-gt3.html
+	
+Super-useful reference here:
+https://www.electric-skateboard.builders/t/why-dont-people-use-gt3-pulleys-and-belts/71058
+http://www.sdp-si.com/PDFS/Technical-Section-Timing.pdf
+	Tooth jump torque might be as low as 3 N m under some conditions.
+	Max tension: 111 N per inch for 2 mm GT belt
+		That's 26 N for a 6 mm belt, or ~2.6 kg x gravity
+		That's actually not a whole lot...
+
+https://www.bbman.com/belt-length-calculator/
+
+Specification also includes the number of teeth (e.g. 16T or GT2-16).
+
+Calculate the effective circumference and effective diameter ("pitch diameter") of the following pulleys:
+	20T, 2 mm pitch
+	16T, 5 mm pitch
+	
+--
+
+Discuss plans for this year's Robocup entry/ies
+
+ - Theatre: Rubik's Cube
+ - Search and Rescue?
+ - Soccer?
+
+Other projects:
+
+ - Hovercraft?
+ - Aircraft?
+
+--
+
+Print some test parts?
+
+3D printer parts for the Rostock (order invoice)
+
+extruder designs

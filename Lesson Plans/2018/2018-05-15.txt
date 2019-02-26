@@ -1,0 +1,9 @@
+Robotics 2018-05-15
+
+Have printed just the base layers of an edge piece. Estimated printing time for the whole (half) piece would be about 12 hours!  The material cost might be significant too (ASA filament is $70/kg).
+
+Can we use another fabrication technique? Or a mixture?  Maybe 3D-print the tricky mounting part and graft on CNC-machined parts?  Could we machine a series of 2D panel parts that could be assembled into the 3D shapes?
+
+The Current Source (YouTube channel) on stepper motors and motion profiles:
+https://www.youtube.com/watch?v=xLwqeChqNp0
+
