@@ -12,3 +12,136 @@ I really like the main concept of the extruder on Matt's donated Rostock Max, na
 
 	Note that ringing/oscillation can be caused by the stepper motors themselves: the magnetic detent means that they can oscillate fairly freely!
 
+--
+
+
+http://sdp-si.com/resources/beltdesignsuggestions.htm
+	Stepper motors incur continuous high acceleration (slash "deceleration") forces on the belt. 
+	
+<<
+Idlers, either of the inside or outside type, are not recommended and should not be used except for power takeoff or functional use. When an idler is necessary, it should be on the slack side of the belt. Inside idlers must be grooved, unless their diameters are greater than an equivalent 40-groove pulley. Flat idlers must not be crowned (use edge flanges). Idler diameters must exceed the smallest diameter drive pulley. Idler arc of contact should be held to a minimum.
+>>
+
+http://sdp-si.com/D265/HTML/D265T050.html
+
+--
+
+We obviously have a trade-off between speed and precision. Limiting factors:
+
+ - Maximum motor RPM
+ - Maximum step rate of control/drive/motor
+
+Should have design targets for:
+ - Maximum speed
+ - Acceleration and jerk as well?
+ - Positioning precision and accuracy
+ 
+
+Stepper motors struggle to achieve high rotational speeds, and resonate in nasty ways at low speeds. Tuning the idling current seems to be a fairly unrewarding balancing act. However, they do have decent torque at low RPM, and with low loads, microstepping can be effective in improving resolution.
+
+	Oh, also consider oscillation around corners - stepper motors will be unable to avoid these artifacts.
+
+Microstepping:
+ - can improve smoothness and help with resonance problems
+ - reduces torque substantially compared to full stepping
+ - requires higher frequency step rates
+
+https://hackaday.com/2016/08/29/how-accurate-is-microstepping-really/
+
+	Also, heat-press threaded inserts for printed parts:
+		https://hackaday.com/2019/02/28/threading-3d-printed-parts-how-to-use-heat-set-inserts/
+		
+ClearPath? Apparently 4000 RPM is achievable:
+
+http://www.mechmate.com/forums/showthread.php?p=76529
+
+X-Y motion for a 3D printer might be up to 100 mm/s, so what gearing are we talking? Doesn't need to be self-locking (though Z axis might).
+
+	100 mm/s / (4000/min) = 1.5 mm/rev
+	
+	That's pretty close to the available Igus metric M6x1 screw (1 mm thread pitch). Would run a little slow.
+
+Also, what step frequency might be required, an can LinuxCNC on a PC with a parallel port or BeagleBone Black achieve the necessary output? This might be the limiting factor. I know my machine at home can make around 50 kHz. I believe you can choose the encoder resolution for the ClearPath drives.
+
+	Yep: while the internal encoder uses 12,800 counts/rev for the "fractional horsepower" (DC) models, the interface is either 800 steps/rev or 6,400 steps/rev for the "E" (enhanced) models.
+	
+	https://www.teknic.com/faq/
+
+What exactly is DrySpin technology?
+	I think it refers to the leadscrew profile, which has a curved and asymmetric shape to provide extended lifetime (of the plastic part?), higher efficiency, lower noise, and better vibration dampening.
+
+Ah, Igus have some high-helix screws and nuts in metric style:
+	DS12X5
+	DS8X10
+	
+There are also steep-threaded screw options:
+	NOTE: high helix thread category may not use DrySpin Technology - check the thread spec
+	https://www.igus.com/info/lead-screw-units-nut-high-helix-thread#section_4
+	Oh, but quite short max lengths?!
+	PTGSG-08x10-R-ES	SG08X10
+	PTGSG-08x15-R-ES
+	PTGSG-10x12-R-ES
+	PTGSG-10x50-R-ES
+	PTGSG-12x25-R-ES
+
+But maybe these are a better option:
+	https://www.igus.com/info/lead-screw-units-nut-with-camber
+	low backlash
+	quiet
+	mentions 3D printer applications!
+		But do we need the self-locking capability? Does that limit screw thread options? And is that feature primarily for dealing with the vertical (Z) axis?
+	
+	Candidates:
+	DST-JFRM-LC-0001-DS8x10	Ds8X10
+	DST-JFRM-LC-0001-DS8x15	Ds8X15
+	DST-JFRM-LC-0001-DS12X5	Ds12X5
+	
+	What's the difference between the SG and Ds threads? And what's the code for the ACME/trapezoidal thread? "ACME", apparently.
+	
+	DST = DrySpin Technology thread? Or is it DrySpin Trapezoidal (for self-locking)?! Or DrySpin Steep Thread?! FFS...
+	
+	
+	And the screws to match would be...?
+	
+	DST-LS-8x10-R-ES
+		DrySpin High Helix, Leadscrew, 8x10 thread, right-handed, stainless steel
+		1000 mm max length
+		
+	
+
+I think we need a spreadsheet of motor and drive options...
+
+	Done! And very helpful, it turns out. The resolution of the ClearPath servos are sort of interleaved with the standard stepper motor options (full stepping, 16x microstepping).
+		200 steps/rev for full stepping
+		800 steps/rev for ClearPath
+		3200 steps/rev for 16x microstepping
+		6400 steps/rev for ClearPath E
+		
+		A ClearPath motor with screw drive, or a ClearPath E with belt drive, should provide the required speed and precision. The belt drive option might have advantages in terms of acceleration, no? However, can it really achieve the specified resolution?
+		
+	See:
+	Parameters.gnumeric
+	
+--
+
+Igus materials:
+
+	J
+	W: high performance
+	R: low friction
+	A180: FDA food-safe
+	J350: high temperature
+	
+--
+
+Some nice resources on printing speed limits, particularly hot-end nozzle diameter, heater power.
+
+https://reprap.org/forum/read.php?1,826518
+https://dyzedesign.com/2018/07/3d-print-speed-calculation-find-optimal-speed/
+https://dyzedesign.com/3d-printing-speed-calculator/
+
+--
+
+Design to study:
+https://www.instructables.com/id/An-Almost-Reliable-High-Precision-3D-Printer-Son-o/#step6
+
