@@ -3,8 +3,15 @@ What are our targets for printing speed, fast/repositioning motion, extrusion, a
 I think speeds of 30-60 mm/s while printing are realistic. Above 100 mm/s the print quality degrades quite seriously, and even getting above 80 mm/s is probably going to require a moderate amount of tuning. However, fast repositioning (G0) motion is useful - perhaps 150-200 mm/s - and this should be the overall target speed.
 
 Acceleration...?
+	Faster is better, all other things being equal, and 3D printing has particular characteristics that make high acceleration desirable: at corners, having to slow down generally means overextrusion.
+	
+	Traditional Arduino-based 3D printer firmware use a "jerk" parameter which doesn't follow the normal definition of "1st derivative of acceleration" - rather, their "jerk" is a maximum difference in velocity that the printer will follow without using an acceleration profile. That is, changes in velocity below the "jerk" limit will be performed instantaneously.
+	
+	If we use LinuxCNC or derivatives, we can finely tune the speed and acceleration limits for each axis.
 
-The type of drive and gearing used will determine the motor characteristics required. Some amount of gearing down is probably desirable, in order to achieve good positioning accuracy (remember that microstepping doesn't buy you accuracy - only smoothness). You also want stepper motor speed to be high enough that it exceeds the resonant frequency. However, too much will probably limit 
+The type of drive and gearing used will determine the motor characteristics required. Some amount of gearing down is probably desirable, in order to achieve good positioning accuracy (remember that microstepping doesn't buy you accuracy - only smoothness). You also want stepper motor speed to be high enough that it exceeds the resonant frequency. However, too much will probably limit the speed of motion.
 
 See stepper-motor-resonance.txt for more on the topic.
+
+Also, see Parameters.gnumeric for a comprehensive set of motor and drive options with speed and precision limits.
 
