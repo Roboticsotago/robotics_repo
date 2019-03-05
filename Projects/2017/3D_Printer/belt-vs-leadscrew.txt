@@ -1,0 +1,35 @@
+Belt vs leadscrew
+
+Belts:
+ + cheap
+ + high speed
+ + can be used for long axes
+ + better acceleration?
+ - limited load forces
+ - can stretch, vibrate, skip, break
+
+Leadscrews:
+ + high force (both exertion and tolerance)
+ + high precision
+ - speed limited, one source suggested ~2000 RPM, but Igus documents indicate much lower: only a few hundred RPM for thin leadscrews at likely axis stroke lengths, and never more than 1000 RPM, even for a 100 mm long 24 mm diameter screw! 
+ - length limited, e.g. 1 m for a 20 mm diameter Igus leadscrew system
+ - poorer acceleration?
+
+--
+
+Our design targets are something like:
+ - maximum speed: 100-200 mm/s (60-100 mm/s for printing, but faster for travel moves)
+ - acceleration: 2000 mm/s/s?
+ - axis lengths (stroke): about 500 mm for X axis, 300 mm for Y axis
+ - 
+ 
+For 500 mm stroke, even a 24 mm diameter screw would be limited to 600 RPM. :(
+
+Adafruit have a 36T GT2 pulley available...that might be a good match for a ClearPath E motor.
+
+On my CNC Router at home using LinuxCNC, I'm using BASE_PERIOD = 20000 (20 microseconds). Apparently there's the occasional RTAPI error message, but I've never noticed it have any physical problems. Maximum speed is about 125 mm/s or 7500 mm/min
+
+
+	1 / (20 microseconds) / (400/mm) -> mm/s
+
+1 / (20 microseconds) is 50 kHz, is that the achievable step frequency at home? Maybe my 20 kHz estimate is a bit conservative...
