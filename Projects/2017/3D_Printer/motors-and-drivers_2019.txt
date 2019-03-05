@@ -7,6 +7,16 @@ Motor options:
 	(1) digital I/O or switches and buttons (ClearPath-MC), (2) step & direction signals (ClearPath-SD), or (3) software commands from an external Windows or Linux CPU (ClearPath-SC).
 		SDSK provides low-noise high-performance, as opposed to SDHP which is optimised for power.
 		https://www.teknic.com/products/clearpath-brushless-dc-servo-motors/clearpath-sd/sdsk-models/#ppsShowPopUp_100
+		
+			2310 or 2311? 2311 has somewhat higher power and torque, and is a little more expensive. Both are NEMA 23. Lower power supply voltage will reduce the peak torque available, but not impinge on the continuous torque at least down to 24 V.
+			R or E? I think R[egular] is the 800 steps/rev, E[nhanced] is 3200 steps/rev
+				R has 0.45 degrees achievable resolution, 0.03 degrees repeatability
+				E has 0.057 degrees resolution, 0.03 degrees repeatability
+			L or Q? Shaft diameter? L -> 9.525 mm (3/8 inch), Q -> 6.35 mm (1/4 inch)
+			N or S? [S]haft seal or [N]o shaft seal?
+			
+			4000 RPM @ 75 V limit for all of them.
+			
  - DIY low-cost servo (ODrive + hobby BLDC motor + encoder)
 	https://odriverobotics.com/#odrive
 	BLDC motors are fast if low-ish torque, but if we use leadscrews that should compensate.
@@ -36,4 +46,4 @@ Encoder options:
 http://www.dmm-tech.com/
 
 https://www.reddit.com/r/3Dprinting/comments/62qm14/clearpath_servo_3d_printer_build/
-
+	Note in particular that leadscrews will have an RPM limit, which may only be around 2000 RPM!
