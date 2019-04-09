@@ -53,4 +53,18 @@ module corner() {
     corner();
     translate([-55,-55,0])cube(60);
 }*/
-//corner();
+/*
+difference(){
+    corner();
+    cube(CUBIE,CUBIE,CUBIE,center=true);
+}*/
+difference() {
+    corner();
+    translate([(CORE-CUBIE/2)*0.2,(CORE-CUBIE/2)*0.2,(CORE-CUBIE/2)*-0.2])
+    scale([0.8,0.8,0.8])
+    intersection() {
+		cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER)],center=true);
+		translate([CUBIE,CUBIE,-CUBIE])
+		core2();
+    }
+}
