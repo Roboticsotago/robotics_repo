@@ -1,5 +1,8 @@
 include <variables.scad>
 
+HOLE_RADIUS = 2.5;
+HOLE_HEIGHT = 20;
+
 module corner_cube() {
     difference() {    
         difference() {
@@ -18,4 +21,24 @@ module corner_cube() {
     }
 }
 
-corner_cube();
+module half_corner_cube() {
+    difference() {
+        corner_cube();
+        translate([0,0,CUBIE/4])
+        cube([CUBIE,CUBIE,CUBIE/2],center=true);
+    }
+}
+
+module half_cube_with_holes() {
+    difference() {
+        half_corner_cube();
+        union() {
+            translate([CUBIE/2-5.5,CUBIE/2-5.5,-5]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([-(CUBIE/2-5.5),CUBIE/2-5.5,-5]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([-(CUBIE/2-5.5),-(CUBIE/2-5.5),-5]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([CUBIE/2-5.5,-(CUBIE/2-5.5),-5]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+        }
+    }
+}
+
+half_cube_with_holes();
