@@ -1,8 +1,5 @@
 include <variables.scad>
 
-//$fa=1;
-$fn=100;
-
 module edge() {
 	difference() {
 		difference() {
@@ -69,4 +66,9 @@ module half_edge() {
     edge();
     translate([-55,-55,0])cube(60);
 }*/
-half_edge();
+//half_edge();
+
+difference(){
+    edge();
+    cube(CUBIE,CUBIE,CUBIE,center=true);
+}
