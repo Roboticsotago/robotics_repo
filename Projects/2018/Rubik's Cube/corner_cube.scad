@@ -1,6 +1,6 @@
 include <variables.scad>
 
-HOLE_RADIUS = 2.5;
+HOLE_RADIUS = 1;
 HOLE_HEIGHT = 20;
 
 module corner_cube() {
