@@ -6,6 +6,7 @@ CUBIE=18.9*scale_factor; //total side length of each cube piece (including round
 CORE=18*scale_factor;
 SCREW_TIP=1.5*scale_factor;
 SCREW_BODY=2*scale_factor;
+SCREW = 3.5;
 SCREW_HEAD=3.8*scale_factor;
 INNER=4.5*scale_factor;
 SPRING=3.2*scale_factor;
