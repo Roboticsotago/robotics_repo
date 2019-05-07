@@ -33,10 +33,10 @@ module half_cube_with_holes() {
     difference() {
         half_corner_cube();
         union() {
-            translate([CUBIE/2-5.5,CUBIE/2-5.5,-5]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
-            translate([-(CUBIE/2-5.5),CUBIE/2-5.5,-5]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
-            translate([-(CUBIE/2-5.5),-(CUBIE/2-5.5),-5]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
-            translate([CUBIE/2-5.5,-(CUBIE/2-5.5),-5]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([CUBIE/2-5.5,CUBIE/2-5.5,0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([-(CUBIE/2-5.5),CUBIE/2-5.5,0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([-(CUBIE/2-5.5),-(CUBIE/2-5.5),0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([CUBIE/2-5.5,-(CUBIE/2-5.5),0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
         }
     }
 }

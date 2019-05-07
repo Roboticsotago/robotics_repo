@@ -38,7 +38,10 @@ module center()
 	
 	        rotate([0,90,0]) 
 	        {
-	            cylinder(CUBIE+0.5,r=SCREW,center=true);
+                difference() {
+                    cylinder(CUBIE+0.5,r=3,center=true);
+                    translate([3-0.5+2.5,0,0]) cube([5,8,CUBIE+0.5],center=true);
+                }
                 /*union() 
 	            {
 	                cylinder(CUBIE+0.5,r1=SCREW_BODY+GAP,r2=SCREW_BODY+GAP,center=true);
