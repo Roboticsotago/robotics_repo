@@ -1,6 +1,6 @@
 include <variables.scad>
-use <corner_cube.scad>
+use <corner_cubie.scad>
 use <corner_connector.scad>
 
-corner_cube();
+full_corner_cubie();
 corner_connector();

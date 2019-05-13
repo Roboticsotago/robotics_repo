@@ -28,7 +28,8 @@ tile_length = inner_cubie*0.75;
 //tile_height = 0.8 * scale_factor;
 tile_height = 3;
 
-
+HOLE_RADIUS = 1.3;
+HOLE_HEIGHT = 20;
 
 module tile(length, height) {
 	translate([-length/2,-length/2,0]) {
