@@ -1,6 +1,6 @@
 include <variables.scad>
 
-module edge_cube_full() {
+module edge_cube_filled() {
     difference() {
             cubie();
             translate([CUBIE,CUBIE,0])
@@ -8,9 +8,9 @@ module edge_cube_full() {
         }
 }
 
-module edge_cube() {                    
+module edge_cubie_full() {                    
      difference() {
-        edge_cube_full();
+        edge_cube_filled();
         union() {
             translate([0,-CUBIE/2 + tile_height,0])
             rotate(v=[1,0,0],a=90)
@@ -22,16 +22,24 @@ module edge_cube() {
         }
     }
     intersection() {
-        edge_cube_full();
+        edge_cube_filled();
         translate([CUBIE/2+15,CUBIE/2+15,0]) rotate([0,0,45]) cube(size=CUBIE,center=true);
     }
 }
 
-module half_edge() {
+module edge_cubie() {
     difference() {
-        edge_cube();
-        translate([0,0,CUBIE/2]) cube(size=CUBIE,center=true);
+        difference() {
+            edge_cubie_full();
+            translate([0,0,CUBIE/2]) cube(size=CUBIE,center=true);
+        }
+        union() {
+            translate([CUBIE/2-20,CUBIE/2-20,0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([-(CUBIE/2-5.5),CUBIE/2-5.5,0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([-(CUBIE/2-5.5),-(CUBIE/2-5.5),0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([CUBIE/2-5.5,-(CUBIE/2-5.5),0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+        } 
     }
 }
 
-half_edge();
+edge_cubie();

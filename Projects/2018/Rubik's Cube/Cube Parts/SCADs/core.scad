@@ -91,4 +91,4 @@ module core_half() {
 
 
 
-core();
+core_half();

@@ -2,5 +2,7 @@ include <variables.scad>
 use <centre_cubie.scad>
 use <centre_connector.scad>
 
-centre_cubie();
-centre_connector();
+module centre_piece() {
+    centre_cubie();
+    centre_connector();
+}

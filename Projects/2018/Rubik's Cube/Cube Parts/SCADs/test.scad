@@ -22,7 +22,7 @@ tile_length = inner_cubie*0.75;
 tile_height = 3;
 
 module tile(length, height, colour) {
-	color(col)
+	color(colour)
     translate([-length/2,-length/2,0]) {
 		minkowski(){
 			translate([0,0,-height/2]) cube([length,length,height]);

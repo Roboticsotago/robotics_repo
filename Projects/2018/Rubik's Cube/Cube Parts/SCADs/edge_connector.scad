@@ -1,6 +1,6 @@
 include <variables.scad>
 
-module edge_connector() {
+module edge_connector_full() {
     difference() {
         intersection() {
             cube([2*CUBIE-2*INNER,2*CUBIE-2*INNER,2*INNER],center=true);
@@ -18,3 +18,12 @@ module edge_connector() {
                    
      }
  }
+ 
+ module edge_connector() {
+     difference() {
+         edge_connector_full();
+         translate([0,0,10]) cube([200,200,20]);
+     }
+ }
+ 
+ edge_connector();
