@@ -21,8 +21,15 @@ module edge_connector_full() {
  
  module edge_connector() {
      difference() {
-         edge_connector_full();
-         translate([0,0,10]) cube([200,200,20]);
+         difference() {
+             edge_connector_full();
+             translate([0,0,10]) cube([200,200,20]);
+         }
+        union() {
+            translate([CUBIE/2+22.5,CUBIE/2+22.5,HOLE_HEIGHT/2]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([CUBIE/2+22.5,9,HOLE_HEIGHT/2]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([9,CUBIE/2+22.5,HOLE_HEIGHT/2]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+        } 
      }
  }
  
