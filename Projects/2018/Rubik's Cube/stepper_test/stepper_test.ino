@@ -1,53 +1,37 @@
-const int STEP_PIN = 10;
-//const int DIR_PIN = ??;
+const int steps_per_rev = 200;
+const int degrees_per_step = 360 / steps_per_rev;
+const int motor_pin = 10;
 
-const int STEPS_PER_REV = 200;
-const int degrees_per_step = 360 / STEPS_PER_REV;
-const int LOW_TIME = 1; // ms
-// If the high and low pulse durations are limited to 1 ms, that's a speed limit of 150 RPM:
-// 1 / (2 ms) = 500 pps, 500 * 60 / 200 = 150
+void spin(float rpm, float num_rotations) {
+  min_delay = 300/rpm - 1
+  for(int i = 0; i <= num_rotations*200; i++) {
+    digitalWrite(motor_pin, HIGH);
+    delay(min_delay);
+    digitalWrite(motor_pin, LOW);
+    delay(1);
+  }
+}
 
+void accel(float rpm) {
+  for(float current_rpm = 0; current_rpm <= rpm; current_rpm += rpm / 10) {
+    spin(current_rpm, 0.1);
+  } 
+}
+
+void decel(float initial_rpm) {
+  for(float current_rpm = initial_rpm; current_rpm >= 0; current_rpm -= initial_rpm / 10) {
+    spin(current_rpm, 0.1);
+  }
+  digitalWrite(motor_pin, HIGH)
+}
 
 void setup() {
-  pinMode(STEP_PIN, OUTPUT);
-  Serial.begin(9600);
+  pinMode(motor_pin, OUTPUT);
 }
-
-
-void spin(float rpm, int revs) {
-//  float rps = rpm / 60;
-//  float steps_per_sec = rps / degrees_per_step;
-  float step_period = 1 / (rpm / 60.0 * STEPS_PER_REV) * 1000;  // ms
-  int high_time = round(step_period) - LOW_TIME;
-  Serial.println(high_time);
-
-  for(int x = 50 + high_time; x >= high_time; x -= 5) {
-    digitalWrite(STEP_PIN, HIGH);
-    delay(x);
-    digitalWrite(STEP_PIN, LOW);
-    delay(LOW_TIME);
-  }
-
-  for (long int i = 0; i < revs; i++) {
-  //  Serial.println(i);
-    digitalWrite(STEP_PIN, HIGH);
-    delay(high_time);
-    //delay(1/steps_per_sec * 1000 - 1);
-    digitalWrite(STEP_PIN, LOW);
-    delay(LOW_TIME);
-  }
-  
-  // TODO: ramp down after a certain number of iterations?
-  for(int x = high_time; x <= 50 + high_time; x += 5) {
-    digitalWrite(STEP_PIN, HIGH);
-    delay(x);
-    digitalWrite(STEP_PIN, LOW);
-    delay(LOW_TIME);
-  }
-}
-
 
 void loop() {
-  spin(60, 600);
-  delay(1000);
+  accel(60);
+  spin(60, 10);
+  decel(60);
+  delay(5000);
 }
