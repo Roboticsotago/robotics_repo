@@ -23,14 +23,14 @@ module edge_connector_full() {
      difference() {
          difference() {
              edge_connector_full();
-             translate([0,0,10]) cube([200,200,20]);
+             cube([200,200,50]);
          }
         union() {
-            translate([CUBIE/2+22.5,CUBIE/2+22.5,HOLE_HEIGHT/2]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
-            translate([CUBIE/2+22.5,9,HOLE_HEIGHT/2]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
-            translate([9,CUBIE/2+22.5,HOLE_HEIGHT/2]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([CUBIE/2+22.5,CUBIE/2+22.5,0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([CUBIE/2+22.5,9,0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
+            translate([9,CUBIE/2+22.5,0]) cylinder(r=HOLE_RADIUS, h=HOLE_HEIGHT, center=true);
         } 
      }
  }
  
- edge_connector();
+edge_connector();
