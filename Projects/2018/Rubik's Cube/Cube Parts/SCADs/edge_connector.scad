@@ -1,4 +1,6 @@
 include <variables.scad>
+$fn = 30;
+x=5;
 
 module edge_connector_full() {
     difference() {
@@ -8,7 +10,7 @@ module edge_connector_full() {
             translate([CUBIE,CUBIE,0])
             icore();
         }
-        translate([(((2*CUBIE-2*INNER)/2-(CUBIE-CORE))*0.2)/2,(((2*CUBIE-2*INNER)/2-(CUBIE-CORE))*0.2)/2,0])
+        translate([(((2*CUBIE-2*INNER)/2-(CUBIE-CORE))*0.2)/2+x,(((2*CUBIE-2*INNER)/2-(CUBIE-CORE))*0.2)/2+x,0])
             scale([0.8,0.8,0.8]) 
             intersection() {
                 cube([CUBIE+(CUBIE-2*INNER),CUBIE+(CUBIE-2*INNER),2*INNER],center=true);
